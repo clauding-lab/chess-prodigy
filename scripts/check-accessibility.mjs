@@ -11,7 +11,7 @@ try{
  await page.getByRole('button',{name:'e2, white pawn'}).click();await page.getByRole('button',{name:'e4, empty'}).click();
  await page.waitForFunction(()=>JSON.parse(localStorage.getItem('chess-prodigy-state-v1')).game.hist.length===2);
  for(const theme of ['wood','dark']){
-  if(theme==='dark')await page.getByRole('button',{name:'Dark board',exact:true}).click();
+  await page.getByRole('button',{name:theme==='wood'?'Wooden board':'Dark board',exact:true}).click();
   const report=await lighthouse(url,{port:chrome.port,onlyCategories:['accessibility'],disableStorageReset:true,output:'json',logLevel:'error'});
   await writeFile('docs/verification/lighthouse-'+theme+'.json',report.report);
   const score=Math.round(report.lhr.categories.accessibility.score*100);

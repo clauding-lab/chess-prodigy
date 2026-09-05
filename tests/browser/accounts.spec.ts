@@ -169,9 +169,9 @@ test("a cloud conflict stays actionable above an open setup dialog", async ({
   await other.goto("/");
   await signInAccount(other, email);
 
-  await page.getByRole("button", { name: "Dark board" }).click();
+  await page.getByRole("button", { name: "Wooden board" }).click();
   await page.waitForTimeout(1200);
-  await other.getByRole("button", { name: "Dark board" }).click();
+  await other.getByRole("button", { name: "Wooden board" }).click();
   await other.getByRole("button", { name: "New game", exact: true }).click();
   const conflict = other.getByRole("dialog", { name: "Progress changed on another device" });
   await expect(conflict).toBeVisible({ timeout: 5000 });
@@ -198,12 +198,12 @@ test("returning preferences to their initial value still syncs the final choice"
   await expect(page.getByText("Pending changes")).toBeVisible();
   await expect(page.getByText("Saved to account")).toBeVisible({ timeout: 5000 });
   await page.reload();
-  await page.getByRole("button", { name: "Dark board" }).click();
-  await expect(page.getByText("Pending changes")).toBeVisible();
-  await expect(page.getByText("Saved to account")).toBeVisible({ timeout: 5000 });
   await page.getByRole("button", { name: "Wooden board" }).click();
   await expect(page.getByText("Pending changes")).toBeVisible();
   await expect(page.getByText("Saved to account")).toBeVisible({ timeout: 5000 });
+  await page.getByRole("button", { name: "Dark board" }).click();
+  await expect(page.getByText("Pending changes")).toBeVisible();
+  await expect(page.getByText("Saved to account")).toBeVisible({ timeout: 5000 });
   await page.reload();
-  await expect(page.getByRole("button", { name: "Dark board" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Wooden board" })).toBeVisible();
 });

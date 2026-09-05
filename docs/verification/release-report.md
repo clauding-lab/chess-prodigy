@@ -52,3 +52,9 @@ Verified at **chess.clauding-lab.com on 5 September 2026 BDT**: registration wit
 HTTP redirects to the fixed HTTPS address. Unauthenticated private-record requests return 401 with no-store headers. The isolated service is active, and its first consistent database backup succeeded with private 0600 file permissions. The daily timer is enabled for approximately 04:15 BDT.
 
 Live screenshots: [desktop wood](public-desktop.png), [mobile dark](public-mobile.png). Physical phone verification remains pending.
+
+## v1.0.1 — dark default and neutral accents
+
+New guest and account sessions default to the dark board; previously saved theme choices remain valid. Green controls, highlights, positive markers and icon backgrounds have been replaced with muted gold, warm brown or slate. Startup and installed-app colours match the dark default.
+
+Verified: 175 unit/integration tests, 37 browser checks (3 duplicate mobile cases skipped), typecheck/lint/format/build, and Lighthouse accessibility **100/100 for both themes**. Default dark and explicitly saved wooden preferences are covered by the existing reload tests. The public screenshots show the updated dark appearance.

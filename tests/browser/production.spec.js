@@ -15,9 +15,9 @@ async function play(page,from,to){
 }
 test('reload preserves game, rating and theme without replaying engine moves',async({page})=>{
  await start(page);await play(page,'e2','e4');
- await page.getByRole('button',{name:'Dark board',exact:true}).click();
+ await page.getByRole('button',{name:'Wooden board',exact:true}).click();
  const before=await saved(page);await page.reload();
- await expect(page.locator('.app')).toHaveAttribute('data-theme','dark');
+ await expect(page.locator('.app')).toHaveAttribute('data-theme','wood');
  expect((await saved(page)).game.hist.map(e=>e.san)).toEqual(before.game.hist.map(e=>e.san));
  expect((await saved(page)).rating).toEqual(before.rating);
  await expect(page.getByRole('button',{name:'Start',exact:true})).toHaveCount(0);
@@ -39,7 +39,7 @@ test('keyboard plays and dialogs trap focus; both themes pass axe checks',async(
  expect(await dialog.evaluate(el=>el.contains(document.activeElement))).toBe(true);
  await page.keyboard.press('Escape');await expect(dialog).toHaveCount(0);
  for(const theme of ['wood','dark']){
-  if(theme==='dark')await page.getByRole('button',{name:'Dark board',exact:true}).click();
+  await page.getByRole('button',{name:theme==='wood'?'Wooden board':'Dark board',exact:true}).click();
   const scan=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
   await info.attach('axe-'+theme,{body:JSON.stringify(scan.violations,null,2),contentType:'application/json'});
   expect(scan.violations).toEqual([]);

@@ -44,16 +44,17 @@ it("starts, plays a legal move, receives an engine reply and preserves theme acr
       <App />
     </StrictMode>,
   );
+  expect(view.container.querySelector(".app")?.getAttribute("data-theme")).toBe("dark");
   fireEvent.click(screen.getByRole("button", { name: "Start", exact: true }));
   fireEvent.click(screen.getByRole("button", { name: "e2, white pawn" }));
   fireEvent.click(screen.getByRole("button", { name: "e4, empty" }));
   await waitFor(() =>
     expect(JSON.parse(localStorage.getItem("chess-prodigy-state-v1")!).game.hist).toHaveLength(2),
   );
-  fireEvent.click(screen.getByRole("button", { name: "Dark board" }));
+  fireEvent.click(screen.getByRole("button", { name: "Wooden board" }));
   view.unmount();
   render(<App />);
-  expect(screen.getByRole("button", { name: "Wooden board" })).toBeTruthy();
+  expect(screen.getByRole("button", { name: "Dark board" })).toBeTruthy();
   expect(screen.queryByRole("button", { name: "Start", exact: true })).toBe(null);
   expect(screen.getByRole("button", { name: "e4, white pawn" })).toBeTruthy();
 });

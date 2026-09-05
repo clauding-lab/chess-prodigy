@@ -44,7 +44,7 @@ export function freshSession(now: number, id: string): Session {
     version: 1,
     game: freshGame({ playerColor: "w", level: "club", time: "none" }, now, id),
     rating: defaultRating(),
-    preferences: { theme: "wood", sound: true, coach: true, flipped: false },
+    preferences: { theme: "dark", sound: true, coach: true, flipped: false },
   };
 }
 export function settleClock(g: Game, now: number): Game {

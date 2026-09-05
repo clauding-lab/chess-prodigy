@@ -9,15 +9,15 @@ body,
   min-height: 100%;
 }
 body {
-  background: #e6d7ba;
+  background: #101218;
 }
 .app,
 [data-modal-root] {
   --sq-light: #f0d9b5;
   --sq-dark: #b58863;
   --frame: linear-gradient(160deg, #7a5230, #5c3d20 60%, #4a3018);
-  --accent: #2f6b3a;
-  --accent-soft: rgba(47, 107, 58, 0.55);
+  --accent: #765333;
+  --accent-soft: rgba(118, 83, 51, 0.55);
   --panel: rgba(255, 252, 244, 0.72);
   --panel-border: rgba(90, 60, 30, 0.25);
   --pw: #fdf6e8;
@@ -52,8 +52,8 @@ body:has(.app[data-theme="dark"]) [data-modal-root] {
   --sq-light: #4a5262;
   --sq-dark: #2c313d;
   --frame: linear-gradient(160deg, #1b1e27, #12141b);
-  --accent: #35c4a2;
-  --accent-soft: rgba(53, 196, 162, 0.55);
+  --accent: #d7b377;
+  --accent-soft: rgba(215, 179, 119, 0.55);
   --panel: rgba(255, 255, 255, 0.05);
   --panel-border: rgba(255, 255, 255, 0.1);
   --pw: #eef1f5;
@@ -61,7 +61,7 @@ body:has(.app[data-theme="dark"]) [data-modal-root] {
   --pw-edge: rgba(0, 0, 0, 0.6);
   --pb-edge: rgba(255, 255, 255, 0.35);
   --check: rgba(235, 80, 80, 0.55);
-  --last: rgba(53, 196, 162, 0.28);
+  --last: rgba(215, 179, 119, 0.28);
   --hint: rgba(120, 170, 255, 0.5);
   --btn: rgba(255, 255, 255, 0.07);
   --bar-w: #e8ebf0;
@@ -105,8 +105,8 @@ body:has(.app[data-theme="dark"]) [data-modal-root] {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background: #e6d7ba;
-  color: #3c2a18;
+  background: #101218;
+  color: #dfe3ea;
   font-family: Georgia, "Times New Roman", serif;
 }
 .account-form {
@@ -389,7 +389,7 @@ body:has(.app[data-theme="dark"]) [data-modal-root] {
   margin-left: 1px;
 }
 .ann.good {
-  color: #2f9e5b;
+  color: var(--accent);
 }
 .ann.bad {
   color: #c9463d;
@@ -596,7 +596,7 @@ body:has(.app[data-theme="dark"]) [data-modal-root] .modal {
   color: #fff;
 }
 .chip.W {
-  background: #2f9e5b;
+  background: #596477;
 }
 .chip.L {
   background: #c9463d;
@@ -609,13 +609,13 @@ body:has(.app[data-theme="dark"]) [data-modal-root] .modal {
   font-variant-numeric: tabular-nums;
 }
 .delta.up {
-  color: #2f9e5b;
+  color: var(--accent);
 }
 .delta.down {
   color: #c9463d;
 }
 .app[data-theme="dark"] .delta.up {
-  color: #4fd68a;
+  color: #d7b377;
 }
 .note {
   font-size: 12px;

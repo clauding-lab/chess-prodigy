@@ -4,14 +4,14 @@
 
 A chess coach you can play in your browser. Practise against three engine strengths, explore opening plans, ask for a hint and review your moves. Play as a guest or create an account to keep your progress across devices.
 
-![Chess Prodigy with the wooden board](docs/verification/public-desktop.png)
+![Chess Prodigy with the dark board](docs/verification/public-desktop.png)
 
 ## Features
 
 - Custom chess engine with Casual, Club and Strong levels; calculations run separately so the board stays responsive.
 - 185 opening lines and 27 coaching cards, move explanations, hints and game review.
 - Untimed games or 5, 10 and 15+10 minute clocks, with promotion, castling, en passant and draw detection.
-- Wooden and dark boards, keyboard controls, sound and mobile layouts.
+- Dark board by default, an optional wooden board, keyboard controls, sound and mobile layouts.
 - Optional name, email and password accounts with private game records, saved position, practice rating and preferences.
 - An in-app leaderboard of player names and practice ratings, after one rated game.
 - Guest play works offline after the first successful online load. Updates wait until the active game finishes.

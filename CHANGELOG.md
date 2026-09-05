@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.1] — 2026-09-05 (BDT)
+
+- Dark board is now the default for new guest and account sessions. Saved theme choices are preserved.
+- Replaced green accents with muted gold on the dark board and warm brown on the wooden board; win markers use slate.
+- Updated the app icons, loading screen and installed-app colours to match.
+
 ## [1.0.0] — 2026-09-05 (BDT)
 
 First public release of Chess Prodigy.
@@ -32,3 +38,5 @@ First public release of Chess Prodigy.
 - Physical Android/iOS installation and performance checks remain pending. Daily backups are stored on the same server until a separate backup destination is provisioned.
 
 [1.0.0]: https://github.com/clauding-lab/chess-prodigy/releases/tag/v1.0.0
+
+[1.0.1]: https://github.com/clauding-lab/chess-prodigy/releases/tag/v1.0.1
