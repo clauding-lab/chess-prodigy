@@ -1,0 +1,31 @@
+[Unit]
+Description=Chess Prodigy web app and private accounts
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=chess-prodigy
+Group=chess-prodigy
+WorkingDirectory=/opt/chess-prodigy/current
+EnvironmentFile=/etc/chess-prodigy.env
+ExecStart=/usr/bin/node --import tsx server/index.ts
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=20
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/chess-prodigy
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+CapabilityBoundingSet=
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily Chess Prodigy database backup at 04:15 BDT
+
+[Timer]
+OnCalendar=*-*-* 04:15:00 Asia/Dhaka
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,54 @@
+# Hosting and database operations
+
+The application serves both its built frontend and account API on one origin. Production is https://chess.clauding-lab.com. Node binds to loopback port 4317; a Cloudflare Tunnel forwards the hostname to that port. Do not expose the origin port publicly.
+
+## Configuration
+
+| Variable | Meaning |
+| --- | --- |
+| `BASE_URL` | Exact public origin, including HTTPS; locally `http://127.0.0.1:4317` |
+| `PORT` | Loopback HTTP port; default 4317 |
+| `DATABASE_PATH` | SQLite database path; keep outside release code |
+| `AUTH_SECRET` | Random persistent secret, at least 32 characters |
+| `NODE_ENV` | `production` on the server |
+
+Generate a secret with `openssl rand -hex 48`. Store it only in the protected environment file; do not paste it into a terminal command argument, commit it, or regenerate it on each release. The application refuses to start without a usable secret. Local `npm start` reads `.env`; systemd injects `/etc/chess-prodigy.env` (root-owned, mode 0600).
+
+For local frontend work, build once and start the server on 4317. Run `npm run dev` for the Vite frontend. Authentication must use the origin configured in `BASE_URL`; when using the frontend development address, set `BASE_URL=http://127.0.0.1:5173` and restart the API. Vite proxies `/api` to port 4317. The default frontend-only mode still permits guest play.
+
+## Layout and service
+
+- `/opt/chess-prodigy/releases/<release>`: immutable code and built frontend, installed with `npm ci` on the target OS. Do not copy macOS `node_modules` to Linux.
+- `/opt/chess-prodigy/current`: symlink to the active release.
+- `/var/lib/chess-prodigy/chess.sqlite`: private database, owned by the isolated `chess-prodigy` service account. Parent mode 0700.
+- `/etc/chess-prodigy.env`: root-owned configuration and secret, mode 0600.
+- `chess-prodigy.service`: starts the app as its own unprivileged user, with code read-only and database directory writable.
+
+Install the service unit from this directory into `/etc/systemd/system/`, run `systemctl daemon-reload`, then `systemctl enable --now chess-prodigy`. The service expects Node at `/usr/bin/node` and installed `tsx` in the release. Production installs currently include development dependencies because the service runs TypeScript directly.
+
+Add a tunnel ingress entry **before its catch-all**:
+
+```yaml
+- hostname: chess.clauding-lab.com
+  service: http://127.0.0.1:4317
+```
+
+Preserve all existing hostname routes. Validate the tunnel configuration, create the hostname's DNS route using the tunnel credentials, then restart the tunnel connector. Do not disable authentication on unrelated hostnames. This app's hostname is public; private record routes authenticate their own users.
+
+## Verify and update
+
+Check `/api/health`, an actual guest game, registration/login/logout, account restore and `/api/leaderboard` over HTTPS. API responses must have `Cache-Control: no-store`; private paths must not be service-worker-cached. Check `systemctl status chess-prodigy` and recent journal errors without printing user records or secrets.
+
+Build and test each release before switching `current`. Back up the database first, install the new directory, switch the symlink, restart only `chess-prodigy`, then verify HTTPS. Keep the previous release for rollback. Better Auth's schema migrations run during startup. Do not roll back across an incompatible schema migration without a reviewed database recovery plan.
+
+## Backups and recovery
+
+Install `chess-prodigy-backup.service` and `.timer`, then enable the timer. It runs at approximately **04:15 BDT** daily and retains the latest 14 copies under `/var/lib/chess-prodigy/backups`. `backup.mjs` uses SQLite's consistent online backup API, including committed write-ahead-log contents. Copying only the live `.sqlite` file can miss recent writes.
+
+These are local recovery copies, not off-server disaster recovery. Copy backups to a separately secured destination when one is provisioned; they contain private data and must never enter Git or public file storage.
+
+Before a release, run `systemctl start chess-prodigy-backup` and confirm success. To restore, an operator must stop the app, preserve the current database and its `-wal`/`-shm` companions in a protected recovery folder, place the selected backup at `DATABASE_PATH` with owner `chess-prodigy` and mode 0600, then restart and verify. Restoring discards writes newer than the backup, so choose the restore point deliberately. Do not copy stale WAL files alongside a restored backup.
+
+## Account limitations
+
+Email addresses are unverified login identifiers. No email sender or automated forgotten-password recovery is configured. Do not reset a password based only on someone claiming an email address. Users can change their password while authenticated. Public leaderboard fields are display name, practice rating and rated-game count; email and individual games remain private. Ratings are personal practice metrics and are not cheat-proof competitive scores.
