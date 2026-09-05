@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 
 export const GLYPH = { k: "♚︎", q: "♛︎", r: "♜︎", b: "♝︎", n: "♞︎", p: "♟︎" } as const;
 const FILES = "abcdefgh";
@@ -25,6 +25,7 @@ export interface BoardProps {
   onSquare(square: number): void;
   onEscape?(): void;
   disabled?: boolean;
+  ply?: number;
 }
 
 function squareName(square: number) {
@@ -49,10 +50,44 @@ export function Board({
   onSquare,
   onEscape,
   disabled = false,
+  ply = 0,
 }: BoardProps) {
   const initial = flipped ? 63 : 0;
   const [focusSquare, setFocusSquare] = useState(initial);
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
+  const previous = useRef({ board, flipped, ply });
+  useLayoutEffect(() => {
+    const before = previous.current;
+    previous.current = { board, flipped, ply };
+    if (before.flipped !== flipped || ply !== before.ply + 1 || !lastMove) return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    const moves = [{ from: lastMove.from, to: lastMove.to }];
+    // Castling moves the rook as well as the king.
+    if (before.board[lastMove.from]?.[1] === "k" && Math.abs(lastMove.to - lastMove.from) === 2) {
+      const kingside = lastMove.to > lastMove.from;
+      moves.push({
+        from: lastMove.from + (kingside ? 3 : -4),
+        to: lastMove.from + (kingside ? 1 : -1),
+      });
+    }
+    const animations: Animation[] = [];
+    for (const move of moves) {
+      const from = refs.current[move.from]?.getBoundingClientRect();
+      const to = refs.current[move.to]?.getBoundingClientRect();
+      const piece = refs.current[move.to]?.querySelector<HTMLElement>(".pc");
+      if (!from || !to || !piece?.animate) continue;
+      animations.push(
+        piece.animate(
+          [
+            { transform: `translate(${from.left - to.left}px, ${from.top - to.top}px)` },
+            { transform: "translate(0, 0)" },
+          ],
+          { duration: 350, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+        ),
+      );
+    }
+    return () => animations.forEach((animation) => animation.cancel());
+  }, [board, flipped, ply, lastMove]);
 
   useEffect(
     () => setFocusSquare((current) => (current >= 0 && current < 64 ? current : initial)),

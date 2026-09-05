@@ -39,7 +39,7 @@ Machine-generated logs remain local and are excluded from the public repository.
 
 ## Remaining limitations
 
-- Physical Android/iOS installation and performance remain unverified; mobile emulation is not a real device.
+- Owner reported physical phone verification passed on 5 September 2026 BDT. Device model, operating system and installation-specific results were not separately recorded; this is owner-reported use, not a claim that both Android and iOS were independently tested.
 - Email is an unverified login identifier; automated email recovery is unavailable. Password changes require a signed-in session.
 - Practice ratings are not independently verified competitive scores.
 - Account history retains 200 completed games. Guest history is not automatically imported. Use one playing tab at a time; conflicts are detected rather than live-mirrored.
@@ -51,10 +51,32 @@ Verified at **chess.clauding-lab.com on 5 September 2026 BDT**: registration wit
 
 HTTP redirects to the fixed HTTPS address. Unauthenticated private-record requests return 401 with no-store headers. The isolated service is active, and its first consistent database backup succeeded with private 0600 file permissions. The daily timer is enabled for approximately 04:15 BDT.
 
-Live screenshots: [desktop wood](public-desktop.png), [mobile dark](public-mobile.png). Physical phone verification remains pending.
+Live v1.0.1 screenshots: [desktop dark](public-desktop.png), [mobile dark](public-mobile.png). Owner subsequently reported successful phone verification on 5 September 2026 BDT.
 
 ## v1.0.1 — dark default and neutral accents
 
 New guest and account sessions default to the dark board; previously saved theme choices remain valid. Green controls, highlights, positive markers and icon backgrounds have been replaced with muted gold, warm brown or slate. Startup and installed-app colours match the dark default.
 
 Verified: 175 unit/integration tests, 37 browser checks (3 duplicate mobile cases skipped), typecheck/lint/format/build, and Lighthouse accessibility **100/100 for both themes**. Default dark and explicitly saved wooden preferences are covered by the existing reload tests. The public screenshots show the updated dark appearance.
+
+## v1.1.0 — patient movement and richer coaching
+
+Verified on 5 September 2026 BDT:
+
+- **183 unit/integration tests** across 18 files; typecheck, lint, formatting and production build pass.
+- **41 browser checks pass**, with 3 deliberate duplicate-mobile skips. Coverage includes real piece movement, reduced motion, earlier coaching stories through play, saved-game reload and new-game clearing.
+- Lighthouse accessibility **100/100 in both themes**. The expanded opening story additionally has no WCAG 2 A/AA or WCAG 2.1 AA violations in axe checks in either theme. An unrestricted supplemental axe scan reports the existing page-heading/landmark best-practice suggestions outside that WCAG scope.
+- Castling animates both pieces. Unit checks cover the one-second minimum reply, no extra wait for a longer calculation, cancellation on undo/resignation/new game, and animation cancellation on unmount. Existing elapsed-time and timeout checks remain passing.
+- All 185 preserved opening lines resolve to one of **37 opening-family contexts**. All **27 motif categories** have expanded sourced lessons. Original opening/motif source records remain unchanged. See [editorial scope](coaching-sources.md).
+- Desktop coach reading is height-bounded and scrollable; phone reading uses page scrolling. [Desktop reading](desktop-coaching.png) and [phone reading](mobile-coaching.png) were visually inspected.
+- White knight icons use the charcoal background. Manifest icons return HTTP 200 with correct 192/512 dimensions; browser and Apple icons reference the new `knight-*` filenames.
+- Independent code review approved timing, animation, history, icon references and the account test correction. TypeScript review found no lifecycle defect; the intentional displayed-prose replacement is recorded in VISION.md.
+
+The prior failing GitHub run **33976332941** was investigated using its downloaded
+trace: `guestBefore` was `null` before asynchronous account/guest initialization,
+while the post-signout value was a fresh empty guest session. Adding 400 ms of
+account-lookup latency reproduced that exact failure on a disposable local
+database. The test now waits for the setup dialog and initialized guest save before
+taking its baseline. The strict full-save equality assertion is unchanged, and the
+full browser suite passes with that latency retained. Production account/storage
+code was not changed for this test race.

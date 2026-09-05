@@ -245,6 +245,8 @@ export default function App({
         <PlayerBar color={top} />
         <div className="boardwrap">
           <Board
+            key={game.id}
+            ply={game.hist.length}
             board={game.st.board}
             checkedKing={checkedKing}
             disabled={gameApi.thinking || !!game.over || game.st.turn !== playerColor}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { bookLookup } from "../book/book";
 import { MOTIFS } from "../coach/motifs";
+import { MOTIF_STORIES, openingStory } from "../coach/stories";
 import type { Color } from "../engine/types";
 import type { Game } from "../game/types";
 import { Card } from "./Card";
@@ -33,21 +34,25 @@ export function CoachPanel({
   onHint(): void;
   onReview(): void;
 }) {
-  const [openCard, setOpenCard] = useState<string | null>(null);
+  const [cards, setCards] = useState<Record<string, boolean>>({});
+  const isOpen = (key: string, initial = false) => cards[`${game.id}:${key}`] ?? initial;
+  const toggle = (key: string, initial = false) =>
+    setCards((previous) => ({
+      ...previous,
+      [`${game.id}:${key}`]: !(previous[`${game.id}:${key}`] ?? initial),
+    }));
   const ply = game.hist.length,
     book = bookLookup(game.hist.map((e) => e.san));
   const current = game.evals[ply] ?? (ply > 0 ? game.evals[ply - 1] : null);
   const pct = current
     ? 100 / (1 + Math.exp(-Math.max(-3000, Math.min(3000, current.score)) / 350))
     : 50;
-  const last = ply ? game.hist[ply - 1] : null,
-    prev = ply > 1 ? game.hist[ply - 2] : null;
-  const feed = [
-    ...(last ? last.motifs.map((m) => ({ ...m, ply })) : []),
-    ...(prev ? prev.motifs.map((m) => ({ ...m, ply: ply - 1 })) : []),
-  ].slice(0, 4);
+  const last = ply ? game.hist[ply - 1] : null;
+  const feed = game.hist.flatMap((entry, index) =>
+    entry.motifs.map((m) => ({ ...m, ply: index + 1 })),
+  );
   return (
-    <section className="panel" aria-labelledby="coach-title">
+    <section className="panel coach-panel" aria-labelledby="coach-title">
       <div className="coach-head">
         <span className="ttl" id="coach-title">
           COACH
@@ -73,55 +78,73 @@ export function CoachPanel({
             </div>
             <div className="val">{current ? fmtEval(current.score) : "…"}</div>
           </div>
-          <div className="opening">
-            {book.info ? (
-              <>
-                <div>
-                  <span className="name">{book.info.name}</span>
-                  <span className="eco">{book.info.eco}</span>
-                </div>
+          <div
+            className="coach-reading"
+            role="region"
+            aria-label="Opening and coaching history"
+            tabIndex={0}
+          >
+            <div className="opening">
+              {book.info ? (
+                <>
+                  <div>
+                    <span className="name">{book.info.name}</span>
+                    <span className="eco">{book.info.eco}</span>
+                  </div>
+                  <div className="state">
+                    {book.inBook
+                      ? ply === 0
+                        ? "Book position"
+                        : "Still in book"
+                      : `Left the book at move ${Math.ceil((book.leftAt ?? 0) / 2)}`}
+                  </div>
+                  <Card
+                    title="About this opening"
+                    kind="lineage"
+                    origin={book.info.origin}
+                    plan={book.info.plan}
+                    story={openingStory(game.hist.map((e) => e.san))}
+                    open={isOpen("opening", true)}
+                    onToggle={() => toggle("opening", true)}
+                  />
+                </>
+              ) : (
                 <div className="state">
-                  {book.inBook
-                    ? ply === 0
-                      ? "Book position"
-                      : "Still in book"
-                    : `Left the book at move ${Math.ceil((book.leftAt ?? 0) / 2)}`}
+                  {ply === 0
+                    ? "Play a move to see the opening."
+                    : book.inBook
+                      ? "In book, no named line yet."
+                      : "Out of the book; no named opening matched."}
                 </div>
-                <Card
-                  title="About this opening"
-                  kind="lineage"
-                  origin={book.info.origin}
-                  plan={book.info.plan}
-                  open={openCard === "opening"}
-                  onToggle={() => setOpenCard(openCard === "opening" ? null : "opening")}
-                />
+              )}
+            </div>
+            {feed.length > 0 && (
+              <>
+                <h3 className="history-title">Moves & ideas</h3>
+                <p className="history-note">
+                  Your game’s stories stay here. Historical examples illustrate an idea; they do not
+                  prove a move is best.
+                </p>
               </>
-            ) : (
-              <div className="state">
-                {ply === 0
-                  ? "Play a move to see the opening."
-                  : book.inBook
-                    ? "In book, no named line yet."
-                    : "Out of the book; no named opening matched."}
-              </div>
             )}
+            {feed.map((m, i) => {
+              const card = MOTIFS[m.key],
+                key = `${m.key}${m.ply}`;
+              return (
+                <Card
+                  key={`${key}-${i}`}
+                  title={`${moveLabel(m.ply - 1)} ${game.hist[m.ply - 1].san} · ${card.name}`}
+                  kind={card.kind}
+                  detail={m.detail}
+                  origin={card.origin}
+                  plan={card.plan}
+                  story={MOTIF_STORIES[m.key]}
+                  open={isOpen(key)}
+                  onToggle={() => toggle(key)}
+                />
+              );
+            })}
           </div>
-          {feed.map((m, i) => {
-            const card = MOTIFS[m.key],
-              key = `${m.key}${m.ply}`;
-            return (
-              <Card
-                key={`${key}-${i}`}
-                title={`${moveLabel(m.ply - 1)} ${game.hist[m.ply - 1].san} · ${card.name}`}
-                kind={card.kind}
-                detail={m.detail}
-                origin={card.origin}
-                plan={card.plan}
-                open={openCard === key}
-                onToggle={() => setOpenCard(openCard === key ? null : key)}
-              />
-            );
-          })}
           {last?.better && last.before.turn === playerColor && (
             <div className="card static">
               <span className="ct">

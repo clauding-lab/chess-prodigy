@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.0] — 2026-09-05 (BDT)
+
+- Engine replies take at least one second, with a gentle 350-millisecond piece slide. Castling moves both pieces; reduced-motion preferences disable the slide.
+- Expanded opening-family histories and all 27 move-idea lessons include historical connections, practical plans, counterplay and further-reading links.
+- Coaching history retains earlier move stories throughout the game and reconstructs them from the saved game on reopening. Cards expand independently; the opening starts expanded.
+- New white knight icon on the charcoal dark-mode background, including browser and installed-app icons.
+- Corrected an automated account-isolation test that sampled the guest save before initialization. A delayed-start regression preserves the strict before/after comparison.
+- Owner reported successful physical phone verification; device and installation details were not separately recorded.
+
 ## [1.0.1] — 2026-09-05 (BDT)
 
 - Dark board is now the default for new guest and account sessions. Saved theme choices are preserved.

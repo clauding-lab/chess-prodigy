@@ -62,8 +62,17 @@ test("account records restore on another session while guest play stays isolated
   await expect(page.getByText("Saved to account", { exact: true }).first()).toBeVisible();
 
   const other = await browser.newContext();
+  // A slow initial account lookup must not make an uninitialized guest save our baseline.
+  await other.route("**/api/auth/get-session", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    await route.continue();
+  });
   const second = await other.newPage();
   await second.goto("/");
+  await expect(second.getByRole("dialog", { name: "New game" })).toBeVisible();
+  await expect
+    .poll(() => second.evaluate(() => localStorage.getItem("chess-prodigy-state-v1")))
+    .not.toBeNull();
   const guestBefore = await second.evaluate(() => localStorage.getItem("chess-prodigy-state-v1"));
   await second
     .getByRole("dialog", { name: "New game" })

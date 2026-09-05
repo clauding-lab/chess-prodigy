@@ -27,6 +27,7 @@ Chess coach with optional private accounts and a public hosted application. Read
 
 ## Landmines
 - Preserve all 185 opening lines and 27 coaching cards/prose. Content changes require owner review.
+- On 5 September 2026 BDT the owner approved expanded sourced stories in `src/coach/stories.ts` and `openingStories.ts`, retaining the original records while superseding displayed motif prose. Keep historical examples distinct from inventorship claims and position evaluation. Match opening-family stories by move prefix; preserve full-game coaching history and safe cancellation of the minimum reply delay.
 - Original prototype never overrides the eight approved corrections.
 - Use elapsed wall-clock time; reject moves after game end; tag/cancel asynchronous work by game identity and revision.
 - Evaluation scores use White's perspective; search internals use side-to-move perspective.

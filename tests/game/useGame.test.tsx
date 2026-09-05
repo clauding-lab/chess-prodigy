@@ -31,6 +31,52 @@ beforeEach(() => {
   fake.sound.mockClear();
 });
 afterEach(() => vi.useRealTimers());
+it("holds a ready engine reply for a second while the engine clock keeps running", async () => {
+  vi.useFakeTimers();
+  const { result } = renderHook(() => useGame(false), { wrapper: StrictMode });
+  act(() => result.current.startGame({ playerColor: "w", level: "club", time: "5+0" }));
+  act(() => result.current.move(legalMoves(result.current.game.st)[0]));
+  const job = fake.jobs.filter((j) => j.input.type === "ai").at(-1)!;
+  await act(async () =>
+    job.resolve({ move: legalMoves(job.input.position)[0], score: 0, book: true }),
+  );
+  await act(async () => vi.advanceTimersByTimeAsync(999));
+  expect(result.current.game.hist).toHaveLength(1);
+  expect(result.current.thinking).toBe(true);
+  expect(result.current.game.clocks!.b).toBeLessThan(300000);
+  await act(async () => vi.advanceTimersByTimeAsync(1));
+  expect(result.current.game.hist).toHaveLength(2);
+});
+
+it.each(["undo", "resign", "new"])("cancels a ready but delayed reply on %s", async (action) => {
+  vi.useFakeTimers();
+  const { result } = renderHook(() => useGame(false));
+  act(() => result.current.move(legalMoves(result.current.game.st)[0]));
+  const job = fake.jobs.filter((j) => j.input.type === "ai").at(-1)!;
+  await act(async () =>
+    job.resolve({ move: legalMoves(job.input.position)[0], score: 0, book: false }),
+  );
+  expect(result.current.game.hist).toHaveLength(1);
+  act(() => {
+    if (action === "new")
+      result.current.startGame({ playerColor: "w", level: "club", time: "none" });
+    else result.current[action as "undo" | "resign"]();
+  });
+  const length = result.current.game.hist.length;
+  await act(async () => vi.advanceTimersByTimeAsync(1500));
+  expect(result.current.game.hist).toHaveLength(length);
+});
+it("does not add a second wait when the engine calculation already took longer", async () => {
+  vi.useFakeTimers();
+  const { result } = renderHook(() => useGame(false));
+  act(() => result.current.move(legalMoves(result.current.game.st)[0]));
+  const job = fake.jobs.filter((j) => j.input.type === "ai").at(-1)!;
+  await act(async () => vi.advanceTimersByTimeAsync(1500));
+  await act(async () =>
+    job.resolve({ move: legalMoves(job.input.position)[0], score: 0, book: false }),
+  );
+  expect(result.current.game.hist).toHaveLength(2);
+});
 it("plays via background calculation, saves transitions and ignores a replaced game response", async () => {
   const { result } = renderHook(() => useGame(false));
   act(() => result.current.move(legalMoves(result.current.game.st)[0]));

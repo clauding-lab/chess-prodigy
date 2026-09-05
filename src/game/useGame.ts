@@ -40,6 +40,7 @@ export function useGame(paused: boolean, storage: GameStorageAdapter = defaultSt
   const [retry, setRetry] = useState(0);
   const client = useRef<EngineClient | null>(null);
   const generation = useRef(0);
+  const cancelDelay = useRef<(() => void) | null>(null);
   const busy = useRef<"ai" | "hint" | "review" | "passive" | null>(null);
   const mounted = useRef(false);
   const persist = useCallback(
@@ -54,6 +55,8 @@ export function useGame(paused: boolean, storage: GameStorageAdapter = defaultSt
   );
   const invalidateWork = useCallback(() => {
     generation.current++;
+    cancelDelay.current?.();
+    cancelDelay.current = null;
     client.current?.cancel();
     busy.current = null;
   }, []);
@@ -169,6 +172,7 @@ export function useGame(paused: boolean, storage: GameStorageAdapter = defaultSt
     setThinking(ai);
     const run = async () => {
       if (ai) {
+        const readyAt = Date.now() + 1000;
         const result = await client.current!.request({
           type: "ai",
           gameId: g.id,
@@ -180,6 +184,20 @@ export function useGame(paused: boolean, storage: GameStorageAdapter = defaultSt
         if (!mounted.current || generation.current !== token) return;
         if (!result.move || !legalMoves(g.st).some((m) => sameMove(m, result.move!)))
           throw new Error("Engine returned no legal move. Please retry.");
+        const remaining = readyAt - Date.now();
+        if (remaining > 0) {
+          await new Promise<void>((resolve) => {
+            const timer = window.setTimeout(() => {
+              cancelDelay.current = null;
+              resolve();
+            }, remaining);
+            cancelDelay.current = () => {
+              window.clearTimeout(timer);
+              resolve();
+            };
+          });
+        }
+        if (!mounted.current || generation.current !== token) return;
         // AI scores describe the position it faced, already from White's perspective.
         if (result.score !== null)
           dispatch({

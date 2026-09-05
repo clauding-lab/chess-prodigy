@@ -10,8 +10,11 @@ A chess coach you can play in your browser. Practise against three engine streng
 
 - Custom chess engine with Casual, Club and Strong levels; calculations run separately so the board stays responsive.
 - 185 opening lines and 27 coaching cards, move explanations, hints and game review.
+- Richer opening and move stories with historical connections, counterplay and further-reading links. Earlier move stories stay in a scrollable coaching history and return with the saved game.
+- A one-second minimum engine reply time and smooth piece movement, with reduced-motion support.
 - Untimed games or 5, 10 and 15+10 minute clocks, with promotion, castling, en passant and draw detection.
 - Dark board by default, an optional wooden board, keyboard controls, sound and mobile layouts.
+- White knight app icon on the dark charcoal background.
 - Optional name, email and password accounts with private game records, saved position, practice rating and preferences.
 - An in-app leaderboard of player names and practice ratings, after one rated game.
 - Guest play works offline after the first successful online load. Updates wait until the active game finishes.
@@ -31,6 +34,8 @@ The rating is a **personal practice rating**, not an official FIDE rating. Hints
 Choose a colour, strength and time control, then **Start**. Click a piece and its destination, or use the keyboard: Tab enters the board, arrow keys navigate, Enter/Space selects and moves, Escape deselects.
 
 The clock starts after the first move and keeps running while the page is hidden or closed. Starting another game abandons an unfinished rated game as a loss. **Copy FEN** copies the current board position; it is not a full game backup.
+
+Expand a move under **Moves & ideas** to read its story without closing the opening explanation. The stories illustrate recognized chess ideas; they do not claim every move is sound or reproduce a famous game. Story text works offline; external reading links need a connection. See the [editorial scope and sources](docs/verification/coaching-sources.md).
 
 Clearing browser data removes local guest progress and unsynchronized changes. An unreadable save is preserved until you explicitly choose **Enable saving** to replace it. Use one playing tab at a time; conflicts are detected but boards do not update live between devices.
 
