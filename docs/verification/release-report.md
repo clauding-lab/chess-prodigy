@@ -97,3 +97,9 @@ The local server tests initially returned impossible 501/non-HTTP responses. A c
 Notification delivery uses private Brevo and VAPID settings. Provider acceptance does not guarantee inbox/device delivery. Browser push permission and physical-device delivery require enabling alerts on the device; emulation does not establish that. Email remains an unverified login identifier and password recovery is unchanged. Daily sending/retry limits are documented in the deployment runbook. The app does not issue official FIDE ratings.
 
 Final full browser suite: **47 passed**, with three deliberately skipped duplicate-mobile cases. Production dependency audit: zero known vulnerabilities.
+
+### Live deployment
+
+Release **v1.2.0**, code commit `413cbab29f469d3a8959a60e3294d32e7bed724d`, is deployed at https://chess.clauding-lab.com. GitHub verification and secret-scan jobs passed in [run 34043952499](https://github.com/clauding-lab/chess-prodigy/actions/runs/34043952499). The Linux target independently passed 212 tests, typecheck and production build before switching the release symlink. Database backup completed successfully first; the prior v1.1.0 release is retained.
+
+Live verification covered two owned test accounts, invitation acceptance after login, moves from both sides, reload, and notification configuration. The durable game-start email job reached `sent` after Brevo accepted the request. That proves provider acceptance, not inbox receipt. Device push is configured; actual delivery to a physical device awaits that device's explicit opt-in. Both owned test accounts and their single match were removed in a guarded transaction after verification; no real player records were changed. No ten-minute wait or clock manipulation was performed against production.
