@@ -17,3 +17,5 @@ Use Conventional Commits and BDT. No force pushes, skipped hooks or destructive 
 ## Approved expansion — 6 September 2026 BDT
 
 The owner approved the complete invitation-multiplayer design and all implementation/release actions: registered-user 1v1, Brevo email plus optional push, one reminder per overdue turn, separate 1v1 Elo, H2H and name editing. The FIDE Rating display heading carries an explicit unofficial computer-practice qualifier. Practice mathematics remain unchanged. See docs/superpowers/specs/2026-09-06-invite-multiplayer-design.md. No paid service was authorized; use existing Brevo capacity. This supersedes the earlier no-email-delivery boundary.
+
+On 7 September 2026 BDT the owner approved a top H2H tab for signed-in players after their first completed human match, listing lifetime wins, draws and losses per opponent. Each matchup remains accessible to its two participants only.

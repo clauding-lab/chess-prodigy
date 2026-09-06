@@ -9,6 +9,7 @@ test("invitation survives registration and human moves update both boards and H2
   const signup = await page.request.post("/api/auth/sign-up/email", { data: { name: "Adnan", email: `adnan-${suffix}@example.com`, password: "correct horse battery staple" }, headers: { Origin: "http://127.0.0.1:4318" } });
   expect(signup.ok()).toBeTruthy();
   await page.goto("/games");
+  await expect(page.getByRole("button", { name: "H2H", exact: true })).toHaveCount(0);
   await page.getByLabel("Your colour").selectOption("w");
   await page.getByRole("button", { name: "Create invitation" }).click();
   const link = await page.getByLabel("Invitation link").inputValue();
@@ -40,17 +41,32 @@ test("invitation survives registration and human moves update both boards and H2
     await expect(page.getByText("Your turn", { exact: true })).toBeVisible({ timeout: 10000 });
     await page.reload();
     await expect(page.getByRole("button", { name: "e5, black pawn", exact: true })).toBeVisible();
+    await other.getByRole("button", { name: "My games", exact: true }).click();
     await page.getByRole("button", { name: "Resign", exact: true }).click();
     await page.getByRole("dialog").getByRole("button", { name: "Resign", exact: true }).click();
     await expect(page.getByText("Adnan 0–1 Sayem", { exact: false })).toBeVisible();
     await expect(page.getByText(/1184/).first()).toBeVisible();
+    await page.getByRole("button", { name: "H2H", exact: true }).click();
+    const history = page.getByRole("dialog", { name: "Head to head", exact: true });
+    await expect(history.getByRole("columnheader")).toHaveText(["Opponent", "Your wins", "Draws", "Your losses"]);
+    await expect(history.getByRole("row").nth(1).getByRole("cell")).toHaveText(["Sayem", "0", "0", "1"]);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    expect((await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()).violations).toEqual([]);
+    await page.keyboard.press("Escape");
+    await other.getByRole("button", { name: "H2H", exact: true }).click();
+    await expect(other.getByRole("dialog", { name: "Head to head", exact: true }).getByRole("row").nth(1).getByRole("cell")).toHaveText(["Adnan", "1", "0", "0"]);
+    await other.keyboard.press("Escape");
     await page.getByRole("button", { name: "Adnan", exact: true }).click();
     await page.getByRole("button", { name: "Edit name" }).click();
     await page.getByLabel("Display name").fill("Adnan Rashid");
     await page.getByRole("button", { name: "Save name" }).click();
     await expect(page.getByRole("dialog", { name: "Adnan Rashid", exact: true })).toBeVisible();
-    await page.keyboard.press("Escape");
+    await page.getByRole("dialog", { name: "Adnan Rashid", exact: true }).press("Escape");
     await expect(page.getByText("Adnan Rashid 0–1 Sayem", { exact: false })).toBeVisible();
+    await page.getByRole("button", { name: "Adnan Rashid", exact: true }).click();
+    await page.getByRole("button", { name: "Sign out", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Sign in or register" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "H2H", exact: true })).toHaveCount(0);
   } finally { await second.close(); }
 });
 

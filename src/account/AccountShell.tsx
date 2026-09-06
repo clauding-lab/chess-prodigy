@@ -8,6 +8,7 @@ import { AccountModal, AuthModal, LeaderboardModal } from "./AccountModals";
 import { AccountSync, type AccountSyncStatus } from "./sync";
 import type { AccountUser, RecordsEnvelope } from "./types";
 import { Multiplayer } from "../multiplayer/Multiplayer";
+import { HeadToHeadModal, useHeadToHead } from "../multiplayer/HeadToHead";
 import { detachDevicePush, reconcileDevicePush } from "../multiplayer/notifications";
 
 type Boot =
@@ -53,6 +54,11 @@ export function AccountShell() {
   const [accountOpen, setAccountOpen] = useState(false);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [syncStatus, setSyncStatus] = useState<AccountSyncStatus | null>(null);
+  const [h2hOpenFor, setH2hOpenFor] = useState<string | null>(null);
+  const h2hUserId =
+    boot.kind === "account" && syncStatus?.state !== "signed-out" ? boot.user.id : null;
+  const { history: h2hHistory, refresh: refreshH2h } = useHeadToHead(h2hUserId, path);
+  const hasH2h = !!h2hHistory?.opponents.length;
 
   useEffect(() => {
     let active = true;
@@ -204,6 +210,17 @@ export function AccountShell() {
       <button className="linkbtn" onClick={() => setLeaderboardOpen(true)}>
         Leaderboard
       </button>
+      {hasH2h && (
+        <button
+          className="linkbtn"
+          onClick={() => {
+            setH2hOpenFor(h2hUserId);
+            refreshH2h();
+          }}
+        >
+          H2H
+        </button>
+      )}
       <button className="linkbtn" onClick={() => navigate("/games")}>
         Play a friend
       </button>
@@ -260,6 +277,7 @@ export function AccountShell() {
           navigate={navigate}
           controls={controls}
           onSignIn={() => setAuthOpen(true)}
+          onCompletedGame={refreshH2h}
         />
       )}
       {authOpen && (
@@ -290,6 +308,13 @@ export function AccountShell() {
         />
       )}
       {leaderboardOpen && <LeaderboardModal onClose={() => setLeaderboardOpen(false)} />}
+      {hasH2h && h2hHistory && h2hOpenFor === h2hUserId && (
+        <HeadToHeadModal
+          history={h2hHistory}
+          onClose={() => setH2hOpenFor(null)}
+          onRetry={refreshH2h}
+        />
+      )}
       {conflict && (
         <Modal
           title="Progress changed on another device"

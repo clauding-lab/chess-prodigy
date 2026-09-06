@@ -16,6 +16,8 @@ Human games are untimed. Brevo email and optional device push alert the inviter 
 
 The existing **FIDE Rating** heading is always qualified as **Unofficial · computer practice**. It is neither an official FIDE rating nor a calibrated estimate. The two rating categories have separate leaderboard tabs.
 
+After your first completed 1v1 game, **H2H** appears in the top bar. Open it to see each opponent and your lifetime wins, draws and losses. Both participants can see their shared results; other players cannot access that matchup's history.
+
 ## Features
 
 - Custom chess engine with Casual, Club and Strong levels; calculations run separately so the board stays responsive.

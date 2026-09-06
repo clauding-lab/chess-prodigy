@@ -188,6 +188,19 @@ body:has(.app[data-theme="dark"]) [data-modal-root] {
 .conflict-modal {
   width: min(92vw, 460px);
 }
+.h2h-table {
+  table-layout: fixed;
+}
+.h2h-table th:first-child {
+  width: 40%;
+}
+.h2h-table td:first-child {
+  overflow-wrap: anywhere;
+}
+.h2h-table th:nth-child(n + 2),
+.h2h-table td:nth-child(n + 2) {
+  text-align: right;
+}
 .account-auth-error {
   text-align: center;
 }

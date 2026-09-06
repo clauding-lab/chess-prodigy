@@ -21,12 +21,14 @@ export function Multiplayer({
   navigate,
   controls,
   onSignIn,
+  onCompletedGame,
 }: {
   user: AccountUser | null;
   path: string;
   navigate(path: string): void;
   controls: ReactNode;
   onSignIn(): void;
+  onCompletedGame?(): void;
 }) {
   const [list, setList] = useState<MultiplayerList | null>(null);
   const [game, setGame] = useState<MultiplayerGame | null>(null);
@@ -50,6 +52,13 @@ export function Multiplayer({
   const id = path.startsWith("/game/") ? path.slice(6) : null;
   const token = path.startsWith("/invite/") ? path.slice(8) : null;
   const userId = user?.id;
+  useEffect(() => {
+    if (game?.status === "completed") onCompletedGame?.();
+  }, [game?.id, game?.status, onCompletedGame]);
+  const completedGames = list?.rating.games ?? 0;
+  useEffect(() => {
+    if (completedGames > 0) onCompletedGame?.();
+  }, [completedGames, onCompletedGame]);
   const scope = `${userId}:${path}`;
   const currentScope = useRef(scope);
   currentScope.current = scope;

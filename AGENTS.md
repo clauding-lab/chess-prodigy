@@ -63,3 +63,4 @@ Chess coach with optional private accounts and a public hosted application. Read
 - Reconcile push ownership before opening another account or confirmed guest session. Browser unsubscribe failures block switching; never show one account while retaining another account’s subscription.
 - `public/push-handler.js` extends Workbox; preserve explicit updates and offline practice. Tests never send real email/push.
 - Production notification worker starts only with ApplicationOptions.notifications; await application.close() before database removal/shutdown when it is enabled.
+- On 7 September 2026 BDT the owner approved a top H2H tab after the first completed 1v1 game. Reuse lifetime participant-only records; both opponents see their shared results, unrelated players do not. Refresh eligibility after completion in the board or lobby; discard stale account responses.
