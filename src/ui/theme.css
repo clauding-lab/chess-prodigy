@@ -945,3 +945,107 @@ body:has(.app[data-theme="dark"]) .seg .btn.on,
 body:has(.app[data-theme="dark"]) .modal .btn.primary {
   color: #101218;
 }
+
+/* Friend matches reuse the board, type and palette of computer practice. */
+.multiplayer h1 {
+  font-size: 1.7rem;
+  margin: 1.4rem 0;
+}
+.mp-lobby {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 20px;
+}
+.mp-lobby .panel,
+.mp-intro,
+.mp-coach-note {
+  padding: 24px;
+}
+.mp-lobby h2,
+.mp-intro h2 {
+  font-size: 1.15rem;
+  margin: 0 0 14px;
+}
+.mp-lobby p,
+.mp-intro p,
+.mp-coach-note p {
+  line-height: 1.65;
+}
+.mp-lobby label,
+.mp-intro label {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0;
+}
+.mp-intro input,
+.mp-lobby select {
+  font: inherit;
+  width: 100%;
+  min-width: 0;
+  padding: 10px;
+  color: inherit;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+}
+.mp-matches {
+  list-style: none;
+  padding: 0;
+}
+.mp-matches li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--panel-border);
+}
+.mp-matches button {
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+.mp-matches span {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+.mp-score {
+  font-size: 1.1rem;
+  padding: 14px 0;
+  overflow-wrap: anywhere;
+}
+.multiplayer .playerbar {
+  overflow-wrap: anywhere;
+}
+.account-ratings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+@media (max-width: 700px) {
+  .mp-lobby {
+    grid-template-columns: 1fr;
+  }
+  .mp-lobby .panel,
+  .mp-intro,
+  .mp-coach-note {
+    padding: 18px;
+  }
+}
+
+.mp-lobby,
+.mp-intro {
+  width: min(100%, 1050px);
+}
+.multiplayer select option {
+  background: #222630;
+  color: #eef1f5;
+}
+.background-game-notice {
+  padding: 12px 20px;
+  background: #302a20;
+  color: #f1dec1;
+  font:
+    14px/1.5 system-ui,
+    sans-serif;
+  text-align: center;
+}

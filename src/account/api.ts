@@ -10,7 +10,7 @@ export class ApiError extends Error {
   }
 }
 
-async function json<T>(url: string, init?: RequestInit): Promise<T> {
+export async function json<T>(url: string, init?: RequestInit): Promise<T> {
   const timeout = new AbortController();
   let timer = 0;
   const expired = new Promise<never>((_, reject) => {
@@ -73,6 +73,12 @@ export async function signIn(email: string, password: string) {
 const accountHeaders = (userId: string) => ({ "X-Chess-Account": userId });
 export const signOut = (userId: string) =>
   json("/api/auth/sign-out", { method: "POST", headers: accountHeaders(userId) });
+export const changeName = (userId: string, name: string) =>
+  json("/api/auth/update-user", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...accountHeaders(userId) },
+    body: JSON.stringify({ name: name.trim() }),
+  });
 export const changePassword = (userId: string, currentPassword: string, newPassword: string) =>
   json("/api/auth/change-password", {
     method: "POST",

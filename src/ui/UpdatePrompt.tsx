@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { useRegisterSW } from "virtual:pwa-register/react";
-export function UpdatePrompt({ active, save }: { active: boolean; save: () => boolean }) {
+export function UpdatePrompt({
+  active,
+  save,
+  offlineMessage = "Ready to play offline on this device.",
+}: {
+  active: boolean;
+  save: () => boolean;
+  offlineMessage?: string;
+}) {
   const [error, setError] = useState("");
   const {
     needRefresh: [needsUpdate, setNeedsUpdate],
@@ -47,7 +55,7 @@ export function UpdatePrompt({ active, save }: { active: boolean; save: () => bo
       )}
       {offlineReady && !needsUpdate && (
         <aside className="panel" aria-label="Offline ready">
-          <p>Ready to play offline on this device.</p>
+          <p>{offlineMessage}</p>
           <button className="btn" onClick={() => setOfflineReady(false)}>
             Got it
           </button>

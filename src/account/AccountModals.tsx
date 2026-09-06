@@ -1,6 +1,15 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Modal } from "../ui/Modal";
-import { changePassword, getLeaderboard, getRecords, signIn, signUp } from "./api";
+import {
+  changeName,
+  changePassword,
+  getLeaderboard,
+  getRecords,
+  json,
+  signIn,
+  signUp,
+} from "./api";
+import { listGames } from "../multiplayer/api";
 import type { AccountUser, GameRecord, LeaderboardPlayer } from "./types";
 
 function ErrorMessage({ value }: { value: string }) {
@@ -53,8 +62,8 @@ export function AuthModal({
               <input name="name" required maxLength={80} autoComplete="name" />
             </label>
             <p className="form-note">
-              Your display name and practice rating will be public on the leaderboard. Your email
-              and games stay private.
+              Your display name, FIDE Rating (unofficial computer practice), 1v1 Rating and game
+              counts will be public on the leaderboards. Your email and games stay private.
             </p>
           </>
         )}
@@ -101,17 +110,36 @@ export function AccountModal({
   user,
   onClose,
   onSignOut,
+  onNameChanged,
 }: {
   user: AccountUser;
   onClose: () => void;
   onSignOut: () => Promise<void>;
+  onNameChanged?: (name: string) => void;
 }) {
   const [games, setGames] = useState<GameRecord[] | null>(null);
   const [error, setError] = useState("");
   const [passwordOpen, setPasswordOpen] = useState(false);
+  const [nameOpen, setNameOpen] = useState(false);
+  const [savingName, setSavingName] = useState(false);
+  const [ratings, setRatings] = useState<{ practice: number; human: number; games: number } | null>(
+    null,
+  );
   useEffect(() => {
     void getRecords(user.id)
-      .then((value) => setGames(value.games))
+      .then(async (value) => {
+        setGames(value.games);
+        try {
+          const multiplayer = await listGames(user.id);
+          setRatings({
+            practice: value.snapshot?.rating.rating ?? 1400,
+            human: multiplayer.rating.rating,
+            games: multiplayer.rating.games,
+          });
+        } catch {
+          /* Private game records remain available if multiplayer is offline. */
+        }
+      })
       .catch((reason) => setError(reason.message));
   }, [user.id]);
   async function password(event: FormEvent<HTMLFormElement>) {
@@ -128,7 +156,27 @@ export function AccountModal({
   return (
     <Modal title={user.name} onClose={onClose} className="account-modal">
       <p className="form-note">{user.email} · private</p>
+      {ratings && (
+        <div className="account-ratings">
+          <p>
+            FIDE Rating: <b>{Math.round(ratings.practice)}</b>
+            <br />
+            <span className="quiet">Unofficial · computer practice</span>
+          </p>
+          <p>
+            1v1 Rating: <b>{Math.round(ratings.human)}</b>
+            <br />
+            <span className="quiet">
+              {ratings.games < 10 ? "Provisional · " : ""}
+              {ratings.games} game{ratings.games === 1 ? "" : "s"}
+            </span>
+          </p>
+        </div>
+      )}
       <div className="account-actions">
+        <button className="btn" onClick={() => setNameOpen(!nameOpen)}>
+          Edit name
+        </button>
         <button className="btn" onClick={() => setPasswordOpen(!passwordOpen)}>
           Change password
         </button>
@@ -139,6 +187,44 @@ export function AccountModal({
           Sign out
         </button>
       </div>
+      {nameOpen && (
+        <form
+          className="account-form compact"
+          onSubmit={async (event) => {
+            event.preventDefault();
+            const name = String(new FormData(event.currentTarget).get("name")).trim();
+            setSavingName(true);
+            setError("");
+            try {
+              await changeName(user.id, name);
+              onNameChanged?.(name);
+              setNameOpen(false);
+            } catch (reason) {
+              setError(reason instanceof Error ? reason.message : "Name could not be saved.");
+            } finally {
+              setSavingName(false);
+            }
+          }}
+        >
+          <label>
+            Display name
+            <input name="name" defaultValue={user.name} minLength={1} maxLength={80} required />
+          </label>
+          <div className="controls">
+            <button className="btn primary" disabled={savingName}>
+              Save name
+            </button>
+            <button
+              className="btn"
+              type="button"
+              disabled={savingName}
+              onClick={() => setNameOpen(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
       {passwordOpen && (
         <form className="account-form compact" onSubmit={password}>
           <label>
@@ -180,26 +266,55 @@ export function AccountModal({
 }
 
 export function LeaderboardModal({ onClose }: { onClose: () => void }) {
+  const [tab, setTab] = useState<"practice" | "human">("practice");
+  const [attempt, setAttempt] = useState(0);
   const [players, setPlayers] = useState<LeaderboardPlayer[] | null>(null);
   const [error, setError] = useState("");
-  const load = () => {
+  useEffect(() => {
+    let active = true;
     setError("");
     setPlayers(null);
-    void getLeaderboard()
-      .then(setPlayers)
-      .catch((reason) => setError(reason.message));
-  };
-  useEffect(load, []);
+    void (
+      tab === "practice"
+        ? getLeaderboard()
+        : json<{ players: LeaderboardPlayer[] }>("/api/multiplayer/leaderboard").then(
+            (result) => result.players,
+          )
+    )
+      .then((value) => {
+        if (active) setPlayers(value);
+      })
+      .catch((reason) => {
+        if (active) setError(reason.message);
+      });
+    return () => {
+      active = false;
+    };
+  }, [tab, attempt]);
   return (
-    <Modal title="Practice leaderboard" onClose={onClose} className="account-modal">
+    <Modal title="Leaderboard" onClose={onClose} className="account-modal">
+      <div className="controls" role="group" aria-label="Rating category">
+        <button
+          className="btn"
+          aria-pressed={tab === "practice"}
+          onClick={() => setTab("practice")}
+        >
+          FIDE Rating
+        </button>
+        <button className="btn" aria-pressed={tab === "human"} onClick={() => setTab("human")}>
+          1v1 Rating
+        </button>
+      </div>
       <p className="form-note">
-        Practice ratings reflect games against this coach, not verified competitive play.
+        {tab === "practice"
+          ? "Unofficial · computer practice. This app does not issue official FIDE ratings or calibrated FIDE estimates."
+          : "Community Elo from completed human matches. Provisional for your first 10 games."}
       </p>
       {players === null && !error && <p className="quiet">Loading…</p>}
       {error && (
         <>
           <ErrorMessage value={error} />
-          <button className="btn" onClick={load}>
+          <button className="btn" onClick={() => setAttempt((value) => value + 1)}>
             Try again
           </button>
         </>

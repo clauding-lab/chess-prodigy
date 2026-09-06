@@ -52,3 +52,18 @@ Before a release, run `systemctl start chess-prodigy-backup` and confirm success
 ## Account limitations
 
 Email addresses are unverified login identifiers. No email sender or automated forgotten-password recovery is configured. Do not reset a password based only on someone claiming an email address. Users can change their password while authenticated. Public leaderboard fields are display name, practice rating and rated-game count; email and individual games remain private. Ratings are personal practice metrics and are not cheat-proof competitive scores.
+
+## Multiplayer notification configuration
+
+v1.2.0 adds private `mp_*` and `notification_*` tables on startup. These are additive; a rollback to 1.1.0 leaves multiplayer records intact but temporarily hides the feature and stops alerts. Never restore an older database merely to roll back code: that would discard new games.
+
+Set in `/etc/chess-prodigy.env`, outside release directories:
+
+- `BREVO_API_KEY`, `BREVO_SENDER_EMAIL`, optional `BREVO_SENDER_NAME` (Chess Prodigy).
+- `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` (a sender contact URL or mailto address).
+
+Generate push keys once with `web-push.generateVAPIDKeys()` and preserve them across releases. Rotating them requires devices to subscribe again. Missing channel configuration disables that channel and is reported honestly in My games. The active sender and Brevo account must have available sending capacity; shared account limits also cover other projects. No paid upgrade is automatic.
+
+The worker scans every 15 seconds; reminders are eligible after ten minutes. Delivery gets four bounded attempts; old-turn reminders are discarded before dispatch. Limits are 20 email attempts/address/day and 250/day from this app. Provider acceptance is not proof of inbox delivery. A crash after external acceptance can produce a duplicate retry; no exactly-once external-delivery guarantee is made. A notification already handed to a provider cannot be recalled after a move.
+
+Check aggregate `notification_jobs` counts grouped by status for pending/sent/failed/limited jobs. Do not print recipient or subscription records in public logs. Push opt-in is per device. Expired subscriptions are deleted on provider 404/410; account switching unsubscribes mismatched device ownership before showing the new account.

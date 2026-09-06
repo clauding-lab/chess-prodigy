@@ -15,7 +15,13 @@ if (!Number.isSafeInteger(port) || port < 1 || port > 65_535)
   throw new Error("PORT must be a valid TCP port.");
 
 await mkdir(dirname(databasePath), { recursive: true });
-const application = await createApplication({ databasePath, baseURL, secret, staticDir: "dist" });
+const application = await createApplication({
+  databasePath,
+  baseURL,
+  secret,
+  staticDir: "dist",
+  notifications: true,
+});
 const server = createServer(application.app);
 
 server.listen(port, "127.0.0.1", () => {
@@ -23,8 +29,8 @@ server.listen(port, "127.0.0.1", () => {
 });
 
 function shutdown(): void {
-  server.close(() => {
-    application.close();
+  server.close(async () => {
+    await application.close();
     process.exit(0);
   });
 }

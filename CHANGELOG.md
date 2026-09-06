@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.0] — 2026-09-06 (BDT)
+
+- Registered-player invitation links, resumable untimed 1v1 games, private match lists, resignation and agreed draws.
+- Separate 1v1 Elo, lifetime H2H win/draw scores, two leaderboard categories and account name editing.
+- Practice heading renamed FIDE Rating with a permanent unofficial computer-practice qualifier; calculation unchanged.
+- Brevo game-start emails and one reminder per overdue turn, plus optional device push notifications. Private durable jobs survive restarts; stale reminders are discarded.
+- Push subscriptions are detached before account changes, including expired sessions and guest reloads.
+- Audio activation waits for browser permission; enabling sound plays a test tone, and muting cancels pending sounds.
+
+
 ## [1.1.0] — 2026-09-05 (BDT)
 
 - Engine replies take at least one second, with a gentle 350-millisecond piece slide. Castling moves both pieces; reduced-motion preferences disable the slide.

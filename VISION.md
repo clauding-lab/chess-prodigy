@@ -13,3 +13,7 @@ No new paid services, replacement engine, changed practice-rating policy or publ
 Release checks cover rules, accounts and owner isolation, saved-state validation, cross-device write conflicts, reload-safe rating and game state, keyboard controls, offline guest reopening and safe updates. The owner reported successful physical phone verification on 5 September 2026 BDT; the specific device/OS and installation steps were not recorded separately.
 
 Use Conventional Commits and BDT. No force pushes, skipped hooks or destructive operations without explicit sign-off. Further routine fixes may proceed within the authorized scope; broader product or data-use changes need a separately described owner decision.
+
+## Approved expansion — 6 September 2026 BDT
+
+The owner approved the complete invitation-multiplayer design and all implementation/release actions: registered-user 1v1, Brevo email plus optional push, one reminder per overdue turn, separate 1v1 Elo, H2H and name editing. The FIDE Rating display heading carries an explicit unofficial computer-practice qualifier. Practice mathematics remain unchanged. See docs/superpowers/specs/2026-09-06-invite-multiplayer-design.md. No paid service was authorized; use existing Brevo capacity. This supersedes the earlier no-email-delivery boundary.

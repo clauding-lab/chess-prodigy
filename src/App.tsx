@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { inCheck, kingSq, legalMoves, toFEN } from "./engine/board";
 import type { Color, Move } from "./engine/types";
 import { VAL } from "./engine/eval";
@@ -18,6 +18,7 @@ import {
 } from "./ui/Modals";
 import { RatingPanel } from "./ui/RatingPanel";
 import { UpdatePrompt } from "./ui/UpdatePrompt";
+import { activateSound, playSound, silenceSound } from "./game/sound";
 import "./ui/theme.css";
 
 function fmtClock(ms: number) {
@@ -30,14 +31,25 @@ export default function App({
   storage,
   accountControls,
   accountNotice,
+  suspended = false,
 }: {
   storage?: GameStorageAdapter;
   accountControls?: ReactNode;
   accountNotice?: ReactNode;
+  suspended?: boolean;
 } = {}) {
   const [showSetup, setShowSetup] = useState<boolean | null>(null);
-  const gameApi = useGame(showSetup === true, storage);
+  const gameApi = useGame(!suspended && showSetup === true, storage, suspended);
   const { game, rating, preferences } = gameApi;
+  const soundReady = useRef(false);
+  soundReady.current = preferences.sound && !suspended;
+  useEffect(
+    () => () => {
+      soundReady.current = false;
+      silenceSound();
+    },
+    [],
+  );
   const [draft, setDraft] = useState<SetupDraft>({
     color: game.setup.playerColor,
     level: game.setup.level,
@@ -237,8 +249,23 @@ export default function App({
         ? "Your move"
         : "";
   const resultKey = game.over ? `${game.id}:${game.revision}` : null;
+  if (suspended)
+    return game.clocks && game.started && !game.over ? (
+      <aside className="background-game-notice" role="status">
+        Your timed computer game is still running. Return to Computer practice to make your move.
+      </aside>
+    ) : null;
   return (
-    <div className="app" data-theme={preferences.theme}>
+    <div
+      className="app"
+      data-theme={preferences.theme}
+      onPointerDownCapture={() => {
+        if (preferences.sound) void activateSound();
+      }}
+      onKeyDownCapture={() => {
+        if (preferences.sound) void activateSound();
+      }}
+    >
       <div className="title">Chess Prodigy</div>
       {accountControls}
       <main className="stage">
@@ -304,7 +331,20 @@ export default function App({
           </button>
           <button
             className="btn"
-            onClick={() => gameApi.setPreferences({ sound: !preferences.sound })}
+            onClick={() => {
+              const enabled = !preferences.sound;
+              gameApi.setPreferences({ sound: enabled });
+              if (!enabled) silenceSound();
+              else
+                void activateSound().then((ready) => {
+                  if (!soundReady.current) return;
+                  if (ready) playSound("move", true);
+                  else
+                    setToast(
+                      "Audio could not start. Tap Sound off, then enable it again. Check device volume.",
+                    );
+                });
+            }}
             type="button"
           >
             {preferences.sound ? "Sound on" : "Sound off"}

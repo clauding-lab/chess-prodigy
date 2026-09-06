@@ -3,14 +3,13 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { gzipSync } from "node:zlib";
-import { once } from "node:events";
 import type { AddressInfo } from "node:net";
 import Database from "better-sqlite3";
 import request, { type SuperAgentTest } from "supertest";
 import { afterEach, describe, expect, it } from "vitest";
 import { freshSession, reduceSession } from "../../src/game/state";
 import { legalMoves, sqIndex } from "../../src/engine/board";
-import { createApplication } from "../../server/app";
+import { createTestApplication as createApplication } from "./http-fixture";
 
 const BASE_URL = "http://127.0.0.1:4317";
 const SECRET = "test-secret-with-at-least-thirty-two-characters";
@@ -110,7 +109,7 @@ describe("private account records", () => {
       expect(own.body.snapshot).toBeNull();
       expect(own.body.version).toBe(0);
     } finally {
-      application.close();
+      await application.close();
     }
   });
   it("redirects public HTTP traffic to the configured HTTPS origin", async () => {
@@ -133,7 +132,7 @@ describe("private account records", () => {
         .expect(200)
         .expect("Strict-Transport-Security", "max-age=31536000");
     } finally {
-      application.close();
+      await application.close();
     }
   });
   it("requires a real session for private reads", async () => {
@@ -147,7 +146,7 @@ describe("private account records", () => {
       .get("/api/records")
       .expect(401)
       .expect("Cache-Control", /no-store/);
-    application.close();
+    await application.close();
   });
 
   it("registers, signs out, signs in, and stores only a password hash", async () => {
@@ -186,7 +185,7 @@ describe("private account records", () => {
     sqlite.close();
     expect(rows).toHaveLength(1);
     expect(rows[0].password).not.toContain("correct horse battery staple");
-    application.close();
+    await application.close();
   });
 
   it("enforces account field bounds and production secure cookies", async () => {
@@ -218,7 +217,7 @@ describe("private account records", () => {
       .expect(200);
     expect(response.headers["set-cookie"].join(";")).toMatch(/Secure/i);
     expect(response.headers["set-cookie"].join(";")).toMatch(/SameSite=Lax/i);
-    application.close();
+    await application.close();
   });
 
   it("accepts bounded compressed authentication bodies after decoding", async () => {
@@ -228,8 +227,7 @@ describe("private account records", () => {
       baseURL: BASE_URL,
       secret: SECRET,
     });
-    const server = application.app.listen(0, "127.0.0.1");
-    await once(server, "listening");
+    const server = application.app;
     try {
       const body = gzipSync(
         JSON.stringify({
@@ -255,7 +253,7 @@ describe("private account records", () => {
     } finally {
       server.closeAllConnections();
       await new Promise<void>((resolve) => server.close(() => resolve()));
-      application.close();
+      await application.close();
     }
   });
 
@@ -277,7 +275,7 @@ describe("private account records", () => {
       })
       .expect(413);
     await request(application.app).get("/api/leaderboard").expect(200, { players: [] });
-    application.close();
+    await application.close();
   });
 
   it("rejects cross-origin writes, malformed snapshots, and stale versions", async () => {
@@ -310,7 +308,7 @@ describe("private account records", () => {
       .set("Origin", BASE_URL)
       .send({ expectedVersion: 0, snapshot })
       .expect(409);
-    application.close();
+    await application.close();
   });
 
   it("archives completed games idempotently and removes only the undone current game", async () => {
@@ -351,7 +349,7 @@ describe("private account records", () => {
       .send({ expectedVersion: 2, snapshot: undone })
       .expect(200);
     expect(afterUndo.body.games).toEqual([]);
-    application.close();
+    await application.close();
   });
 
   it("isolates owners and restores records after reopening the database", async () => {
@@ -371,7 +369,7 @@ describe("private account records", () => {
       .expect(200);
     const other = await second.get("/api/records").expect(200);
     expect(other.body).toEqual({ version: 0, snapshot: null, games: [], updatedAt: null });
-    application.close();
+    await application.close();
 
     application = await createApplication({
       databasePath: database.path,
@@ -389,7 +387,7 @@ describe("private account records", () => {
     expect(records.body.version).toBe(1);
     expect(records.body.snapshot.game.id).toBe("private-game");
     expect(records.body.games).toHaveLength(1);
-    application.close();
+    await application.close();
   });
 
   it("rejects structurally excessive snapshots before replay", async () => {
@@ -421,7 +419,7 @@ describe("private account records", () => {
       .set("Origin", BASE_URL)
       .send({ expectedVersion: 0, snapshot: invalidTimestamp })
       .expect(400);
-    application.close();
+    await application.close();
   });
 
   it("publishes only eligible display names and practice ratings in ranked order", async () => {
@@ -461,7 +459,7 @@ describe("private account records", () => {
       ),
     ).toBe(true);
     expect(JSON.stringify(response.body)).not.toContain("@example.com");
-    application.close();
+    await application.close();
   });
 
   it("persists a bounded records request rate", async () => {
@@ -474,6 +472,6 @@ describe("private account records", () => {
     const agent = await signedUpAgent(application.app, "limited@example.com");
     for (let count = 0; count < 60; count++) await agent.get("/api/records").expect(200);
     await agent.get("/api/records").expect(429).expect("Retry-After", /\d+/);
-    application.close();
+    await application.close();
   });
 });

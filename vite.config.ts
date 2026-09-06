@@ -29,6 +29,7 @@ export default defineConfig({
         ],
       },
       workbox: {
+        importScripts: ["/push-handler.js"],
         globPatterns: ["**/*.{js,css,html,png,svg,woff2}"],
         navigateFallbackDenylist: [/^\/verification\//, /^\/api\//],
       },

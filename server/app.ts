@@ -6,17 +6,21 @@ import express, { type Express } from "express";
 import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
 import { createAuth } from "./auth.js";
 import { createRecordsRouter, readLeaderboard } from "./records.js";
+import { createMultiplayerRouter } from "./multiplayer.js";
+import { createNotificationDelivery } from "./notification-delivery.js";
+import { createNotificationsRouter, createNotificationWorker } from "./notifications.js";
 
 export interface ApplicationOptions {
   databasePath: string;
   baseURL: string;
   secret: string;
   staticDir?: string;
+  notifications?: boolean;
 }
 
 export interface Application {
   app: Express;
-  close: () => void;
+  close: () => void | Promise<void>;
 }
 
 export async function createApplication(options: ApplicationOptions): Promise<Application> {
@@ -100,6 +104,16 @@ export async function createApplication(options: ApplicationOptions): Promise<Ap
     app.get("/api/health", (_request, response) => response.json({ status: "ok" }));
     app.get("/api/leaderboard", (_request, response) => response.json(readLeaderboard(database)));
     app.use("/api/records", createRecordsRouter(database, auth, options.baseURL));
+    app.use("/api/multiplayer", createMultiplayerRouter(database, auth, options.baseURL));
+    const delivery = createNotificationDelivery(
+      options.baseURL,
+      options.notifications ? process.env : {},
+    );
+    app.use(
+      "/api/notifications",
+      createNotificationsRouter(database, auth, options.baseURL, delivery),
+    );
+    const notifications = createNotificationWorker(database, delivery);
     app.use("/api", (_request, response) =>
       response.status(404).json({ error: "API route not found." }),
     );
@@ -150,7 +164,17 @@ export async function createApplication(options: ApplicationOptions): Promise<Ap
         response.status(500).json({ error: "Internal server error." });
       },
     );
-    return { app, close: () => database.close() };
+    if (options.notifications) notifications.start();
+    return {
+      app,
+      close: () => {
+        if (options.notifications)
+          return notifications.stop().then(() => {
+            database.close();
+          });
+        database.close();
+      },
+    };
   } catch (error) {
     database.close();
     throw error;

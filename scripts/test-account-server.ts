@@ -18,8 +18,8 @@ let closing = false;
 function close() {
   if (closing) return;
   closing = true;
-  server.close(() => {
-    application.close();
+  server.close(async () => {
+    await application.close();
     void rm(directory, { recursive: true, force: true }).then(() => process.exit(0));
   });
   server.closeAllConnections();

@@ -6,6 +6,16 @@ A chess coach you can play in your browser. Practise against three engine streng
 
 [![Chess Prodigy — dark board, three engine strengths, 185 opening lines, 27 coaching cards, hints and game review, accounts and saved progress, practice leaderboard, and offline guest play](docs/verification/hero-banner.png)](https://chess.clauding-lab.com)
 
+## Play a friend
+
+Registered players can open **Play a friend**, choose a colour and share a private invitation link. The recipient signs in or registers and joins automatically. Invitations accept one opponent and expire after seven days. **My games** lists ongoing and completed matches; either player can leave and resume later.
+
+Human games are untimed. Brevo email and optional device push alert the inviter when the opponent joins, then remind the player to move once after ten minutes. Notification preferences live in My games. Push needs permission on each device; iPhone/iPad users must add the app to the Home Screen first. Delivery depends on provider/device availability, with bounded retries and abuse limits.
+
+**1v1 Rating** starts at 1200 and uses Elo with K=32; the first ten games are provisional. Completed results update both players once. **H2H** tracks lifetime wins against each opponent, with draws shown separately. No hints or takebacks during human matches; coaching/review opens after the result. The account menu includes **Edit name**; changing a name preserves all records and ratings.
+
+The existing **FIDE Rating** heading is always qualified as **Unofficial · computer practice**. It is neither an official FIDE rating nor a calibrated estimate. The two rating categories have separate leaderboard tabs.
+
 ## Features
 
 - Custom chess engine with Casual, Club and Strong levels; calculations run separately so the board stays responsive.
@@ -23,7 +33,7 @@ A chess coach you can play in your browser. Practise against three engine streng
 
 Create an account from **Sign in**. Use an email address as your login ID and a password of 12–128 characters. Email addresses are not verified and automated forgotten-password recovery is not available; keep your password in a password manager. You can change it while signed in.
 
-Email addresses, game records and password hashes are stored privately on the server. Display names and practice ratings appear on the public leaderboard. Passwords are hashed by Better Auth; they are never stored as readable text. Session cookies are inaccessible to page scripts. The public repository contains source code, not the live database, secrets or player records.
+Email addresses, game records and password hashes are stored privately on the server. Display names, both app rating categories and game counts appear on public leaderboards; individual matches and H2H histories remain private to their participants. Passwords are hashed by Better Auth; they are never stored as readable text. Session cookies are inaccessible to page scripts. The public repository contains source code, not the live database, secrets or player records.
 
 Guest saves and account saves are separate. Signing in does not automatically import or replace a guest game. Accounts retain the most recent 200 completed games. Account progress saves locally first and then synchronizes with the server. If another device has newer progress, the app asks which copy to keep. Watch the save status before switching devices. Login and synchronization require an internet connection.
 
@@ -37,7 +47,7 @@ The clock starts after the first move and keeps running while the page is hidden
 
 Expand a move under **Moves & ideas** to read its story without closing the opening explanation. The stories illustrate recognized chess ideas; they do not claim every move is sound or reproduce a famous game. Story text works offline; external reading links need a connection. See the [editorial scope and sources](docs/verification/coaching-sources.md).
 
-Clearing browser data removes local guest progress and unsynchronized changes. An unreadable save is preserved until you explicitly choose **Enable saving** to replace it. Use one playing tab at a time; conflicts are detected but boards do not update live between devices.
+Clearing browser data removes local guest progress and unsynchronized changes. An unreadable save is preserved until you explicitly choose **Enable saving** to replace it. For computer practice, use one playing tab at a time; conflicting saves are detected. Human matches refresh automatically from the server and reject outdated moves.
 
 ## Run locally
 

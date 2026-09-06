@@ -17,8 +17,8 @@ export function RatingPanel({
             {Math.round(rating.rating)}
           </div>
           <div className="meta">
-            FIDE-style rating · {rating.games} game{rating.games === 1 ? "" : "s"} · peak{" "}
-            {Math.round(rating.peak)}
+            FIDE Rating · Unofficial · computer practice · {rating.games} game
+            {rating.games === 1 ? "" : "s"} · peak {Math.round(rating.peak)}
             {!saved && " · not saved on this device"}
           </div>
         </div>

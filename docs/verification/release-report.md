@@ -80,3 +80,20 @@ database. The test now waits for the setup dialog and initialized guest save bef
 taking its baseline. The strict full-save equality assertion is unchanged, and the
 full browser suite passes with that latency retained. Production account/storage
 code was not changed for this test race.
+
+## v1.2.0 — friend matches, notifications, ratings, and sound
+
+Verified on 6 September 2026 BDT:
+
+- 212 unit/integration tests across 23 files, including isolated real SQLite/auth flows, atomic 1v1 Elo/H2H completion, invite races, current-turn reminders, retry/restart handling, device ownership cleanup, and audio activation/cancellation.
+- Source typecheck, lint, formatting and production build pass. Staged-source Gitleaks scan found no secrets.
+- Desktop and mobile journeys cover invite→registration→join, both players moving, a deliberately delayed 3.5-second move across polling, reload, resignation, rating/H2H and name changes. A separate browser regression blocks account entry if the previous account's push subscription cannot be cancelled.
+- The friend board has zero selected WCAG 2 A/AA and 2.1 AA axe violations and no horizontal overflow at desktop/mobile sizes. Lighthouse scores 100 in both existing themes. Screenshots: [desktop 1v1](multiplayer-desktop.png), [mobile 1v1](multiplayer-mobile.png).
+- Browser Web Audio measurement observes a real waveform when sound is enabled and no subsequent move waveform after muting, in desktop and mobile-sized Chrome. This is not evidence of physical phone-speaker audibility.
+- Independent code, TypeScript and notification security reviews found no outstanding actionable issues after fixes for background timed-computer play, push account switching, polling continuation, invitation identity, draw-offer persistence and expired-invitation sorting.
+
+The local server tests initially returned impossible 501/non-HTTP responses. A controlled experiment reproduced an IPv6 wildcard listener sharing a numeric port with an unrelated explicit IPv4 service on macOS: the IPv4 request reached the unrelated service. Test fixtures now bind persistent listeners explicitly to 127.0.0.1 and await cleanup. A binding regression catches the old behavior. Production routes and request limits were not changed to accommodate tests.
+
+Notification delivery uses private Brevo and VAPID settings. Provider acceptance does not guarantee inbox/device delivery. Browser push permission and physical-device delivery require enabling alerts on the device; emulation does not establish that. Email remains an unverified login identifier and password recovery is unchanged. Daily sending/retry limits are documented in the deployment runbook. The app does not issue official FIDE ratings.
+
+Final full browser suite: **47 passed**, with three deliberately skipped duplicate-mobile cases. Production dependency audit: zero known vulnerabilities.

@@ -103,3 +103,30 @@ it("lets the player dismiss a result to inspect the final board", async () => {
   expect(screen.queryByRole("dialog")).toBe(null);
   expect(screen.getByText("Time out · 0-1")).toBeTruthy();
 });
+
+it("keeps timed computer replies running while the player views friend games", async () => {
+  vi.useFakeTimers();
+  const now = Date.now();
+  let session = freshSession(now, "background-timed");
+  session = reduceSession(session, {
+    type: "new",
+    setup: { playerColor: "w", level: "club", time: "5+0" },
+    now,
+    id: "background-timed",
+  });
+  session = reduceSession(session, {
+    type: "move",
+    move: legalMoves(session.game.st).find((m) => m.from === 52 && m.to === 36)!,
+    book: true,
+    now,
+  });
+  session = { ...session, game: { ...session.game, clocks: { w: 10000, b: 2500 } } };
+  localStorage.setItem("chess-prodigy-state-v1", JSON.stringify(session));
+  render(<App suspended />);
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(1500);
+  });
+  const saved = JSON.parse(localStorage.getItem("chess-prodigy-state-v1")!);
+  expect(saved.game.hist).toHaveLength(2);
+  expect(saved.game.over).toBeNull();
+});

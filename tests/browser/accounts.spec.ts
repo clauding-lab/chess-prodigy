@@ -97,7 +97,7 @@ test("account records restore on another session while guest play stays isolated
 
   await page.getByRole("button", { name: "View board" }).click();
   await page.getByRole("button", { name: "Leaderboard" }).first().click();
-  const leaderboard = page.getByRole("dialog", { name: "Practice leaderboard" });
+  const leaderboard = page.getByRole("dialog", { name: "Leaderboard" });
   await expect(leaderboard).toContainText(name);
   await expect(leaderboard).not.toContainText(email);
 });
@@ -110,7 +110,7 @@ test("registration explains public fields and rejects a short password", async (
     .click();
   await page.getByRole("button", { name: "Create an account" }).click();
   await expect(page.getByRole("dialog", { name: "Create account" })).toContainText(
-    "display name and practice rating will be public",
+    "1v1 Rating and game counts will be public",
   );
   await page.getByLabel("Display name").fill(`Bounds ${info.project.name}`);
   await page.getByLabel("Email").fill(`bounds-${info.project.name}-${Date.now()}@example.com`);

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import App from "../App";
 import { freshSession } from "../game/state";
 import type { GameStorageAdapter } from "../game/useGame";
@@ -7,6 +7,8 @@ import { ApiError, getAccountSession, getRecords, signOut } from "./api";
 import { AccountModal, AuthModal, LeaderboardModal } from "./AccountModals";
 import { AccountSync, type AccountSyncStatus } from "./sync";
 import type { AccountUser, RecordsEnvelope } from "./types";
+import { Multiplayer } from "../multiplayer/Multiplayer";
+import { detachDevicePush, reconcileDevicePush } from "../multiplayer/notifications";
 
 type Boot =
   | { kind: "loading" }
@@ -33,6 +35,18 @@ function invalidateAccountRequest(request: { current: number }) {
 }
 
 export function AccountShell() {
+  const [path, setPath] = useState(window.location.pathname);
+  const navigate = useCallback((next: string) => {
+    window.history.pushState(null, "", next);
+    setPath(next);
+  }, []);
+  useEffect(() => {
+    const pop = () => setPath(window.location.pathname);
+    window.addEventListener("popstate", pop);
+    return () => window.removeEventListener("popstate", pop);
+  }, []);
+  const multiplayerOpen =
+    path === "/games" || path.startsWith("/invite/") || path.startsWith("/game/");
   const accountRequest = useRef(0);
   const [boot, setBoot] = useState<Boot>({ kind: "loading" });
   const [authOpen, setAuthOpen] = useState(false);
@@ -46,6 +60,18 @@ export function AccountShell() {
       .then(async (user) => {
         if (!active) return;
         if (!user) {
+          try {
+            await reconcileDevicePush(null);
+          } catch {
+            if (active)
+              setBoot({
+                kind: "auth-error",
+                message:
+                  "Could not clear this device’s previous account alerts. Reconnect and sign in again.",
+              });
+            return;
+          }
+          if (!active) return;
           setBoot({ kind: "guest" });
           return;
         }
@@ -62,6 +88,18 @@ export function AccountShell() {
 
   async function openAccount(user: AccountUser) {
     const requestId = ++accountRequest.current;
+    try {
+      await reconcileDevicePush(user.id);
+    } catch {
+      if (requestId === accountRequest.current)
+        setBoot({
+          kind: "auth-error",
+          message:
+            "Could not clear this device’s previous account alerts. Reconnect and sign in again.",
+        });
+      return;
+    }
+    if (requestId !== accountRequest.current) return;
     let remote: RecordsEnvelope;
     let offline = false;
     try {
@@ -166,6 +204,9 @@ export function AccountShell() {
       <button className="linkbtn" onClick={() => setLeaderboardOpen(true)}>
         Leaderboard
       </button>
+      <button className="linkbtn" onClick={() => navigate("/games")}>
+        Play a friend
+      </button>
       <button
         className="linkbtn"
         onClick={() =>
@@ -186,6 +227,7 @@ export function AccountShell() {
       <App
         key={account ? `${account.user.id}:${account.mountKey}` : "guest"}
         storage={adapter}
+        suspended={multiplayerOpen}
         accountControls={controls}
         accountNotice={
           account && (syncStatus?.state === "offline" || syncStatus?.state === "error") ? (
@@ -210,6 +252,16 @@ export function AccountShell() {
           ) : null
         }
       />
+      {multiplayerOpen && (
+        <Multiplayer
+          key={account?.user.id ?? "guest"}
+          user={account?.user ?? null}
+          path={path}
+          navigate={navigate}
+          controls={controls}
+          onSignIn={() => setAuthOpen(true)}
+        />
+      )}
       {authOpen && (
         <AuthModal
           onClose={() => setAuthOpen(false)}
@@ -219,8 +271,16 @@ export function AccountShell() {
       {accountOpen && account && (
         <AccountModal
           user={account.user}
+          onNameChanged={(name) =>
+            setBoot((previous) =>
+              previous.kind === "account" && previous.user.id === account.user.id
+                ? { ...previous, user: { ...previous.user, name } }
+                : previous,
+            )
+          }
           onClose={() => setAccountOpen(false)}
           onSignOut={async () => {
+            await detachDevicePush(account.user.id);
             await signOut(account.user.id);
             invalidateAccountRequest(accountRequest);
             account.sync.dispose();

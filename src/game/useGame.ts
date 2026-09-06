@@ -26,7 +26,13 @@ const defaultStorage: GameStorageAdapter = {
   load: (now, fallbackId) => loadSavedState(browserStorage(), now, fallbackId),
   save: (session) => saveState(browserStorage(), session),
 };
-export function useGame(paused: boolean, storage: GameStorageAdapter = defaultStorage) {
+export function useGame(
+  paused: boolean,
+  storage: GameStorageAdapter = defaultStorage,
+  background = false,
+) {
+  const backgroundRef = useRef(background);
+  backgroundRef.current = background;
   const [initial] = useState(() => storage.load(Date.now(), newId()));
   const [session, setSession] = useState(initial.session);
   const current = useRef(session);
@@ -87,10 +93,10 @@ export function useGame(paused: boolean, storage: GameStorageAdapter = defaultSt
       if (action.type === "move" && next.game.hist.length > previous.game.hist.length)
         playSound(
           next.game.over ? "end" : next.game.hist.at(-1)?.mv.capture ? "capture" : "move",
-          next.preferences.sound,
+          next.preferences.sound && !backgroundRef.current,
         );
       else if (!previous.game.over && next.game.over && action.type !== "new")
-        playSound("end", next.preferences.sound);
+        playSound("end", next.preferences.sound && !backgroundRef.current);
       if (action.type !== "tick" || next.game.over !== previous.game.over) persist();
     },
     [invalidate, persist],
@@ -159,6 +165,7 @@ export function useGame(paused: boolean, storage: GameStorageAdapter = defaultSt
   useEffect(() => {
     if (
       paused ||
+      (background && !current.current.game.clocks) ||
       !client.current ||
       errorRef.current ||
       busy.current === "hint" ||
@@ -238,6 +245,7 @@ export function useGame(paused: boolean, storage: GameStorageAdapter = defaultSt
     game.revision,
     session.preferences.coach,
     paused,
+    background,
     retry,
     analyse,
     dispatch,
