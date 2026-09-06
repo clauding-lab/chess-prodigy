@@ -327,7 +327,6 @@ export function LeaderboardModal({ onClose }: { onClose: () => void }) {
               <th>Rank</th>
               <th>Player</th>
               <th>Rating</th>
-              <th>Games</th>
             </tr>
           </thead>
           <tbody>
@@ -336,7 +335,6 @@ export function LeaderboardModal({ onClose }: { onClose: () => void }) {
                 <td>{player.rank}</td>
                 <td>{player.name}</td>
                 <td>{Math.round(player.rating)}</td>
-                <td>{player.games}</td>
               </tr>
             ))}
           </tbody>
