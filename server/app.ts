@@ -104,7 +104,8 @@ export async function createApplication(options: ApplicationOptions): Promise<Ap
     app.get("/api/health", (_request, response) => response.json({ status: "ok" }));
     app.get("/api/leaderboard", (_request, response) => response.json(readLeaderboard(database)));
     app.use("/api/records", createRecordsRouter(database, auth, options.baseURL));
-    app.use("/api/multiplayer", createMultiplayerRouter(database, auth, options.baseURL));
+    const multiplayer = createMultiplayerRouter(database, auth, options.baseURL);
+    app.use("/api/multiplayer", multiplayer);
     const delivery = createNotificationDelivery(
       options.baseURL,
       options.notifications ? process.env : {},
@@ -168,6 +169,7 @@ export async function createApplication(options: ApplicationOptions): Promise<Ap
     return {
       app,
       close: () => {
+        multiplayer.closeChat();
         if (options.notifications)
           return notifications.stop().then(() => {
             database.close();

@@ -11,6 +11,8 @@ import type { MultiplayerGame, MultiplayerList, InviteColor, HeadToHead } from "
 import { CompletedReview } from "./Review";
 import { NotificationSettings } from "./NotificationSettings";
 import { UpdatePrompt } from "../ui/UpdatePrompt";
+import { Brand } from "../ui/Brand";
+import { Chat } from "./Chat";
 
 function h2h(name: string, score: HeadToHead) {
   return `${name} ${score.wins}–${score.losses} ${score.opponent.name} · ${score.draws} draw${score.draws === 1 ? "" : "s"}`;
@@ -220,7 +222,7 @@ export function Multiplayer({
         if (sound) void activateSound();
       }}
     >
-      <div className="title">Chess Prodigy</div>
+      <Brand />
       {controls}
       <nav className="controls" aria-label="Game modes">
         <button className="btn" onClick={() => navigate("/")}>
@@ -520,6 +522,7 @@ export function Multiplayer({
                       ))}
                     </div>
                   </section>
+                  <Chat key={`${user.id}:${game.id}`} userId={user.id} gameId={game.id} />
                   {game.review ? (
                     <CompletedReview game={game.review} color={game.yourColor ?? "w"} />
                   ) : (

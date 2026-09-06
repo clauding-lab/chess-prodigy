@@ -1,5 +1,14 @@
 # Chess Prodigy v1.0.0 release verification
 
+## 7 September 2026 BDT — H2H navigation, temporary chat and header
+
+- 219 unit/integration tests pass, including participant-only chat, text/emoji, typing expiry, departure clearing, delayed old-session requests and disconnection cleanup between timer ticks. Typecheck, lint, formatting and production build pass.
+- Full browser run: 45 passed, three intentional mobile skips, and two failures from the old title selector. Both failed checks pass after updating the selector to the new header. Both offline-reopen checks passed in this run; this does not establish the cause of the earlier intermittent CI failure.
+- Desktop/mobile journeys verify delivery, literal rendering of HTML-like text, typing, chat erasure after either participant leaves, and an empty transcript on returning. H2H eligibility refreshes on both the board and My games. Selected WCAG axe checks and overflow checks pass.
+- Chat and header visually inspected at mobile size; shared practice header is exercised in both themes. Existing knight assets and local serif fonts preserve offline availability.
+- Code and security reviews completed. New-message scrolling follows message identity at the 100-message cap; server presence expires at 25 seconds, leaving margin for cleanup and recipient polling. UI describes an approximate 30-second disconnection interval.
+- Chat is volatile process memory only. No schema migration or notification delivery changes. Application shutdown clears the store and timer; server restart loses all chat. Prior player records and ratings remain unchanged.
+
 The public-release scope includes named email/password accounts, private records, synchronized progress and a public name/practice-rating leaderboard. It builds on the [verified local chess candidate](local-candidate-report.md).
 
 ## Account and security checks

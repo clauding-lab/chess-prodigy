@@ -18,6 +18,8 @@ The existing **FIDE Rating** heading is always qualified as **Unofficial · comp
 
 After your first completed 1v1 game, **H2H** appears in the top bar. Open it to see each opponent and your lifetime wins, draws and losses. Both participants can see their shared results; other players cannot access that matchup's history.
 
+The match screen includes private **Chat** for text and emoji, with an animated typing indicator. Chat is temporary: leaving the match clears it for both players. Abrupt tab closures or lost connections clear after about 30 seconds. Messages are held only in server memory, never in saved games, database backups or browser storage, and disappear on a server restart. Images and attachments are not supported.
+
 ## Features
 
 - Custom chess engine with Casual, Club and Strong levels; calculations run separately so the board stays responsive.

@@ -10,7 +10,9 @@ import { sqIndex } from "../../src/engine/board";
 
 const origin = "http://localhost:4317";
 const databases: Database.Database[] = [];
+const closeChats: (() => void)[] = [];
 afterEach(() => {
+  closeChats.splice(0).forEach((close) => close());
   databases.splice(0).forEach((db) => db.close());
 });
 async function fixture() {
@@ -23,7 +25,9 @@ async function fixture() {
   });
   const router = express();
   router.use(express.json());
-  router.use("/mp", createMultiplayerRouter(db, auth, origin));
+  const multiplayer = createMultiplayerRouter(db, auth, origin);
+  closeChats.push(multiplayer.closeChat);
+  router.use("/mp", multiplayer);
   const app = await listenForTest(router);
   async function player(name: string) {
     const response = await auth.api.signUpEmail({
@@ -54,6 +58,32 @@ async function fixture() {
   return { db, app, a, b, c, game };
 }
 describe("authenticated human games", () => {
+  it("keeps chat participant-only, supports emoji and typing, and clears it when either player leaves", async () => {
+    const { a, b, c, game } = await fixture();
+    const g = await game();
+    const path = `/${g.id}/chat`;
+    const alice = { action: "join", clientId: "alice-chat-session" };
+    const bob = { action: "join", clientId: "bob-chat-session" };
+    await c.post(path, alice).expect(404);
+    const joined = (await a.post(path, alice).expect(200)).body;
+    await b.post(path, bob).expect(200);
+    const epoch = joined.epoch;
+    await a.post(path, { ...alice, action: "send", epoch, text: "Good luck! ♟️🙂" }).expect(200);
+    const received = (await b.post(path, { ...bob, action: "poll" }).expect(200)).body;
+    expect(received.messages).toEqual([
+      expect.objectContaining({ text: "Good luck! ♟️🙂", userId: a.id }),
+    ]);
+    await a.post(path, { ...alice, action: "typing", epoch, typing: true }).expect(200);
+    expect((await b.post(path, { ...bob, action: "poll" })).body.typing).toBe(true);
+    await a.post(path, { ...alice, action: "send", epoch, text: "x".repeat(1001) }).expect(400);
+    await a.post(path, { ...alice, action: "leave" }).expect(200);
+    const cleared = (await b.post(path, { ...bob, action: "poll" }).expect(200)).body;
+    expect(cleared.messages).toEqual([]);
+    expect(cleared.typing).toBe(false);
+    expect(cleared.epoch).not.toBe(epoch);
+    await a.post(path, { ...alice, action: "send", epoch, text: "late message" }).expect(409);
+    await a.post(path, alice).expect(409);
+  });
   it("requires authentication, protects tokens and participant data, validates turns and revisions", async () => {
     const { app, a, b, c } = await fixture();
     await request(app).get("/mp").expect(401);

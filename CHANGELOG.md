@@ -1,5 +1,12 @@
 # Changelog
 
+## Updates — 2026-09-07 (BDT)
+
+- H2H tab for signed-in players after their first completed human match, with lifetime participant-only results.
+- Temporary text/emoji chat in human matches, animated typing indicators, and automatic clearing when either player leaves or loses presence. No saved transcript or attachments.
+- Existing knight logo and left-aligned serif title in both game modes.
+- Removed game-count columns from both leaderboard tabs.
+
 ## [1.2.0] — 2026-09-06 (BDT)
 
 - Registered-player invitation links, resumable untimed 1v1 games, private match lists, resignation and agreed draws.

@@ -3,6 +3,7 @@ import type Database from "better-sqlite3";
 import { Router } from "express";
 import { fromNodeHeaders } from "better-auth/node";
 import type { ChessAuth } from "./auth.js";
+import { ChatError, EphemeralChat } from "./chat.js";
 import { freshGame, reduceGame } from "../src/game/state.js";
 import type { Game } from "../src/game/types.js";
 import type { Move } from "../src/engine/types.js";
@@ -76,6 +77,7 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
  CREATE TABLE IF NOT EXISTS mp_limits(user_id TEXT NOT NULL,bucket TEXT NOT NULL,window INTEGER NOT NULL,count INTEGER NOT NULL,PRIMARY KEY(user_id,bucket));
  `);
   const router = Router();
+  const chat = new EphemeralChat();
   const origin = new URL(baseURL).origin;
   const rating = (id: string): MultiplayerRating =>
     (db.prepare("SELECT rating,games FROM mp_ratings WHERE user_id=?").get(id) as
@@ -210,8 +212,9 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
       return;
     }
     res.locals.userId = session.user.id;
-    const bucket =
-      req.method === "GET"
+    const bucket = req.path.endsWith("/chat")
+      ? "chat"
+      : req.method === "GET"
         ? "read"
         : req.path === "/invites"
           ? "invite"
@@ -219,7 +222,16 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
             ? "join"
             : "action";
     const window = Math.floor(Date.now() / 60_000);
-    const maximum = bucket === "read" ? 180 : bucket === "invite" ? 5 : bucket === "join" ? 20 : 90;
+    const maximum =
+      bucket === "chat"
+        ? 120
+        : bucket === "read"
+          ? 180
+          : bucket === "invite"
+            ? 5
+            : bucket === "join"
+              ? 20
+              : 90;
     const count = db
       .prepare(
         "INSERT INTO mp_limits(user_id,bucket,window,count) VALUES(?,?,?,1) ON CONFLICT(user_id,bucket) DO UPDATE SET count=CASE WHEN window=excluded.window THEN count+1 ELSE 1 END,window=excluded.window RETURNING count",
@@ -321,6 +333,13 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
   router.get("/:id", (req, res) =>
     res.json(view(owned(req.params.id, res.locals.userId as string), res.locals.userId as string)),
   );
+  router.post("/:id/chat", (req, res) => {
+    const user = res.locals.userId as string;
+    const row = owned(req.params.id, user);
+    if (!row.white_id || !row.black_id || !["active", "completed"].includes(row.status))
+      fail(409, "Chat opens after your opponent joins.");
+    res.set("Cache-Control", "no-store").json(chat.request(row.id, user, req.body));
+  });
   for (const action of ["move", "resign", "draw", "cancel"] as const)
     router.post(`/:id/${action}`, (req, res) => {
       const user = res.locals.userId as string;
@@ -399,9 +418,10 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
       res: import("express").Response,
       next: import("express").NextFunction,
     ) => {
-      if (error instanceof RequestError) res.status(error.status).json({ error: error.message });
+      if (error instanceof RequestError || error instanceof ChatError)
+        res.status(error.status).json({ error: error.message });
       else next(error);
     },
   );
-  return router;
+  return Object.assign(router, { closeChat: () => chat.close() });
 }

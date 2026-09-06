@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Brand } from "./ui/Brand";
 import { inCheck, kingSq, legalMoves, toFEN } from "./engine/board";
 import type { Color, Move } from "./engine/types";
 import { VAL } from "./engine/eval";
@@ -266,7 +267,7 @@ export default function App({
         if (preferences.sound) void activateSound();
       }}
     >
-      <div className="title">Chess Prodigy</div>
+      <Brand />
       {accountControls}
       <main className="stage">
         <PlayerBar color={top} />

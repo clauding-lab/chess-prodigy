@@ -17,7 +17,8 @@ test("name, both themes, layout and legal play", async ({ page }, info) => {
   page.on("pageerror", e => errors.push(e.message));
   await expect(page).toHaveTitle("Chess Prodigy");
   await page.getByRole("button",{name:"Start",exact:true}).click();
-  await expect(page.locator(".title")).toHaveText("Chess Prodigy");
+  await expect(page.getByRole("banner")).toHaveText("Chess Prodigy");
+  await expect(page.getByRole("banner").locator("img")).toBeVisible();
   await expect(page.locator(".sq")).toHaveCount(64);
   await square(page,"e2").click();
   await expect(square(page,"e4").locator(".dot")).toBeVisible();
