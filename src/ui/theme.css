@@ -89,6 +89,7 @@ body:has(.app[data-theme="dark"]) [data-modal-root] {
 .brand {
   align-self: stretch;
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 10px;
   margin: 0 0 16px;

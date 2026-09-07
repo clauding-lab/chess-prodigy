@@ -20,4 +20,4 @@ The owner approved the complete invitation-multiplayer design and all implementa
 
 On 7 September 2026 BDT the owner approved a top H2H tab for signed-in players after their first completed human match, listing lifetime wins, draws and losses per opponent. Each matchup remains accessible to its two participants only.
 
-The owner also approved simple text/emoji chat within 1v1 matches with animated typing indicators. No images, attachments or persistent chat history; either player leaving clears both sides, with a short presence timeout for abrupt disconnections. The shared header uses the existing knight logo before a left-aligned Chess Prodigy wordmark in a distinctive serif font.
+The owner also approved simple text/emoji chat within 1v1 matches with animated typing indicators. No images, attachments or persistent chat history; either player leaving clears both sides, with a short presence timeout for abrupt disconnections. The shared header uses the existing knight logo before a centered Chess Prodigy wordmark in a distinctive serif font, following the owner's subsequent alignment correction.
