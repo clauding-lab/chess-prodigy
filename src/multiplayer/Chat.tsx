@@ -1,8 +1,17 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { multiplayerRequest } from "./api";
 import type { ChatState } from "./chat-types";
 
-export function Chat({ gameId, userId }: { gameId: string; userId: string }) {
+export function Chat({
+  gameId,
+  userId,
+  alertTarget,
+}: {
+  gameId: string;
+  userId: string;
+  alertTarget: HTMLElement | null;
+}) {
   const [data, setData] = useState<ChatState | null>(null);
   const [text, setText] = useState("");
   const [connectionError, setConnectionError] = useState("");
@@ -10,17 +19,41 @@ export function Chat({ gameId, userId }: { gameId: string; userId: string }) {
   const [notice, setNotice] = useState("");
   const [sending, setSending] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const [unread, setUnread] = useState(false);
+  const logVisible = useRef(false);
   const send = useRef<((action: string, extra?: Record<string, unknown>) => Promise<void>) | null>(
     null,
   );
   const lastTyping = useRef(0);
   const log = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    const element = log.current;
+    if (!element) return;
+    const readIfVisible = () => {
+      if (logVisible.current && document.visibilityState === "visible") setUnread(false);
+    };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        logVisible.current = entry.isIntersecting && entry.intersectionRatio >= 0.5;
+        readIfVisible();
+      },
+      { threshold: [0, 0.5] },
+    );
+    observer.observe(element);
+    document.addEventListener("visibilitychange", readIfVisible);
+    return () => {
+      observer.disconnect();
+      logVisible.current = false;
+      document.removeEventListener("visibilitychange", readIfVisible);
+    };
+  }, []);
+  useEffect(() => {
     let active = true;
     let stopped = false;
     let polling = false;
     let epoch = "";
     let revision = -1;
+    let lastIncomingId: string | undefined;
     const clientId = crypto.randomUUID();
     const path = `/${encodeURIComponent(gameId)}/chat`;
     setData(null);
@@ -28,12 +61,20 @@ export function Chat({ gameId, userId }: { gameId: string; userId: string }) {
     setConnectionError("");
     setSendError("");
     setSending(false);
+    setUnread(false);
     const accept = (next: ChatState) => {
       if (!active || next.revision < revision) return;
       if (epoch && epoch !== next.epoch) {
         setText("");
+        setUnread(false);
+        lastIncomingId = undefined;
         setNotice("Chat cleared because a player left or disconnected.");
       }
+      const incomingId = next.messages.filter((message) => message.userId !== userId).at(-1)?.id;
+      if (incomingId && incomingId !== lastIncomingId) {
+        setUnread(!logVisible.current || document.visibilityState !== "visible");
+      }
+      lastIncomingId = incomingId;
       epoch = next.epoch;
       revision = next.revision;
       setData(next);
@@ -90,6 +131,7 @@ export function Chat({ gameId, userId }: { gameId: string; userId: string }) {
       leave();
       setData(null);
       setText("");
+      setUnread(false);
     };
     const pageShow = (event: PageTransitionEvent) => {
       if (event.persisted) setAttempt((value) => value + 1);
@@ -108,12 +150,37 @@ export function Chat({ gameId, userId }: { gameId: string; userId: string }) {
   }, [lastMessageId, data?.epoch]);
   return (
     <section className="panel match-chat" aria-label="Match chat">
+      {alertTarget &&
+        createPortal(
+          <button
+            className="btn chat-jump"
+            aria-label={unread ? "Chat, unread messages" : "Chat"}
+            onClick={() => {
+              log.current?.scrollIntoView({ block: "center", behavior: "instant" });
+              log.current?.focus({ preventScroll: true });
+              setUnread(false);
+            }}
+          >
+            Chat
+            {unread && <span className="chat-unread-dot" aria-hidden="true" />}
+            <span className="sr-only" role="status">
+              {unread ? "New chat message" : ""}
+            </span>
+          </button>,
+          alertTarget,
+        )}
       <h2>Chat</h2>
       <p className="form-note">
-        Text and emoji only. Chat clears when either player leaves, or after about 30 seconds if a
-        connection drops.
+        Chat clears when either player leaves, or after about 30 seconds if a connection drops.
       </p>
-      <div className="chat-log" role="log" aria-label="Chat messages" aria-live="polite" ref={log}>
+      <div
+        className="chat-log"
+        role="log"
+        aria-label="Chat messages"
+        aria-live="polite"
+        ref={log}
+        tabIndex={-1}
+      >
         {data?.messages.map((message) => (
           <p className={message.userId === userId ? "chat-own" : ""} key={message.id}>
             <span className="chat-sender">{message.userId === userId ? "You" : "Opponent"}</span>
@@ -176,7 +243,7 @@ export function Chat({ gameId, userId }: { gameId: string; userId: string }) {
             maxLength={1000}
             autoComplete="off"
             disabled={!data || sending}
-            placeholder="Say hello… 🙂"
+            placeholder="Say hello…"
             onChange={(event) => {
               const value = event.target.value;
               setText(value);

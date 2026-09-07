@@ -46,6 +46,7 @@ export function Multiplayer({
   const [sound, setSound] = useState(true);
   const [flipped, setFlipped] = useState(false);
   const [theme, setTheme] = useState<"dark" | "wood">("dark");
+  const [chatAlertTarget, setChatAlertTarget] = useState<HTMLDivElement | null>(null);
   const generation = useRef(0);
   const actionPending = useRef(false);
   const latestGame = useRef<MultiplayerGame | null>(null);
@@ -215,7 +216,7 @@ export function Multiplayer({
     <div
       className="app multiplayer"
       data-theme={theme}
-      onPointerDownCapture={() => {
+      onClickCapture={() => {
         if (sound) void activateSound();
       }}
       onKeyDownCapture={() => {
@@ -224,6 +225,7 @@ export function Multiplayer({
     >
       <Brand />
       {controls}
+      <div className="chat-shortcut" ref={setChatAlertTarget} />
       <nav className="controls" aria-label="Game modes">
         <button className="btn" onClick={() => navigate("/")}>
           Computer practice
@@ -522,7 +524,12 @@ export function Multiplayer({
                       ))}
                     </div>
                   </section>
-                  <Chat key={`${user.id}:${game.id}`} userId={user.id} gameId={game.id} />
+                  <Chat
+                    key={`${user.id}:${game.id}`}
+                    userId={user.id}
+                    gameId={game.id}
+                    alertTarget={chatAlertTarget}
+                  />
                   {game.review ? (
                     <CompletedReview game={game.review} color={game.yourColor ?? "w"} />
                   ) : (

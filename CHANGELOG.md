@@ -4,8 +4,11 @@
 
 - H2H tab for signed-in players after their first completed human match, with lifetime participant-only results.
 - Temporary text/emoji chat in human matches, animated typing indicators, and automatic clearing when either player leaves or loses presence. No saved transcript or attachments.
-- Existing knight logo and left-aligned serif title in both game modes.
+- Existing knight logo and centered serif title in both game modes.
 - Removed game-count columns from both leaderboard tabs.
+- Top Chat shortcut with a pulsing unread dot when an opponent's message arrives offscreen; tapping opens chat. Reduced-motion preferences keep the dot steady.
+- Removed emoji from the chat placeholder and introductory wording; players can still send emoji.
+- Audio activation uses completed taps, and fresh gestures can retry while an earlier browser audio request is blocked.
 
 ## [1.2.0] — 2026-09-06 (BDT)
 

@@ -108,6 +108,39 @@ body:has(.app[data-theme="dark"]) [data-modal-root] {
   padding: 18px;
   margin: 16px 0;
 }
+.chat-shortcut {
+  position: sticky;
+  top: max(8px, env(safe-area-inset-top));
+  z-index: 5;
+  display: flex;
+  justify-content: flex-end;
+}
+.chat-shortcut:empty {
+  display: none;
+}
+.chat-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+.chat-unread-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: chat-unread 1.6s ease-in-out infinite;
+}
+@keyframes chat-unread {
+  50% {
+    opacity: 0.35;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-unread-dot {
+    animation: none;
+  }
+}
 .match-chat h2 {
   margin: 0 0 8px;
   font-size: 18px;

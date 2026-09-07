@@ -260,7 +260,7 @@ export default function App({
     <div
       className="app"
       data-theme={preferences.theme}
-      onPointerDownCapture={() => {
+      onClickCapture={() => {
         if (preferences.sound) void activateSound();
       }}
       onKeyDownCapture={() => {

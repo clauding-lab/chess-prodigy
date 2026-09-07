@@ -1,4 +1,26 @@
 import { expect, test } from "@playwright/test";
+test("a board tap unlocks audio during a browser-approved gesture", async ({ page }, info) => {
+  test.skip(info.project.name !== "mobile", "Requires touch input");
+  await page.goto("/");
+  await page.getByRole("button", { name: "Start", exact: true }).click();
+  await page.getByRole("button", { name: "e2, white pawn", exact: true }).click();
+  await page.getByRole("button", { name: "e4, empty", exact: true }).click();
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v1")!).game.hist.length)).toBe(2);
+  await page.addInitScript(() => {
+    const Native = window.AudioContext;
+    Object.assign(window, { permittedAudioStarts: 0 });
+    window.AudioContext = class extends Native {
+      constructor(options?: AudioContextOptions) {
+        if (!navigator.userActivation.isActive) throw new Error("Audio needs a completed tap");
+        super(options);
+        (window as typeof window & { permittedAudioStarts: number }).permittedAudioStarts++;
+      }
+    };
+  });
+  await page.reload();
+  await page.getByRole("button", { name: "g1, white knight", exact: true }).tap();
+  await expect.poll(() => page.evaluate(() => (window as typeof window & { permittedAudioStarts: number }).permittedAudioStarts)).toBeGreaterThan(0);
+});
 test("sound enable produces a real audio signal and muting stops subsequent moves", async ({ page }) => {
   await page.addInitScript(() => {
     const Native = window.AudioContext;

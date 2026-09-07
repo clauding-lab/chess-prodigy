@@ -1,5 +1,14 @@
 # Chess Prodigy v1.0.0 release verification
 
+## 7 September 2026 BDT — unread chat alert and touch audio
+
+- 223 unit/integration tests pass. Typecheck, lint, formatting and production build pass. New coverage exercises offscreen incoming vs own messages, reading visible chat, hidden-tab messages, room erasure, and retrying audio during a fresh gesture while an earlier resume remains blocked.
+- Focused Chrome desktop/mobile journeys: seven passed, one touch-only case skipped on desktop. Safari-engine mobile emulation: three passed, covering chat alert/jump/read, reduced-motion dot, touch activation and measured audio waveform/muting. [Phone alert screenshot](mobile-chat-alert.png) visually checked; no horizontal overflow or selected WCAG axe violations in the match journey.
+- Removed the emoji placeholder and explanatory wording; player emoji input and temporary participant-only privacy remain intact. The Chat shortcut stays at the top while scrolling.
+- Reproduced the pending-resume retry failure before the fix. Browser automation did not reproduce the reported physical iPhone silence; both engines can report activation on synthetic touch injection earlier than real-device guidance specifies. Completed-click activation follows browser user-gesture guidance, but neither emulated activation nor a measured waveform proves iPhone speaker audibility. Physical device, Safari vs installed-app mode, Silent Mode and volume remain to be confirmed with the owner.
+- Code and TypeScript reviews found no actionable issues. No server, database or notification-delivery changes.
+- Full Chrome desktop/mobile suite: 48 passed, four deliberate skips (three duplicate mobile cases and one desktop touch-only case). Both offline-reopen checks passed this run; the previously recorded intermittent failure has not been diagnosed or declared fixed.
+
 ## 7 September 2026 BDT — H2H navigation, temporary chat and header
 
 - 219 unit/integration tests pass, including participant-only chat, text/emoji, typing expiry, departure clearing, delayed old-session requests and disconnection cleanup between timer ticks. Typecheck, lint, formatting and production build pass.

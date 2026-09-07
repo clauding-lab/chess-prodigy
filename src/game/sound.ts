@@ -1,5 +1,4 @@
 let audio: AudioContext | null = null;
-let activation: Promise<boolean> | null = null;
 let generation = 0;
 const playing = new Set<OscillatorNode>();
 
@@ -13,10 +12,10 @@ export function activateSound(): Promise<boolean> {
     if (!Constructor) return Promise.resolve(false);
     if (!audio || audio.state === "closed") audio = new Constructor();
     if (audio.state === "running") return Promise.resolve(true);
-    if (activation) return activation;
     const context = audio;
+    // Retry within every fresh gesture, even if an earlier unpermitted resume is pending.
     const resume = context.resume();
-    activation = new Promise<boolean>((resolve) => {
+    return new Promise<boolean>((resolve) => {
       const timer = window.setTimeout(() => resolve(false), 1500);
       void resume.then(
         () => {
@@ -28,10 +27,7 @@ export function activateSound(): Promise<boolean> {
           resolve(false);
         },
       );
-    }).finally(() => {
-      activation = null;
     });
-    return activation;
   } catch {
     return Promise.resolve(false);
   }

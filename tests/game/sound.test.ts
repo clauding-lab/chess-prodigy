@@ -78,3 +78,20 @@ it("muting cancels a tone waiting for browser permission", async () => {
   await Promise.resolve();
   expect(fake.started).toEqual([]);
 });
+
+it("a fresh user gesture can activate audio while an earlier resume is still blocked", async () => {
+  const fake = context();
+  let permitted = false;
+  fake.ctx.resume = () => {
+    if (!permitted) return new Promise<void>(() => {});
+    fake.ctx.state = "running";
+    return Promise.resolve();
+  };
+  const sound = await import("../../src/game/sound");
+  const blocked = sound.activateSound();
+  permitted = true;
+  expect(await sound.activateSound()).toBe(true);
+  sound.playSound("move", true);
+  await vi.waitFor(() => expect(fake.started).toEqual([7]));
+  await blocked;
+});
