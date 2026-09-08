@@ -65,9 +65,18 @@ test('cached app reopens offline and calculates an out-of-book reply',async({pag
  await page.reload();
  await expect.poll(()=>page.evaluate(()=>!!navigator.serviceWorker.controller)).toBe(true);
  await context.setOffline(true);
- const reopened=await context.newPage();await page.close();await reopened.goto('/');
- // A fresh unstarted game is allowed to show setup again.
- if(await reopened.getByRole('button',{name:'Start',exact:true}).isVisible())await reopened.getByRole('button',{name:'Start',exact:true}).click();
+ const reopened=await context.newPage();await page.close();
+ // Keep guest initialization asynchronous so setup cannot be skipped by a one-shot visibility check.
+ await reopened.addInitScript(()=>{
+  const originalFetch=window.fetch.bind(window);
+  window.fetch=async(...args)=>{
+   if(args[0]==='/api/auth/get-session')await new Promise(resolve=>setTimeout(resolve,400));
+   return originalFetch(...args);
+  };
+ });
+ await reopened.goto('/');
+ // This fixture has no moves: reopening must finish guest initialization and show setup.
+ await reopened.getByRole('dialog',{name:'New game',exact:true}).getByRole('button',{name:'Start',exact:true}).click();
  await play(reopened,'a2','a3');
  await reopened.getByRole('button',{name:'Resign',exact:true}).click();
  await reopened.getByRole('dialog').getByRole('button',{name:'Resign',exact:true}).click();

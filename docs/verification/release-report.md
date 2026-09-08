@@ -6,7 +6,8 @@
 - 225 unit/integration tests passed, with source typecheck, lint, formatting and production build. New App regressions fail against the old modal and pass with the warning, including cancellation, the 1400 floor and changing the next opponent's difficulty.
 - Browser run: 48 passed, four intentional skips, and two coaching cases initially waited for the old Start label. After updating that selector, both desktop/mobile coaching cases passed on rerun. The new desktop/mobile warning checks passed, including actual deduction, safe cancellation, reload without a duplicate deduction, no horizontal overflow and no selected WCAG axe violations.
 - Code and TypeScript reviews found no actionable issues. [Mobile warning](mobile-abandonment-warning.png) was visually inspected; it uses synthetic guest data. No physical-device check was performed.
-- Existing physical iPhone sound and intermittent offline-reopen followups remain unproven; this change does not claim to resolve them.
+- CI run 34180811425 passed 49 browser cases but reproduced the prior offline-startup symptom on desktop. Its trace showed Start.isVisible returning false before guest initialization, followed by the New game overlay intercepting the board click. Adding a 400 ms account-lookup delay reproduced the same failure locally. The test now awaits the expected setup Start button; all six repeated desktop/mobile offline runs passed with that delay retained. Production startup code is unchanged. This addresses the demonstrated test race, not every possible offline failure.
+- Physical iPhone sound remains unconfirmed; this change does not address device audio.
 
 ## 7 September 2026 BDT — unread chat alert and touch audio
 
