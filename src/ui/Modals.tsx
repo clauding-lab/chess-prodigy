@@ -1,6 +1,6 @@
 import { GLYPH } from "./Board";
 import { Modal } from "./Modal";
-import { ENGINE_ELO, LEVEL_LABEL } from "../rating/fide";
+import { ENGINE_ELO, FIDE_FLOOR, LEVEL_LABEL, ratingUpdate, type Rating } from "../rating/fide";
 import { TIME_CONTROLS } from "../game/state";
 import { bookLookup } from "../book/book";
 import { MOTIFS } from "../coach/motifs";
@@ -22,6 +22,7 @@ export function SetupModal({
   draft,
   setDraft,
   game,
+  rating,
   onStart,
   onCancel,
   accountControls,
@@ -29,16 +30,30 @@ export function SetupModal({
   draft: SetupDraft;
   setDraft(value: SetupDraft): void;
   game: Game;
+  rating: Rating;
   onStart(): void;
   onCancel?: () => void;
   accountControls?: ReactNode;
 }) {
+  const abandoning = game.started && !game.over && game.rated;
+  const before = Math.round(rating.rating);
+  const after = Math.round(
+    ratingUpdate(rating, ENGINE_ELO[game.setup.level], 0, { opp: "" }, 0).next.rating,
+  );
+  const loss = before - after;
   return (
     <Modal closeOnBackdrop={false} closeOnEscape={!!onCancel} onClose={onCancel} title="New game">
-      {game.started && !game.over && game.rated && (
-        <div className="note">
-          A rated game is in progress. Starting a new one records it as a loss, as an abandoned game
-          would be.
+      {abandoning && (
+        <div className="note" role="status">
+          <strong>Starting another game counts this unfinished game as a loss.</strong>
+          <p>
+            {rating.rating === FIDE_FLOOR
+              ? `Your rating stays at ${FIDE_FLOOR} (the minimum), but this still counts as a rated loss.`
+              : loss === 0
+                ? `Your displayed rating stays at ${before}, but this still counts as a rated loss.`
+                : `You will lose ${loss} displayed rating ${loss === 1 ? "point" : "points"}: ${before} → ${after}.`}
+          </p>
+          Choose Keep playing to return to this game.
         </div>
       )}
       <div className="optrow">
@@ -98,12 +113,12 @@ export function SetupModal({
         </div>
       </div>
       <button className="btn primary full" onClick={onStart} type="button">
-        Start
+        {abandoning ? "Abandon and start" : "Start"}
       </button>
       {accountControls && <div className="setup-account-controls">{accountControls}</div>}
       {onCancel && (
         <button className="btn full spaced" onClick={onCancel} type="button">
-          Cancel
+          {abandoning ? "Keep playing" : "Cancel"}
         </button>
       )}
     </Modal>

@@ -1,5 +1,13 @@
 # Chess Prodigy v1.0.0 release verification
 
+## 8 September 2026 BDT — abandonment rating preview
+
+- New-game warning uses the existing practice-rating calculation and the current opponent's difficulty to show whole-number rating before/after and the displayed loss. Explicit Abandon and start / Keep playing buttons; honest minimum-rating wording. No rating-policy, server or database changes.
+- 225 unit/integration tests passed, with source typecheck, lint, formatting and production build. New App regressions fail against the old modal and pass with the warning, including cancellation, the 1400 floor and changing the next opponent's difficulty.
+- Browser run: 48 passed, four intentional skips, and two coaching cases initially waited for the old Start label. After updating that selector, both desktop/mobile coaching cases passed on rerun. The new desktop/mobile warning checks passed, including actual deduction, safe cancellation, reload without a duplicate deduction, no horizontal overflow and no selected WCAG axe violations.
+- Code and TypeScript reviews found no actionable issues. [Mobile warning](mobile-abandonment-warning.png) was visually inspected; it uses synthetic guest data. No physical-device check was performed.
+- Existing physical iPhone sound and intermittent offline-reopen followups remain unproven; this change does not claim to resolve them.
+
 ## 7 September 2026 BDT — unread chat alert and touch audio
 
 - 223 unit/integration tests pass. Typecheck, lint, formatting and production build pass. New coverage exercises offscreen incoming vs own messages, reading visible chat, hidden-tab messages, room erasure, and retrying audio during a fresh gesture while an earlier resume remains blocked.

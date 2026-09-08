@@ -130,3 +130,42 @@ it("keeps timed computer replies running while the player views friend games", a
   expect(saved.game.hist).toHaveLength(2);
   expect(saved.game.over).toBeNull();
 });
+
+it.each([1400, 1500.25])(
+  "previews abandonment at rating %s and preserves it when the player keeps playing",
+  async (value) => {
+    seedTimedPlayerTurn(300000);
+    const session = JSON.parse(localStorage.getItem("chess-prodigy-state-v1")!);
+    session.rating.rating = value;
+    session.rating.peak = value;
+    localStorage.setItem("chess-prodigy-state-v1", JSON.stringify(session));
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "New game", exact: true }));
+    expect(
+      screen.getByText("Starting another game counts this unfinished game as a loss."),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(
+        value === 1400
+          ? "Your rating stays at 1400 (the minimum), but this still counts as a rated loss."
+          : "You will lose 28 displayed rating points: 1500 → 1472.",
+      ),
+    ).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Keep playing", exact: true }));
+    expect(JSON.parse(localStorage.getItem("chess-prodigy-state-v1")!).rating.rating).toBe(value);
+    fireEvent.click(screen.getByRole("button", { name: "New game", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: /Strong/ }));
+    expect(
+      screen.getByText(
+        value === 1400
+          ? "Your rating stays at 1400 (the minimum), but this still counts as a rated loss."
+          : "You will lose 28 displayed rating points: 1500 → 1472.",
+      ),
+    ).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Abandon and start", exact: true }));
+    const saved = JSON.parse(localStorage.getItem("chess-prodigy-state-v1")!);
+    expect(Math.round(saved.rating.rating)).toBe(value === 1400 ? 1400 : 1472);
+    expect(saved.rating.games).toBe(1);
+    expect(saved.game.setup.level).toBe("strong");
+  },
+);

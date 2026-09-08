@@ -47,7 +47,7 @@ The rating is a **personal practice rating**, not an official FIDE rating. Hints
 
 Choose a colour, strength and time control, then **Start**. Click a piece and its destination, or use the keyboard: Tab enters the board, arrow keys navigate, Enter/Space selects and moves, Escape deselects.
 
-The clock starts after the first move and keeps running while the page is hidden or closed. Starting another game abandons an unfinished rated game as a loss. **Copy FEN** copies the current board position; it is not a full game backup.
+The clock starts after the first move and keeps running while the page is hidden or closed. Starting another game abandons an unfinished rated game as a loss. The New game warning shows the rating before and after; choose **Keep playing** to return or **Abandon and start** to accept the loss. Ratings are displayed as whole numbers and cannot fall below 1400. **Copy FEN** copies the current board position; it is not a full game backup.
 
 Expand a move under **Moves & ideas** to read its story without closing the opening explanation. The stories illustrate recognized chess ideas; they do not claim every move is sound or reproduce a famous game. Story text works offline; external reading links need a connection. See the [editorial scope and sources](docs/verification/coaching-sources.md).
 

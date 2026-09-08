@@ -1,5 +1,9 @@
 # Changelog
 
+## Updates — 2026-09-08 (BDT)
+
+- New-game warning previews the displayed practice-rating loss before replacing an unfinished rated game, with explicit “Abandon and start” and “Keep playing” choices. The 1400 minimum and existing rating rules are unchanged.
+
 ## Updates — 2026-09-07 (BDT)
 
 - H2H tab for signed-in players after their first completed human match, with lifetime participant-only results.

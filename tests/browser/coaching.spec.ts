@@ -51,7 +51,7 @@ test("opening and earlier move stories stay readable through play and a saved-ga
   );
   await reading.screenshot({ path: `docs/verification/${info.project.name}-coaching.png` });
   await page.getByRole("button", { name: "New game", exact: true }).click();
-  await page.getByRole("button", { name: "Start", exact: true }).click();
+  await page.getByRole("button", { name: "Abandon and start", exact: true }).click();
   await expect(fianchetto).toHaveCount(0);
 });
 

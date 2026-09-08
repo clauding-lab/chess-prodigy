@@ -455,6 +455,7 @@ export default function App({
           accountControls={accountControls}
           draft={draft}
           game={game}
+          rating={rating}
           onCancel={
             setupCompleted || game.started || !!game.over ? () => setShowSetup(false) : undefined
           }
