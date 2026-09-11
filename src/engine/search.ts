@@ -20,6 +20,7 @@ export const LEVEL_CFG: Readonly<
 };
 
 type Clock = () => number;
+export type SearchEvaluator = (position: Position) => number;
 interface Entry {
   depth: number;
   score: number;
@@ -31,6 +32,7 @@ interface Context {
   now: Clock;
   table: Map<string, Entry>;
   nodes: number;
+  evaluate: SearchEvaluator;
 }
 const TIMEOUT = Symbol("search-timeout");
 
@@ -62,7 +64,7 @@ function quiesceInner(
   if (!legal.length) return checked ? -MATE + ply : 0;
   if (position.halfmove >= 100 || insufficientMaterial(position.board)) return 0;
   if (!checked) {
-    const stand = evaluate(position) * (position.turn === "w" ? 1 : -1);
+    const stand = context.evaluate(position) * (position.turn === "w" ? 1 : -1);
     if (stand >= beta) return beta;
     if (stand > alpha) alpha = stand;
     if (depth <= 0) return alpha;
@@ -96,6 +98,7 @@ export function quiesce(
     now,
     table: new Map(),
     nodes: 0,
+    evaluate,
   });
 }
 
@@ -148,9 +151,16 @@ export function search(
   maxDepth: number,
   ms: number,
   now: Clock = () => performance.now(),
+  evaluator: SearchEvaluator = evaluate,
 ): SearchResult {
   const started = now(),
-    context: Context = { deadline: started + Math.max(0, ms), now, table: new Map(), nodes: 0 };
+    context: Context = {
+      deadline: started + Math.max(0, ms),
+      now,
+      table: new Map(),
+      nodes: 0,
+      evaluate: evaluator,
+    };
   try {
     const moves = orderMoves(legalMoves(position));
     if (!moves.length)
@@ -162,7 +172,7 @@ export function search(
     if (position.halfmove >= 100 || insufficientMaterial(position.board))
       return { move: null, score: 0, depth: 0 };
     let best = moves[0],
-      bestScore = evaluate(position) * (position.turn === "w" ? 1 : -1),
+      bestScore = context.evaluate(position) * (position.turn === "w" ? 1 : -1),
       completed = 0;
     for (let depth = 1; depth <= maxDepth; depth++) {
       if (depth > 1 && now() - started > ms * 0.45) break;
@@ -226,7 +236,13 @@ export function chooseAiMove(
     const result = search(position, config.depth, config.ms, now);
     return { move: result.move, score: result.score, book: false };
   }
-  const context: Context = { deadline: now() + config.ms, now, table: new Map(), nodes: 0 };
+  const context: Context = {
+    deadline: now() + config.ms,
+    now,
+    table: new Map(),
+    nodes: 0,
+    evaluate,
+  };
   let best = legal[0] ?? null,
     bestScore = -Infinity;
   try {

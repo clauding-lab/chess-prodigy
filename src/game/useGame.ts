@@ -202,6 +202,8 @@ export function useGame(
           revision: g.revision,
           position: g.st,
           level: g.setup.level,
+          opponent: g.opponent,
+          ply: g.hist.length,
           bookSans: bookLookup(g.hist.map((e) => e.san)).replies,
         });
         if (!mounted.current || generation.current !== token) return;

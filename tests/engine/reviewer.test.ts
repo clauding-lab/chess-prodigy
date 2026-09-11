@@ -10,6 +10,7 @@ import {
 import { executeEngineRequest } from "../../src/worker/execute";
 import { annotateAll } from "../../src/coach/annotate";
 import type { AnnotatableEntry } from "../../src/coach/types";
+import { CLASSIC, morphyConfig } from "../../src/engine/opponents";
 
 const fixedClock = () => 0;
 function entry(
@@ -63,9 +64,10 @@ describe("neutral reviewer independence", () => {
       expect(
         annotateAll({ hist, evals: { 0: value(before), 1: value(after) } }).hist[0],
       ).toMatchObject({ ann: "??", better: bestSan });
-      // Opponent IDs and weights are deliberately extra test-only transport fields.
+      // Analysis ignores even real opponent configurations and exaggerated test weights.
       const results = [
-        { id: "classic", weight: 0 },
+        CLASSIC,
+        morphyConfig(42),
         { id: "test-attacker", weight: 999999 },
         { id: "test-defender", weight: -999999 },
       ].map((personality) => {
@@ -78,7 +80,7 @@ describe("neutral reviewer independence", () => {
           gameId: "fixture",
           revision: 0,
           requestId: 1,
-          personality,
+          opponent: personality,
         };
         const result = executeEngineRequest(request, fixedClock) as typeof before;
         return {
@@ -107,6 +109,8 @@ describe("neutral reviewer independence", () => {
     executeEngineRequest(
       {
         type: "ai",
+        opponent: morphyConfig(42),
+        ply: 0,
         level: "casual",
         bookSans: [],
         position,

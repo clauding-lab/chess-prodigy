@@ -30,7 +30,7 @@ unchanged. Difficulty stays separate, with existing Classic budgets and behaviou
    saved opponent versions retain a read-only/recovery path. All beta outcomes remain unrated;
    assistance is recorded separately. No selectable beta before R2.2/R2.3 are complete.
    Checks: red-first game/storage/account/server regressions, typecheck, lint, formatting, diff.
-3. **R2.2 — not-started:** versioned Morphy evaluator and seeded per-ply worker/book selection.
+3. **R2.2 — implemented/checked:** versioned Morphy evaluator and seeded per-ply worker/book selection.
    Explicit evaluator context, fresh search tables, bounded development/open-line/king-pressure
    preferences, safety/forced-move/deadline fixtures and held-out/complete-game smoke tests.
    Re-run all reviewer independence tests with actual opponent configurations. Checks: focused
@@ -61,7 +61,7 @@ Retain the archive's 200-game bound; do not add a guest rivalry archive in this 
 ## Next action and preservation
 
 Baseline commands passed and recorded before application/test/config edits.
-Next: R2.2 bounded style evaluator, explicit worker configuration and seeded opening choices.
+Next: R2.3 minimum flagged selection, safe resume and accurate labels/recovery UI.
 Update both Run 2 records at every checkpoint. Keep all commits local
 and stage explicit task-owned paths only. Export a task-only bundle/patch and both records to
 Downloads at closeout; this persistent local copy is not an off-device backup.
@@ -91,3 +91,27 @@ Independent code/data-path and TypeScript reviews completed. One data-path findi
 opponent retaining stale review annotations) was reproduced in a new failing regression, fixed
 and checked. No beta selection is exposed at this foundation checkpoint; worker style support
 is the next dependency.
+
+## R2.2 decisions and checkpoint
+
+`attack-development` v1 uses `style-v1` and `seeded-per-ply-v1`. The persisted uint32 seed,
+full position and ply produce request-local opening randomness, so reload/retry/undo has no
+hidden mutable RNG to lose. Actual search depth still depends on wall-clock availability.
+Worker AI requests require config and ply; analysis requests carry no opponent evaluator.
+Search has an explicit private evaluator with a fresh table per request. Classic dispatch and
+all default neutral evaluation calls retain the existing policy and material values.
+
+White-perspective style adds at most ±80 centipawns (0.8 pawn). A developed minor piece gets
+8; usable bishop diagonal reach adds at most 12; a rook with at least three clear forward
+squares and no own pawn gets 6 for a semi-open file or 12 for an open file. Enemy king-ring
+pressure gives 4 per attacked square (at most five), plus 12 for check. Development/check/
+king pressure fade linearly as total non-pawn material falls from 6400 to 2600; useful lines
+remain relevant in endings. No raw capture reward or material discount is introduced.
+
+Existing legal opening continuations are weighted by the same bounded style signal. Immediate
+mate outranks book choices. That pass, book work and search share the difficulty deadline;
+Classic budgets are unchanged. Forced positions need not differ. In an Italian opening fixture
+after `e4 e5 Nf3 Nc6 Bc4 Nf6 d3`, out-of-book Club Morphy develops `Bc5` versus Classic `Bd6`.
+Tests include defended targets, adverse material, neutral validation of winning simplification,
+both colours, mate/only legal choice, deadline accounting and three complete initial-board games.
+They are execution/safety evidence, not historical fidelity or calibration. No beta UI yet.
