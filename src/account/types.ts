@@ -1,4 +1,5 @@
-import type { Session } from "../game/types";
+import type { Session, UnratedReason } from "../game/types";
+import type { OpponentConfig } from "../engine/opponents";
 
 export interface AccountUser {
   id: string;
@@ -7,6 +8,10 @@ export interface AccountUser {
 }
 
 export interface GameRecord {
+  recordVersion: 2;
+  opponent: OpponentConfig;
+  unratedReason: UnratedReason;
+  assisted: boolean | null;
   id: string;
   result: "1-0" | "0-1" | "½-½";
   reason: string;
@@ -16,6 +21,10 @@ export interface GameRecord {
   moves: string[];
   completedAt: string;
 }
+export type LegacyGameRecord = Omit<
+  GameRecord,
+  "recordVersion" | "opponent" | "unratedReason" | "assisted"
+>;
 
 export interface RecordsEnvelope {
   version: number;

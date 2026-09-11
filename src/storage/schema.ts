@@ -7,6 +7,12 @@ import { TIME_CONTROLS } from "../game/state";
 import type { Game, HistoryEntry, RatingReceipt, Session } from "../game/types";
 import { ENGINE_ELO, LEVEL_LABEL, ratingUpdate } from "../rating/fide";
 import type { Rating, RatingEntry } from "../rating/fide";
+import { CLASSIC, isOpponentConfig } from "../engine/opponents";
+
+export const isUnratedReason = (value: unknown): value is Game["unratedReason"] =>
+  value === null ||
+  (typeof value === "string" &&
+    ["beta", "hint", "takeback", "rating-reset", "legacy-unrated"].includes(value));
 
 const object = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
@@ -290,7 +296,7 @@ export function parseSavedState(
 ): Session | null {
   if (
     !object(value) ||
-    value.version !== 1 ||
+    (value.version !== 1 && value.version !== 2) ||
     !isRating(value.rating) ||
     !validGameShape(value.game) ||
     !object(value.preferences)
@@ -303,11 +309,36 @@ export function parseSavedState(
     !bool(value.preferences.flipped)
   )
     return null;
-  const session = value as unknown as Session;
+  // Migration is deterministic, including assistance that old saves cannot prove.
+  const legacy = value.version === 1;
+  const gameValue = value.game;
+  const session = (legacy
+    ? {
+        ...value,
+        version: 2,
+        game: {
+          ...gameValue,
+          opponent: { ...CLASSIC },
+          unratedReason: gameValue.rated ? null : gameValue.hintUsed ? "hint" : "legacy-unrated",
+          takebackUsed: gameValue.rated ? false : null,
+        },
+      }
+    : value) as unknown as Session;
+  const metadata = session.game;
+  if (
+    !isOpponentConfig(metadata.opponent) ||
+    !isUnratedReason(metadata.unratedReason) ||
+    !(metadata.takebackUsed === null || bool(metadata.takebackUsed)) ||
+    metadata.rated !== (metadata.unratedReason === null) ||
+    (metadata.takebackUsed === true && metadata.rated) ||
+    (metadata.opponent.id !== "classic" && (metadata.rated || metadata.ratingApplied !== null)) ||
+    (metadata.opponent.id === "attack-development" && metadata.unratedReason !== "beta")
+  )
+    return null;
   if (session.game.hintUsed && session.game.rated) return null;
   if (!replayMatches(session.game) || !receiptMatches(session)) return null;
-  // The server retains the validated wire representation so older clients can
-  // acknowledge their exact writes. Every modern review consumer normalizes it.
+  // Wire acknowledgement belongs to the server; this function always returns v2.
+  // Unavailable opponents still need a trustworthy in-memory review projection.
   if (options.preserveDerived) return session;
   const game = session.game;
   const histories = reviewHistoryIdentities(game);

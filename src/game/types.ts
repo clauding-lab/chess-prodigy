@@ -1,11 +1,13 @@
 import type { Color, Level, Move, Position } from "../engine/types";
 import type { AnnotatableEntry, PositionEval } from "../coach/annotate";
 import type { Rating } from "../rating/fide";
+import type { OpponentConfig } from "../engine/opponents";
 export type TimeControl = "none" | "5+0" | "10+0" | "15+10";
 export interface Setup {
   playerColor: Color;
   level: Level;
   time: TimeControl;
+  opponent?: OpponentConfig;
 }
 export interface Preferences {
   theme: "wood" | "dark";
@@ -36,6 +38,9 @@ export interface Game {
   keys: Record<string, number>;
   over: GameResult | null;
   setup: Setup;
+  opponent: OpponentConfig;
+  unratedReason: UnratedReason;
+  takebackUsed: boolean | null;
   clocks: Clocks | null;
   clockAt: number;
   started: boolean;
@@ -45,11 +50,16 @@ export interface Game {
   evals: Record<number, PositionEval>;
 }
 export interface Session {
-  version: 1;
+  version: 2;
   game: Game;
   rating: Rating;
   preferences: Preferences;
 }
+export type UnratedReason = null | "beta" | "hint" | "takeback" | "rating-reset" | "legacy-unrated";
+export type LegacySession = Omit<Session, "version" | "game"> & {
+  version: 1;
+  game: Omit<Game, "opponent" | "unratedReason" | "takebackUsed">;
+};
 export type Action =
   | { type: "move"; move: Move; book: boolean; now: number }
   | { type: "tick"; now: number }

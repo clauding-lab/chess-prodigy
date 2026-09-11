@@ -9,6 +9,7 @@ import request, { type SuperAgentTest } from "supertest";
 import { afterEach, describe, expect, it } from "vitest";
 import { freshSession, reduceSession } from "../../src/game/state";
 import { legalMoves, sqIndex } from "../../src/engine/board";
+import { morphyConfig } from "../../src/engine/opponents";
 import { createTestApplication as createApplication } from "./http-fixture";
 
 const BASE_URL = "http://127.0.0.1:4317";
@@ -78,6 +79,97 @@ afterEach(async () => {
 });
 
 describe("private account records", () => {
+  it("acknowledges legacy wire snapshots exactly but rejects a downgrade even at the current write version", async () => {
+    const database = await temporaryDatabase();
+    const application = await createApplication({
+      databasePath: database.path,
+      baseURL: BASE_URL,
+      secret: SECRET,
+    });
+    try {
+      const agent = await signedUpAgent(application.app, "schema@example.com");
+      const modern = freshSession(0, "modern"),
+        old = JSON.parse(JSON.stringify(modern));
+      old.version = 1;
+      delete old.game.opponent;
+      delete old.game.unratedReason;
+      delete old.game.takebackUsed;
+      const legacy = await agent
+        .put("/api/records")
+        .set("Origin", BASE_URL)
+        .send({ expectedVersion: 0, snapshot: old })
+        .expect(200);
+      expect(legacy.body.snapshot).toEqual(old);
+      await agent
+        .put("/api/records")
+        .set("Origin", BASE_URL)
+        .send({ expectedVersion: 1, snapshot: modern })
+        .expect(200);
+      await agent
+        .put("/api/records")
+        .set("Origin", BASE_URL)
+        .send({ expectedVersion: 2, snapshot: old })
+        .expect(426);
+      const kept = await agent.get("/api/records").expect(200);
+      expect(kept.body).toMatchObject({ version: 2, snapshot: modern });
+    } finally {
+      await application.close();
+    }
+  });
+
+  it("archives beta identity idempotently across terminal, undo and recompletion without rating it", async () => {
+    const database = await temporaryDatabase();
+    const application = await createApplication({
+      databasePath: database.path,
+      baseURL: BASE_URL,
+      secret: SECRET,
+    });
+    try {
+      const agent = await signedUpAgent(application.app, "beta@example.com");
+      let s = reduceSession(freshSession(0, "initial"), {
+        type: "new",
+        id: "beta",
+        now: 0,
+        setup: { playerColor: "w", level: "strong", time: "none", opponent: morphyConfig(777) },
+      });
+      s = reduceSession(s, { type: "move", move: legalMoves(s.game.st)[0], book: false, now: 1 });
+      s = reduceSession(s, { type: "resign", now: 2 });
+      let version = 0;
+      const put = () =>
+        agent
+          .put("/api/records")
+          .set("Origin", BASE_URL)
+          .send({ expectedVersion: version++, snapshot: s })
+          .expect(200);
+      const first = await put();
+      await put();
+      expect(first.body.games).toHaveLength(1);
+      expect(first.body.games[0]).toMatchObject({
+        recordVersion: 2,
+        opponent: morphyConfig(777),
+        unratedReason: "beta",
+        assisted: false,
+        rated: false,
+      });
+      expect(first.body.snapshot.rating.games).toBe(0);
+      s = reduceSession(s, { type: "undo", now: 3 });
+      expect((await put()).body.games).toEqual([]);
+      s = reduceSession(s, { type: "move", move: legalMoves(s.game.st)[0], book: false, now: 4 });
+      s = reduceSession(s, { type: "resign", now: 5 });
+      const recompleted = await put();
+      expect(recompleted.body.games).toHaveLength(1);
+      expect(recompleted.body.games[0]).toMatchObject({
+        opponent: morphyConfig(777),
+        assisted: true,
+        rated: false,
+        unratedReason: "beta",
+      });
+      const leaderboard = await request(application.app).get("/api/leaderboard").expect(200);
+      expect(leaderboard.body.players).toEqual([]);
+    } finally {
+      await application.close();
+    }
+  });
   it("rejects stale-tab owner identities without reading or overwriting the current account", async () => {
     const database = await temporaryDatabase();
     const application = await createApplication({

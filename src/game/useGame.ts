@@ -8,6 +8,7 @@ import { reduceSession, settlePriorGame } from "./state";
 import type { Preferences, SessionAction, Setup } from "./types";
 import { playSound } from "./sound";
 import type { LoadResult } from "../storage/store";
+import { isSupportedOpponent } from "../engine/opponents";
 import {
   REVIEWER,
   isNeutralEvaluation,
@@ -58,7 +59,8 @@ export function useGame(
   const mounted = useRef(false);
   const persist = useCallback(
     (session = current.current, options?: { terminal?: boolean }) => {
-      if (storageState.current === "corrupt") return false;
+      if (storageState.current === "corrupt" || !isSupportedOpponent(session.game.opponent))
+        return false;
       const status = storage.save(session, options) ? "saved" : "unavailable";
       storageState.current = status;
       setStorageStatus(status);
@@ -178,6 +180,7 @@ export function useGame(
   useEffect(() => {
     if (
       paused ||
+      !isSupportedOpponent(current.current.game.opponent) ||
       (background && !current.current.game.clocks) ||
       !client.current ||
       errorRef.current ||
@@ -273,7 +276,7 @@ export function useGame(
   }, [invalidate]);
   function askHint() {
     const g = current.current.game;
-    if (g.over || g.st.turn !== g.setup.playerColor) return;
+    if (!isSupportedOpponent(g.opponent) || g.over || g.st.turn !== g.setup.playerColor) return;
     invalidate();
     dispatch({ type: "hint" });
     const token = ++generation.current;
@@ -299,7 +302,12 @@ export function useGame(
   }
   function review() {
     const g = current.current.game;
-    if (!g.started || (!g.over && g.st.turn !== g.setup.playerColor)) return;
+    if (
+      !isSupportedOpponent(g.opponent) ||
+      !g.started ||
+      (!g.over && g.st.turn !== g.setup.playerColor)
+    )
+      return;
     invalidate();
     const token = ++generation.current;
     busy.current = "review";

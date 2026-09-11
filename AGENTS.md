@@ -75,3 +75,9 @@ This pass authorizes local feature-branch checkpoints only: no push, PR, merge, 
 publication or live player data. Neutral review must validate purpose/version/policy and
 position/history identity; opponent scores and legacy scores never qualify. Preserve exact
 legacy wire acknowledgements at the server; normalize derived review data at client boundaries.
+
+The owner subsequently invoked Run 2 (“go on”): local, default-off playable Paul Morphy beta
+and its safe persistence/rating dependencies. See the `2026-09-11-personality-pwa-run2.md`
+plan and verification records. New saves use schema/key v2; v1 originals remain for recovery.
+Do not downgrade a v2 account snapshot or substitute an unavailable opponent configuration.
+Morphy is always unrated; Classic mathematics and 1v1 are unchanged. Run 3 UI remains deferred.

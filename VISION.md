@@ -33,3 +33,8 @@ Paul Morphy, Wilhelm Steinitz and Mikhail Chigorin are settled future developmen
 public commercial naming clearance remains outstanding. Practice Rating wording and an
 unrated, default-off personality beta belong to a separately invoked Run 2, not this run.
 Classic ratings, stories, accounts, multiplayer, saves and offline play remain preserved.
+
+The owner's subsequent “go on” invokes the handoff's bounded Run 2. Locally implement the
+Paul Morphy beta, default-off selection, safe resume/archives and explicit unrated eligibility.
+Use Practice Rating wording for the existing internal measure. No rivalry/replay/result redesign
+or release action is authorized by this continuation. See the dated Run 2 execution records.

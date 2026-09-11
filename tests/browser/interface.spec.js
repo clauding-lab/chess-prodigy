@@ -25,7 +25,7 @@ test("name, both themes, layout and legal play", async ({ page }, info) => {
   await square(page,"e4").click();
   await expect(page.locator(".movelist")).toContainText("e4");
   await ready(page);
-  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v1")).game.hist.length)).toBe(2);
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v2")).game.hist.length)).toBe(2);
   // Some legal book replies (e.g. 1...g6) are unnamed until a later move.
   await expect(page.locator(".opening")).toContainText(/Still in book|In book, no named line yet/);
   await expect(page.locator(".app")).toHaveAttribute("data-theme","dark");
@@ -92,7 +92,7 @@ test("clock catches up after delayed callbacks and preserves timeout", async ({p
   await page.getByRole("button",{name:"5 min",exact:true}).click();
   await page.getByRole("button",{name:"Start",exact:true}).click();
   await square(page,"e2").click();await square(page,"e4").click();await ready(page);
-  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v1")).game.hist.length)).toBe(2);
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v2")).game.hist.length)).toBe(2);
   await expect(page.locator(".status")).toContainText("Your move");
   await page.getByText("Live",{exact:true}).click();
   const seconds = text => text.split(":").reduce((m,s)=>m*60+Number(s),0);

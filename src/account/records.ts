@@ -1,4 +1,5 @@
-import { parseSavedState } from "../storage/schema";
+import { isUnratedReason, parseSavedState } from "../storage/schema";
+import { CLASSIC, isOpponentConfig } from "../engine/opponents";
 import type { GameRecord, RecordsEnvelope } from "./types";
 
 const object = (value: unknown): value is Record<string, unknown> =>
@@ -18,6 +19,26 @@ function parseGameRecord(value: unknown): GameRecord | null {
     !value.moves.every(text) ||
     !text(value.completedAt) ||
     Number.isNaN(Date.parse(value.completedAt))
+  )
+    return null;
+  if (value.recordVersion === undefined)
+    return {
+      ...value,
+      recordVersion: 2,
+      opponent: { ...CLASSIC },
+      unratedReason: value.rated ? null : "legacy-unrated",
+      assisted: value.rated ? false : null,
+    } as GameRecord;
+  if (
+    value.recordVersion !== 2 ||
+    !isOpponentConfig(value.opponent) ||
+    !isUnratedReason(value.unratedReason) ||
+    !(value.assisted === null || typeof value.assisted === "boolean") ||
+    (value.rated &&
+      (value.unratedReason !== null ||
+        value.assisted === true ||
+        value.opponent.id !== "classic")) ||
+    (value.opponent.id === "attack-development" && value.unratedReason !== "beta")
   )
     return null;
   return value as unknown as GameRecord;

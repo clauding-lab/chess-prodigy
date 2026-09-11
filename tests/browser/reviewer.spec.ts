@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 const saved = (page: import("@playwright/test").Page) =>
-  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v1")!));
+  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!));
 
 test("native worker opponent scores cannot survive as review, including legacy reload", async ({
   page,
@@ -40,7 +40,7 @@ test("native worker opponent scores cannot survive as review, including legacy r
     expect(evaluation.review.purpose).toBe("neutral-review");
   }
   const legacy = await page.evaluate(() => {
-    const session = JSON.parse(localStorage.getItem("chess-prodigy-state-v1")!);
+    const session = JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!);
     session.preferences.coach = false;
     for (const evaluation of Object.values(session.game.evals) as Array<{
       score: number;
@@ -57,7 +57,7 @@ test("native worker opponent scores cannot survive as review, including legacy r
   });
   // Seed after the old document closes, so pagehide cannot overwrite the fixture.
   await page.addInitScript(
-    (value) => localStorage.setItem("chess-prodigy-state-v1", JSON.stringify(value)),
+    (value) => localStorage.setItem("chess-prodigy-state-v2", JSON.stringify(value)),
     legacy,
   );
   await page.reload();

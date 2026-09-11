@@ -13,6 +13,7 @@ import { annotateAll } from "../coach/annotate";
 import { isNeutralEvaluation, reviewHistory } from "../engine/reviewer";
 import { defaultRating, ratingUpdate, ENGINE_ELO, LEVEL_LABEL } from "../rating/fide";
 import type { Action, Game, GameResult, Setup, Session, SessionAction, TimeControl } from "./types";
+import { CLASSIC, isRatedOpponent, isSupportedOpponent } from "../engine/opponents";
 export const TIME_CONTROLS: Record<TimeControl, { label: string; ms: number | null; inc: number }> =
   {
     none: { label: "No clock", ms: null, inc: 0 },
@@ -21,6 +22,9 @@ export const TIME_CONTROLS: Record<TimeControl, { label: string; ms: number | nu
     "15+10": { label: "15 | 10", ms: 900000, inc: 10000 },
   };
 export function freshGame(setup: Setup, now: number, id: string): Game {
+  const opponent = { ...(setup.opponent ?? CLASSIC) };
+  if (!isSupportedOpponent(opponent))
+    throw new Error("This opponent configuration is unavailable. Saved progress is preserved.");
   const st = START(),
     ms = TIME_CONTROLS[setup.time].ms;
   return {
@@ -30,11 +34,14 @@ export function freshGame(setup: Setup, now: number, id: string): Game {
     hist: [],
     keys: { [posKey(st)]: 1 },
     over: null,
-    setup,
+    setup: { playerColor: setup.playerColor, level: setup.level, time: setup.time },
+    opponent,
+    unratedReason: isRatedOpponent(opponent) ? null : "beta",
+    takebackUsed: false,
     clocks: ms === null ? null : { w: ms, b: ms },
     clockAt: now,
     started: false,
-    rated: true,
+    rated: isRatedOpponent(opponent),
     hintUsed: false,
     ratingApplied: null,
     evals: {},
@@ -42,13 +49,14 @@ export function freshGame(setup: Setup, now: number, id: string): Game {
 }
 export function freshSession(now: number, id: string): Session {
   return {
-    version: 1,
+    version: 2,
     game: freshGame({ playerColor: "w", level: "club", time: "none" }, now, id),
     rating: defaultRating(),
     preferences: { theme: "dark", sound: true, coach: true, flipped: false },
   };
 }
 export function settleClock(g: Game, now: number): Game {
+  if (!isSupportedOpponent(g.opponent)) return g;
   if (!g.clocks || g.over || !g.started) return g;
   const elapsed = Math.max(0, now - g.clockAt);
   if (!elapsed) return g;
@@ -73,8 +81,12 @@ export function settleClock(g: Game, now: number): Game {
   };
 }
 export function reduceGame(g: Game, action: Action): Game {
+  if (!isSupportedOpponent(g.opponent)) return g;
   if (action.type === "tick") return settleClock(g, action.now);
-  if (action.type === "hint") return g.over ? g : { ...g, rated: false, hintUsed: true };
+  if (action.type === "hint")
+    return g.over
+      ? g
+      : { ...g, rated: false, hintUsed: true, unratedReason: g.unratedReason ?? "hint" };
   if (action.type === "evaluation") {
     if (
       action.gameId !== g.id ||
@@ -117,6 +129,8 @@ export function reduceGame(g: Game, action: Action): Game {
       evals,
       over: null,
       rated: false,
+      takebackUsed: true,
+      unratedReason: g.unratedReason ?? "takeback",
       ratingApplied: null,
     };
   }
@@ -176,7 +190,7 @@ export function reduceGame(g: Game, action: Action): Game {
 }
 export function settleRating(s: Session, now: number): Session {
   const g = s.game;
-  if (!g.over || !g.rated || g.ratingApplied) return s;
+  if (!isRatedOpponent(g.opponent) || !g.over || !g.rated || g.ratingApplied) return s;
   const score =
     g.over.result === "½-½"
       ? 0.5
@@ -197,8 +211,13 @@ export function settleRating(s: Session, now: number): Session {
   };
 }
 export function settlePriorGame(s: Session, now: number): Session {
+  if (!isSupportedOpponent(s.game.opponent)) return s;
   let prior = { ...s, game: settleClock(s.game, now) };
-  if (prior.game.started && !prior.game.over && prior.game.rated)
+  if (
+    prior.game.started &&
+    !prior.game.over &&
+    (prior.game.rated || prior.game.unratedReason === "beta")
+  )
     prior = {
       ...prior,
       game: {
@@ -214,11 +233,18 @@ export function settlePriorGame(s: Session, now: number): Session {
 export function reduceSession(s: Session, action: SessionAction): Session {
   if (action.type === "preferences")
     return { ...s, preferences: { ...s.preferences, ...action.value } };
+  // Unknown saved versions are recoverable, never silently replaced or settled.
+  if (!isSupportedOpponent(s.game.opponent)) return s;
   if (action.type === "resetRating")
     return {
       ...s,
       rating: defaultRating(),
-      game: { ...s.game, ratingApplied: null, rated: false },
+      game: {
+        ...s.game,
+        ratingApplied: null,
+        rated: false,
+        unratedReason: s.game.unratedReason ?? "rating-reset",
+      },
     };
   if (action.type === "new") {
     const prior = settlePriorGame(s, action.now);

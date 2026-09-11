@@ -23,7 +23,7 @@ unchanged. Difficulty stays separate, with existing Classic budgets and behaviou
 
 1. **R2.0 — passed:** record baseline, run source/unit/build/browser checks, commit
    this plan after diff inspection. Carry forward the measured WebKit limitation explicitly.
-2. **R2.1 — not-started:** safe identity/persistence/rating foundation and default-off flag.
+2. **R2.1 — implemented/checked:** safe identity/persistence/rating foundation and default-off flag.
    Version-2 authoritative saves, deterministic Classic migration, isolated new local keys,
    versioned account outbox migration and server downgrade protection. Preserve exact legacy
    acknowledgements, account ownership, archive idempotence and rating receipts. Unsupported
@@ -61,7 +61,33 @@ Retain the archive's 200-game bound; do not add a guest rivalry archive in this 
 ## Next action and preservation
 
 Baseline commands passed and recorded before application/test/config edits.
-Next: implement R2.1 with failing migration, downgrade and beta-rating tests first.
+Next: R2.2 bounded style evaluator, explicit worker configuration and seeded opening choices.
 Update both Run 2 records at every checkpoint. Keep all commits local
 and stage explicit task-owned paths only. Export a task-only bundle/patch and both records to
 Downloads at closeout; this persistent local copy is not an off-device backup.
+
+## R2.1 decisions and checkpoint
+
+Schema v2 records opponent ID/version, engine version, random policy/seed, explicit unrated
+reason and takeback usage (nullable when legacy history cannot prove assistance). Difficulty
+stays in setup. Version 1 migrates to Classic deterministically; modern parser output is
+idempotent. Guest key is `chess-prodigy-state-v2`; account key is
+`chess-prodigy-account-v2:<encoded-user-id>`. Read the corresponding v1 original only when
+the new key is absent. Preserve originals; write migrated account queues before sending.
+
+The server validates both schemas, stores/acknowledges the original wire, and uses a normalized
+v2 projection for archive metadata. Its atomic write transaction rejects schema downgrade
+with HTTP 426 even when the caller has the latest write counter. Rollback to a v1-only client
+or server cannot provide working v2 sync; retain/export v2 data and use compatible code.
+No deployment or database rewrite is part of this run.
+
+Unavailable configuration is read-only at reducers, clock/rating settlement and hook workers;
+new game and rating reset are blocked too, avoiding silent replacement. UI explanation/recovery
+download follows in R2.3. Review data is still normalized in memory; original guest bytes stay
+unchanged. Beta resignation, timeout and abandonment archive without rating. Undo removes the
+receipt/terminal record as before and records assistance without replacing the beta reason.
+
+Independent code/data-path and TypeScript reviews completed. One data-path finding (unavailable
+opponent retaining stale review annotations) was reproduced in a new failing regression, fixed
+and checked. No beta selection is exposed at this foundation checkpoint; worker style support
+is the next dependency.

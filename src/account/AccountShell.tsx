@@ -256,6 +256,8 @@ export function AccountShell() {
                 Retry sync
               </button>
             </>
+          ) : syncStatus?.state === "upgrade-required" ? (
+            "Sync paused: update Chess Prodigy to use this account's newer save format. Your pending changes are preserved."
           ) : syncStatus?.state === "signed-out" ? (
             <>
               Your session ended.{" "}

@@ -5,7 +5,14 @@ import { parseRecordsEnvelope } from "./records";
 
 type Fetch = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 type SyncState =
-  "idle" | "syncing" | "offline" | "conflict" | "signed-out" | "storage-error" | "error";
+  | "idle"
+  | "syncing"
+  | "offline"
+  | "conflict"
+  | "signed-out"
+  | "storage-error"
+  | "error"
+  | "upgrade-required";
 interface PendingItem {
   snapshot: Session;
   terminal: boolean;
@@ -26,6 +33,8 @@ export interface AccountSyncStatus {
 }
 
 export const accountStorageKey = (userId: string) =>
+  `chess-prodigy-account-v2:${encodeURIComponent(userId)}`;
+export const previousAccountStorageKey = (userId: string) =>
   `chess-prodigy-account-v1:${encodeURIComponent(userId)}`;
 
 function validPersisted(value: unknown): PersistedSync | null {
@@ -75,6 +84,7 @@ export class AccountSync {
       this.baseVersion = local.baseVersion;
       this.pending = local.pending;
       this.snapshot = local.snapshot;
+      this.persistLocal();
     } else {
       this.baseVersion = remote.version;
       this.pending = [];
@@ -103,6 +113,11 @@ export class AccountSync {
   flush(): Promise<void> {
     if (this.running) return this.running;
     if (this.disposed || !this.pending.length || this.conflict) return Promise.resolve();
+    // Never send migrated or changed outboxes until the new key is durable.
+    if (!this.persistLocal()) {
+      this.emit();
+      return Promise.resolve();
+    }
     this.running = this.drain().finally(() => {
       this.running = null;
     });
@@ -177,7 +192,12 @@ export class AccountSync {
       }
       if (!response.ok) {
         clearTimeout(timeoutId);
-        this.syncState = "offline";
+        this.syncState =
+          response.status === 426
+            ? "upgrade-required"
+            : response.status === 400
+              ? "error"
+              : "offline";
         this.emit();
         return;
       }
@@ -204,7 +224,10 @@ export class AccountSync {
       }
       if (this.pending[0] === sent) this.pending.shift();
       this.baseVersion = accepted.version;
-      this.persistLocal();
+      if (!this.persistLocal()) {
+        this.emit();
+        return;
+      }
     }
     if (!this.disposed) {
       this.syncState = this.storageBlocked ? "storage-error" : "idle";
@@ -256,8 +279,10 @@ export class AccountSync {
   private readLocal() {
     if (!this.storage) return null;
     try {
-      const raw = this.storage.getItem(accountStorageKey(this.userId));
-      if (!raw) return null;
+      const raw =
+        this.storage.getItem(accountStorageKey(this.userId)) ??
+        this.storage.getItem(previousAccountStorageKey(this.userId));
+      if (raw === null) return null;
       const parsed = validPersisted(JSON.parse(raw));
       if (!parsed) {
         this.storageBlocked = true;

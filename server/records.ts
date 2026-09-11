@@ -1,7 +1,8 @@
 import type Database from "better-sqlite3";
 import { Router, type RequestHandler } from "express";
 import { fromNodeHeaders } from "better-auth/node";
-import type { Session } from "../src/game/types.js";
+import type { Session, LegacySession } from "../src/game/types.js";
+import type { GameRecord, LegacyGameRecord } from "../src/account/types.js";
 import { parseSavedState } from "../src/storage/schema.js";
 import type { ChessAuth } from "./auth.js";
 
@@ -9,27 +10,16 @@ const MAX_SNAPSHOT_BYTES = 256 * 1024;
 const MAX_HISTORY = 500;
 const MAX_ARCHIVED_GAMES = 200;
 
-export interface GameRecord {
-  id: string;
-  result: "1-0" | "0-1" | "½-½";
-  reason: string;
-  level: "casual" | "club" | "strong";
-  playerColor: "w" | "b";
-  rated: boolean;
-  moves: string[];
-  completedAt: string;
-}
-
 export interface RecordsEnvelope {
   version: number;
-  snapshot: Session | null;
-  games: GameRecord[];
+  snapshot: Session | LegacySession | null;
+  games: (GameRecord | LegacyGameRecord)[];
   updatedAt: string | null;
 }
 
 export interface PutRecordsBody {
   expectedVersion: number;
-  snapshot: Session;
+  snapshot: Session | LegacySession;
 }
 
 export interface LeaderboardPlayer {
@@ -109,7 +99,7 @@ function consumeRateLimit(
   })();
 }
 
-function isBoundedSnapshot(value: unknown): value is Session {
+function isBoundedSnapshot(value: unknown): boolean {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
   const session = value as Record<string, unknown>;
   const game = session.game as Record<string, unknown> | undefined;
@@ -149,6 +139,15 @@ function gameRecord(snapshot: Session): GameRecord | null {
   if (!game.over) return null;
   const completedAt = new Date(game.clockAt).toISOString();
   return {
+    recordVersion: 2,
+    opponent: game.opponent,
+    unratedReason: game.unratedReason,
+    assisted:
+      game.hintUsed || game.takebackUsed === true
+        ? true
+        : game.takebackUsed === null
+          ? null
+          : false,
     id: game.id,
     result: game.over.result,
     reason: game.over.reason,
@@ -171,8 +170,8 @@ function readEnvelope(database: Database.Database, userId: string): RecordsEnvel
     .all(userId, MAX_ARCHIVED_GAMES) as Array<{ record: string }>;
   return {
     version: row?.version ?? 0,
-    snapshot: row ? (JSON.parse(row.snapshot) as Session) : null,
-    games: games.map(({ record }) => JSON.parse(record) as GameRecord),
+    snapshot: row ? (JSON.parse(row.snapshot) as Session | LegacySession) : null,
+    games: games.map(({ record }) => JSON.parse(record) as GameRecord | LegacyGameRecord),
     updatedAt: row?.updated_at ?? null,
   };
 }
@@ -232,10 +231,18 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
     const userId = (request as unknown as AuthenticatedRequest).accountUserId!;
     const transaction = database.transaction(() => {
       const current = database
-        .prepare("SELECT version FROM player_records WHERE user_id = ?")
-        .get(userId) as { version: number } | undefined;
+        .prepare("SELECT version, snapshot FROM player_records WHERE user_id = ?")
+        .get(userId) as { version: number; snapshot: string } | undefined;
       const version = current?.version ?? 0;
-      if (version !== body.expectedVersion) return false;
+      if (version !== body.expectedVersion) return "conflict";
+      // Compare schema and write in the same transaction. A stale client with the
+      // latest record counter still cannot erase fields it cannot understand.
+      if (
+        current &&
+        body.snapshot!.version === 1 &&
+        (JSON.parse(current.snapshot) as { version: number }).version >= 2
+      )
+        return "upgrade";
       const updatedAt = new Date().toISOString();
       database
         .prepare(
@@ -244,7 +251,8 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
         ON CONFLICT(user_id) DO UPDATE SET version = excluded.version, snapshot = excluded.snapshot, updated_at = excluded.updated_at
       `,
         )
-        .run(userId, version + 1, JSON.stringify(snapshot), updatedAt);
+        // Preserve the validated original wire for old clients' exact acknowledgement.
+        .run(userId, version + 1, JSON.stringify(body.snapshot), updatedAt);
       const archive = gameRecord(snapshot);
       if (archive) {
         database
@@ -269,9 +277,17 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
       `,
         )
         .run(userId, userId, MAX_ARCHIVED_GAMES);
-      return true;
+      return "ok";
     });
-    if (!transaction()) {
+    const outcome = transaction();
+    if (outcome === "upgrade") {
+      response.status(426).json({
+        error:
+          "This account uses newer saves. Update Chess Prodigy before syncing; the server copy is unchanged.",
+      });
+      return;
+    }
+    if (outcome === "conflict") {
       response
         .status(409)
         .json({ error: "Record version conflict.", current: readEnvelope(database, userId) });

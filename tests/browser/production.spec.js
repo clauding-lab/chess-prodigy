@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-const saved=page=>page.evaluate(()=>JSON.parse(localStorage.getItem('chess-prodigy-state-v1')));
+const saved=page=>page.evaluate(()=>JSON.parse(localStorage.getItem('chess-prodigy-state-v2')));
 async function start(page,{strong=false,timed=false}={}){
  await page.goto('/');
  if(strong)await page.getByRole('button',{name:'Strong 1800',exact:true}).click();
@@ -85,9 +85,9 @@ test('cached app reopens offline and calculates an out-of-book reply',async({pag
  await expect(reopened.getByRole('dialog')).not.toContainText('analysing…',{timeout:15000});
 });
 test('corrupt saves remain untouched during play until recovery is confirmed',async({page})=>{
- await page.addInitScript(()=>localStorage.setItem('chess-prodigy-state-v1','broken'));
+ await page.addInitScript(()=>localStorage.setItem('chess-prodigy-state-v2','broken'));
  await page.goto('/');await page.getByRole('button',{name:'Start',exact:true}).click();
- expect(await page.evaluate(()=>localStorage.getItem('chess-prodigy-state-v1'))).toBe('broken');
+ expect(await page.evaluate(()=>localStorage.getItem('chess-prodigy-state-v2'))).toBe('broken');
  await expect(page.getByText(/damaged|corrupt|could not be read/i)).toBeVisible();
  await page.getByRole('button',{name:'Enable saving',exact:true}).click();
  await page.getByRole('dialog').getByRole('button',{name:'Enable saving',exact:true}).click();

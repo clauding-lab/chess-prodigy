@@ -2,7 +2,8 @@ import { freshSession, reduceSession } from "../game/state";
 import type { Session } from "../game/types";
 import { isRating, parseSavedState } from "./schema";
 
-export const SAVE_KEY = "chess-prodigy-state-v1";
+export const SAVE_KEY = "chess-prodigy-state-v2";
+export const PREVIOUS_SAVE_KEY = "chess-prodigy-state-v1";
 export const LEGACY_KEY = "chess-fide-rating-v1";
 
 export interface StorageLike {
@@ -27,6 +28,7 @@ export function loadSavedState(
   let raw: string | null;
   try {
     raw = storage.getItem(SAVE_KEY);
+    if (raw === null) raw = storage.getItem(PREVIOUS_SAVE_KEY);
   } catch {
     return { session: fallback, status: "unavailable", hasSavedGame: false };
   }

@@ -1,6 +1,6 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { freshSession } from "../../src/game/state";
-import { AccountSync, accountStorageKey } from "../../src/account/sync";
+import { AccountSync, accountStorageKey, previousAccountStorageKey } from "../../src/account/sync";
 
 class MemoryStorage implements Storage {
   private values = new Map<string, string>();
@@ -28,6 +28,81 @@ const empty = { version: 0, snapshot: null, games: [], updatedAt: null } as cons
 const initial = () => ({ ...empty, snapshot: freshSession(0, "initial") });
 
 afterEach(() => vi.useRealTimers());
+
+it("durably migrates a v1 outbox before sending, preserving versions, order and old bytes", async () => {
+  const storage = new MemoryStorage();
+  const legacy = (id: string) => {
+    const s = JSON.parse(JSON.stringify(freshSession(0, id)));
+    s.version = 1;
+    delete s.game.opponent;
+    delete s.game.unratedReason;
+    delete s.game.takebackUsed;
+    return s;
+  };
+  const snapshot = legacy("active"),
+    terminal = legacy("terminal");
+  const raw = JSON.stringify({
+    baseVersion: 7,
+    snapshot,
+    pending: [
+      { snapshot: terminal, terminal: true },
+      { snapshot, terminal: false },
+    ],
+  });
+  storage.setItem(previousAccountStorageKey("user"), raw);
+  const sent: string[] = [];
+  const sync = new AccountSync("user", storage, async (_url, init) => {
+    const body = JSON.parse(String(init?.body));
+    const persisted = JSON.parse(storage.getItem(accountStorageKey("user"))!);
+    expect(persisted.pending[0].snapshot).toEqual(body.snapshot);
+    expect(body.snapshot.version).toBe(2);
+    expect(body.expectedVersion).toBe(7 + sent.length);
+    sent.push(body.snapshot.game.id);
+    return new Response(
+      JSON.stringify({ ...empty, version: body.expectedVersion + 1, snapshot: body.snapshot }),
+    );
+  });
+  expect(sync.initialize({ ...initial(), version: 20 }).game.id).toBe("active");
+  await sync.flush();
+  expect(sent).toEqual(["terminal", "active"]);
+  expect(storage.getItem(previousAccountStorageKey("user"))).toBe(raw);
+  expect(sync.status()).toMatchObject({ state: "idle", pending: 0 });
+});
+
+it("does not send or discard a migrated outbox when the new durable write is blocked", async () => {
+  const storage = new MemoryStorage(),
+    snapshot = freshSession(0, "preserved");
+  const raw = JSON.stringify({ baseVersion: 3, snapshot, pending: [{ snapshot, terminal: true }] });
+  storage.setItem(previousAccountStorageKey("user"), raw);
+  storage.setItem = () => {
+    throw new Error("quota");
+  };
+  const request = vi.fn();
+  const sync = new AccountSync("user", storage, request);
+  sync.initialize(initial());
+  await sync.flush();
+  expect(request).not.toHaveBeenCalled();
+  expect(sync.status()).toMatchObject({ state: "storage-error", pending: 1 });
+  expect(storage.getItem(previousAccountStorageKey("user"))).toBe(raw);
+});
+
+it("never falls back from a present corrupt v2 outbox or sends replacement data", async () => {
+  const storage = new MemoryStorage(),
+    snapshot = freshSession(0, "old");
+  storage.setItem(
+    previousAccountStorageKey("user"),
+    JSON.stringify({ baseVersion: 1, snapshot, pending: [{ snapshot, terminal: true }] }),
+  );
+  storage.setItem(accountStorageKey("user"), "unreadable-v2");
+  const request = vi.fn(),
+    sync = new AccountSync("user", storage, request);
+  sync.initialize(initial());
+  sync.save(freshSession(0, "replacement"));
+  await sync.flush();
+  expect(request).not.toHaveBeenCalled();
+  expect(sync.status().state).toBe("storage-error");
+  expect(storage.getItem(accountStorageKey("user"))).toBe("unreadable-v2");
+});
 
 it("keeps the original cloud version and pending snapshot across an offline reload", async () => {
   const storage = new MemoryStorage();
