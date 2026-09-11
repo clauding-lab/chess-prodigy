@@ -104,3 +104,13 @@ external review identity is stricter. The bounded history fingerprint is not a s
 No claim of tournament-complete adjudication or fully verified Milestone A.
 
 Next: A1b bare-king timeout regression/fix, then full Run 1 checks and final report.
+
+### A1a import-check correction
+
+Commit `68b8fff` contains the checked A1a implementation. The newly copied handoff had five
+Markdown hard-break trailing-space lines. The final staged whitespace check reported these,
+but the command sequence still created the commit; that checkpoint was not fully green.
+Corrected the imported document whitespace in a separate follow-up, without rewriting history.
+Handoff content/revision is retained; only trailing whitespace is normalized. Full base-to-tree
+diff check and staged diff check must pass before this corrective commit. Last fully verified
+checkpoint before this correction was `4d4b016`. No code/hook failure was bypassed.

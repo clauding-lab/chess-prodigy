@@ -2,11 +2,11 @@
 
 **PWA first. Play first. Historical personalities. Independent review.**
 
-Prepared: **11 September 2026, Asia/Dhaka (UTC+6)**  
-Revision: **2 — local checkpoints, dependency-aware priorities, resumable runs**  
-Repository: `clauding-lab/chess-prodigy`  
-Expected local workspace: `~/projects/chess-prodigy` — confirm, do not assume.  
-Remote baseline inspected: `main` at `f2b45b701795ea2aa03e89688ced04b8106b5928` (8 September 2026).  
+Prepared: **11 September 2026, Asia/Dhaka (UTC+6)**
+Revision: **2 — local checkpoints, dependency-aware priorities, resumable runs**
+Repository: `clauding-lab/chess-prodigy`
+Expected local workspace: `~/projects/chess-prodigy` — confirm, do not assume.
+Remote baseline inspected: `main` at `f2b45b701795ea2aa03e89688ced04b8106b5928` (8 September 2026).
 Package version at that baseline: `1.2.0`.
 
 This is a NEW incremental development brief, not evidence that the work below has been implemented or tested. The local checkout may contain newer work. Inspect it before changing anything. Repository observations are tied to the baseline above; revalidate them locally. Source references appear at the end.
