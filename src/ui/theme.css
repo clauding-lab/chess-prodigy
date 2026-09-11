@@ -648,7 +648,7 @@ body:has(.app[data-theme="dark"]) [data-modal-root] .modal {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  opacity: 0.6;
+  opacity: 0.75;
   margin-bottom: 6px;
 }
 .seg {

@@ -44,6 +44,16 @@ it("migrates v1 to deterministic Classic metadata preserving the receipt, game a
   });
 });
 
+it("does not relabel supplied newer opponent fields as Classic under a legacy schema tag", () => {
+  const wire = legacy();
+  wire.game.opponent = morphyConfig(42);
+  const raw = JSON.stringify(wire),
+    storage = new MemoryStorage();
+  storage.setItem(PREVIOUS_SAVE_KEY, raw);
+  expect(loadSavedState(storage, 3, "fallback").status).toBe("corrupt");
+  expect(storage.getItem(PREVIOUS_SAVE_KEY)).toBe(raw);
+});
+
 it("isolates newer saves from stale v1 writes and preserves the original legacy bytes", () => {
   const storage = new MemoryStorage(),
     raw = JSON.stringify(legacy());

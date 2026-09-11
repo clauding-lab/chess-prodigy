@@ -20,8 +20,9 @@ No pre-existing changes. Node 22.23.0 / npm 10.9.8. No production access or rele
 | `npm run test:accessibility` against preview 4173 | exit 0; both themes 100 |
 | `git diff --check` | exit 0 before checkpoint commit |
 
-R2.0 complete (`48ee845`); R2.1 complete (`266d3b2`); R2.2 implemented/checked;
-R2.3/final not-started; Run 3 deferred.
+R2.0 complete (`48ee845`); R2.1 complete (`266d3b2`); R2.2 complete (`a8cc009`);
+R2.3 implemented and canonical checks passed; supplemental WebKit offline checks blocked.
+Recovery/commit closeout in progress. Run 3 deferred.
 Carried baseline limitation: WebKit offline new-page navigation failed identically on
 Run 1 and untouched `f2b45b7`; physical iPhone checks remain pending.
 
@@ -70,5 +71,55 @@ Migration/rollback details are in the plan. No new SQL tables, production access
 - Independent code/data-path reviewer passed 30 engine/reviewer/worker tests; TypeScript
   reviewer reran typecheck/lint. Both report no remaining actionable findings.
 
-Next: R2.3 flagged UI, full-name/color labels, Practice Rating/unrated explanation and safe
-unsupported-version recovery. Then full run verification and task-only recovery export.
+## R2.3 — UI and safety integration (canonical checks passed)
+
+- Red-first UI suite: 4 failed before implementation (`r23-red.log`).
+- UI/live-hook recovery checks: exit 0, 26 tests / 2 files; includes flag-off creation guard,
+  both-colour resume, pre-first-move beta resume, immutable unavailable versions and explicit
+  recovery-before-update (`r23-recovery-tests.log`).
+- Latest full unit/UI/server suite: **285 tests / 33 files, exit 0** (`final-tests.log`).
+  Typecheck, lint and format: exit 0 (`final-*.log`); explicit browser-file formatting/TypeScript
+  lint also pass. Canonical ESLint excludes tests; explicit TypeScript recommended rules are used.
+- Initial native Chrome beta test: 6 passed / 4 failed because the new test incorrectly expected
+  prompt-mode service-worker control before navigation. Changed the test to await installation,
+  navigate normally offline, then verify control. No app update policy changed. Retained failure
+  traces under `/tmp/chess-prodigy-run2/initial-browser-failures/`.
+- Corrected Chrome flag-off journey suite: **10 passed** (`r23-browser-off-rerun.log`).
+  Initial flag-on suite: 10 passed. Added wood setup axe coverage exposed label contrast at
+  3.77:1; scoped opacity fix; final enabled suite: **10 passed** (`final-browser-on-rerun.log`).
+- Independent data-path/TypeScript reviews approved UI and final mixed-schema guard. The latter
+  was reproduced red (`r23-mixed-schema-red.log`); reviewer independently passed 21 migration/
+  server tests. Final opacity/browser-test delta reviewed with no actionable findings.
+- Wall-clock out-of-book probe: Casual 18/200 ms, Club 59/600 ms, Strong 1302/2000 ms;
+  exit 0 (`morphy-wallclock.log`). This is one measured position, not a strength/performance claim.
+- WebKit mobile enabled beta subset: **2 passed / 2 failed**, exit 1 (`webkit-beta.log`).
+  Selection in both themes and recovery download pass; both offline reload journeys fail with
+  `WebKit encountered an internal error` at `personality.spec.ts` offline `page.reload()`.
+  This matches the error class of the retained pre-Run-1 offline navigation limitation. These
+  journeys are BLOCKED, not green. Separate online Classic/Morphy reviewer checks both pass
+  (2 tests, `webkit-reviewer.log`), including real opponent-score injection, reload cleanup and
+  explicit recomputation. Native tests now assert expected identity and a full nonempty cache.
+
+First final canonical browser pass: **60 passed, 4 failed, 4 skipped** (`final-browser.log`).
+The failures were two stale expectations in both viewports: lowercase `unrated` versus the
+intentional `Unrated game (hint used)` copy, and recovery expecting schema 1 instead of schema 2.
+Corrected these exact assertions; original corrupt bytes and hint eligibility behaviour were
+already correct in the captured output. No app changes or relaxed checks. Full rerun passed:
+**64 passed, 4 existing intentional skips, exit 0** (`final-browser-rerun.log`). Preserved traces
+under `full-browser-first-failures/` in the task log directory. Skips: three duplicate mobile
+account journeys and one desktop touch-only sound journey.
+
+Lighthouse initially failed because its wait predicate still read the v1 key (`final-accessibility.log`).
+Updated only that predicate to wait safely for the v2 authoritative save. Independent TypeScript
+review found no issues; `node --check scripts/check-accessibility.mjs` passed. Rerun: **wood 100,
+dark 100, exit 0** (`final-accessibility-rerun.log`). Final strengthened native WebKit online
+reviewer checks: **2 passed, exit 0** (`webkit-reviewer-final.log`). Offline WebKit remains blocked.
+
+Final ordinary production build has the beta flag off. All 285 unit/UI/server tests, typecheck,
+lint, formatting, build, 64 canonical browser checks and Lighthouse passed. No claim of full
+cross-browser or physical-device verification: WebKit offline navigation and physical iPhone
+checks remain outstanding. Strength calibration and public commercial naming clearance are deferred.
+Four generated tracked screenshots were copied into recovery evidence and restored to their prior
+versions; retained baseline imagery is not presented as new-device evidence.
+
+Next: commit eligible UI/records, verify the task-only recovery export, then stop before Run 3.

@@ -8,7 +8,7 @@ import { reduceSession, settlePriorGame } from "./state";
 import type { Preferences, SessionAction, Setup } from "./types";
 import { playSound } from "./sound";
 import type { LoadResult } from "../storage/store";
-import { isSupportedOpponent } from "../engine/opponents";
+import { isSupportedOpponent, personalityBetaEnabled } from "../engine/opponents";
 import {
   REVIEWER,
   isNeutralEvaluation,
@@ -331,16 +331,30 @@ export function useGame(
       });
   }
   return {
+    recoverySession: session,
     game: session.game,
     rating: session.rating,
     preferences: session.preferences,
-    hasSavedGame: initial.session.game.started,
+    hasSavedGame:
+      initial.session.game.started ||
+      (initial.status === "saved" && initial.session.game.opponent.id !== "classic") ||
+      !isSupportedOpponent(initial.session.game.opponent),
     thinking,
     reviewing,
     hint,
     engineError,
     storageStatus,
-    startGame: (setup: Setup) => dispatch({ type: "new", setup, now: Date.now(), id: newId() }),
+    startGame: (setup: Setup) => {
+      if (
+        setup.opponent &&
+        (!isSupportedOpponent(setup.opponent) ||
+          (setup.opponent.id !== "classic" &&
+            !personalityBetaEnabled(import.meta.env.VITE_PERSONALITY_BETA)))
+      )
+        return false;
+      dispatch({ type: "new", setup, now: Date.now(), id: newId() });
+      return true;
+    },
     move: (move: Move) => {
       const g = current.current.game;
       if (g.st.turn !== g.setup.playerColor || g.over) return;

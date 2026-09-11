@@ -54,7 +54,7 @@ test("hint voids rating, takeback restores board, review closes safely", async (
   await square(page,"e2").click();await square(page,"e4").click();await ready(page);
   await page.getByRole("button",{name:"Hint",exact:true}).click();
   await page.getByRole("button",{name:"Show hint",exact:true}).click();
-  await expect(page.locator(".status")).toContainText("unrated");
+  await expect(page.locator(".status")).toContainText("Unrated game (hint used)");
   await expect(page.locator(".card").filter({hasText:"Hint:"})).toBeVisible();
   await page.getByRole("button",{name:"Undo",exact:true}).click();
   await expect(page.locator(".movelist")).toContainText("Moves appear here");

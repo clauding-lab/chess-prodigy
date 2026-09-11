@@ -35,13 +35,13 @@ unchanged. Difficulty stays separate, with existing Classic budgets and behaviou
    preferences, safety/forced-move/deadline fixtures and held-out/complete-game smoke tests.
    Re-run all reviewer independence tests with actual opponent configurations. Checks: focused
    engine/worker/reviewer suites plus source checks; independent code/TypeScript review.
-4. **R2.3 — not-started:** minimal selection/resume UI behind `VITE_PERSONALITY_BETA=true`.
+4. **R2.3 — implemented; canonical checks passed:** minimal selection/resume UI behind `VITE_PERSONALITY_BETA=true`.
    Classic remains available; both colours/flip show the correct full opponent name and level.
    Practice Rating wording explains the internal measure; beta status never claims hints caused
    its exclusion. Flag off hides new selection but retains supported saved beta games safely.
    Checks: UI regressions, disabled/enabled browser journeys, account/archive save+restore,
    offline worker play, keyboard/focus/narrow layout, source checks and independent review.
-5. **R2 final — not-started:** full canonical suite and accessibility, relevant WebKit journeys,
+5. **R2 final — checks complete; preservation in progress:** full canonical suite and accessibility, relevant WebKit journeys,
    honest blocker report, local checkpoint commits and owner-accessible recovery export.
 
 Run 3 rivalry/archive replay screens, result redesign and enhanced rematch are deferred.
@@ -61,7 +61,7 @@ Retain the archive's 200-game bound; do not add a guest rivalry archive in this 
 ## Next action and preservation
 
 Baseline commands passed and recorded before application/test/config edits.
-Next: R2.3 minimum flagged selection, safe resume and accurate labels/recovery UI.
+Next: commit the checked UI checkpoint, verify recovery export, stop before Run 3.
 Update both Run 2 records at every checkpoint. Keep all commits local
 and stage explicit task-owned paths only. Export a task-only bundle/patch and both records to
 Downloads at closeout; this persistent local copy is not an off-device backup.
@@ -115,3 +115,35 @@ after `e4 e5 Nf3 Nc6 Bc4 Nf6 d3`, out-of-book Club Morphy develops `Bc5` versus 
 Tests include defended targets, adverse material, neutral validation of winning simplification,
 both colours, mate/only legal choice, deadline accounting and three complete initial-board games.
 They are execution/safety evidence, not historical fidelity or calibration. No beta UI yet.
+
+## R2.3 decisions and checkpoint
+
+New setup selection and the hook's start boundary both require exactly
+`VITE_PERSONALITY_BETA=true`; ordinary builds hide Morphy. Difficulty is independent and
+the full name follows the opponent colour under board flipping. Existing supported Morphy
+saves resume immediately with the flag off, including before the first move. New games
+generate a fresh seed while keeping the chosen profile/version and difficulty explicit.
+No biographies, extra profiles, rivalry UI or result redesign were added.
+
+Practice Rating wording now explains performance within this app. Beta status states
+“Unrated beta — opponent calibration pending.” Resignation no longer promises a rating
+adjustment for unrated games; legacy/reset/hint/takeback reasons are distinct. Existing private
+archive rows now include opponent names. The underlying rating calculation is unchanged.
+
+Unsupported configurations disable gameplay/replacement/reset/review and explain the read-only
+state. Recovery downloads contain the full normalized session, without changing stored bytes.
+An explicit app update can proceed after recovery export; it cannot automatically reload a game.
+There is no recovery-file import UI in this run. Mixed v1 snapshots carrying newer opponent
+fields are preserved as unreadable rather than silently relabelled Classic; a red-first regression
+and independent migration/server review confirm genuine v1 saves still migrate.
+
+Native Chrome journeys passed with the flag off and on, including offline reply/review,
+both colours/flip, actual recovery-file contents and account terminal archive preservation.
+Expanded wood setup accessibility exposed 3.77:1 contrast on existing option labels; raising
+their opacity from .6 to .75 fixed the check. Dark and wood setup axe checks now pass. Final
+canonical suite passed: 285 unit/UI/server tests, typecheck/lint/format/build, 64 Chrome checks
+(four existing skips), Lighthouse 100 in both themes. The enabled beta subset passed 10 checks.
+Stale browser assertions and the accessibility script's v1 key were corrected after their recorded
+failures; full browser and accessibility reruns passed. Supplemental WebKit offline reload remains
+blocked by an internal navigation error; selection, actual recovery downloads and both final online
+reviewer checks passed. Physical iPhone evidence remains pending; no full milestone claim.

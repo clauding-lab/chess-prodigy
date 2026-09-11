@@ -9,7 +9,7 @@ try{
  const context=browser.contexts()[0];const page=await context.newPage();
  await page.goto(url);await page.getByRole('button',{name:'Start',exact:true}).click();
  await page.getByRole('button',{name:'e2, white pawn'}).click();await page.getByRole('button',{name:'e4, empty'}).click();
- await page.waitForFunction(()=>JSON.parse(localStorage.getItem('chess-prodigy-state-v1')).game.hist.length===2);
+ await page.waitForFunction(()=>JSON.parse(localStorage.getItem('chess-prodigy-state-v2'))?.game.hist.length===2);
  for(const theme of ['wood','dark']){
   await page.getByRole('button',{name:theme==='wood'?'Wooden board':'Dark board',exact:true}).click();
   const report=await lighthouse(url,{port:chrome.port,onlyCategories:['accessibility'],disableStorageReset:true,output:'json',logLevel:'error'});

@@ -21,6 +21,8 @@ import { RatingPanel } from "./ui/RatingPanel";
 import { UpdatePrompt } from "./ui/UpdatePrompt";
 import { activateSound, playSound, silenceSound } from "./game/sound";
 import "./ui/theme.css";
+import { isSupportedOpponent, opponentName, personalityBetaEnabled } from "./engine/opponents";
+import { unratedDescription } from "./game/eligibility";
 
 function fmtClock(ms: number) {
   const s = Math.max(0, Math.ceil(ms / 1000));
@@ -42,6 +44,10 @@ export default function App({
   const [showSetup, setShowSetup] = useState<boolean | null>(null);
   const gameApi = useGame(!suspended && showSetup === true, storage, suspended);
   const { game, rating, preferences } = gameApi;
+  const available = isSupportedOpponent(game.opponent);
+  const betaEnabled = personalityBetaEnabled(import.meta.env.VITE_PERSONALITY_BETA);
+  const draftOpponent =
+    betaEnabled && game.opponent.id === "attack-development" ? "attack-development" : "classic";
   const soundReady = useRef(false);
   soundReady.current = preferences.sound && !suspended;
   useEffect(
@@ -55,6 +61,7 @@ export default function App({
     color: game.setup.playerColor,
     level: game.setup.level,
     time: game.setup.time,
+    opponentId: draftOpponent,
   });
   const [selected, setSelected] = useState<number | null>(null);
   const [promotion, setPromotion] = useState<Move[] | null>(null);
@@ -63,6 +70,7 @@ export default function App({
   const [dismissedResult, setDismissedResult] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [fenFallback, setFenFallback] = useState<string | null>(null);
+  const [recoveryExported, setRecoveryExported] = useState(false);
   const [setupCompleted, setSetupCompleted] = useState(gameApi.hasSavedGame);
   useEffect(() => setShowSetup(!gameApi.hasSavedGame), [gameApi.hasSavedGame]);
   useEffect(() => {
@@ -85,7 +93,7 @@ export default function App({
   const lastMove = game.hist.at(-1)?.mv ?? null;
 
   function onSquare(square: number) {
-    if (game.over || gameApi.thinking || game.st.turn !== playerColor) return;
+    if (!available || game.over || gameApi.thinking || game.st.turn !== playerColor) return;
     if (selected === null) {
       if (game.st.board[square]?.[0] === playerColor) setSelected(square);
       return;
@@ -107,11 +115,16 @@ export default function App({
     setSelected(game.st.board[square]?.[0] === playerColor ? square : null);
   }
   function openSetup() {
-    setDraft({ color: playerColor, level: game.setup.level, time: game.setup.time });
+    setDraft({
+      color: playerColor,
+      level: game.setup.level,
+      time: game.setup.time,
+      opponentId: draftOpponent,
+    });
     setShowSetup(true);
   }
   function start() {
-    gameApi.startGame(setupFromDraft(draft));
+    if (!gameApi.startGame(setupFromDraft(draft, betaEnabled))) return;
     setSetupCompleted(true);
     setSelected(null);
     setPromotion(null);
@@ -142,7 +155,9 @@ export default function App({
   function resign() {
     setConfirm({
       title: "Resign this game?",
-      body: "It will be recorded as a loss and your rating adjusted.",
+      body: game.rated
+        ? "It will be recorded as a loss and your rating adjusted."
+        : "It will be recorded as an unrated loss. Your Practice Rating stays unchanged.",
       yes: "Resign",
       onYes: () => {
         setConfirm(null);
@@ -171,6 +186,17 @@ export default function App({
       setToast("Select and copy the FEN below");
     }
   }
+  function downloadRecovery() {
+    const url = URL.createObjectURL(
+      new Blob([JSON.stringify(gameApi.recoverySession, null, 2)], { type: "application/json" }),
+    );
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "chess-prodigy-recovery.json";
+    link.click();
+    setRecoveryExported(true);
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
   const captured = useMemo(() => {
     const w: string[] = [],
       b: string[] = [];
@@ -192,7 +218,7 @@ export default function App({
       low = !!game.clocks && game.clocks[color] < 30000;
     const name =
       color === aiColor
-        ? `Engine · ${LEVEL_LABEL[game.setup.level]} (${ENGINE_ELO[game.setup.level]})`
+        ? `${opponentName(game.opponent)} · ${LEVEL_LABEL[game.setup.level]}${game.opponent.id === "classic" ? ` (${ENGINE_ELO[game.setup.level]})` : ""}`
         : `You (${Math.round(rating.rating)})`;
     return (
       <div className="playerbar">
@@ -277,7 +303,7 @@ export default function App({
             ply={game.hist.length}
             board={game.st.board}
             checkedKing={checkedKing}
-            disabled={gameApi.thinking || !!game.over || game.st.turn !== playerColor}
+            disabled={!available || gameApi.thinking || !!game.over || game.st.turn !== playerColor}
             flipped={preferences.flipped}
             hint={gameApi.hint}
             lastMove={lastMove}
@@ -292,12 +318,12 @@ export default function App({
           {pairs.length ? pairs : <span className="mv placeholder">Moves appear here</span>}
         </div>
         <div className="controls">
-          <button className="btn primary" onClick={openSetup} type="button">
+          <button className="btn primary" onClick={openSetup} type="button" disabled={!available}>
             New game
           </button>
           <button
             className="btn"
-            disabled={gameApi.thinking || !game.hist.length}
+            disabled={!available || gameApi.thinking || !game.hist.length}
             onClick={gameApi.undo}
             type="button"
           >
@@ -305,7 +331,7 @@ export default function App({
           </button>
           <button
             className="btn"
-            disabled={!game.started || !!game.over || gameApi.thinking}
+            disabled={!available || !game.started || !!game.over || gameApi.thinking}
             onClick={resign}
             type="button"
           >
@@ -364,13 +390,18 @@ export default function App({
         )}
         <div aria-live="polite" className="status">
           {status}
-          {!game.rated && (
-            <span className="quiet">
-              {" "}
-              · unrated ({game.hintUsed ? "hint used" : "takeback used"})
-            </span>
-          )}
+          {!game.rated && <span className="quiet"> · {unratedDescription(game)}</span>}
         </div>
+        {!available && (
+          <div className="notice" role="alert">
+            This saved opponent version is unavailable. The game is read-only and your progress is
+            preserved. Use a compatible app version to continue. Download a recovery copy before
+            applying an app update.{" "}
+            <button className="linkbtn" onClick={downloadRecovery} type="button">
+              Download recovery save
+            </button>
+          </div>
+        )}
         {accountNotice && (
           <div className="notice" role="status">
             {accountNotice}
@@ -424,8 +455,12 @@ export default function App({
           onReset={resetRating}
           rating={rating}
           saved={gameApi.storageStatus === "saved"}
+          resetDisabled={!available}
         />
-        <UpdatePrompt active={game.started && !game.over} save={gameApi.saveNow} />
+        <UpdatePrompt
+          active={available && game.started && !game.over}
+          save={available ? gameApi.saveNow : () => recoveryExported}
+        />
       </main>
       {promotion && (
         <PromotionModal
@@ -438,21 +473,26 @@ export default function App({
           }}
         />
       )}
-      {game.over && showSetup === false && !showReview && dismissedResult !== resultKey && (
-        <ResultModal
-          game={game}
-          onDismiss={() => setDismissedResult(resultKey)}
-          onNew={openSetup}
-          onReview={review}
-          onUndo={gameApi.undo}
-        />
-      )}{" "}
+      {available &&
+        game.over &&
+        showSetup === false &&
+        !showReview &&
+        dismissedResult !== resultKey && (
+          <ResultModal
+            game={game}
+            onDismiss={() => setDismissedResult(resultKey)}
+            onNew={openSetup}
+            onReview={review}
+            onUndo={gameApi.undo}
+          />
+        )}{" "}
       {showReview && (
         <ReviewModal game={game} onClose={closeReview} reviewing={gameApi.reviewing} />
       )}{" "}
       {showSetup === true && (
         <SetupModal
           accountControls={accountControls}
+          betaEnabled={betaEnabled}
           draft={draft}
           game={game}
           rating={rating}

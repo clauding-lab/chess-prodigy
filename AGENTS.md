@@ -57,7 +57,7 @@ Chess coach with optional private accounts and a public hosted application. Read
 ## Multiplayer and notifications — v1.2.0
 
 - `server/multiplayer.ts` owns authoritative untimed human games, atomic Elo/H2H completion and invitation hashes. `src/multiplayer/` owns the separate UI; never route a human game through computer-opponent work.
-- 1v1 starts at 1200, K=32; games <10 provisional. Human ratings/H2H cannot be reset by clients. Practice calculations are unchanged, displayed as FIDE Rating with a visible unofficial qualifier.
+- 1v1 starts at 1200, K=32; games <10 provisional. Human ratings/H2H cannot be reset by clients. Practice calculations are unchanged, displayed as Practice Rating with an explanation that it measures performance within this app (Run 2, 11 September 2026 BDT).
 - `mp_games.turn_revision` identifies a turn independently of draw-offer revisions. Use `isMultiplayerEventCurrent` for reminder checks. One event per overdue turn; no time forfeits.
 - `server/notifications.ts` persists channel/device jobs and bounded retries; `notification-delivery.ts` uses private Brevo/VAPID configuration. Public push endpoints are allowlisted; never accept arbitrary outbound URLs.
 - Reconcile push ownership before opening another account or confirmed guest session. Browser unsubscribe failures block switching; never show one account while retaining another account’s subscription.

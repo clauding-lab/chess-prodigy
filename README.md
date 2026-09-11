@@ -14,7 +14,31 @@ Human games are untimed. Brevo email and optional device push alert the inviter 
 
 **1v1 Rating** starts at 1200 and uses Elo with K=32; the first ten games are provisional. Completed results update both players once. **H2H** tracks lifetime wins against each opponent, with draws shown separately. No hints or takebacks during human matches; coaching/review opens after the result. The account menu includes **Edit name**; changing a name preserves all records and ratings.
 
-The existing **FIDE Rating** heading is always qualified as **Unofficial · computer practice**. It is neither an official FIDE rating nor a calibrated estimate. The two rating categories have separate leaderboard tabs.
+**Practice Rating** measures performance within this app. It is neither an official FIDE rating nor a calibrated estimate. Its existing mathematics and history are unchanged; 1v1 has a separate rating and leaderboard tab.
+
+Local personality beta (not released): new Paul Morphy selection is **off by default**.
+Use `VITE_PERSONALITY_BETA=true npm run dev -- --port 5173`, or
+`VITE_PERSONALITY_BETA=true npm run build` followed by the normal preview command.
+Select **Paul Morphy**, difficulty, colour and time in New game. “Attack & development”
+describes the bounded playing style; every beta game is unrated while calibration is pending.
+Existing supported beta games resume with the flag off. Unknown opponent versions remain
+read-only and offer **Download recovery save**; retain that copy before applying an update.
+There is no recovery-file import UI in this run; retain it for a compatible client or local
+restoration with assistance. Run 3 rivalry/replay screens and richer rematch/results are deferred.
+
+Saves use version 2 with versioned opponent configuration and seed. Legacy saves become Classic;
+original v1 guest/account keys remain untouched for recovery. A present unreadable v2 save
+never falls back to v1. Migrated account queues preserve ordering and must be stored before
+sending. Once the server accepts v2 it rejects v1 writes, including writes with the current
+version counter. A rollback to v1-only code cannot sync these saves; preserve v2 data and
+restore compatible code. No deployment or data rewrite is required for these local checks.
+
+Run 2 evidence and exact checkpoint status: [plan](docs/plans/2026-09-11-personality-pwa-run2.md)
+and [verification](docs/verification/2026-09-11-personality-pwa-run2.md). For native beta journeys,
+run `npm run test:browser -- tests/browser/personality.spec.ts` after a normal build, or prefix
+both build and that test command with `VITE_PERSONALITY_BETA=true` to verify enabled selection.
+These tests use synthetic guest data and a disposable account server. No playing strength,
+historical fidelity, naming clearance or physical-device verification is claimed.
 
 After your first completed 1v1 game, **H2H** appears in the top bar. Open it to see each opponent and your lifetime wins, draws and losses. Both participants can see their shared results; other players cannot access that matchup's history.
 

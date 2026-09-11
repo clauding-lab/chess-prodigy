@@ -4,10 +4,12 @@ export function RatingPanel({
   rating,
   saved,
   onReset,
+  resetDisabled = false,
 }: {
   rating: Rating;
   saved: boolean;
   onReset(): void;
+  resetDisabled?: boolean;
 }) {
   return (
     <section className="panel" aria-labelledby="rating-title">
@@ -17,7 +19,7 @@ export function RatingPanel({
             {Math.round(rating.rating)}
           </div>
           <div className="meta">
-            FIDE Rating · Unofficial · computer practice · {rating.games} game
+            Practice Rating · Performance within this app · {rating.games} game
             {rating.games === 1 ? "" : "s"} · peak {Math.round(rating.peak)}
             {!saved && " · not saved on this device"}
           </div>
@@ -50,7 +52,7 @@ export function RatingPanel({
         </div>
       )}
       {rating.games > 0 && (
-        <button className="linkbtn" onClick={onReset} type="button">
+        <button className="linkbtn" onClick={onReset} type="button" disabled={resetDisabled}>
           Reset rating
         </button>
       )}

@@ -7,8 +7,15 @@ import { MOTIFS } from "../coach/motifs";
 import type { Color, Level, Move } from "../engine/types";
 import type { Game, Setup, TimeControl } from "../game/types";
 import type { ReactNode } from "react";
+import { morphyConfig, opponentName } from "../engine/opponents";
+import { unratedDescription } from "../game/eligibility";
 
-export type SetupDraft = { color: Color | "rand"; level: Level; time: TimeControl };
+export type SetupDraft = {
+  color: Color | "rand";
+  level: Level;
+  time: TimeControl;
+  opponentId?: "classic" | "attack-development";
+};
 export interface Confirmation {
   title: string;
   body: string;
@@ -26,6 +33,7 @@ export function SetupModal({
   onStart,
   onCancel,
   accountControls,
+  betaEnabled = false,
 }: {
   draft: SetupDraft;
   setDraft(value: SetupDraft): void;
@@ -34,6 +42,7 @@ export function SetupModal({
   onStart(): void;
   onCancel?: () => void;
   accountControls?: ReactNode;
+  betaEnabled?: boolean;
 }) {
   const abandoning = game.started && !game.over && game.rated;
   const before = Math.round(rating.rating);
@@ -41,6 +50,7 @@ export function SetupModal({
     ratingUpdate(rating, ENGINE_ELO[game.setup.level], 0, { opp: "" }, 0).next.rating,
   );
   const loss = before - after;
+  const morphy = betaEnabled && draft.opponentId === "attack-development";
   return (
     <Modal closeOnBackdrop={false} closeOnEscape={!!onCancel} onClose={onCancel} title="New game">
       {abandoning && (
@@ -54,6 +64,36 @@ export function SetupModal({
                 : `You will lose ${loss} displayed rating ${loss === 1 ? "point" : "points"}: ${before} → ${after}.`}
           </p>
           Choose Keep playing to return to this game.
+        </div>
+      )}
+      <div className="optrow">
+        <span className="opt-label">Opponent</span>
+        <div className="seg">
+          <button
+            className={`btn${!morphy ? " on" : ""}`}
+            aria-pressed={!morphy}
+            onClick={() => setDraft({ ...draft, opponentId: "classic" })}
+            type="button"
+          >
+            Classic
+          </button>
+          {betaEnabled && (
+            <button
+              className={`btn${morphy ? " on" : ""}`}
+              aria-pressed={morphy}
+              onClick={() => setDraft({ ...draft, opponentId: "attack-development" })}
+              type="button"
+            >
+              Paul Morphy
+            </button>
+          )}
+        </div>
+      </div>
+      {morphy && (
+        <div className="note" role="status">
+          <strong>Attack &amp; development</strong>
+          <p>A style-inspired simulation that favours active pieces and open lines.</p>
+          Unrated beta — opponent calibration pending.
         </div>
       )}
       <div className="optrow">
@@ -79,7 +119,7 @@ export function SetupModal({
         </div>
       </div>
       <div className="optrow">
-        <span className="opt-label">Engine strength</span>
+        <span className="opt-label">Difficulty</span>
         <div className="seg">
           {(["casual", "club", "strong"] as const).map((v) => (
             <button
@@ -90,8 +130,12 @@ export function SetupModal({
               type="button"
             >
               {LEVEL_LABEL[v]}
-              <br />
-              <span className="subtext">{ENGINE_ELO[v]}</span>
+              {!morphy && (
+                <>
+                  <br />
+                  <span className="subtext">{ENGINE_ELO[v]}</span>
+                </>
+              )}
             </button>
           ))}
         </div>
@@ -180,7 +224,11 @@ export function ResultModal({
     >
       <div className="big">{game.over?.result}</div>
       <div className="why">
-        {game.over?.result === "½-½" ? "Draw" : won ? "You win" : "Engine wins"}
+        {game.over?.result === "½-½"
+          ? "Draw"
+          : won
+            ? "You win"
+            : `${opponentName(game.opponent)} wins`}
       </div>
       {game.ratingApplied && (
         <div className="why">
@@ -192,9 +240,7 @@ export function ResultModal({
           → {Math.round(game.ratingApplied.after)}
         </div>
       )}
-      {!game.rated && (
-        <div className="why">Unrated game ({game.hintUsed ? "hint used" : "takeback used"})</div>
-      )}
+      {!game.rated && <div className="why">{unratedDescription(game)}</div>}
       <button className="btn primary full" onClick={onNew} type="button">
         New game
       </button>
@@ -291,10 +337,15 @@ export function ConfirmModal({ value, onCancel }: { value: Confirmation; onCance
   );
 }
 
-export function setupFromDraft(draft: SetupDraft): Setup {
+export function setupFromDraft(draft: SetupDraft, betaEnabled = false): Setup {
+  if (draft.opponentId === "attack-development" && !betaEnabled)
+    throw new Error("New personality games are disabled in this build.");
   return {
     playerColor: draft.color === "rand" ? (Math.random() < 0.5 ? "w" : "b") : draft.color,
     level: draft.level,
     time: draft.time,
+    ...(draft.opponentId === "attack-development"
+      ? { opponent: morphyConfig(crypto.getRandomValues(new Uint32Array(1))[0]) }
+      : {}),
   };
 }

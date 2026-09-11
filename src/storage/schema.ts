@@ -312,6 +312,13 @@ export function parseSavedState(
   // Migration is deterministic, including assistance that old saves cannot prove.
   const legacy = value.version === 1;
   const gameValue = value.game;
+  // Only genuinely missing legacy metadata becomes Classic. A mixed schema is
+  // preserved as unreadable rather than discarding a supplied opponent identity.
+  if (
+    legacy &&
+    ("opponent" in gameValue || "unratedReason" in gameValue || "takebackUsed" in gameValue)
+  )
+    return null;
   const session = (legacy
     ? {
         ...value,

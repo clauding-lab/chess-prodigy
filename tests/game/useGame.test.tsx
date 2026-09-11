@@ -31,6 +31,26 @@ beforeEach(() => {
   fake.sound.mockClear();
 });
 afterEach(() => vi.useRealTimers());
+it("blocks new beta games when the capability flag is off without abandoning Classic", async () => {
+  const { morphyConfig } = await import("../../src/engine/opponents");
+  vi.stubEnv("VITE_PERSONALITY_BETA", "false");
+  const { result } = renderHook(() => useGame(true));
+  act(() => result.current.move(legalMoves(result.current.game.st)[0]));
+  const before = result.current.game;
+  let accepted = true;
+  act(() => {
+    accepted = result.current.startGame({
+      playerColor: "w",
+      level: "club",
+      time: "none",
+      opponent: morphyConfig(1),
+    });
+  });
+  expect(accepted).toBe(false);
+  expect(result.current.game).toBe(before);
+  expect(result.current.rating.games).toBe(0);
+  vi.unstubAllEnvs();
+});
 it("does not schedule work, settle clocks or overwrite a saved unavailable opponent", async () => {
   vi.useFakeTimers();
   const { reduceSession } = await import("../../src/game/state");

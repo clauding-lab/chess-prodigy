@@ -6,6 +6,7 @@ import type { Color } from "../engine/types";
 import type { Game } from "../game/types";
 import { Card } from "./Card";
 import { isNeutralEvaluation, reviewComplete, reviewHistory } from "../engine/reviewer";
+import { isSupportedOpponent } from "../engine/opponents";
 
 function fmtEval(score: number) {
   if (Math.abs(score) > 3000) return score > 0 ? "White mates" : "Black mates";
@@ -175,7 +176,13 @@ export function CoachPanel({
           <div className="coach-row">
             <button
               className="btn"
-              disabled={!!game.over || thinking || game.st.turn !== playerColor || !!hint}
+              disabled={
+                !isSupportedOpponent(game.opponent) ||
+                !!game.over ||
+                thinking ||
+                game.st.turn !== playerColor ||
+                !!hint
+              }
               onClick={onHint}
               type="button"
             >
@@ -183,7 +190,9 @@ export function CoachPanel({
             </button>
             <button
               className="btn"
-              disabled={!game.started || reviewing || thinking}
+              disabled={
+                !isSupportedOpponent(game.opponent) || !game.started || reviewing || thinking
+              }
               onClick={onReview}
               type="button"
             >

@@ -91,6 +91,6 @@ test('corrupt saves remain untouched during play until recovery is confirmed',as
  await expect(page.getByText(/damaged|corrupt|could not be read/i)).toBeVisible();
  await page.getByRole('button',{name:'Enable saving',exact:true}).click();
  await page.getByRole('dialog').getByRole('button',{name:'Enable saving',exact:true}).click();
- expect((await saved(page)).version).toBe(1);
+ expect((await saved(page)).version).toBe(2);
  await expect(page.locator('.notice')).toHaveCount(0);
 });

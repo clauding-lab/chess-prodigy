@@ -11,6 +11,7 @@ import {
 } from "./api";
 import { listGames } from "../multiplayer/api";
 import type { AccountUser, GameRecord, LeaderboardPlayer } from "./types";
+import { opponentName } from "../engine/opponents";
 
 function ErrorMessage({ value }: { value: string }) {
   return value ? (
@@ -62,7 +63,7 @@ export function AuthModal({
               <input name="name" required maxLength={80} autoComplete="name" />
             </label>
             <p className="form-note">
-              Your display name, FIDE Rating (unofficial computer practice), 1v1 Rating and game
+              Your display name, Practice Rating (performance within this app), 1v1 Rating and game
               counts will be public on the leaderboards. Your email and games stay private.
             </p>
           </>
@@ -159,9 +160,9 @@ export function AccountModal({
       {ratings && (
         <div className="account-ratings">
           <p>
-            FIDE Rating: <b>{Math.round(ratings.practice)}</b>
+            Practice Rating: <b>{Math.round(ratings.practice)}</b>
             <br />
-            <span className="quiet">Unofficial · computer practice</span>
+            <span className="quiet">Performance within this app</span>
           </p>
           <p>
             1v1 Rating: <b>{Math.round(ratings.human)}</b>
@@ -255,7 +256,7 @@ export function AccountModal({
         <ol className="record-list">
           {games?.map((game) => (
             <li key={game.id}>
-              <b>{game.result}</b> · {game.reason} · {game.level}
+              <b>{game.result}</b> · {game.reason} · {opponentName(game.opponent)} · {game.level}
               <span>{new Date(game.completedAt).toLocaleDateString()}</span>
             </li>
           ))}
@@ -299,7 +300,7 @@ export function LeaderboardModal({ onClose }: { onClose: () => void }) {
           aria-pressed={tab === "practice"}
           onClick={() => setTab("practice")}
         >
-          FIDE Rating
+          Practice Rating
         </button>
         <button className="btn" aria-pressed={tab === "human"} onClick={() => setTab("human")}>
           1v1 Rating
@@ -307,7 +308,7 @@ export function LeaderboardModal({ onClose }: { onClose: () => void }) {
       </div>
       <p className="form-note">
         {tab === "practice"
-          ? "Unofficial · computer practice. This app does not issue official FIDE ratings or calibrated FIDE estimates."
+          ? "Practice Rating measures performance within this app. It is not an official FIDE rating or a calibrated FIDE estimate."
           : "Community Elo from completed human matches. Provisional for your first 10 games."}
       </p>
       {players === null && !error && <p className="quiet">Loading…</p>}
