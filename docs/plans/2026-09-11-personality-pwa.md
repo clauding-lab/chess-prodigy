@@ -222,3 +222,17 @@ Resolve/characterize the existing WebKit offline-navigation limitation before cl
 cross-browser/offline acceptance. No rivalry screens, result redesign, Stockfish, iOS packaging
 or release operations have begun. Naming clearance, calibration and stronger-review decisions
 remain deferred release prerequisites.
+
+### Closeout confirmation
+
+Verified browser/record checkpoint: `557fe3f7207f7ee013da92576f57771151c03ed0`.
+Latest application-code checkpoint: `f941d25`; base and main remain `f2b45b7`.
+All task changes are committed; initial owner diff and remaining application/test diff are empty.
+The recovery directory above now EXISTS and contains the verified task-only bundle, patch,
+records, selected synthetic logs and restore README. `git bundle verify` exited 0 and the
+consolidated patch passed `git apply --check` against an untouched base source archive.
+This documentation closeout is committed separately; export copies are refreshed to include
+it, with the actual final HEAD in the recovery README and final owner report.
+
+Run 1 stops here: implementation/canonical checks verified; supplemental WebKit offline check
+blocked as reproduced on baseline; physical devices and Run 2 onward deferred.
