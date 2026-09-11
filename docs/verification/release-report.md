@@ -1,4 +1,12 @@
-# Chess Prodigy v1.0.0 release verification
+# Chess Prodigy release verification
+
+## 11 September 2026 BDT — version 2.0.0 source release
+
+The [2.0 release record](2026-09-11-v2-release.md) tracks fresh release checks and publication.
+The completed [Run 3 verification](2026-09-11-personality-pwa-run3.md) links all feature
+checkpoints, independent reviews, migration evidence and remaining device checks.
+Version 2.0.0 publication does not deploy the hosted app. Historical deployment evidence
+below retains its original dates and scope.
 
 ## 8 September 2026 BDT — abandonment rating preview
 

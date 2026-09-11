@@ -89,3 +89,11 @@ verification record. Guest history uses its own 200-game key; account history is
 server authority outside active snapshots, with ordered pending overlays. Never import guest
 history on login, count retained results as lifetime totals, or replace unknown opponent versions.
 Archive failure must preserve the active terminal game before replacement. No release is authorized.
+
+## Version 2 release authorization — 11 September 2026 BDT
+
+The owner subsequently requested “push and cut a new 2.0 release. update the readme too”.
+This supersedes the earlier local-only publication boundary for the completed Runs 1–3:
+update release documentation/version, verify, fast-forward and push main, and publish v2.0.0
+on GitHub. Deployment and live player data are outside this task. Keep Morphy default-off
+and unrated. See `docs/verification/2026-09-11-v2-release.md` for release evidence.

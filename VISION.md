@@ -47,3 +47,12 @@ the prior Run 2 presentation deferral only. Preserve the existing board, themes 
 coaching. Report retained outcome counts without causal narratives or lifetime claims. Morphy
 remains a default-off, unrated beta; commercial naming, strength calibration and physical-device
 checks remain separate outstanding decisions. No publishing, deployment or Milestone B/C/D work.
+
+## Version 2 publication — 11 September 2026 BDT
+
+After reporting the local app works, the owner explicitly requested “push and cut a new
+2.0 release. update the readme too”. Publishing the completed Runs 1–3 source, updating
+README/changelog/version, fast-forwarding main and cutting the v2.0.0 GitHub release are
+now authorized. This supersedes the earlier local-only publishing restriction. Deployment
+is separate and is not part of this request. Preserve the default-off, unrated Morphy beta,
+private data boundaries and the documented calibration/device limitations.

@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.0.0] — 2026-09-11 (BDT)
+
+- Games history for the most recent 200 completed computer games, legal read-only replay, private retained results by opponent version/difficulty, and rematches with preserved setup choices.
+- Optional, default-off Paul Morphy beta with bounded attack/development preferences and seeded, reproducible opening choices. All beta games are unrated; Classic rating calculations are unchanged.
+- Independent neutral review and hints across workers, live/persisted caches, legacy restoration and annotation recomputation. Opponent evaluations cannot masquerade as coaching review.
+- Practice Rating wording now describes the existing in-app measure without implying an official FIDE rating.
+- Version 2 saves preserve original legacy keys and pending account writes. Unknown opponent versions remain recoverable/read-only. Damaged or unavailable history is reported honestly; a failed archive cannot silently discard the completed active game.
+- A timeout is a draw when the non-flagging opponent has only a king. Other timeout/rating rules remain unchanged.
+- Includes the post-1.2 H2H navigation, temporary chat, unread indicator, touch-audio retry and abandonment-rating preview documented below.
+- Preserves existing accounts, ratings, 1v1, stories, saved progress and offline guest play. No database schema migration, paid service, external analytics or Stockfish.
+
+This publishes source only; the hosted application is not deployed by this release. Morphy remains a beta and requires `VITE_PERSONALITY_BETA=true` when starting development or building. Physical-device checks, strength calibration and commercial naming clearance remain outstanding. See the [release record](docs/verification/2026-09-11-v2-release.md) for measured checks and migration limits.
+
 ## Updates — 2026-09-08 (BDT)
 
 - New-game warning previews the displayed practice-rating loss before replacing an unfinished rated game, with explicit “Abandon and start” and “Keep playing” choices. The 1400 minimum and existing rating rules are unchanged.
@@ -73,3 +86,5 @@ First public release of Chess Prodigy.
 [1.0.0]: https://github.com/clauding-lab/chess-prodigy/releases/tag/v1.0.0
 
 [1.0.1]: https://github.com/clauding-lab/chess-prodigy/releases/tag/v1.0.1
+
+[2.0.0]: https://github.com/clauding-lab/chess-prodigy/releases/tag/v2.0.0

@@ -6,6 +6,26 @@ A chess coach you can play in your browser. Practise against three engine streng
 
 [![Chess Prodigy — dark board, three engine strengths, 185 opening lines, 27 coaching cards, hints and game review, accounts and saved progress, practice leaderboard, and offline guest play](docs/verification/hero-banner.png)](https://chess.clauding-lab.com)
 
+## New in 2.0
+
+- **Games, replay and rematches:** browse up to 200 completed computer games and replay their moves without changing your active game or rating. Rematch keeps the opponent, difficulty, colour and clock settings, with a chance to change them before starting.
+- **Private opponent records:** compare retained wins, draws and losses by opponent version and difficulty. Assisted and unassisted games stay separate; older records may have unknown assistance. These counts cover retained games, not lifetime totals.
+- **Independent coaching review:** hints and move annotations use a neutral reviewer, separate from the opponent's playing style. Old or incomplete evaluation data is not presented as a trustworthy review.
+- **Optional Paul Morphy beta:** an attack-and-development style at Casual, Club and Strong difficulty. It works for guests without signing in, remains **off by default**, and every Morphy game is **unrated**. Enable it using the command below.
+- **Safer saved games:** versioned opponents, recoverable legacy saves and a corrected draw when time expires against an opponent with only a king. Existing Classic ratings and 1v1 play are preserved.
+
+This is the **2.0.0 source release**. Publishing it does not update the hosted app; deployment is a separate step. Morphy's playing strength and historical fidelity are not independently calibrated, and physical-device installation/audio checks remain outstanding.
+
+### Saved games and recovery
+
+Guest history stays in this browser; account records stay with their owner. Opening **Games** does not pause a running clock. Pending account records are labelled when offline, and an unavailable history cache is shown as incomplete.
+
+Damaged history is preserved and offers a download of the original data. If a completed game cannot be saved, starting another game stops with a recovery download. Retain these files for assisted recovery; there is no recovery-file import screen. Signing in does not automatically import guest games.
+
+Version 2 saves preserve original v1 guest/account keys and identify legacy opponents as Classic. An unreadable v2 save never silently falls back to v1. Once an account has accepted v2, older v1-only clients cannot overwrite it. Rollback requires retaining v2 data and restoring compatible code; there is no database schema migration or retroactive rating change.
+
+Supported saved Morphy games can resume and replay with the beta disabled, but starting a new Morphy game or rematch requires the beta setting. Unknown opponent versions remain read-only with **Download recovery save**; the app never silently substitutes Classic. Older records without a clock setting default to **No clock** for rematches.
+
 ## Play a friend
 
 Registered players can open **Play a friend**, choose a colour and share a private invitation link. The recipient signs in or registers and joins automatically. Invitations accept one opponent and expire after seven days. **My games** lists ongoing and completed matches; either player can leave and resume later.
@@ -15,53 +35,6 @@ Human games are untimed. Brevo email and optional device push alert the inviter 
 **1v1 Rating** starts at 1200 and uses Elo with K=32; the first ten games are provisional. Completed results update both players once. **H2H** tracks lifetime wins against each opponent, with draws shown separately. No hints or takebacks during human matches; coaching/review opens after the result. The account menu includes **Edit name**; changing a name preserves all records and ratings.
 
 **Practice Rating** measures performance within this app. It is neither an official FIDE rating nor a calibrated estimate. Its existing mathematics and history are unchanged; 1v1 has a separate rating and leaderboard tab.
-
-Local personality beta (not released): new Paul Morphy selection is **off by default**.
-Use `VITE_PERSONALITY_BETA=true npm run dev -- --port 5173`, or
-`VITE_PERSONALITY_BETA=true npm run build` followed by the normal preview command.
-Select **Paul Morphy**, difficulty, colour and time in New game. “Attack & development”
-describes the bounded playing style; every beta game is unrated while calibration is pending.
-Existing supported beta games resume with the flag off. Unknown opponent versions remain
-read-only and offer **Download recovery save**; retain that copy before applying an update.
-There is no recovery-file import UI in this run; retain it for a compatible client or local
-restoration with assistance.
-
-Local Run 3 adds **Games** within computer practice: up to 200 completed games, private recorded
-results by opponent version and difficulty, and read-only move replay. Guest history stays in this
-browser; account records stay with their owner. Assisted and unassisted results are shown separately;
-older records may have unknown assistance. These are retained records, not lifetime totals.
-Opening Games does not pause a running clock. Replay changes neither the active game nor its rating.
-
-After a result, **Rematch** opens the existing setup with opponent, difficulty, colour and clock
-retained. You can change the colour before starting; starting creates a new game identity and beta
-seed. Older records without a clock setting explicitly default to No clock. New Morphy rematches
-require the beta switch; saved games and legal replays remain accessible when it is off.
-
-Guest history uses the separate `chess-prodigy-guest-history-v1` key. Account history is a local
-cache of server records plus pending changes, outside the active snapshot. Offline pending records
-are labelled; missing caches are incomplete. Damaged history is preserved and offers an original
-history download. If a completed game cannot be preserved, starting another game stops with a
-recovery download; retry saving or retain the files for assisted recovery. There is no recovery-file
-import UI. No SQL migration, automatic guest import or retroactive rating change is introduced.
-Run 3 [plan](docs/plans/2026-09-11-personality-pwa-run3.md) and
-[verification](docs/verification/2026-09-11-personality-pwa-run3.md) contain checkpoint status.
-After building, `npm run test:browser -- tests/browser/records.spec.ts` exercises these flows with
-synthetic guest data and the disposable account server. Use the same beta switch for build and test
-when checking enabled Morphy rematches.
-
-Saves use version 2 with versioned opponent configuration and seed. Legacy saves become Classic;
-original v1 guest/account keys remain untouched for recovery. A present unreadable v2 save
-never falls back to v1. Migrated account queues preserve ordering and must be stored before
-sending. Once the server accepts v2 it rejects v1 writes, including writes with the current
-version counter. A rollback to v1-only code cannot sync these saves; preserve v2 data and
-restore compatible code. No deployment or data rewrite is required for these local checks.
-
-Run 2 evidence and exact checkpoint status: [plan](docs/plans/2026-09-11-personality-pwa-run2.md)
-and [verification](docs/verification/2026-09-11-personality-pwa-run2.md). For native beta journeys,
-run `npm run test:browser -- tests/browser/personality.spec.ts` after a normal build, or prefix
-both build and that test command with `VITE_PERSONALITY_BETA=true` to verify enabled selection.
-These tests use synthetic guest data and a disposable account server. No playing strength,
-historical fidelity, naming clearance or physical-device verification is claimed.
 
 After your first completed 1v1 game, **H2H** appears in the top bar. Open it to see each opponent and your lifetime wins, draws and losses. Both participants can see their shared results; other players cannot access that matchup's history.
 
@@ -123,6 +96,14 @@ For a frontend-only guest preview:
 npm run dev -- --port 5173
 ```
 
+To enable the optional Paul Morphy beta in the local guest preview (no account required):
+
+```sh
+VITE_PERSONALITY_BETA=true npm run dev -- --port 5173
+```
+
+Open `http://127.0.0.1:5173`, choose **New game**, then **Paul Morphy**. For a production build with the beta enabled, use `VITE_PERSONALITY_BETA=true npm run build`, then `npm start` or `npm run preview -- --port 4173`. This setting is applied at build time; setting it only when starting an already built server does not enable selection.
+
 Offline installation needs HTTPS or localhost. Account requests are excluded from the offline cache.
 
 ## Checks
@@ -161,4 +142,4 @@ reproduction results and remaining physical-device limits.
 | `deploy` | Service configuration, backup and deployment guide |
 | `reference` | Original supplied prototype and corrected behavioural reference |
 
-See [CHANGELOG](CHANGELOG.md), [release evidence](docs/verification/release-report.md), [agent instructions](AGENTS.md) and [scope](VISION.md). There is no Stockfish, paid AI or external chess-service dependency.
+See [CHANGELOG](CHANGELOG.md), [2.0 release evidence](docs/verification/2026-09-11-v2-release.md), [feature verification](docs/verification/2026-09-11-personality-pwa-run3.md), [historical release evidence](docs/verification/release-report.md), [agent instructions](AGENTS.md) and [scope](VISION.md). There is no Stockfish, paid AI or external chess-service dependency.
