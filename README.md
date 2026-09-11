@@ -115,6 +115,16 @@ npm run test:browser
 
 The browser suite exercises desktop and mobile layouts in Chromium. Physical Android/iOS installation and performance checks remain pending; browser emulation does not establish those results. The separate `npm run test:accessibility` runs Lighthouse against a preview on port 4173 (`CHESS_PREVIEW_URL` overrides the address).
 
+After building, `npx playwright test --config playwright.offline.config.ts` checks cached
+Classic/Morphy play and review in Chrome and WebKit while each test's disposable local server
+is stopped. It verifies that uncached requests fail and that disabling the service worker prevents
+reopening. No live server or player data is used. This tests an unreachable app server, not device
+airplane mode or OS process eviction. The installed WebKit/Playwright simulated-offline switch
+fails cached navigation even for an independent minimal page; the original and current app builds
+both pass with the server actually stopped. Existing simulated-offline checks are retained.
+See the [investigation evidence](docs/verification/2026-09-11-webkit-offline.md) for exact versions,
+reproduction results and remaining physical-device limits.
+
 ## Project map
 
 | Path | Purpose |

@@ -28,3 +28,14 @@ Baseline canonical checks passed; minimal and original/current comparisons ident
 installed WebKit offline-emulation boundary. No application change justified. Next: add a
 supplemental server-unavailable regression, keep existing emulation checks intact, independently
 review the test and run canonical/full plus focused cross-browser checks before closeout.
+
+## Progress checkpoint
+
+Baseline/diagnosis committed as `4ca52bc`. Supplemental regression implemented; final focused
+suite passed ten checks across Chrome/WebKit. Both reviewers approved after removing automatic
+fixture reseeding and making server cleanup unconditional. No application change needed.
+Final 285-test suite, source checks and explicit new-file checks pass; expanded canonical browser
+passed 74 checks with four existing skips, and Lighthouse scored 100 in both themes. A WebKit
+explicit-update check also passed. Next: commit eligible test/README/records,
+export task-only recovery and stop. Device airplane mode, installed-app lifecycle and physical
+iPhone checks remain pending, as does the unchanged emulated-offline WebKit limitation.
