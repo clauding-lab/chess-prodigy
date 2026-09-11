@@ -1,5 +1,5 @@
 import React, { StrictMode } from "react";
-import { act, render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { act, render, screen, fireEvent } from "@testing-library/react";
 import { afterEach, beforeEach, it, expect, vi } from "vitest";
 import App from "../../src/App";
 import { legalMoves } from "../../src/engine/board";
@@ -39,6 +39,7 @@ function seedTimedPlayerTurn(remaining = 100) {
   localStorage.setItem("chess-prodigy-state-v2", JSON.stringify(session));
 }
 it("starts, plays a legal move, receives an engine reply and preserves theme across reload", async () => {
+  vi.useFakeTimers();
   const view = render(
     <StrictMode>
       <App />
@@ -48,9 +49,12 @@ it("starts, plays a legal move, receives an engine reply and preserves theme acr
   fireEvent.click(screen.getByRole("button", { name: "Start", exact: true }));
   fireEvent.click(screen.getByRole("button", { name: "e2, white pawn" }));
   fireEvent.click(screen.getByRole("button", { name: "e4, empty" }));
-  await waitFor(() =>
-    expect(JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!).game.hist).toHaveLength(2),
-  );
+  // The reply deliberately waits at least one second; a one-second wall-clock
+  // polling deadline races that requirement under a busy full-suite run.
+  await act(async () => vi.advanceTimersByTimeAsync(999));
+  expect(JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!).game.hist).toHaveLength(1);
+  await act(async () => vi.advanceTimersByTimeAsync(1));
+  expect(JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!).game.hist).toHaveLength(2);
   fireEvent.click(screen.getByRole("button", { name: "Wooden board" }));
   view.unmount();
   render(<App />);

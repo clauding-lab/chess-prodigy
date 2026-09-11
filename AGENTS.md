@@ -81,3 +81,11 @@ and its safe persistence/rating dependencies. See the `2026-09-11-personality-pw
 plan and verification records. New saves use schema/key v2; v1 originals remain for recovery.
 Do not downgrade a v2 account snapshot or substitute an unavailable opponent configuration.
 Morphy is always unrated; Classic mathematics and 1v1 are unchanged. Run 3 UI remains deferred.
+
+The owner explicitly invoked Run 3 (“go for run 3”): bounded guest/account recorded history,
+legal read-only replay, configuration/difficulty rivalry and result/rematch integration, with
+full local Milestone A checks. See `docs/plans/2026-09-11-personality-pwa-run3.md` and matching
+verification record. Guest history uses its own 200-game key; account history is a cache of
+server authority outside active snapshots, with ordered pending overlays. Never import guest
+history on login, count retained results as lifetime totals, or replace unknown opponent versions.
+Archive failure must preserve the active terminal game before replacement. No release is authorized.

@@ -164,6 +164,26 @@ for (const profile of ["Classic", "Morphy"] as const)
         expect(reviewed.game.opponent).toEqual(before.game.opponent);
         expect(reviewed.game.rated).toBe(profile === "Classic");
         expect(reviewed.game.ratingApplied).toBeNull();
+        await reopened.getByRole("button", { name: "Close", exact: true }).click();
+        await reopened.getByRole("button", { name: "Resign", exact: true }).click();
+        await reopened
+          .getByRole("dialog", { name: "Resign this game?" })
+          .getByRole("button", { name: "Resign", exact: true })
+          .click();
+        await reopened.getByRole("button", { name: "View board", exact: true }).click();
+        const completed = await saved(reopened);
+        await reopened.reload();
+        await reopened.getByRole("button", { name: "View board", exact: true }).click();
+        await reopened.getByRole("button", { name: "Games", exact: true }).click();
+        const records = reopened.getByRole("dialog", { name: "Recorded games" });
+        await expect(records.getByRole("region", { name: "Recorded rivalry" })).toContainText(
+          "1 recorded game",
+        );
+        await records.getByRole("button", { name: "Replay recorded game 1" }).click();
+        await records.getByRole("slider", { name: "Replay position" }).press("End");
+        await expect(records.getByRole("group", { name: "Chess board" })).toBeVisible();
+        expect((await saved(reopened)).game).toEqual(completed.game);
+        expect((await saved(reopened)).rating).toEqual(completed.rating);
       } finally {
         await origin.stop();
       }

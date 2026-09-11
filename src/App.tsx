@@ -23,6 +23,8 @@ import { activateSound, playSound, silenceSound } from "./game/sound";
 import "./ui/theme.css";
 import { isSupportedOpponent, opponentName, personalityBetaEnabled } from "./engine/opponents";
 import { unratedDescription } from "./game/eligibility";
+import type { GameRecord } from "./account/types";
+import { canRematch, RecordedGamesModal } from "./ui/RecordedGames";
 
 function fmtClock(ms: number) {
   const s = Math.max(0, Math.ceil(ms / 1000));
@@ -66,6 +68,9 @@ export default function App({
   const [selected, setSelected] = useState<number | null>(null);
   const [promotion, setPromotion] = useState<Move[] | null>(null);
   const [showReview, setShowReview] = useState(false);
+  const [showGames, setShowGames] = useState(false);
+  const [startError, setStartError] = useState<string | null>(null);
+  const [rematchNote, setRematchNote] = useState<string | null>(null);
   const [confirm, setConfirm] = useState<Confirmation | null>(null);
   const [dismissedResult, setDismissedResult] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -115,6 +120,8 @@ export default function App({
     setSelected(game.st.board[square]?.[0] === playerColor ? square : null);
   }
   function openSetup() {
+    setStartError(null);
+    setRematchNote(null);
     setDraft({
       color: playerColor,
       level: game.setup.level,
@@ -124,12 +131,35 @@ export default function App({
     setShowSetup(true);
   }
   function start() {
-    if (!gameApi.startGame(setupFromDraft(draft, betaEnabled))) return;
+    if (!gameApi.startGame(setupFromDraft(draft, betaEnabled))) {
+      setStartError(
+        "The previous game could not be saved. Download a recovery save, then cancel and check Games or retry saving before starting another game.",
+      );
+      return;
+    }
+    setStartError(null);
     setSetupCompleted(true);
     setSelected(null);
     setPromotion(null);
     setShowSetup(false);
     setShowReview(false);
+  }
+  function rematch(record: Pick<GameRecord, "opponent" | "level" | "playerColor" | "time">) {
+    if (!canRematch(record, betaEnabled)) return;
+    setDraft({
+      color: record.playerColor,
+      level: record.level,
+      time: record.time ?? "none",
+      opponentId: record.opponent.id === "attack-development" ? "attack-development" : "classic",
+    });
+    setRematchNote(
+      record.time === undefined
+        ? "Original clock setting was not recorded; choose a time control."
+        : null,
+    );
+    setStartError(null);
+    setShowGames(false);
+    setShowSetup(true);
   }
   function askHint() {
     if (game.rated && game.started)
@@ -349,6 +379,16 @@ export default function App({
           </button>
           <button
             className="btn"
+            onClick={() => {
+              setShowGames(true);
+              void gameApi.refreshHistory();
+            }}
+            type="button"
+          >
+            Games
+          </button>
+          <button
+            className="btn"
             onClick={() =>
               gameApi.setPreferences({ theme: preferences.theme === "wood" ? "dark" : "wood" })
             }
@@ -477,9 +517,20 @@ export default function App({
         game.over &&
         showSetup === false &&
         !showReview &&
+        !showGames &&
         dismissedResult !== resultKey && (
           <ResultModal
             game={game}
+            history={gameApi.history}
+            rematchAvailable={canRematch(game, betaEnabled)}
+            onRematch={() =>
+              rematch({
+                opponent: game.opponent,
+                level: game.setup.level,
+                playerColor: game.setup.playerColor,
+                time: game.setup.time,
+              })
+            }
             onDismiss={() => setDismissedResult(resultKey)}
             onNew={openSetup}
             onReview={review}
@@ -489,8 +540,26 @@ export default function App({
       {showReview && (
         <ReviewModal game={game} onClose={closeReview} reviewing={gameApi.reviewing} />
       )}{" "}
+      {showGames && (
+        <RecordedGamesModal
+          history={gameApi.history}
+          target={{ opponent: game.opponent, level: game.setup.level }}
+          scope={gameApi.historyScope}
+          betaEnabled={betaEnabled}
+          onRematch={rematch}
+          onClose={() => setShowGames(false)}
+          onRetry={() => {
+            void gameApi.refreshHistory();
+          }}
+          loading={gameApi.historyLoading}
+          error={gameApi.historyError}
+        />
+      )}
       {showSetup === true && (
         <SetupModal
+          startError={startError}
+          rematchNote={rematchNote}
+          onRecovery={downloadRecovery}
           accountControls={accountControls}
           betaEnabled={betaEnabled}
           draft={draft}

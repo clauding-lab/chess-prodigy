@@ -93,3 +93,126 @@ Canonical format rerun after UI files stabilized exits 0 (`r32-resume-format-fin
 R3.2 declared checks now pass, including earlier fresh 119-test/typecheck/lint checks.
 Concurrent UI production build also passes (`r33-build.log`), but its browser checkpoint
 remains pending. Commit only the reviewed R3.2 sources/account test and execution records.
+
+## R3.3 implementation and browser checkpoint — in progress
+
+R3.2 committed `7839444`. Added Games within the existing practice controls, legal read-only
+replay, version/difficulty W/D/L partitions, original-history download and honest cache status.
+Results retain outcome/rating precedence and add Rematch/Review/New game. Rematch opens existing
+setup, retains colour/clock/profile/difficulty and creates a fresh ID/seed on start. Missing
+historical clock is explicitly No clock; beta-disabled rematches never substitute Classic.
+Failed terminal preservation remains in setup with a recovery-save download. Opening Games
+continues active clocks. No archived neutral annotations or causal narratives are invented.
+
+Component's 12 tests and completion's 5 tests pass. The full suite passed 320 tests / 38 files
+before review identified coercible archive enums: arrays passed `String(...)` validation and
+could count a displayed draw as a loss. Red-first regression failed as expected; require primitive
+result/level/colour strings. Follow-up focused 110 tests / 19 files, typecheck/lint/format pass.
+Independent whole-path code/TypeScript review approves the fix and final UI with no remaining
+findings. Supplemental strict new-test TypeScript exposed unsupported Testing Library `exact`
+options copied from old tests; removed them (role string names are exact by default).
+
+New browser file `tests/browser/records.spec.ts`: seven desktop and seven mobile passes on a
+normal default-off build. Tests cover actual guest completion/archive/replay, both-colour Classic
+rematches, flag-off Morphy, 320px wood/dark keyboard/focus and axe, offline reload/replay, and
+real disposable account archive ownership (including wrong-owner HTTP 401). No live data.
+Browser file strict types/format pass. Enabled-beta branch and full canonical/browser matrix
+still pending. Extend the existing origin-outage test through resignation, reload and history
+replay for both profiles/colours in Chrome/WebKit; this is stronger offline archive evidence.
+
+### Broader verification and test-harness corrections
+
+Final application suite: **321 tests / 38 files pass**, typecheck/lint/format all exit 0
+(`final-tests.log`, `final-typecheck.log`, `final-lint.log`, `final-format.log`). Enabled-beta
+build passes and 24 desktop/mobile personality+records browser checks pass (53.2 s).
+320px wood/dark replay screenshots were visually inspected: readable controls and clear keyboard
+focus, no horizontal clipping. Physical-device claims remain pending.
+
+The extended Chrome/WebKit origin-outage suite initially passed nine cases but failed one
+at browser-context teardown with ENOENT for a trace file: the concurrent normal browser runner
+cleared the shared parent `test-results` directory. Reran with distinct absolute output directory
+`/tmp/chess-prodigy-run3/offline-origin-traces`: **10/10 pass**, 30.6 s. Assertions were not removed,
+retries/skips were not added, and no application offline workaround was introduced.
+
+Independent test review found the new browser helper could reseed deleted local keys on reload,
+masking a persistence failure. Replace it with one-time blank-origin setup before mounting;
+then rerun both default-off record projects and enabled-beta rematch branch. This is a test
+strengthening requirement, not a proven application data-loss defect. The origin-outage test
+already seeds once and independently proves completion/archive/replay after origin shutdown.
+A supplemental browser TypeScript command initially omitted installed Node typings; rerun with
+`--types node,vite/client,vite-plugin-pwa/client`. No tool/dependency install or check relaxation.
+
+## Milestone A acceptance map
+
+| Area | Automated evidence in this run | Remaining limit |
+| --- | --- | --- |
+| Existing play | Full engine/game/UI tests, Classic both-colour browser play, clocks/promotion/catch-up, controlled minimum reply delay | Physical-device performance pending |
+| Independent review | All four A1 regression groups rerun in full 321-test suite; native reviewer browser journey | Current custom reviewer is not externally strength-validated |
+| Morphy behaviour | Existing style/search/worker fixtures and both-colour native beta journeys rerun | Calibration and historical fidelity not claimed |
+| Persistence | Legacy/unknown/corrupt save and queue tests; guest history corruption/quota/retry; compatible beta reload | No recovery-file import interface |
+| Rivalry | Legal replay, 200-bound retention, assistance/configuration/difficulty partitioning, undo/recompletion; guest/account browser records | Retained counts are not lifetime/person-level analytics |
+| Rating | Classic receipt and migration regressions, unrated beta, both-colour rematch keeps rating | No changed formula or strength calibration |
+| Account isolation | Account sync history/conflict/cache tests and disposable real API/browser owner boundaries | No live player records accessed |
+| Worker lifecycle | Existing cancel/restart/unmount/review replacement regressions rerun | Physical OS process eviction not tested |
+| Multiplayer | Full server/chat/notification tests and canonical invitation/H2H browser journeys | No real email/push delivery attempted |
+| PWA | Ten origin-outage Chrome/WebKit play/review/completion/reload/replay checks, blocked-SW negative controls; canonical offline/update tests | WebKit simulated-offline limitation remains; no airplane-mode/device claim |
+| UI | 320px dark/wood axe, keyboard/focus replay, existing reduced-motion tests, Lighthouse 100/100 | Phone installation/sound/performance pending |
+| Failure handling | Guest quota/corruption recovery, unknown versions, offline account cache/queue/conflicts, feature-off rematch | Recoverable failures may require retaining exports for assisted restoration |
+
+This table maps requirements to tests, not a claim of measured user retention or release readiness.
+Final canonical browser count, additional WebKit UI result and checkpoint eligibility follow below.
+
+## Final compatibility and rollback behaviour
+
+No SQL schema migration. Active Session/schema/key version 2 and server snapshot wire remain
+unchanged from Run 2. GameRecord v2 adds optional clock metadata; old records omit it, and missing
+personality remains Classic. Preserve existing clocks, moves, stories, receipts and old keys.
+Derived review metadata still follows A1 normalization; archives contain move replay, not analysis.
+
+Guest history key `chess-prodigy-guest-history-v1` retains at most 200 unique IDs and at most 500
+moves per compact record. A legal longer active game is preserved completely for recovery; it
+cannot be silently truncated into the archive. Archive corruption/size/quota failure never resets
+history, and failed terminal preservation blocks starting a replacement game. Interrupted undo
+is reconciled from the active save on opening. No automatic guest import on account entry.
+
+Account cached history lives outside active snapshots and pending items. Missing cache can be
+refetched; offline absence is labelled incomplete. Ordered pending terminal/undo transitions overlay
+the server archive and remain queued until acknowledged; keep existing version conflict choices.
+Corrupt optional cache data stays exportable without invalidating a valid active save/outbox.
+Disposed ownership and older responses cannot replace the current account's records.
+
+Rolling back to Run 2 keeps v2 active saves and server records readable but may discard optional
+account cache fields; server history can be refetched with Run 3. Older code does not maintain the
+new guest archive, so do not rely on it to archive newly completed guest games. Preserve all keys
+and recovery exports and restore compatible code. A v1-only rollback remains blocked from writing
+v2 account snapshots by the existing HTTP 426 protection. No rollback or deployment was performed.
+
+## R3.3 verified checkpoint — 11 September 2026 BDT
+
+- Full canonical browser: **88 passed, four existing skips**, exit 0 (4.4 min), `final-browser.log`.
+  Skips remain three duplicate mobile account cases and the desktop touch-only sound case.
+- After the test-only seed correction, **14/14** record journeys pass (`final-records-one-time-seed.log`).
+  An isolated probe using the actual helper confirms deleted keys stay missing after navigation/
+  reload (`one-time-seed-probe.log`). Independent review approves the correction; no open findings.
+  No application changes followed the full canonical suite, so the test-only correction received
+  its focused rerun rather than repeating unchanged unrelated browser journeys.
+- Final supplemental WebKit UI/account/update: **7/7 passed**, 13.6 s (`final-webkit-ui.log`).
+  Command: `npx playwright test --config /tmp/chess-prodigy-run3/playwright-webkit-run3.config.mjs
+  --grep-invert 'Chrome offline'`. The excluded Chrome-labelled simulation case is already checked
+  in Chrome; WebKit offline uses the separately passing ten-case stopped-origin matrix.
+- Beta-on after seeding correction: **2/2** archived Morphy rematches pass on desktop/mobile,
+  including retained configuration/new seed (`final-beta-rematch-recheck.log`); earlier combined
+  personality/records beta run **24/24** passed. Do not add overlapping counts as unique cases.
+- Full source checks and 321 tests pass; Lighthouse **wood 100, dark 100** (`final-accessibility.log`).
+  Explicit strict new UI/account and browser test types pass. Direct ESLint checked five changed/
+  new test files with zero errors/warnings; explicit browser formatting passes.
+- Final ordinary production build restores default-off beta (`final-default-build-restored.log`).
+  Earlier beta builds are test artifacts only. No persistent frontend environment flag was changed.
+- Four canonical tracked PNGs generated by tests were copied under `generated-baseline-screenshots`
+  then restored to their committed content. New 320px screenshots remain synthetic temporary
+  evidence; selected copies accompany recovery. No unrelated owner changes were discarded.
+
+R3.3 source/tests/documentation are eligible for an explicit local Conventional Commit after
+staged scope/whitespace inspection. Latest verified prior code checkpoint is `7839444`.
+All six pre-existing unfinished task files from resumption are accounted for in R3.2/R3.3;
+there were no unrelated staged files. No database migration, live data or release operation.

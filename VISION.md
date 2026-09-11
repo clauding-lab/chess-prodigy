@@ -38,3 +38,12 @@ The owner's subsequent “go on” invokes the handoff's bounded Run 2. Locally 
 Paul Morphy beta, default-off selection, safe resume/archives and explicit unrated eligibility.
 Use Practice Rating wording for the existing internal measure. No rivalry/replay/result redesign
 or release action is authorized by this continuation. See the dated Run 2 execution records.
+
+## Run 3 continuation — 11 September 2026 BDT
+
+The owner explicitly says “go for run 3”. This authorizes remaining Milestone A recorded-game
+history/replay/rivalry and result/rematch integration, plus full local verification. It supersedes
+the prior Run 2 presentation deferral only. Preserve the existing board, themes and optional
+coaching. Report retained outcome counts without causal narratives or lifetime claims. Morphy
+remains a default-off, unrated beta; commercial naming, strength calibration and physical-device
+checks remain separate outstanding decisions. No publishing, deployment or Milestone B/C/D work.

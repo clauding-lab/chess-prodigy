@@ -9,6 +9,8 @@ import type { Game, Setup, TimeControl } from "../game/types";
 import type { ReactNode } from "react";
 import { morphyConfig, opponentName } from "../engine/opponents";
 import { unratedDescription } from "../game/eligibility";
+import type { HistoryResult } from "../storage/history";
+import { RecordedRivalry } from "./RecordedGames";
 
 export type SetupDraft = {
   color: Color | "rand";
@@ -34,6 +36,9 @@ export function SetupModal({
   onCancel,
   accountControls,
   betaEnabled = false,
+  startError,
+  rematchNote,
+  onRecovery,
 }: {
   draft: SetupDraft;
   setDraft(value: SetupDraft): void;
@@ -43,6 +48,9 @@ export function SetupModal({
   onCancel?: () => void;
   accountControls?: ReactNode;
   betaEnabled?: boolean;
+  startError?: string | null;
+  rematchNote?: string | null;
+  onRecovery?(): void;
 }) {
   const abandoning = game.started && !game.over && game.rated;
   const before = Math.round(rating.rating);
@@ -53,6 +61,17 @@ export function SetupModal({
   const morphy = betaEnabled && draft.opponentId === "attack-development";
   return (
     <Modal closeOnBackdrop={false} closeOnEscape={!!onCancel} onClose={onCancel} title="New game">
+      {rematchNote && <p className="note">{rematchNote}</p>}
+      {startError && (
+        <div className="note" role="alert">
+          {startError}{" "}
+          {onRecovery && (
+            <button className="linkbtn" type="button" onClick={onRecovery}>
+              Download recovery save
+            </button>
+          )}
+        </div>
+      )}
       {abandoning && (
         <div className="note" role="status">
           <strong>Starting another game counts this unfinished game as a loss.</strong>
@@ -206,12 +225,18 @@ export function ResultModal({
   onReview,
   onUndo,
   onDismiss,
+  onRematch,
+  rematchAvailable = true,
+  history,
 }: {
   game: Game;
   onNew(): void;
   onReview(): void;
   onUndo(): void;
   onDismiss(): void;
+  onRematch?(): void;
+  rematchAvailable?: boolean;
+  history?: HistoryResult;
 }) {
   const player = game.setup.playerColor,
     won = (game.over?.result === "1-0" ? "w" : "b") === player;
@@ -241,11 +266,34 @@ export function ResultModal({
         </div>
       )}
       {!game.rated && <div className="why">{unratedDescription(game)}</div>}
-      <button className="btn primary full" onClick={onNew} type="button">
-        New game
-      </button>
+      {history && (
+        <RecordedRivalry
+          history={history}
+          target={{ opponent: game.opponent, level: game.setup.level }}
+        />
+      )}
+      {onRematch && (
+        <button
+          className="btn primary full"
+          onClick={onRematch}
+          type="button"
+          disabled={!rematchAvailable}
+        >
+          Rematch
+        </button>
+      )}
+      {onRematch && !rematchAvailable && (
+        <p className="quiet">New games against this opponent are unavailable in this build.</p>
+      )}
       <button className="btn full spaced" onClick={onReview} type="button">
         Review game
+      </button>
+      <button
+        className={`btn full spaced${onRematch ? "" : " primary"}`}
+        onClick={onNew}
+        type="button"
+      >
+        New game
       </button>
       <button className="btn full spaced" onClick={onDismiss} type="button">
         View board

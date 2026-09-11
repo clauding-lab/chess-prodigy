@@ -47,11 +47,11 @@ continues to protect rematches started from history.
   Red-first tests: legal/illegal replay; missing metadata Classic; profile/version/difficulty and
   assistance separation; retry/undo/recompletion/retention; corrupt/quota storage; terminal handoff.
   Run focused game/storage/account/server tests and source checks; independent review; local commit.
-- [ ] R3.2: owner-scoped account history cache plus pending-overlay integration in account sync and
+- [x] R3.2: owner-scoped account history cache plus pending-overlay integration in account sync and
   GameStorageAdapter. Test restart/offline pending terminal/undo/recompletion, accepted responses,
   stale-owner isolation, conflict choices, optional cache migration and corruption preservation.
   Keep existing request body/SQL schema and downgrade protection; focused checks/review/commit.
-- [ ] R3.3: Games/rivalry/replay UI, results and rematch via existing setup. Files: `src/ui/`, App,
+- [x] R3.3: Games/rivalry/replay UI, results and rematch via existing setup. Files: `src/ui/`, App,
   account adapter and focused UI tests. Test both colours, filters/unknown versions, flag off/on,
   fresh ID/seed, keyboard focus, narrow themes, loading/error/recovery and unchanged rating.
   Native guest/account browser journeys, offline replay and cross-account isolation; review/commit.
@@ -111,3 +111,32 @@ App, result/setup integration and completion tests. Existing App timing test get
 R3.2 global format rerun passes after the concurrent UI files stabilize. All declared R3.2
 checks now pass; checkpoint is eligible. R3.3 component has 12 focused tests and completion/App
 integration has 13; native browser and whole-branch review are in progress.
+
+## Measurement definitions (documentation only)
+
+No event collection or external analytics is introduced. For a future approved diagnostic:
+- Rematch after loss: denominator is a completed non-assisted loss in a supported profile/version
+  and difficulty; numerator is a new game started via its Rematch action with the same configuration
+  and difficulty within 30 minutes in the same app session. Colour may change. Count once per loss;
+  exclude cancelled setup. Changing opponent/difficulty means a new game, not this metric.
+- Next-week return: weekly BDT cohort of players completing a game; return means another completed
+  game 7–13 calendar days later. Guest identity is browser-local and erased/reset data prevents a
+  reliable person-level denominator. No current collection or retention claim.
+- Reliable progress: synthetic completed IDs/receipts/outcomes survive reload, pending sync,
+  interruption and conflict without duplicate records; explicit undo removes its own record and
+  later recompletion creates one. Automated checks measure this invariant, not human retention.
+No targets are invented from the resulting tests. Strength, naming and physical-device gates remain.
+
+R3.3 application and focused checks pass; whole-path review approved the enum validation fix.
+Browser review requires one-time test seeding so reload cannot recreate deleted progress.
+Final full suite passes 321 tests; enabled-beta browser passes 24; stopped-origin Chrome/WebKit
+passes ten with separate artifact output. Default full browser and Lighthouse are running.
+Next: fix/recheck test seeding, verify relevant WebKit UI, complete acceptance record and local
+checkpoint/recovery export. Keep branch/workspace; the user already selected no merge/push/release.
+
+R3.3 verified: full 321 tests/source checks, canonical 88 browser passes/four existing skips,
+Lighthouse 100 both; strengthened one-time-seed 14 browser passes, WebKit UI 7, origin-outage 10,
+beta 24 plus post-test-fix two rematches. Independent whole-path and browser reviews have no remaining
+findings. Stage only task-owned UI/parser/test/governance/records after diff inspection and commit.
+Final action: export verified task-only recovery, record actual checkpoint/HEAD and clean status,
+then stop. Physical iPhone, naming, calibration and stronger-review decisions remain outstanding.

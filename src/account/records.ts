@@ -13,11 +13,14 @@ export function parseGameRecord(value: unknown): GameRecord | null {
     !text(value.id) ||
     !value.id.length ||
     value.id.length > 256 * 1024 ||
-    !["1-0", "0-1", "½-½"].includes(String(value.result)) ||
+    !text(value.result) ||
+    !["1-0", "0-1", "½-½"].includes(value.result) ||
     !text(value.reason) ||
     value.reason.length > 256 * 1024 ||
-    !["casual", "club", "strong"].includes(String(value.level)) ||
-    !["w", "b"].includes(String(value.playerColor)) ||
+    !text(value.level) ||
+    !["casual", "club", "strong"].includes(value.level) ||
+    !text(value.playerColor) ||
+    !["w", "b"].includes(value.playerColor) ||
     typeof value.rated !== "boolean" ||
     !Array.isArray(value.moves) ||
     value.moves.length > ARCHIVE_MOVE_LIMIT ||

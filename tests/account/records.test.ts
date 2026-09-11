@@ -36,3 +36,23 @@ it("migrates retained legacy archives to Classic without inventing assistance or
     parseRecordsEnvelope({ ...parsed, games: [{ ...parsed.games[1], opponent: morphyConfig(1) }] }),
   ).toBeNull();
 });
+
+it("rejects coercible enum arrays instead of counting a malformed draw as a loss", () => {
+  const game = {
+    id: "malformed-enum",
+    result: "½-½",
+    reason: "Draw",
+    level: "club",
+    playerColor: "w",
+    rated: false,
+    moves: [],
+    completedAt: "2026-09-11T12:00:00+06:00",
+  };
+  const envelope = { version: 1, snapshot: null, games: [game], updatedAt: null };
+  expect(parseRecordsEnvelope(envelope)).not.toBeNull();
+  for (const field of ["result", "level", "playerColor"] as const) {
+    expect(
+      parseRecordsEnvelope({ ...envelope, games: [{ ...game, [field]: [game[field]] }] }),
+    ).toBeNull();
+  }
+});

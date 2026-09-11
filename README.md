@@ -24,7 +24,30 @@ describes the bounded playing style; every beta game is unrated while calibratio
 Existing supported beta games resume with the flag off. Unknown opponent versions remain
 read-only and offer **Download recovery save**; retain that copy before applying an update.
 There is no recovery-file import UI in this run; retain it for a compatible client or local
-restoration with assistance. Run 3 rivalry/replay screens and richer rematch/results are deferred.
+restoration with assistance.
+
+Local Run 3 adds **Games** within computer practice: up to 200 completed games, private recorded
+results by opponent version and difficulty, and read-only move replay. Guest history stays in this
+browser; account records stay with their owner. Assisted and unassisted results are shown separately;
+older records may have unknown assistance. These are retained records, not lifetime totals.
+Opening Games does not pause a running clock. Replay changes neither the active game nor its rating.
+
+After a result, **Rematch** opens the existing setup with opponent, difficulty, colour and clock
+retained. You can change the colour before starting; starting creates a new game identity and beta
+seed. Older records without a clock setting explicitly default to No clock. New Morphy rematches
+require the beta switch; saved games and legal replays remain accessible when it is off.
+
+Guest history uses the separate `chess-prodigy-guest-history-v1` key. Account history is a local
+cache of server records plus pending changes, outside the active snapshot. Offline pending records
+are labelled; missing caches are incomplete. Damaged history is preserved and offers an original
+history download. If a completed game cannot be preserved, starting another game stops with a
+recovery download; retry saving or retain the files for assisted recovery. There is no recovery-file
+import UI. No SQL migration, automatic guest import or retroactive rating change is introduced.
+Run 3 [plan](docs/plans/2026-09-11-personality-pwa-run3.md) and
+[verification](docs/verification/2026-09-11-personality-pwa-run3.md) contain checkpoint status.
+After building, `npm run test:browser -- tests/browser/records.spec.ts` exercises these flows with
+synthetic guest data and the disposable account server. Use the same beta switch for build and test
+when checking enabled Morphy rematches.
 
 Saves use version 2 with versioned opponent configuration and seed. Legacy saves become Classic;
 original v1 guest/account keys remain untouched for recovery. A present unreadable v2 save
@@ -116,8 +139,8 @@ npm run test:browser
 The browser suite exercises desktop and mobile layouts in Chromium. Physical Android/iOS installation and performance checks remain pending; browser emulation does not establish those results. The separate `npm run test:accessibility` runs Lighthouse against a preview on port 4173 (`CHESS_PREVIEW_URL` overrides the address).
 
 After building, `npx playwright test --config playwright.offline.config.ts` checks cached
-Classic/Morphy play and review in Chrome and WebKit while each test's disposable local server
-is stopped. It verifies that uncached requests fail and that disabling the service worker prevents
+Classic/Morphy play, review, completion and recorded-game replay in Chrome and WebKit while each
+test's disposable local server is stopped. It verifies that uncached requests fail and that disabling the service worker prevents
 reopening. No live server or player data is used. This tests an unreachable app server, not device
 airplane mode or OS process eviction. The installed WebKit/Playwright simulated-offline switch
 fails cached navigation even for an independent minimal page; the original and current app builds
