@@ -82,3 +82,30 @@ an actual waiting service worker defers during active play, then preserves the s
 acceptance. The PWA configuration, registration/update UI, push handler and locked dependencies
 are byte-identical between original f2b45b7 and this continuation's base. Final Lighthouse:
 wood/dark 100, exit 0 (`final-accessibility.log`).
+
+## Closeout and preservation
+
+Verified test checkpoint: `f6883f1` after baseline/diagnosis `4ca52bc`. Base remains
+`9460b1c1a15924d17428a78e634d9a91f8a9c100`; branch `codex/webkit-offline-investigation`.
+After that checkpoint, tracked/staged/untracked diff was empty. This final edit changes only the
+two execution records. Final documentation commit ID is recorded in the external recovery README.
+No unfinished application/test work remains; main stays `f2b45b701795ea2aa03e89688ced04b8106b5928`.
+
+Recovery: `/Users/adnanrashid/Downloads/chess-prodigy-webkit-recovery-2026-09-11/` contains
+task-only `webkit.bundle`/`webkit.patch`, both records, diagnostic scripts/results, fresh baseline/
+final logs, Lighthouse reports and synthetic screenshots/failure traces. Bundle verification
+passed; patch validation passed against `/tmp/chess-prodigy-webkit/recovery-base`, an untouched
+archive of `9460b1c`. Artifacts are refreshed and checked again after this documentation commit.
+No credentials, private database or player data included; persistent local copy is not off-device
+backup. Prior Run 1/2 recovery exports remain intact and supply earlier prerequisite commits.
+
+Verified: full canonical suite, ten supplemental Chrome/WebKit origin-outage checks and explicit
+WebKit update safety. Characterized but still failing: WebKit simulated-offline navigation on this
+tool build. Not verified: physical airplane mode, Safari/installed-app cold start or OS eviction.
+No application fix, schema/data migration, rating change, release, remote write or live-data action.
+Run 3 and later features, strength calibration and naming clearance remain deferred.
+
+Next exact task on a separately invoked Run 3: inspect remaining A4 and archive implementation,
+create its execution records, implement bounded guest archive/legal replay/private profile-and-
+difficulty rivalry records, then remaining A5 result/rematch integration. Physical device evidence
+is still required for full acceptance. This investigation stops here.
