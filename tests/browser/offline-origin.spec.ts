@@ -165,6 +165,10 @@ for (const profile of ["Classic", "Morphy"] as const)
         expect(reviewed.game.rated).toBe(profile === "Classic");
         expect(reviewed.game.ratingApplied).toBeNull();
         await reopened.getByRole("button", { name: "Close", exact: true }).click();
+        // Review may finish at a preliminary depth on a slower runner. Stop passive
+        // recomputation before testing exact save/replay equality across reload.
+        await reopened.getByRole("button", { name: "Live", exact: true }).click();
+        await expect.poll(async () => (await saved(reopened)).preferences.coach).toBe(false);
         await reopened.getByRole("button", { name: "Resign", exact: true }).click();
         await reopened
           .getByRole("dialog", { name: "Resign this game?" })
