@@ -41,7 +41,7 @@ unchanged. Difficulty stays separate, with existing Classic budgets and behaviou
    its exclusion. Flag off hides new selection but retains supported saved beta games safely.
    Checks: UI regressions, disabled/enabled browser journeys, account/archive save+restore,
    offline worker play, keyboard/focus/narrow layout, source checks and independent review.
-5. **R2 final — checks complete; preservation in progress:** full canonical suite and accessibility, relevant WebKit journeys,
+5. **R2 final — complete with stated verification limits:** full canonical suite and accessibility, relevant WebKit journeys,
    honest blocker report, local checkpoint commits and owner-accessible recovery export.
 
 Run 3 rivalry/archive replay screens, result redesign and enhanced rematch are deferred.
@@ -61,7 +61,7 @@ Retain the archive's 200-game bound; do not add a guest rivalry archive in this 
 ## Next action and preservation
 
 Baseline commands passed and recorded before application/test/config edits.
-Next: commit the checked UI checkpoint, verify recovery export, stop before Run 3.
+Run 2 stopped after the checked UI checkpoint and recovery verification. Do not start Run 3 automatically.
 Update both Run 2 records at every checkpoint. Keep all commits local
 and stage explicit task-owned paths only. Export a task-only bundle/patch and both records to
 Downloads at closeout; this persistent local copy is not an off-device backup.
@@ -147,3 +147,26 @@ Stale browser assertions and the accessibility script's v1 key were corrected af
 failures; full browser and accessibility reruns passed. Supplemental WebKit offline reload remains
 blocked by an internal navigation error; selection, actual recovery downloads and both final online
 reviewer checks passed. Physical iPhone evidence remains pending; no full milestone claim.
+
+## Closeout — 11 September 2026 BDT
+
+Local checkpoints: `48ee845` baseline record; `266d3b2` safe save/rating foundation;
+`a8cc009` bounded Morphy engine; `e05ff7c526e50fc4da0ab7155c0f56c14921a1fd` selectable/resumable
+UI and final canonical verification. Only task-owned files were staged; no unrelated work,
+skipped hooks, identity changes or rewritten history. Main remains `f2b45b7`.
+This closeout is a documentation-only checkpoint after the verified application commit.
+
+Recovery directory: `/Users/adnanrashid/Downloads/chess-prodigy-run2-recovery-2026-09-11/`.
+The task-only Git bundle requires Run 2 base `8a5a472f7301b4794d3f6a99ab2c03a4b749c0a1`;
+`git bundle verify` passed. Binary patch passed `git apply --check` against an untouched
+archive of that base. Both records and synthetic check evidence are copied alongside it;
+bundle/patch are refreshed after the final documentation commit, with final HEAD in its README.
+This is an owner-accessible persistent Mac copy, not an off-device backup. The separate Run 1
+recovery directory is still needed when reconstructing from the original milestone base.
+
+Next exact task on a separately requested continuation: reproduce and investigate the retained
+WebKit offline navigation error against both the pre-Run-1 baseline and current build, preserving
+the explicit-update policy. Then obtain physical iPhone evidence before claiming full device
+verification. A separately invoked Run 3 covers remaining A4 bounded guest archive/legal replay/
+private profile-and-difficulty rivalry records, remaining A5 result/rematch integration and the
+full Milestone A matrix. None of that implementation started here.

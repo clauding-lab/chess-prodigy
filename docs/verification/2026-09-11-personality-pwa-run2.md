@@ -22,7 +22,7 @@ No pre-existing changes. Node 22.23.0 / npm 10.9.8. No production access or rele
 
 R2.0 complete (`48ee845`); R2.1 complete (`266d3b2`); R2.2 complete (`a8cc009`);
 R2.3 implemented and canonical checks passed; supplemental WebKit offline checks blocked.
-Recovery/commit closeout in progress. Run 3 deferred.
+Recovery verified; local closeout recorded below. Run 3 deferred.
 Carried baseline limitation: WebKit offline new-page navigation failed identically on
 Run 1 and untouched `f2b45b7`; physical iPhone checks remain pending.
 
@@ -122,4 +122,33 @@ checks remain outstanding. Strength calibration and public commercial naming cle
 Four generated tracked screenshots were copied into recovery evidence and restored to their prior
 versions; retained baseline imagery is not presented as new-device evidence.
 
-Next: commit eligible UI/records, verify the task-only recovery export, then stop before Run 3.
+## Final checkpoint and recovery
+
+Verified application HEAD: `e05ff7c526e50fc4da0ab7155c0f56c14921a1fd`.
+Checkpoint commits: `48ee845` (baseline), `266d3b2` (save/rating foundation),
+`a8cc009` (engine), `e05ff7c` (UI and final checks). A documentation-only closeout follows;
+its exact final HEAD is recorded in the external recovery README to avoid a self-reference.
+After the application commit the tracked/staged/untracked diff was empty; only the two records
+are changed for this closeout. No unfinished application diff remains. Main stays at
+`f2b45b701795ea2aa03e89688ced04b8106b5928`; no remote/release/live-data actions occurred.
+
+Owner-accessible recovery: `/Users/adnanrashid/Downloads/chess-prodigy-run2-recovery-2026-09-11/`.
+`run2.bundle` contains task commits and requires `8a5a472f7301b4794d3f6a99ab2c03a4b749c0a1`;
+`git bundle verify` passed. `run2.patch` passed `git apply --check` against the untouched Run 2
+base archive at `/tmp/chess-prodigy-run2/recovery-base`. Artifacts are refreshed and reverified
+after the documentation closeout. Copies of both records, final logs, Lighthouse reports and
+synthetic screenshots accompany them. No private database, credentials or player data included.
+Local persistent recovery is not off-device backup; Run 1 has its separate recovery export.
+
+Migration: real v1 saves become Classic v2 deterministically; original keys and rating receipts
+are retained. Present corrupt v2 never silently falls back. Account queues are made durable
+before sending, and accepted v2 account state rejects v1 downgrade writes. Unknown opponent
+versions stay read-only with recovery download. Beta outcomes have no rating effects. There
+was no SQL table migration or rewrite of an existing player database.
+
+Verified: canonical full suite and the selected Run 2 Chrome journeys. Blocked: WebKit offline
+navigation; physical iPhone verification remains pending. Deferred: strength calibration, public
+commercial naming clearance, Run 3 rivalry/replay/richer results/rematch and later milestones.
+Next exact task: on a separately requested continuation, investigate retained baseline/current
+WebKit offline navigation failures without forcing active-game updates. Run 3 requires a separate
+invocation and the remaining A4/A5/full Milestone A acceptance work. Stop here.
