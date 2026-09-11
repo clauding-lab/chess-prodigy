@@ -1,0 +1,74 @@
+# Personality PWA — Run 3 implementation plan
+
+> Execution: follow the approved revision-2 handoff using test-first checkpoints and independent review.
+
+11 September 2026 BDT. Owner “go on” invokes bounded Run 3 after the offline investigation.
+Spec: `CHESS_PRODIGY_BUILD_HANDOFF.md` revision 2, remaining A4/A5 and Milestone A matrix.
+
+## Actual starting state and constraints
+
+- Persistent checkout `/Users/adnanrashid/Projects/chess-prodigy`, no separate worktree.
+- Branch `codex/personality-pwa-run3`; base `32c023d21229a07f6ab4f88f67f4f73a037b6d97`.
+- Initial staged/unstaged/untracked changes: none. Earlier Run 1/2/investigation commits preserved.
+- Records use the requested `docs/plans` and `docs/verification` convention.
+- Node >=22.19, locked dependencies. No release/remote writes/live player data/paid services.
+- Preserve Classic formula/receipts, accounts, multiplayer, stories, saves, offline and explicit updates.
+- Beta selection stays default off; Morphy remains unrated. No additional roster/Stockfish/iOS work.
+- WebKit origin-outage checks pass; simulated-offline tool limitation and physical-device checks
+  remain separately recorded. No timing/performance/calibration or naming-clearance claims.
+
+## Design
+
+Reuse account GameRecord v2 and authoritative server archive (200 retained games). Add a separate
+versioned guest archive key capped at 200; never send it with active snapshots or import on login.
+Share record construction, bounded parsing, idempotent insert/remove and legal replay helpers.
+Keep archive moves compact SAN; reconstruct positions by matching legal moves before rendering.
+Aggregate retained W/D/L by opponent configuration version and difficulty, separating assistance
+and unknown legacy assistance. Do not call retained totals lifetime records.
+
+Account sync retains a cache of server records outside the active snapshot and overlays its own
+ordered pending transitions for honest pending results. Server remains the authority. Guard stale
+account responses, reinitialization and conflict choices. Guest persistence must preserve terminal
+records before replacing an active game; archive corruption/quota failures stay visible/recoverable.
+
+Add one compact Games dialog inside the existing practice interface, with record filters, rivalry
+summary and legal replay. Reuse Board and Modal; replay is read-only and cannot touch live workers
+or receipts. Results prioritize outcome, eligible rating, comparable recorded rivalry and Rematch/
+Review/New game. Rematch opens existing setup with profile/difficulty/colour/time retained; a new
+seed/ID is generated on start. Flag-off saved beta games retain review/replay, with clear rematch
+unavailability instead of silently switching to Classic. Existing active-game abandonment warning
+continues to protect rematches started from history.
+
+## Checkpoints and required checks
+
+- [x] R3.0: fresh npm test/typecheck/lint/format/build/browser/accessibility baseline; commit records.
+- [ ] R3.1: record/replay/rivalry helpers and bounded guest archive. Files: `src/game/archive.ts`,
+  `src/storage/history.ts`, existing `src/account/records.ts`, `server/records.ts` and storage/hooks.
+  Red-first tests: legal/illegal replay; missing metadata Classic; profile/version/difficulty and
+  assistance separation; retry/undo/recompletion/retention; corrupt/quota storage; terminal handoff.
+  Run focused game/storage/account/server tests and source checks; independent review; local commit.
+- [ ] R3.2: owner-scoped account history cache plus pending-overlay integration in account sync and
+  GameStorageAdapter. Test restart/offline pending terminal/undo/recompletion, accepted responses,
+  stale-owner isolation, conflict choices, optional cache migration and corruption preservation.
+  Keep existing request body/SQL schema and downgrade protection; focused checks/review/commit.
+- [ ] R3.3: Games/rivalry/replay UI, results and rematch via existing setup. Files: `src/ui/`, App,
+  account adapter and focused UI tests. Test both colours, filters/unknown versions, flag off/on,
+  fresh ID/seed, keyboard focus, narrow themes, loading/error/recovery and unchanged rating.
+  Native guest/account browser journeys, offline replay and cross-account isolation; review/commit.
+- [ ] R3 final: existing full suite and all source/build/browser/accessibility checks; focused WebKit
+  origin-outage and relevant new UI checks. Map full Milestone A matrix to actual evidence/limits.
+  Update README/governance, both records and task-only Downloads recovery; verify bundle/patch,
+  commit closeout locally and stop before Milestone B.
+
+## Compatibility and recovery
+
+Active Session schema v2 and server record wire v2 remain unchanged unless inspection proves a
+necessary migration. Guest archive has its own version/key; old clients cannot overwrite that key.
+Optional account cache fields never travel in PUT snapshots; missing cache yields available server
+records or honest offline incompleteness. Corrupt authoritative input is never reset automatically.
+No database migration/deployment. Older clients may omit local archive caching but cannot erase
+server archives. All source/test additions must fall within existing checks or receive explicit checks.
+
+Baseline passed (285 unit/UI/server tests, 74 browser passes/four existing skips, source/build
+checks, Lighthouse 100 both themes). Independent planning review confirmed the design safeguards.
+Next: implement shared record/replay helpers and guest persistence with red-first tests.
