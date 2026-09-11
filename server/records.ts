@@ -224,7 +224,7 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
       response.status(400).json({ error: "Invalid record snapshot." });
       return;
     }
-    const snapshot = parseSavedState(body.snapshot);
+    const snapshot = parseSavedState(body.snapshot, { preserveDerived: true });
     if (!snapshot) {
       response.status(400).json({ error: "Invalid record snapshot." });
       return;

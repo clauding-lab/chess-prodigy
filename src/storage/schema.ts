@@ -1,6 +1,8 @@
 import { START, applyMove, legalMoves, posKey, sameMove, sanFor } from "../engine/board";
 import type { Move, Piece, Position } from "../engine/types";
 import { MOTIF_KEYS } from "../coach/types";
+import { annotateAll } from "../coach/annotate";
+import { isNeutralEvaluation, reviewHistoryIdentities } from "../engine/reviewer";
 import { TIME_CONTROLS } from "../game/state";
 import type { Game, HistoryEntry, RatingReceipt, Session } from "../game/types";
 import { ENGINE_ELO, LEVEL_LABEL, ratingUpdate } from "../rating/fide";
@@ -282,7 +284,10 @@ function receiptMatches(session: Session): boolean {
   );
 }
 
-export function parseSavedState(value: unknown): Session | null {
+export function parseSavedState(
+  value: unknown,
+  options: { preserveDerived?: boolean } = {},
+): Session | null {
   if (
     !object(value) ||
     value.version !== 1 ||
@@ -300,5 +305,17 @@ export function parseSavedState(value: unknown): Session | null {
     return null;
   const session = value as unknown as Session;
   if (session.game.hintUsed && session.game.rated) return null;
-  return replayMatches(session.game) && receiptMatches(session) ? session : null;
+  if (!replayMatches(session.game) || !receiptMatches(session)) return null;
+  // The server retains the validated wire representation so older clients can
+  // acknowledge their exact writes. Every modern review consumer normalizes it.
+  if (options.preserveDerived) return session;
+  const game = session.game;
+  const histories = reviewHistoryIdentities(game);
+  const evals = Object.fromEntries(
+    Object.entries(game.evals).filter(([key, value]) => {
+      const ply = Number(key);
+      return isNeutralEvaluation(value, game.hist[ply]?.before ?? game.st, histories[ply]);
+    }),
+  );
+  return { ...session, game: annotateAll({ ...game, evals }) };
 }

@@ -191,3 +191,58 @@ it("rejects a rollback receipt whose peak and history do not produce the current
   storage.setItem(SAVE_KEY, JSON.stringify(s));
   expect(loadSavedState(storage, 3, "fallback").status).toBe("corrupt");
 });
+
+it("invalidates legacy review data without losing the game, stories or rating receipt", () => {
+  const storage = new MemoryStorage();
+  let s = freshSession(0, "legacy");
+  s = reduceSession(s, { type: "move", move: legalMoves(s.game.st)[0], book: false, now: 1 });
+  s = reduceSession(s, { type: "resign", now: 2 });
+  s.game.evals = { 0: { score: 999, best: legalMoves(s.game.hist[0].before)[0] } };
+  s.game.hist[0].ann = "!";
+  s.game.hist[0].better = "d4";
+  const raw = JSON.stringify(s);
+  storage.setItem(SAVE_KEY, raw);
+  const restored = loadSavedState(storage, 3, "fallback");
+  expect(restored.status).toBe("saved");
+  expect(restored.session.game.evals).toEqual({});
+  expect(restored.session.game.hist[0]).toEqual({ ...s.game.hist[0], ann: null, better: null });
+  expect(restored.session.game.ratingApplied).toEqual(s.game.ratingApplied);
+  expect(restored.session.rating).toEqual(s.rating);
+  expect(restored.session.game.over).toEqual(s.game.over);
+  expect(storage.getItem(SAVE_KEY)).toBe(raw);
+  expect(saveState(storage, restored.session)).toBe(true);
+  expect(loadSavedState(storage, 4, "fallback").session).toEqual(restored.session);
+});
+
+it("retains qualified neutral caches but invalidates stale versions and annotations", async () => {
+  const { reviewPosition } = await import("../../src/engine/reviewer");
+  const { parseSavedState } = await import("../../src/storage/schema");
+  const s = freshSession(0, "neutral-save");
+  const r = reviewPosition(s.game.st, [], "review-v1", () => 0);
+  s.game.evals[0] = { score: r.score, best: r.move, review: r.review };
+  const restored = parseSavedState(JSON.parse(JSON.stringify(s)))!;
+  expect(restored.game.evals[0]).toEqual(s.game.evals[0]);
+  const stale = JSON.parse(JSON.stringify(s));
+  stale.game.evals[0].review.reviewer = "retired-neutral";
+  expect(parseSavedState(stale)!.game.evals).toEqual({});
+  expect(parseSavedState(restored)).toEqual(restored);
+});
+
+it("discards malformed derived reviewer metadata without rejecting authoritative progress", async () => {
+  const { reviewPosition } = await import("../../src/engine/reviewer");
+  const { parseSavedState } = await import("../../src/storage/schema");
+  const s = freshSession(0, "malformed-review");
+  const r = reviewPosition(s.game.st, [], "review-v1", () => 0);
+  for (const metadata of [
+    null,
+    "bad",
+    { ...r.review, policy: { toString: null } },
+    { ...r.review, policy: "__proto__" },
+  ]) {
+    const raw = JSON.parse(JSON.stringify(s));
+    raw.game.evals[0] = { score: r.score, best: r.move, review: metadata };
+    const parsed = parseSavedState(raw)!;
+    expect(parsed.game.id).toBe("malformed-review");
+    expect(parsed.game.evals).toEqual({});
+  }
+});

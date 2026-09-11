@@ -19,7 +19,7 @@ class FakeWorker {
   }
 }
 const input = {
-  type: "analyse" as const,
+  type: "search" as const,
   gameId: "g1",
   revision: 0,
   position: START(),
@@ -81,4 +81,36 @@ it("watchdog retries once and releases all timers", async () => {
   client.dispose();
   expect(vi.getTimerCount()).toBe(0);
   vi.useRealTimers();
+});
+
+it("rejects an opponent result masquerading as a neutral worker reply", async () => {
+  const { REVIEWER } = await import("../../src/engine/reviewer");
+  const workers: FakeWorker[] = [];
+  const client = new EngineClient(() => {
+    const w = new FakeWorker();
+    workers.push(w);
+    return w;
+  });
+  const pending = client.request({
+    type: "analyse",
+    reviewer: REVIEWER,
+    policy: "review-v1",
+    history: [],
+    gameId: "neutral",
+    revision: 0,
+    position: START(),
+  });
+  const rejection = expect(pending).rejects.toThrow(/failed/i);
+  workers[0].reply({
+    ...workers[0].posted[0],
+    ok: true,
+    result: { move: null, score: 9999, book: false },
+  });
+  workers[1].reply({
+    ...workers[1].posted[0],
+    ok: true,
+    result: { move: null, score: 9999, depth: 3 },
+  });
+  await rejection;
+  client.dispose();
 });

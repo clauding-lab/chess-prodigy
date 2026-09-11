@@ -1,4 +1,5 @@
 import type { EngineRequest, EngineReply, EngineResult, RequestInput } from "./protocol";
+import { isNeutralEvaluation, REVIEW_POLICIES } from "../engine/reviewer";
 export interface WorkerPort {
   onmessage: ((e: MessageEvent<EngineReply>) => void) | null;
   onerror: ((e: ErrorEvent) => void) | null;
@@ -58,7 +59,8 @@ export class EngineClient {
           !reply ||
           reply.requestId !== pending.request.requestId ||
           reply.gameId !== pending.request.gameId ||
-          reply.revision !== pending.request.revision
+          reply.revision !== pending.request.revision ||
+          reply.type !== pending.request.type
         )
           return;
         if (!reply.ok) {
@@ -70,6 +72,20 @@ export class EngineClient {
           !result ||
           !(result.score === null || Number.isFinite(result.score)) ||
           !("move" in result)
+        ) {
+          this.fail();
+          return;
+        }
+        if (
+          pending.request.type === "analyse" &&
+          (!("review" in result) ||
+            result.score === null ||
+            !isNeutralEvaluation(
+              { score: result.score, best: result.move, review: result.review },
+              pending.request.position,
+              pending.request.history,
+              pending.request.policy,
+            ))
         ) {
           this.fail();
           return;
@@ -89,7 +105,9 @@ export class EngineClient {
       const budget =
         request.type === "ai"
           ? { casual: 200, club: 600, strong: 2000 }[request.level]
-          : request.ms;
+          : request.type === "analyse"
+            ? REVIEW_POLICIES[request.policy].ms
+            : request.ms;
       this.timer = setTimeout(() => this.fail(), budget + 1000);
       worker.postMessage(request);
     } catch {

@@ -475,3 +475,35 @@ describe("private account records", () => {
     await application.close();
   });
 });
+
+it("acknowledges exact legacy wire saves while modern consumers invalidate derived review", async () => {
+  const { parseRecordsEnvelope } = await import("../../src/account/records");
+  const database = await temporaryDatabase();
+  const application = await createApplication({
+    databasePath: database.path,
+    baseURL: BASE_URL,
+    secret: SECRET,
+  });
+  try {
+    const agent = await signedUpAgent(application.app, "review-migration@example.com");
+    const snapshot = completedSession("legacy-review");
+    snapshot.game.evals[0] = { score: 8888, best: legalMoves(snapshot.game.hist[0].before)[0] };
+    snapshot.game.hist[0].ann = "!";
+    const accepted = await agent
+      .put("/api/records")
+      .set("Origin", BASE_URL)
+      .send({ expectedVersion: 0, snapshot })
+      .expect(200);
+    expect(JSON.stringify(accepted.body.snapshot)).toBe(JSON.stringify(snapshot));
+    const read = await agent.get("/api/records").expect(200);
+    const current = parseRecordsEnvelope(read.body)!;
+    expect(current.version).toBe(1);
+    expect(current.snapshot!.game.evals).toEqual({});
+    expect(current.snapshot!.game.hist[0].ann).toBeNull();
+    expect(current.snapshot!.rating).toEqual(snapshot.rating);
+    expect(current.snapshot!.game.ratingApplied).toEqual(snapshot.game.ratingApplied);
+    expect(current.games[0].moves).toEqual(snapshot.game.hist.map((e) => e.san));
+  } finally {
+    await application.close();
+  }
+});

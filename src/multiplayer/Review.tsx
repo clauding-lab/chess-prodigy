@@ -5,6 +5,7 @@ import { EngineClient } from "../worker/client";
 import { annotateAll } from "../coach/annotate";
 import { CoachPanel } from "../ui/CoachPanel";
 import { ReviewModal } from "../ui/Modals";
+import { REVIEWER, isNeutralEvaluation, reviewHistory } from "../engine/reviewer";
 export function CompletedReview({ game, color }: { game: Game; color: Color }) {
   const [review, setReview] = useState(game);
   const [enabled, setEnabled] = useState(true);
@@ -37,15 +38,26 @@ export function CompletedReview({ game, color }: { game: Game; color: Color }) {
           gameId: game.id,
           revision: game.revision,
           position: game.hist[ply]?.before ?? game.st,
-          depth: 3,
-          ms: 180,
+          reviewer: REVIEWER,
+          policy: "review-v1",
+          history: reviewHistory(game, ply),
         });
         if (revision.current !== token) return;
-        if (result.score === null)
+        if (result.score === null || !("review" in result))
           throw new Error("Position review was unavailable. Please retry.");
+        const value = { score: result.score, best: result.move, review: result.review };
+        if (
+          !isNeutralEvaluation(
+            value,
+            game.hist[ply]?.before ?? game.st,
+            reviewHistory(game, ply),
+            "review-v1",
+          )
+        )
+          throw new Error("Position review was incompatible. Please retry.");
         next = annotateAll({
           ...next,
-          evals: { ...next.evals, [ply]: { score: result.score, best: result.move } },
+          evals: { ...next.evals, [ply]: value },
         });
         setReview(next);
       }

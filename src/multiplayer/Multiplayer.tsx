@@ -531,7 +531,11 @@ export function Multiplayer({
                     alertTarget={chatAlertTarget}
                   />
                   {game.review ? (
-                    <CompletedReview game={game.review} color={game.yourColor ?? "w"} />
+                    <CompletedReview
+                      key={`${game.review.id}:${game.review.revision}`}
+                      game={game.review}
+                      color={game.yourColor ?? "w"}
+                    />
                   ) : (
                     <aside className="panel mp-coach-note">
                       <h2>A game between friends</h2>

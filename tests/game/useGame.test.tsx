@@ -184,3 +184,89 @@ it("persists an abandoned rated result before replacing it with a new game", () 
     { id: result.current.game.id, reason: null, terminal: false },
   ]);
 });
+
+it("does not cache a biased opponent score when its move is applied", async () => {
+  vi.useFakeTimers();
+  const { result } = renderHook(() => useGame(false));
+  act(() => result.current.move(legalMoves(result.current.game.st)[0]));
+  const job = fake.jobs.filter((j) => j.input.type === "ai").at(-1)!;
+  await act(async () =>
+    job.resolve({ move: legalMoves(job.input.position)[0], score: 8888, book: false }),
+  );
+  await act(async () => vi.advanceTimersByTimeAsync(1000));
+  expect(result.current.game.hist).toHaveLength(2);
+  expect(result.current.game.evals[1]).toBeUndefined();
+  expect(fake.jobs.at(-1)!.input.type).toBe("analyse");
+});
+
+async function completedReviewFixture() {
+  const { reduceSession } = await import("../../src/game/state");
+  const { reviewPosition, reviewHistory } = await import("../../src/engine/reviewer");
+  let s = freshSession(Date.now(), "reviewed-game");
+  s = reduceSession(s, {
+    type: "move",
+    move: legalMoves(s.game.st)[0],
+    book: false,
+    now: Date.now(),
+  });
+  s = reduceSession(s, { type: "resign", now: Date.now() });
+  for (let ply = 0; ply <= s.game.hist.length; ply++) {
+    const r = reviewPosition(
+      s.game.hist[ply]?.before ?? s.game.st,
+      reviewHistory(s.game, ply),
+      "review-v1",
+      () => 0,
+    );
+    s = reduceSession(s, {
+      type: "evaluation",
+      gameId: s.game.id,
+      revision: s.game.revision,
+      ply,
+      value: { score: ply === 0 ? 0 : -500, best: r.move, review: r.review },
+    });
+  }
+  expect(s.game.hist[0].ann).toBe("??");
+  return s;
+}
+
+it("explicit reanalysis replaces a cached live verdict and persists its replacement", async () => {
+  const { reviewPosition } = await import("../../src/engine/reviewer");
+  const s = await completedReviewFixture();
+  localStorage.setItem("chess-prodigy-state-v1", JSON.stringify(s));
+  const { result } = renderHook(() => useGame(true));
+  act(() => result.current.review());
+  for (let ply = 0; ply < 2; ply++) {
+    const job = fake.jobs.at(-1)!;
+    if (job.input.type !== "analyse") throw new Error("Expected review work");
+    const r = reviewPosition(job.input.position, job.input.history, job.input.policy, () => 0);
+    await act(async () => job.resolve({ ...r, score: 0 }));
+  }
+  expect(result.current.game.hist[0]).toMatchObject({ ann: "", better: null });
+  expect(JSON.parse(localStorage.getItem("chess-prodigy-state-v1")!).game.hist[0].ann).toBe("");
+});
+
+it.each(["cancel", "undo", "new", "unmount"])(
+  "rejects stale reanalysis after %s",
+  async (action) => {
+    const { reviewPosition } = await import("../../src/engine/reviewer");
+    const s = await completedReviewFixture();
+    localStorage.setItem("chess-prodigy-state-v1", JSON.stringify(s));
+    const { result, unmount } = renderHook(() => useGame(true));
+    act(() => result.current.review());
+    const job = fake.jobs.at(-1)!;
+    if (job.input.type !== "analyse") throw new Error("Expected review work");
+    const r = reviewPosition(job.input.position, job.input.history, job.input.policy, () => 0);
+    act(() => {
+      if (action === "cancel") result.current.cancelReview();
+      if (action === "undo") result.current.undo();
+      if (action === "new")
+        result.current.startGame({ playerColor: "w", level: "club", time: "none" });
+      if (action === "unmount") unmount();
+    });
+    const saved = localStorage.getItem("chess-prodigy-state-v1");
+    const current = result.current.game;
+    await act(async () => job.resolve({ ...r, score: 700 }));
+    expect(result.current.game).toBe(current);
+    expect(localStorage.getItem("chess-prodigy-state-v1")).toBe(saved);
+  },
+);

@@ -1,4 +1,5 @@
 import type { Color, Move, Position } from "../engine/types";
+import type { ReviewProvenance } from "../engine/reviewer";
 
 export const MOTIF_KEYS = [
   "fork",
@@ -49,6 +50,8 @@ export interface Motif {
 export interface PositionEval {
   score: number;
   best: Move | null;
+  // Absent only in legacy/untrusted data; never qualifies for neutral review.
+  review?: ReviewProvenance;
 }
 
 export interface AnnotatableEntry {

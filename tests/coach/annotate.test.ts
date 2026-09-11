@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { START, applyMove, legalMoves, sanFor } from "../../src/engine/board";
 import { annotateAll, type AnnotatableEntry } from "../../src/coach/annotate";
+import { reviewPosition, reviewHistory } from "../../src/engine/reviewer";
 
 function entry(book = false): AnnotatableEntry {
   const before = START();
@@ -16,11 +17,22 @@ function entry(book = false): AnnotatableEntry {
   };
 }
 
+function evaluations(hist: AnnotatableEntry[], scores: Record<number, number>) {
+  return Object.fromEntries(
+    Object.entries(scores).map(([key, score]) => {
+      const ply = Number(key);
+      const at = hist[ply]?.before ?? applyMove(hist.at(-1)!.before, hist.at(-1)!.mv);
+      const result = reviewPosition(at, reviewHistory({ hist }, ply), "review-v1", () => 0);
+      return [key, { score, best: result.move, review: result.review }];
+    }),
+  );
+}
+
 describe("coach annotations", () => {
   it("marks a 300-point White drop as a blunder", () => {
     const annotated = annotateAll({
       hist: [entry()],
-      evals: { 0: { score: 100, best: null }, 1: { score: -200, best: null } },
+      evals: evaluations([entry()], { 0: 100, 1: -200 }),
     });
     expect(annotated.hist[0].ann).toBe("??");
   });
@@ -41,7 +53,7 @@ describe("coach annotations", () => {
     expect(
       annotateAll({
         hist: [white, black],
-        evals: { 1: { score: -200, best: null }, 2: { score: 100, best: null } },
+        evals: evaluations([white, black], { 1: -200, 2: 100 }),
       }).hist[1].ann,
     ).toBe("??");
   });
@@ -50,7 +62,7 @@ describe("coach annotations", () => {
     expect(
       annotateAll({
         hist: [entry(true)],
-        evals: { 0: { score: 0, best: null }, 1: { score: 0, best: null } },
+        evals: evaluations([entry(true)], { 0: 0, 1: 0 }),
       }).hist[0].ann,
     ).toBe("book");
     const game = { hist: [entry()], evals: {} };
@@ -61,8 +73,17 @@ describe("coach annotations", () => {
     expect(
       annotateAll({
         hist: [entry()],
-        evals: { 0: { score: 99999, best: null }, 1: { score: 0, best: null } },
+        evals: evaluations([entry()], { 0: 99999, 1: 0 }),
       }).hist[0].ann,
     ).toBe("");
   });
+});
+
+it("does not turn provenance-free opponent scores into a neutral verdict", () => {
+  const game = annotateAll({
+    hist: [{ ...entry(), ann: "??", better: "d4" }],
+    evals: { 0: { score: 100, best: null }, 1: { score: -900, best: null } },
+  });
+  expect(game.hist[0].ann).toBeNull();
+  expect(game.hist[0].better).toBeNull();
 });

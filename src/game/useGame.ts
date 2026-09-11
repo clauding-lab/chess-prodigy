@@ -8,6 +8,13 @@ import { reduceSession, settlePriorGame } from "./state";
 import type { Preferences, SessionAction, Setup } from "./types";
 import { playSound } from "./sound";
 import type { LoadResult } from "../storage/store";
+import {
+  REVIEWER,
+  isNeutralEvaluation,
+  reusableReview,
+  reviewHistory,
+  type ReviewPolicy,
+} from "../engine/reviewer";
 
 export interface GameStorageAdapter {
   load(now: number, fallbackId: string): LoadResult;
@@ -138,24 +145,30 @@ export function useGame(
     setEngineError(message);
   }, []);
   const analyse = useCallback(
-    async (position: Position, ply: number, token: number, ms: number, depth: number) => {
+    async (position: Position, ply: number, token: number, policy: ReviewPolicy) => {
       const g = current.current.game;
       const result = await client.current!.request({
         type: "analyse",
         position,
         gameId: g.id,
         revision: g.revision,
-        ms,
-        depth,
+        reviewer: REVIEWER,
+        policy,
+        history: reviewHistory(g, ply),
       });
       if (!mounted.current || generation.current !== token) return null;
-      if (result.score === null) throw new Error("Engine returned no evaluation.");
+      if (result.score === null || !("review" in result))
+        throw new Error("Engine returned no neutral evaluation.");
+      const value = { score: result.score, best: result.move, review: result.review };
+      if (!isNeutralEvaluation(value, position, reviewHistory(g, ply), policy))
+        throw new Error("Engine returned an incompatible review.");
+      if (policy === "hint-v1") return result;
       dispatch({
         type: "evaluation",
         gameId: g.id,
         revision: g.revision,
         ply,
-        value: { score: result.score, best: result.move },
+        value,
       });
       return result;
     },
@@ -205,15 +218,6 @@ export function useGame(
           });
         }
         if (!mounted.current || generation.current !== token) return;
-        // AI scores describe the position it faced, already from White's perspective.
-        if (result.score !== null)
-          dispatch({
-            type: "evaluation",
-            gameId: g.id,
-            revision: g.revision,
-            ply: g.hist.length,
-            value: { score: result.score, best: result.move },
-          });
         dispatch({
           type: "move",
           move: result.move,
@@ -223,8 +227,19 @@ export function useGame(
       } else if (current.current.preferences.coach) {
         for (const ply of [...new Set([Math.max(0, g.hist.length - 1), g.hist.length])]) {
           if (generation.current !== token) return;
-          if (!current.current.game.evals[ply])
-            await analyse(ply === g.hist.length ? g.st : g.hist[ply].before, ply, token, 180, 3);
+          if (
+            !reusableReview(
+              current.current.game.evals[ply],
+              ply === g.hist.length ? g.st : g.hist[ply].before,
+              reviewHistory(g, ply),
+            )
+          )
+            await analyse(
+              ply === g.hist.length ? g.st : g.hist[ply].before,
+              ply,
+              token,
+              "review-v1",
+            );
         }
       }
     };
@@ -264,7 +279,7 @@ export function useGame(
     const token = ++generation.current;
     busy.current = "hint";
     setThinking(true);
-    void analyse(g.st, g.hist.length, token, 900, 4)
+    void analyse(g.st, g.hist.length, token, "hint-v1")
       .then((result) => {
         if (result?.move && result.score !== null && generation.current === token)
           setHint({
@@ -292,8 +307,7 @@ export function useGame(
     const run = async () => {
       for (let ply = 0; ply <= g.hist.length; ply++) {
         if (generation.current !== token) return;
-        if (!current.current.game.evals[ply])
-          await analyse(ply === g.hist.length ? g.st : g.hist[ply].before, ply, token, 180, 3);
+        await analyse(ply === g.hist.length ? g.st : g.hist[ply].before, ply, token, "review-v1");
       }
     };
     void run()

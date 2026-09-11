@@ -59,9 +59,10 @@ export function loadSavedState(
 
 export function saveState(storage: StorageLike | null, session: Session): boolean {
   if (!storage) return false;
-  if (!parseSavedState(session)) return false;
+  const normalized = parseSavedState(session);
+  if (!normalized) return false;
   try {
-    storage.setItem(SAVE_KEY, JSON.stringify(session));
+    storage.setItem(SAVE_KEY, JSON.stringify(normalized));
     return true;
   } catch {
     return false;

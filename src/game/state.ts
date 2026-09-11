@@ -10,6 +10,7 @@ import {
 } from "../engine/board";
 import { detectMotifs } from "../coach/motifs";
 import { annotateAll } from "../coach/annotate";
+import { isNeutralEvaluation, reviewHistory } from "../engine/reviewer";
 import { defaultRating, ratingUpdate, ENGINE_ELO, LEVEL_LABEL } from "../rating/fide";
 import type { Action, Game, GameResult, Setup, Session, SessionAction, TimeControl } from "./types";
 export const TIME_CONTROLS: Record<TimeControl, { label: string; ms: number | null; inc: number }> =
@@ -70,7 +71,11 @@ export function reduceGame(g: Game, action: Action): Game {
       action.revision !== g.revision ||
       action.ply < 0 ||
       action.ply > g.hist.length ||
-      !Number.isFinite(action.value.score)
+      !isNeutralEvaluation(
+        action.value,
+        g.hist[action.ply]?.before ?? g.st,
+        reviewHistory(g, action.ply),
+      )
     )
       return g;
     return annotateAll({ ...g, evals: { ...g.evals, [action.ply]: action.value } });

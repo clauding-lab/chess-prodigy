@@ -238,11 +238,16 @@ export function ReviewModal({
         </div>
       )}
       <div className="review">
+        {game.hist.some((entry) => entry.ann === null) && (
+          <p className="note">Review incomplete: some moves do not yet have comparable analysis.</p>
+        )}
         {!items.length && (
           <div className="item">
             {reviewing
               ? "Working through the moves…"
-              : "No turning points found. Either a clean game or a very short one."}
+              : game.hist.some((entry) => entry.ann === null)
+                ? "No verdict yet for the remaining moves. Run review again to reanalyse."
+                : "No turning points found by this reviewer."}
           </div>
         )}
         {items.map(({ e, k }) => (

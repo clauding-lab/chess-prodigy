@@ -66,3 +66,12 @@ Chess coach with optional private accounts and a public hosted application. Read
 - On 7 September 2026 BDT the owner approved a top H2H tab after the first completed 1v1 game. Reuse lifetime participant-only records; both opponents see their shared results, unrelated players do not. Refresh eligibility after completion in the board or lobby; discard stale account responses.
 - Owner approved basic participant-only text/emoji chat and typing dots on 7 September 2026 BDT. `server/chat.ts` is volatile memory only: no transcript in SQLite, logs, saved games or browser storage. Either participant leaving clears the room; missing presence expires within 30 seconds. Preserve session tombstones, epoch checks and client response ordering. Close the chat timer with the application.
 - Later that day the owner approved the top Chat unread dot and removal of emoji from UI wording (player emoji input remains supported). Unread state is local to the mounted chat, clears on room erasure/read, ignores own messages, and treats hidden tabs as unread. Keep reduced-motion support and completed-tap audio activation; pending browser resume attempts must not block fresh gestures.
+
+## Local personality development — 11 September 2026 BDT
+
+Read revision 2 of `CHESS_PRODIGY_BUILD_HANDOFF.md` and the dated Run 1 records in
+`docs/plans/2026-09-11-personality-pwa.md` and `docs/verification/2026-09-11-personality-pwa.md`.
+This pass authorizes local feature-branch checkpoints only: no push, PR, merge, deployment,
+publication or live player data. Neutral review must validate purpose/version/policy and
+position/history identity; opponent scores and legacy scores never qualify. Preserve exact
+legacy wire acknowledgements at the server; normalize derived review data at client boundaries.

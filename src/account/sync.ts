@@ -86,7 +86,9 @@ export class AccountSync {
   }
 
   save(snapshot: Session, options: { terminal?: boolean } = {}) {
-    if (this.disposed || !parseSavedState(snapshot)) return false;
+    const normalized = parseSavedState(snapshot);
+    if (this.disposed || !normalized) return false;
+    snapshot = normalized;
     const terminal = options.terminal === true;
     this.snapshot = snapshot;
     const last = this.pending.at(-1);

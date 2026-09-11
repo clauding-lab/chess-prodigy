@@ -5,6 +5,7 @@ import { MOTIF_STORIES, openingStory } from "../coach/stories";
 import type { Color } from "../engine/types";
 import type { Game } from "../game/types";
 import { Card } from "./Card";
+import { isNeutralEvaluation, reviewComplete, reviewHistory } from "../engine/reviewer";
 
 function fmtEval(score: number) {
   if (Math.abs(score) > 3000) return score > 0 ? "White mates" : "Black mates";
@@ -43,7 +44,10 @@ export function CoachPanel({
     }));
   const ply = game.hist.length,
     book = bookLookup(game.hist.map((e) => e.san));
-  const current = game.evals[ply] ?? (ply > 0 ? game.evals[ply - 1] : null);
+  const candidate = game.evals[ply];
+  const current = isNeutralEvaluation(candidate, game.st, reviewHistory(game, ply))
+    ? candidate
+    : null;
   const pct = current
     ? 100 / (1 + Math.exp(-Math.max(-3000, Math.min(3000, current.score)) / 350))
     : 50;
@@ -78,6 +82,9 @@ export function CoachPanel({
             </div>
             <div className="val">{current ? fmtEval(current.score) : "…"}</div>
           </div>
+          {current && !reviewComplete(current) && (
+            <p className="note">Preliminary evaluation — review incomplete.</p>
+          )}
           <div
             className="coach-reading"
             role="region"

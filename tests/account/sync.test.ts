@@ -255,3 +255,43 @@ it("aborts an outstanding account write when the account is replaced", async () 
   await flushing;
   expect(signal!.aborted).toBe(true);
 });
+
+it("migrates legacy pending terminal writes without losing their version or acknowledgements", async () => {
+  const { reduceSession } = await import("../../src/game/state");
+  const { legalMoves } = await import("../../src/engine/board");
+  const storage = new MemoryStorage();
+  let snapshot = freshSession(0, "legacy-terminal");
+  snapshot = reduceSession(snapshot, {
+    type: "move",
+    move: legalMoves(snapshot.game.st)[0],
+    book: false,
+    now: 1,
+  });
+  snapshot = reduceSession(snapshot, { type: "resign", now: 2 });
+  snapshot.game.evals[0] = { score: 8888, best: legalMoves(snapshot.game.hist[0].before)[0] };
+  snapshot.game.hist[0].ann = "!";
+  storage.setItem(
+    accountStorageKey("legacy"),
+    JSON.stringify({ baseVersion: 7, snapshot, pending: [{ snapshot, terminal: true }] }),
+  );
+  const sent: (typeof snapshot)[] = [];
+  const sync = new AccountSync("legacy", storage, async (_url, init) => {
+    const body = JSON.parse(String(init?.body));
+    expect(body.expectedVersion).toBe(7);
+    sent.push(body.snapshot);
+    return new Response(JSON.stringify({ ...empty, version: 8, snapshot: body.snapshot }));
+  });
+  const restored = sync.initialize({ ...empty, version: 9, snapshot: freshSession(0, "other") });
+  expect(restored.game.evals).toEqual({});
+  expect(restored.game.hist[0].ann).toBeNull();
+  expect(restored.game.ratingApplied).toEqual(snapshot.game.ratingApplied);
+  await sync.flush();
+  expect(sent).toHaveLength(1);
+  expect(sent[0].rating).toEqual(snapshot.rating);
+  expect(sync.status()).toMatchObject({ state: "idle", pending: 0 });
+  expect(JSON.parse(storage.getItem(accountStorageKey("legacy"))!).baseVersion).toBe(8);
+  // A live legacy object is normalized before queueing too.
+  expect(sync.save(snapshot)).toBe(true);
+  expect(JSON.parse(storage.getItem(accountStorageKey("legacy"))!).snapshot.game.evals).toEqual({});
+  sync.dispose();
+});
