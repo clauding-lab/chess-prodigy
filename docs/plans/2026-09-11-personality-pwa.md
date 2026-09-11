@@ -1,5 +1,10 @@
 # Personality PWA — Run 1 implementation record
 
+Current status: A0, A1a, A1b and the browser regression are verified locally. Full cross-browser
+verification remains BLOCKED by the reproduced baseline WebKit offline-navigation failure.
+Run 2 and all personality implementation remain DEFERRED. Latest application-code commit:
+`f941d25`; final documentation/test checkpoint is recorded below and by Git HEAD.
+
 Date: 11 September 2026 BDT. Scope: revision 2 of the owner's supplied
 `/Users/adnanrashid/Downloads/CHESS_PRODIGY_BUILD_HANDOFF_v2.md` (read and confirmed).
 Execute A0 + A1 only. Product/naming decisions are settled; no personality UI in this run.
@@ -23,17 +28,17 @@ neutral results enter review caches. Opponent results remain move decisions. Inv
 derived scores and recompute dependent annotations; preserve all authoritative saved data.
 Use comparable settings for before/after verdicts and show incomplete review honestly.
 
-1. **A0 — in-progress:** inspect governance, product, handoff and data path; create records;
+1. **A0 — verified:** inspect governance, product, handoff and data path; create records;
    run baseline typecheck, lint, format, unit/server tests, build, browser, accessibility and
    diff checks. Documentation-only commit after scope/diff inspection.
-2. **A1a — not-started:** write failing tests for neutral identity/settings, worker separation,
+2. **A1a — verified:** write failing tests for neutral identity/settings, worker separation,
    legacy cache migration and annotation replacement. Implement evaluator/worker/cache/restore
    boundary through `src/engine`, `src/worker`, `src/coach`, `src/game`, `src/storage` and affected
    account paths. Check focused engine/coach/game/storage/worker/account tests, typecheck,
    lint, formatting and diff; review and locally commit.
-3. **A1b — not-started:** reproduce bare-king timeout; fix only the proven computer-practice
+3. **A1b — verified:** reproduce bare-king timeout; fix only the proven computer-practice
    case. Check clock/rating/storage regressions, typecheck and diff; locally commit if green.
-4. **A1 final — not-started:** complete four required independence checks, independent review
+4. **A1 final — blocked (baseline WebKit offline only):** complete four required independence checks, independent review
    of evaluator → worker → live/persisted caches → legacy restoration → annotation recomputation.
    Run existing full checks including browser/accessibility; record limitations and local commits.
 5. **A2 / Runs 2–3 — deferred:** no Morphy, rating-label redesign, rivalry, iOS or release work.
@@ -50,7 +55,7 @@ Use comparable settings for before/after verdicts and show incomplete review hon
 
 Local commits are checkpoints in a persistent owner-accessible checkout, not remote backups.
 No disposable environment is in use; no external export is required. Records and task-only
-commits remain locally accessible. No blockers currently; baseline checks pending.
+commits remain locally accessible. Initial baseline was pending here; see measured checkpoint log below.
 Next: run baseline checks and record actual outcomes before any application/test/config/schema edit.
 
 ## A0 checkpoint — verified, 11 September 2026 BDT
@@ -137,3 +142,83 @@ A1 final is in-progress. Added real-browser opponent-score injection and legacy 
 coverage; it remains uncommitted pending full browser verification. Full run checks pending:
 browser, build completion, accessibility and available WebKit journeys. No new feature scope.
 Next: finish full boundary checks, record exact outcomes, commit eligible tests/records, stop.
+
+## Run boundary finding and final checkpoint split
+
+A1b commit: `f941d25`. Full canonical checks pass: 247 tests, typecheck, lint, format, build,
+52 Chrome desktop/mobile browser passes with four existing deliberate skips, Lighthouse
+100/100. Supplemental WebKit: three pass (reload, responsive Classic play, native reviewer),
+one FAIL at offline new-page navigation with `WebKit encountered an internal error`.
+An untouched base `f2b45b7` archive built in `/tmp/chess-prodigy-run1/baseline-webkit` reproduces
+the same exact failed line/error (1 failed). This is an unresolved baseline WebKit check,
+not evidence of an A1 regression. Full cross-browser verification is BLOCKED, not green.
+
+Independent browser regression checkpoint: eligible after Chrome full suite, standalone
+WebKit reviewer journey, source typecheck and explicit test-file formatting/lint pass.
+The initial direct ESLint file command exited 1 because repo config ignores all tests.
+Using ESLint API with `overrideConfigFile: true` and `typescript-eslint.configs.recommended`
+checked the new browser file: one file, zero errors/warnings, exit 0. No ignore suppression
+or repo lint relaxation. Other test files retain the repository existing check scope.
+
+Next: run the standalone WebKit reviewer check, commit that tested regression and truthful
+records, export task-only recovery files, report the unresolved baseline check, and stop.
+
+## Final Run 1 report — 11 September 2026 BDT
+
+- A0 verified; A1 reviewer/timeout implementation verified; full canonical suite verified.
+- Supplemental cross-browser matrix BLOCKED on baseline WebKit offline navigation.
+- Browser regression standalone WebKit check: one pass, exit 0. Earlier WebKit matrix: three
+  passed, one failed; baseline reproduction: one failed at the identical navigation step.
+- No missing tools for canonical checks. Physical iPhone installation/sound/performance remain
+  pending. No claim of physical-device validation or full Milestone A completion.
+- Four Chrome skips remain: duplicate mobile account-switch, conflict-stacking and preference
+  sync cases; desktop touch-only sound case. No new skips, retries or force-clicks added.
+- Synthetic mobile dark screenshot inspected; no layout regression observed. Four generated
+  baseline screenshot files restored after keeping task-run copies under the local log folder.
+- Main still points at base f2b45b701795ea2aa03e89688ced04b8106b5928. No remote commands,
+  deployment, new services, real notification dispatch or live player data access.
+- No initial owner changes existed. Remaining task diff before final checkpoint is only the
+  native-browser regression and these records. Final checkpoint will commit those exact files.
+
+### Commands and evidence
+
+Run from this persistent checkout after `source ~/.nvm/nvm.sh && nvm use`:
+
+```sh
+npm test
+npm run typecheck
+npm run lint
+npm run format:check
+npm run build
+npm run test:browser
+# In a separate terminal: npm run preview -- --port 4173 --strictPort
+npm run test:accessibility
+git diff f2b45b701795ea2aa03e89688ced04b8106b5928 --check
+# Focused independence and migration reproduction:
+npm test -- tests/engine/reviewer.test.ts tests/game/useGame.test.tsx tests/storage/store.test.ts tests/account/sync.test.ts tests/worker/client.test.ts tests/server/accounts.test.ts
+```
+
+Final canonical logs `/tmp/chess-prodigy-run1/full-*.log`: 247 tests/28 files; source checks,
+build and browser command exit 0; 52 browser passes/four skips; Lighthouse wood/dark 100.
+WebKit command: `npx playwright test --config /tmp/chess-prodigy-run1/playwright-webkit.config.mjs production.spec.js reviewer.spec.ts --grep "reload preserves|Strong search|cached app|native worker"`.
+Standalone reviewer command uses the same config and only `reviewer.spec.ts`; exit 0.
+Baseline failure uses `/tmp/chess-prodigy-run1/playwright-baseline-webkit.config.mjs`, only
+`production.spec.js --grep "cached app"`. Build of untouched base exits 0; test exits 1.
+Logs and failure traces remain under `/tmp/chess-prodigy-run1/`; those temporary paths may expire.
+
+### Recovery and exact next task
+
+Persistent owner Mac, not a disposable implementation workspace. Optional recovery export
+prepared at `/Users/adnanrashid/Downloads/chess-prodigy-run1-recovery-2026-09-11/`: task-only
+Git bundle (requires the recorded base), consolidated binary-capable patch, these two records,
+WebKit reproduction configurations and restore instructions. Export/verification runs after
+the final local checkpoint; its actual HEAD is written to the recovery README and final reply.
+This is owner-accessible local recovery, not an off-device or remote backup.
+
+Stop here. Next bounded development invocation is Run 2: implement default-off capability,
+versioned opponent identity/configuration, compatible safe save/resume and explicit unrated-beta
+protection before exposing Paul Morphy; then integrate the approved profile with neutral review.
+Resolve/characterize the existing WebKit offline-navigation limitation before claiming full
+cross-browser/offline acceptance. No rivalry screens, result redesign, Stockfish, iOS packaging
+or release operations have begun. Naming clearance, calibration and stronger-review decisions
+remain deferred release prerequisites.
