@@ -38,3 +38,31 @@ assisted abandonment remains unrated and retains unchanged rating. Historic time
 Both reviewers approved the fixes; final focused suite **112 tests / 13 files passed**, and
 typecheck/lint/format all exit 0 (`r31-final-*.log`). No SQL migration. R3.1 eligible for local commit;
 next: account cached history with pending overlay and owner-scoped adapter integration.
+
+## Unfinished R3.2 / R3.3 and scope reconciliation — 11 September 2026 BDT
+
+R3.1 was committed as `14fadb1`. R3.2 adds a separate optional owner-scoped server history
+cache, ordered pending overlay, monotonic history responses and conflict handling without
+advancing active write versions. Missing cache is honestly incomplete offline; corrupt optional
+history bytes remain preserved while the valid active save and queue continue working.
+No SQL migration or snapshot-wire change. Pending undo is applied before trimming to 200.
+
+Red-first account tests preceded implementation. A same-timestamp fixture had incorrect order
+expectations and was corrected with a distinct completion time. A cleanup-ref lint warning was
+fixed using a stable invalidation callback. Final focused check: 119 tests / 14 files pass;
+`r32-final-tests-rerun.log`, `r32-final-lint.log`, `r32-final-typecheck.log`, and
+`r32-final-format.log` record exit 0. Both independent reviews report no actionable findings.
+R3.2 remains uncommitted; R3.3 only has `tests/ui/RecordedGames.test.tsx`, whose missing-component
+failure is recorded in `r33-red.log`. No Games component/result/rematch UI has been implemented.
+
+Fresh full suite during resumption exits 1: 302 passed, one App timing assertion failed;
+35 files passed, two failed (including the missing-component suite). Full log:
+`/tmp/chess-prodigy-scope-check-2026-09-11/full-tests.log`. Current tree is NOT fully verified.
+The explicit Run 1-only instruction conflicts with the saved Run 3 continuation interpretation;
+no further application changes or later code commits until scope is resolved. Preserve the
+four modified source files and two untracked tests; documentation-only preservation is separate.
+
+Isolated `npx vitest run tests/ui/App.test.tsx` rerun: eight pass, exit 0. Timing sensitivity
+remains unresolved; no full-suite success claim. Recovery export directory:
+`/Users/adnanrashid/Downloads/chess-prodigy-preserved-20260911-Y0P4bw/` (task-only bundle,
+unfinished patch/new tests, records/logs; verify against documentation checkpoint HEAD).

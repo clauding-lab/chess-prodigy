@@ -78,3 +78,14 @@ Independent reviews approved after generated-output validation and primitive-tim
 completion timestamps now reflect resignation/abandonment, including unrated assisted games;
 rating calculations remain unchanged. Guest archive failures preserve active recovery state and
 block replacement. Next: account history cache/pending overlay and owner-scoped adapter integration.
+
+## Resume reconciliation — 11 September 2026 BDT
+
+R3.1 commit: `14fadb1f7d0da8a0513de2e6e32315f119e1380f`. R3.2 is implemented but uncommitted;
+focused 119 tests / 14 files and source checks passed. Both independent reviewers found no
+remaining actionable findings after fixture-order and cleanup-callback corrections. R3.3 has
+only an unfinished red UI test, with no component. All six source/test changes are preserved.
+The latest explicit user instruction says Run 1 only, in conflict with this record's earlier
+interpretation of “go on”. Pause later implementation pending explicit scope selection.
+Next, if Run 3 is confirmed: investigate the full-suite App timing failure; reconcile R3.2
+checks/commit eligibility; then implement the recorded Games UI test before broad verification.

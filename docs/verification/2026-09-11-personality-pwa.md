@@ -225,3 +225,31 @@ it, with the actual final HEAD in the recovery README and final owner report.
 
 Run 1 stops here: implementation/canonical checks verified; supplemental WebKit offline check
 blocked as reproduced on baseline; physical devices and Run 2 onward deferred.
+
+## Resume evidence — 11 September 2026 BDT
+
+Handoff revision 2 confirmed again in both canonical and supplied Downloads copies. Existing
+Run 1 branch resolves to `8a5a472f7301b4794d3f6a99ab2c03a4b749c0a1`; its recovery bundle
+passes `git bundle verify`. Historic 247-unit/52-browser/Lighthouse evidence above applies
+to Run 1, not the dirty later checkout. Current branch `codex/personality-pwa-run3` starts this
+resumption at `14fadb1f7d0da8a0513de2e6e32315f119e1380f`; main is unchanged at `f2b45b7`.
+
+Fresh full `npm test` on Node 22.23.0 exits 1: 302 tests pass, one fails; 35 test files pass,
+two fail. The unfinished `tests/ui/RecordedGames.test.tsx` cannot import the absent
+`src/ui/RecordedGames` component. `tests/ui/App.test.tsx:52` also times out expecting the
+computer reply (history length 2, observed 1). Do not call this tree green or conceal the
+failures with exclusions. Log: `/tmp/chess-prodigy-scope-check-2026-09-11/full-tests.log`.
+`git diff --check` passes. No fresh build/browser/accessibility claim for this dirty tree.
+
+Run 3 account-cache focused results remain separately recorded: 119 tests in 14 files,
+source checks passed in `/tmp/chess-prodigy-run3/r32-final-*.log`. Independent TypeScript
+review resumed after the cleanup fix and found no actionable issue, with fresh source checks.
+These scoped results do not override the failed full suite. No later application code is
+committed by this reconciliation. Scope selection is required before extending beyond Run 1.
+
+The isolated App rerun passes all eight tests (`app-rerun.log`, exit 0). This suggests a timing
+sensitivity but does not establish its cause or erase the full-suite failure. Task-only recovery
+export is prepared at `/Users/adnanrashid/Downloads/chess-prodigy-preserved-20260911-Y0P4bw/`:
+local checkpoint bundle, tracked binary-capable diff, the two allowlisted new tests, records and
+synthetic logs. Verify bundle and patch against the final documentation HEAD after committing.
+This is a persistent owner-accessible local copy, not an off-device backup. No release action.

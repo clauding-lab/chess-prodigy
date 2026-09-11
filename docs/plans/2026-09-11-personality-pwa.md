@@ -236,3 +236,21 @@ it, with the actual final HEAD in the recovery README and final owner report.
 
 Run 1 stops here: implementation/canonical checks verified; supplemental WebKit offline check
 blocked as reproduced on baseline; physical devices and Run 2 onward deferred.
+
+## Resume scope reconciliation — 11 September 2026 BDT
+
+Run 1 is already closed at `8a5a472f7301b4794d3f6a99ab2c03a4b749c0a1`.
+On this resumption the persistent checkout is instead on `codex/personality-pwa-run3`,
+HEAD `14fadb1f7d0da8a0513de2e6e32315f119e1380f`, Run 3 base
+`32c023d21229a07f6ab4f88f67f4f73a037b6d97`. Main remains the original Run 1 base.
+The latest explicit task says RUN 1 ONLY while continuation notes infer Run 3 from “go on”.
+Do not resolve that conflict by implementing rivalry/result screens. Further application work
+is paused for an explicit scope selection; completed Run 1 needs no reimplementation.
+
+Pre-existing changes preserved: `src/account/AccountShell.tsx`, `src/account/sync.ts`,
+`src/game/archive.ts`, `src/game/useGame.ts`; untracked `tests/account/history.test.ts`
+and `tests/ui/RecordedGames.test.tsx`. Index was empty. No application/test/config/schema
+changes made during this reconciliation. Documentation-only preservation checkpoint may commit
+after diff inspection; the unfinished later code must remain unstaged. Run 1 recovery bundle
+was verified again successfully. Next exact task: confirm whether to resume the existing Run 3
+archive/UI work or retain the requested Run 1 stop boundary.
