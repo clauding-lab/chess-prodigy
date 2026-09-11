@@ -160,6 +160,10 @@ export function AccountShell() {
     let timer: number | undefined;
     let hasChanged = false;
     return {
+      scope: "account",
+      history: () => boot.sync.history(),
+      subscribeHistory: (listener) => boot.sync.subscribe(listener),
+      refreshHistory: async () => boot.sync.acceptHistory(await getRecords(boot.user.id)),
       load: () => ({
         session: boot.initial,
         status: "saved",

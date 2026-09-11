@@ -40,10 +40,19 @@ export function retainedArchive(records: GameRecord[]): GameRecord[] {
 }
 
 export function updateArchive(records: GameRecord[], snapshot: Session): GameRecord[] {
-  const next = records.filter((record) => record.id !== snapshot.game.id);
-  const terminal = archiveGame(snapshot);
-  if (terminal) next.push(terminal);
-  return retainedArchive(next);
+  return overlayArchive(records, [snapshot]);
+}
+
+export function overlayArchive(records: GameRecord[], snapshots: Session[]): GameRecord[] {
+  const next = new Map(records.map((record) => [record.id, record]));
+  for (const snapshot of snapshots) {
+    const terminal = archiveGame(snapshot);
+    if (terminal) next.set(terminal.id, terminal);
+    else next.delete(snapshot.game.id);
+  }
+  // Retain only after all pending transitions: a transient terminal followed by
+  // undo must not trim an unrelated authoritative record before either is sent.
+  return retainedArchive([...next.values()]);
 }
 
 export function replayRecord(record: GameRecord): { positions: Position[]; moves: Move[] } | null {

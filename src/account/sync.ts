@@ -1,7 +1,9 @@
 import type { Session } from "../game/types";
 import { parseSavedState } from "../storage/schema";
-import type { RecordsEnvelope } from "./types";
+import type { GameRecord, RecordsEnvelope } from "./types";
 import { parseRecordsEnvelope } from "./records";
+import { overlayArchive } from "../game/archive";
+import { parseHistory, type HistoryResult } from "../storage/history";
 
 type Fetch = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 type SyncState =
@@ -21,6 +23,7 @@ interface PersistedSync {
   baseVersion: number;
   pending: PendingItem[];
   snapshot: Session;
+  history?: unknown;
 }
 interface Conflict {
   current: RecordsEnvelope;
@@ -52,7 +55,12 @@ function validPersisted(value: unknown): PersistedSync | null {
     if (!snapshot || typeof entry.terminal !== "boolean") return null;
     pending.push({ snapshot, terminal: entry.terminal });
   }
-  return { baseVersion: Number(candidate.baseVersion), snapshot, pending };
+  return {
+    baseVersion: Number(candidate.baseVersion),
+    snapshot,
+    pending,
+    history: candidate.history,
+  };
 }
 
 export class AccountSync {
@@ -65,6 +73,10 @@ export class AccountSync {
   private listeners = new Set<() => void>();
   private disposed = false;
   private storageBlocked = false;
+  private remoteGames: GameRecord[] = [];
+  private historyReady = false;
+  private historyServerVersion = 0;
+  private corruptHistory: unknown = undefined;
   private readonly abort = new AbortController();
 
   constructor(
@@ -80,6 +92,19 @@ export class AccountSync {
 
   initialize(remote: RecordsEnvelope, remoteAvailable = true): Session {
     const local = this.readLocal();
+    const cached = parseHistory(local?.history);
+    if (local?.history !== undefined && !cached) this.corruptHistory = local.history;
+    this.remoteGames = remoteAvailable ? remote.games : (cached ?? []);
+    this.historyReady = remoteAvailable || cached !== null;
+    const cacheVersion =
+      local?.history && typeof local.history === "object" && "serverVersion" in local.history
+        ? local.history.serverVersion
+        : undefined;
+    this.historyServerVersion = remoteAvailable
+      ? remote.version
+      : Number.isSafeInteger(cacheVersion) && Number(cacheVersion) >= 0
+        ? Number(cacheVersion)
+        : (local?.baseVersion ?? 0);
     if (local && (local.pending.length > 0 || !remoteAvailable)) {
       this.baseVersion = local.baseVersion;
       this.pending = local.pending;
@@ -224,6 +249,7 @@ export class AccountSync {
       }
       if (this.pending[0] === sent) this.pending.shift();
       this.baseVersion = accepted.version;
+      this.adoptHistory(accepted);
       if (!this.persistLocal()) {
         this.emit();
         return;
@@ -239,6 +265,7 @@ export class AccountSync {
     const remote = this.conflict?.current;
     if (!remote?.snapshot) return null;
     this.baseVersion = remote.version;
+    this.adoptHistory(remote);
     this.pending = [];
     this.snapshot = remote.snapshot;
     this.conflict = null;
@@ -252,6 +279,7 @@ export class AccountSync {
     const remote = this.conflict?.current;
     if (!remote || !this.snapshot) return;
     this.baseVersion = remote.version;
+    this.adoptHistory(remote);
     this.conflict = null;
     this.syncState = "idle";
     this.persistLocal();
@@ -263,6 +291,33 @@ export class AccountSync {
       state: this.syncState,
       pending: this.pending.length,
       conflict: this.conflict?.current ?? null,
+    };
+  }
+
+  private adoptHistory(remote: RecordsEnvelope) {
+    if (remote.version < this.historyServerVersion) return;
+    this.remoteGames = remote.games;
+    this.historyServerVersion = remote.version;
+    this.historyReady = true;
+  }
+
+  acceptHistory(remote: RecordsEnvelope) {
+    if (this.disposed || remote.version < this.historyServerVersion) return;
+    this.adoptHistory(remote);
+    this.persistLocal();
+    this.emit();
+  }
+
+  history(): HistoryResult {
+    return {
+      games: overlayArchive(
+        this.remoteGames,
+        this.pending.map((item) => item.snapshot),
+      ),
+      status:
+        this.corruptHistory !== undefined ? "corrupt" : this.historyReady ? "ready" : "incomplete",
+      pending: this.pending.length > 0,
+      ...(this.corruptHistory !== undefined ? { raw: JSON.stringify(this.corruptHistory) } : {}),
     };
   }
 
@@ -308,6 +363,17 @@ export class AccountSync {
           baseVersion: this.baseVersion,
           pending: this.pending,
           snapshot: this.snapshot,
+          ...(this.corruptHistory !== undefined
+            ? { history: this.corruptHistory }
+            : this.historyReady
+              ? {
+                  history: {
+                    version: 1,
+                    serverVersion: this.historyServerVersion,
+                    games: this.remoteGames,
+                  },
+                }
+              : {}),
         } satisfies PersistedSync),
       );
       return true;

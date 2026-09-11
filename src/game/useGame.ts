@@ -4,7 +4,7 @@ import type { Move, Position } from "../engine/types";
 import { bookLookup } from "../book/book";
 import { EngineClient } from "../worker/client";
 import { loadSavedState } from "../storage/store";
-import { saveGuestProgress } from "../storage/history";
+import { loadGuestHistory, saveGuestProgress, type HistoryResult } from "../storage/history";
 import { reduceSession, settlePriorGame } from "./state";
 import type { Preferences, SessionAction, Setup } from "./types";
 import { playSound } from "./sound";
@@ -21,6 +21,10 @@ import {
 export interface GameStorageAdapter {
   load(now: number, fallbackId: string): LoadResult;
   save(session: LoadResult["session"], options?: { terminal?: boolean }): boolean;
+  scope?: "guest" | "account";
+  history?(): HistoryResult;
+  refreshHistory?(): Promise<void>;
+  subscribeHistory?(listener: () => void): () => void;
 }
 
 function browserStorage() {
@@ -34,6 +38,8 @@ const newId = () => crypto.randomUUID();
 const defaultStorage: GameStorageAdapter = {
   load: (now, fallbackId) => loadSavedState(browserStorage(), now, fallbackId),
   save: (session) => saveGuestProgress(browserStorage(), session),
+  scope: "guest",
+  history: () => loadGuestHistory(browserStorage()),
 };
 export function useGame(
   paused: boolean,
@@ -44,6 +50,15 @@ export function useGame(
   backgroundRef.current = background;
   const [initial] = useState(() => storage.load(Date.now(), newId()));
   const [session, setSession] = useState(initial.session);
+  const [history, setHistory] = useState<HistoryResult>(
+    () => storage.history?.() ?? { games: [], status: "incomplete" },
+  );
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyError, setHistoryError] = useState<string | null>(null);
+  const historyRequest = useRef(0);
+  const invalidateHistory = useCallback(() => {
+    historyRequest.current++;
+  }, []);
   const current = useRef(session);
   const [storageStatus, setStorageStatus] = useState(initial.status);
   const storageState = useRef(initial.status);
@@ -65,6 +80,7 @@ export function useGame(
       const status = storage.save(session, options) ? "saved" : "unavailable";
       storageState.current = status;
       setStorageStatus(status);
+      if (storage.history) setHistory(storage.history());
       return status === "saved";
     },
     [storage],
@@ -144,6 +160,37 @@ export function useGame(
       document.removeEventListener("visibilitychange", save);
     };
   }, [dispatch, persist, invalidateWork]);
+  useEffect(() => {
+    const update = () => setHistory(storage.history?.() ?? { games: [], status: "incomplete" });
+    update();
+    const unsubscribe = storage.subscribeHistory?.(update);
+    window.addEventListener("storage", update);
+    return () => {
+      invalidateHistory();
+      unsubscribe?.();
+      window.removeEventListener("storage", update);
+    };
+  }, [storage, invalidateHistory]);
+  async function refreshHistory() {
+    const request = ++historyRequest.current;
+    setHistoryLoading(true);
+    setHistoryError(null);
+    try {
+      await storage.refreshHistory?.();
+      if (!mounted.current || request !== historyRequest.current) return;
+      if (!storage.refreshHistory) persist();
+      if (storage.history) setHistory(storage.history());
+    } catch (error) {
+      if (mounted.current && request === historyRequest.current)
+        setHistoryError(
+          error instanceof Error
+            ? error.message
+            : "Recorded games could not be loaded. Please retry.",
+        );
+    } finally {
+      if (mounted.current && request === historyRequest.current) setHistoryLoading(false);
+    }
+  }
   const fail = useCallback((error: unknown, token: number) => {
     if (
       !mounted.current ||
@@ -341,6 +388,11 @@ export function useGame(
       });
   }
   return {
+    history,
+    historyLoading,
+    historyError,
+    refreshHistory,
+    historyScope: storage.scope ?? "guest",
     recoverySession: session,
     game: session.game,
     rating: session.rating,

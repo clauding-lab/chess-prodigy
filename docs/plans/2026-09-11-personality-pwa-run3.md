@@ -89,3 +89,25 @@ The latest explicit user instruction says Run 1 only, in conflict with this reco
 interpretation of “go on”. Pause later implementation pending explicit scope selection.
 Next, if Run 3 is confirmed: investigate the full-suite App timing failure; reconcile R3.2
 checks/commit eligibility; then implement the recorded Games UI test before broad verification.
+
+## Explicit Run 3 resumption — 11 September 2026 BDT
+
+Owner now explicitly says “go for run 3”; scope ambiguity is resolved. Resume the existing
+branch and all six unfinished task files at `0698540c41a56fafc78e35c5630a85780c77964b`.
+Original Run 3 base remains `32c023d21229a07f6ab4f88f67f4f73a037b6d97`. Index empty.
+No new baseline reset: the full dirty-tree failure and isolated App pass are recorded above.
+R3.2 gets its declared focused/source checks and local commit; R3.3 completes the missing
+Games component, result/rematch integration and browser journeys. Investigate the existing
+App wait boundary before final full-suite verification. Use independent bounded implementation
+and review agents, with exclusive file ownership. No release or later milestone authorized.
+
+R3.2 focused verification: fresh 119 tests plus typecheck/lint pass and both reviews approve.
+Global format failed during concurrent R3.3 edits; rerun after formatting before commit.
+Commit its four source files and account test only, leaving R3.3 changes separate. R3.3 now
+in progress: recorded dialog implementation agent owns its component/CSS/test; parent owns
+App, result/setup integration and completion tests. Existing App timing test gets controlled
+999/1000 ms assertions; the application one-second delay remains unchanged.
+
+R3.2 global format rerun passes after the concurrent UI files stabilize. All declared R3.2
+checks now pass; checkpoint is eligible. R3.3 component has 12 focused tests and completion/App
+integration has 13; native browser and whole-branch review are in progress.

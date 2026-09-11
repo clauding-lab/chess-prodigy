@@ -66,3 +66,30 @@ Isolated `npx vitest run tests/ui/App.test.tsx` rerun: eight pass, exit 0. Timin
 remains unresolved; no full-suite success claim. Recovery export directory:
 `/Users/adnanrashid/Downloads/chess-prodigy-preserved-20260911-Y0P4bw/` (task-only bundle,
 unfinished patch/new tests, records/logs; verify against documentation checkpoint HEAD).
+
+## Explicit Run 3 resumption — 11 September 2026 BDT
+
+Owner “go for run 3” resolves the scope pause. Resume at documentation HEAD `0698540`,
+with four modified sources and two new tests preserved. No additional application changes
+preceded this record update. Existing full baseline results and dirty-tree failures remain
+accurate historical evidence. Next: checkpoint reviewed account history, implement UI and
+resolve full-suite timing sensitivity; final full verification remains pending.
+
+R3.2 checkpoint reverified after scope confirmation: `npm test -- tests/game tests/storage
+tests/account tests/server/accounts.test.ts` passes 119 tests / 14 files. Fresh typecheck and
+lint exit 0 before UI integration edits. The global format check failed on the concurrent
+R3.3 component/test under construction; canonical format must pass before committing. Source/test diff
+inspected; both independent reviews complete. Stage only four R3.2 sources, account-history
+test and these records. R3.3 unfinished UI tests are excluded from this scoped commit, remain
+tracked in the record, and must pass the full suite before the run is called verified.
+
+App timing diagnosis: production deliberately enforces a 1000 ms minimum reply delay, while
+its existing App test used the default 1000 ms polling deadline. Replace that racing wait with
+controlled timers, asserting no reply at 999 ms and the reply at 1000 ms. No application timing
+change. Completion UI red tests now fail on missing rivalry/Rematch/Games, after correcting an
+initial fixture that used an unsupported clock control to the existing 15 | 10 control.
+
+Canonical format rerun after UI files stabilized exits 0 (`r32-resume-format-final.log`);
+R3.2 declared checks now pass, including earlier fresh 119-test/typecheck/lint checks.
+Concurrent UI production build also passes (`r33-build.log`), but its browser checkpoint
+remains pending. Commit only the reviewed R3.2 sources/account test and execution records.
