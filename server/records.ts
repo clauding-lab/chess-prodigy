@@ -4,6 +4,8 @@ import { fromNodeHeaders } from "better-auth/node";
 import type { Session, LegacySession } from "../src/game/types.js";
 import type { GameRecord, LegacyGameRecord } from "../src/account/types.js";
 import { parseSavedState } from "../src/storage/schema.js";
+import { archiveGame } from "../src/game/archive.js";
+import { parseGameRecord } from "../src/account/records.js";
 import type { ChessAuth } from "./auth.js";
 
 const MAX_SNAPSHOT_BYTES = 256 * 1024;
@@ -134,31 +136,6 @@ function isBoundedSnapshot(value: unknown): boolean {
   return Buffer.byteLength(encoded, "utf8") <= MAX_SNAPSHOT_BYTES;
 }
 
-function gameRecord(snapshot: Session): GameRecord | null {
-  const game = snapshot.game;
-  if (!game.over) return null;
-  const completedAt = new Date(game.clockAt).toISOString();
-  return {
-    recordVersion: 2,
-    opponent: game.opponent,
-    unratedReason: game.unratedReason,
-    assisted:
-      game.hintUsed || game.takebackUsed === true
-        ? true
-        : game.takebackUsed === null
-          ? null
-          : false,
-    id: game.id,
-    result: game.over.result,
-    reason: game.over.reason,
-    level: game.setup.level,
-    playerColor: game.setup.playerColor,
-    rated: game.ratingApplied?.gameId === game.id,
-    moves: game.hist.map((entry) => entry.san),
-    completedAt,
-  };
-}
-
 function readEnvelope(database: Database.Database, userId: string): RecordsEnvelope {
   const row = database
     .prepare("SELECT version, snapshot, updated_at FROM player_records WHERE user_id = ?")
@@ -228,6 +205,11 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
       response.status(400).json({ error: "Invalid record snapshot." });
       return;
     }
+    const archive = archiveGame(snapshot);
+    if (archive && !parseGameRecord(archive)) {
+      response.status(400).json({ error: "Invalid game archive." });
+      return;
+    }
     const userId = (request as unknown as AuthenticatedRequest).accountUserId!;
     const transaction = database.transaction(() => {
       const current = database
@@ -253,7 +235,6 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
         )
         // Preserve the validated original wire for old clients' exact acknowledgement.
         .run(userId, version + 1, JSON.stringify(body.snapshot), updatedAt);
-      const archive = gameRecord(snapshot);
       if (archive) {
         database
           .prepare(

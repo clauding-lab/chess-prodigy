@@ -1,4 +1,4 @@
-import type { Session, UnratedReason } from "../game/types";
+import type { Session, TimeControl, UnratedReason } from "../game/types";
 import type { OpponentConfig } from "../engine/opponents";
 
 export interface AccountUser {
@@ -17,6 +17,7 @@ export interface GameRecord {
   reason: string;
   level: "casual" | "club" | "strong";
   playerColor: "w" | "b";
+  time?: TimeControl;
   rated: boolean;
   moves: string[];
   completedAt: string;

@@ -142,6 +142,7 @@ export function reduceGame(g: Game, action: Action): Game {
     return {
       ...g,
       revision: g.revision + 1,
+      clockAt: action.now,
       over: { result: g.setup.playerColor === "w" ? "0-1" : "1-0", reason: "Resignation" },
     };
   }
@@ -213,15 +214,12 @@ export function settleRating(s: Session, now: number): Session {
 export function settlePriorGame(s: Session, now: number): Session {
   if (!isSupportedOpponent(s.game.opponent)) return s;
   let prior = { ...s, game: settleClock(s.game, now) };
-  if (
-    prior.game.started &&
-    !prior.game.over &&
-    (prior.game.rated || prior.game.unratedReason === "beta")
-  )
+  if (prior.game.started && !prior.game.over)
     prior = {
       ...prior,
       game: {
         ...prior.game,
+        clockAt: now,
         over: {
           result: prior.game.setup.playerColor === "w" ? "0-1" : "1-0",
           reason: "Abandoned",

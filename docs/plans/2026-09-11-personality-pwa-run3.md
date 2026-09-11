@@ -42,7 +42,7 @@ continues to protect rematches started from history.
 ## Checkpoints and required checks
 
 - [x] R3.0: fresh npm test/typecheck/lint/format/build/browser/accessibility baseline; commit records.
-- [ ] R3.1: record/replay/rivalry helpers and bounded guest archive. Files: `src/game/archive.ts`,
+- [x] R3.1: record/replay/rivalry helpers and bounded guest archive. Files: `src/game/archive.ts`,
   `src/storage/history.ts`, existing `src/account/records.ts`, `server/records.ts` and storage/hooks.
   Red-first tests: legal/illegal replay; missing metadata Classic; profile/version/difficulty and
   assistance separation; retry/undo/recompletion/retention; corrupt/quota storage; terminal handoff.
@@ -72,3 +72,9 @@ server archives. All source/test additions must fall within existing checks or r
 Baseline passed (285 unit/UI/server tests, 74 browser passes/four existing skips, source/build
 checks, Lighthouse 100 both themes). Independent planning review confirmed the design safeguards.
 Next: implement shared record/replay helpers and guest persistence with red-first tests.
+
+R3.1 completed: 112 focused game/storage/account/server tests and typecheck/lint/format passed.
+Independent reviews approved after generated-output validation and primitive-time fixes. Terminal
+completion timestamps now reflect resignation/abandonment, including unrated assisted games;
+rating calculations remain unchanged. Guest archive failures preserve active recovery state and
+block replacement. Next: account history cache/pending overlay and owner-scoped adapter integration.

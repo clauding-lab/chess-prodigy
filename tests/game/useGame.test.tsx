@@ -233,6 +233,31 @@ it("persists an abandoned rated result before replacing it with a new game", () 
   ]);
 });
 
+it("does not replace the only terminal game when history or pending-save storage fails", () => {
+  const saved: string[] = [];
+  const adapter = {
+    load: () => ({
+      session: freshSession(Date.now(), "protected"),
+      status: "saved" as const,
+      hasSavedGame: false,
+    }),
+    save: (s: ReturnType<typeof freshSession>, options?: { terminal?: boolean }) => {
+      saved.push(s.game.id);
+      return !options?.terminal;
+    },
+  };
+  const { result } = renderHook(() => useGame(true, adapter));
+  act(() => result.current.move(legalMoves(result.current.game.st)[0]));
+  let accepted = true;
+  act(() => {
+    accepted = result.current.startGame({ playerColor: "w", level: "club", time: "none" });
+  });
+  expect(accepted).toBe(false);
+  expect(result.current.game.id).toBe("protected");
+  expect(saved.every((id) => id === "protected")).toBe(true);
+  expect(result.current.storageStatus).toBe("unavailable");
+});
+
 it("does not cache a biased opponent score when its move is applied", async () => {
   vi.useFakeTimers();
   const { result } = renderHook(() => useGame(false));

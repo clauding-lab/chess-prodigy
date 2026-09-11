@@ -3,7 +3,8 @@ import { applyMove, legalMoves, sameMove, sanFor } from "../engine/board";
 import type { Move, Position } from "../engine/types";
 import { bookLookup } from "../book/book";
 import { EngineClient } from "../worker/client";
-import { loadSavedState, saveState } from "../storage/store";
+import { loadSavedState } from "../storage/store";
+import { saveGuestProgress } from "../storage/history";
 import { reduceSession, settlePriorGame } from "./state";
 import type { Preferences, SessionAction, Setup } from "./types";
 import { playSound } from "./sound";
@@ -32,7 +33,7 @@ function browserStorage() {
 const newId = () => crypto.randomUUID();
 const defaultStorage: GameStorageAdapter = {
   load: (now, fallbackId) => loadSavedState(browserStorage(), now, fallbackId),
-  save: (session) => saveState(browserStorage(), session),
+  save: (session) => saveGuestProgress(browserStorage(), session),
 };
 export function useGame(
   paused: boolean,
@@ -85,10 +86,18 @@ export function useGame(
       const previous = current.current;
       if (action.type === "new") {
         const prior = settlePriorGame(previous, action.now);
-        if (prior.game.over) persist(prior, { terminal: true });
+        if (prior.game.over && !persist(prior, { terminal: true })) {
+          // Retain the settled result for retry/recovery instead of losing the
+          // only terminal snapshot when archive/outbox persistence is blocked.
+          invalidate();
+          current.current = prior;
+          setSession(prior);
+          setHint(null);
+          return false;
+        }
       }
       const next = reduceSession(previous, action);
-      if (next === previous) return;
+      if (next === previous) return false;
       const changedPosition =
         next.game.id !== previous.game.id || next.game.revision !== previous.game.revision;
       if (changedPosition) {
@@ -107,6 +116,7 @@ export function useGame(
       else if (!previous.game.over && next.game.over && action.type !== "new")
         playSound("end", next.preferences.sound && !backgroundRef.current);
       if (action.type !== "tick" || next.game.over !== previous.game.over) persist();
+      return true;
     },
     [invalidate, persist],
   );
@@ -345,6 +355,7 @@ export function useGame(
     engineError,
     storageStatus,
     startGame: (setup: Setup) => {
+      if (!isSupportedOpponent(current.current.game.opponent)) return false;
       if (
         setup.opponent &&
         (!isSupportedOpponent(setup.opponent) ||
@@ -352,8 +363,7 @@ export function useGame(
             !personalityBetaEnabled(import.meta.env.VITE_PERSONALITY_BETA)))
       )
         return false;
-      dispatch({ type: "new", setup, now: Date.now(), id: newId() });
-      return true;
+      return dispatch({ type: "new", setup, now: Date.now(), id: newId() });
     },
     move: (move: Move) => {
       const g = current.current.game;
