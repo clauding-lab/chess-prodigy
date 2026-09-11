@@ -54,12 +54,22 @@ export function settleClock(g: Game, now: number): Game {
   if (!elapsed) return g;
   const side = g.st.turn,
     left = Math.max(0, g.clocks[side] - elapsed);
+  const opponent = side === "w" ? "b" : "w";
+  // Narrow correction only: a bare king cannot deliver checkmate. Do not infer
+  // every possible timeout draw from the general insufficient-material helper.
+  const bareKing =
+    left === 0 && g.st.board.every((piece) => !piece || piece[0] !== opponent || piece[1] === "k");
   return {
     ...g,
     clockAt: now,
     clocks: { ...g.clocks, [side]: left },
     revision: left === 0 ? g.revision + 1 : g.revision,
-    over: left === 0 ? { result: side === "w" ? "0-1" : "1-0", reason: "Time out" } : null,
+    over:
+      left === 0
+        ? bareKing
+          ? { result: "½-½", reason: "Time out" }
+          : { result: side === "w" ? "0-1" : "1-0", reason: "Time out" }
+        : null,
   };
 }
 export function reduceGame(g: Game, action: Action): Game {

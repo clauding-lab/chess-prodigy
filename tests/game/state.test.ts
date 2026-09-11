@@ -83,3 +83,46 @@ describe("rating settlement", () => {
     expect(r.next.history[0].date).toBe("2026-09-05");
   });
 });
+
+describe("scoped bare-king timeout", () => {
+  it.each([
+    ["4k3/8/8/8/8/8/8/3QK3 w - - 0 1", "w"],
+    ["3qk3/8/8/8/8/8/8/4K3 b - - 0 1", "b"],
+  ] as const)(
+    "draws when the side with material flags against a bare king: %s",
+    async (fen, side) => {
+      const { fromFEN } = await import("../../src/engine/board");
+      let s = freshSession(0, "bare-king");
+      s.game = {
+        ...freshGame({ ...setup, playerColor: side }, 0, "bare-king"),
+        st: fromFEN(fen),
+        started: true,
+        clocks: { w: 1000, b: 1000 },
+      };
+      s = reduceSession(s, { type: "tick", now: 1500 });
+      expect(s.game.over?.result).toBe("½-½");
+      expect(s.game.over?.reason).toMatch(/Time out/);
+      expect(s.rating.history.at(-1)?.score).toBe(0.5);
+      const receipt = s.game.ratingApplied;
+      expect(reduceSession(s, { type: "tick", now: 3000 }).game.ratingApplied).toBe(receipt);
+      expect(
+        reduceSession(s, { type: "move", move: legalMoves(s.game.st)[0], book: false, now: 3000 })
+          .game.hist,
+      ).toHaveLength(0);
+    },
+  );
+
+  it("preserves established timeout wins when the opponent has other material", async () => {
+    const { fromFEN } = await import("../../src/engine/board");
+    const g = {
+      ...freshGame(setup, 0, "not-bare"),
+      started: true,
+      clocks: { w: 1, b: 1000 },
+      st: fromFEN("4kb2/8/8/8/8/8/8/3QK3 w - - 0 1"),
+    };
+    expect(reduceGame(g, { type: "tick", now: 2 }).over).toEqual({
+      result: "0-1",
+      reason: "Time out",
+    });
+  });
+});

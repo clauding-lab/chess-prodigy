@@ -114,3 +114,26 @@ Corrected the imported document whitespace in a separate follow-up, without rewr
 Handoff content/revision is retained; only trailing whitespace is normalized. Full base-to-tree
 diff check and staged diff check must pass before this corrective commit. Last fully verified
 checkpoint before this correction was `4d4b016`. No code/hook failure was bypassed.
+
+## A1b checkpoint — verified, 11 September 2026 BDT
+
+A1a implementation commit `68b8fff` plus whitespace correction `53cccd0` now pass the full
+base-to-working-tree whitespace check; latest verified implementation is `68b8fff` with that
+document correction applied. Both independent reviewers approved the complete A1a path.
+
+Bare-king timeout reproduced for both colours (2 expected failures, 8 existing passes).
+`settleClock` now draws only if the nonflagging side has no nonking piece. Existing rating
+formula applies the draw once, later moves are rejected, and other-material timeout wins
+remain unchanged. No multiplayer adjudication changes or retroactive result recalculation.
+The first new reason wording exposed takeback in ResultModal; a UI regression reproduced
+that failure. Keeping the established `Time out` reason fixes it without a result redesign.
+
+Verified 50 game/storage/modal tests in 5 files, typecheck, lint, format and diff checks; all
+exit 0. Both independent reviewers approved. Logs: `/tmp/chess-prodigy-run1/timeout-*.log`.
+The first full run passed 247 tests but stopped on indentation formatting after the reason
+edit; Prettier corrected it and format:check passed before resuming build/browser checks.
+
+A1 final is in-progress. Added real-browser opponent-score injection and legacy restoration
+coverage; it remains uncommitted pending full browser verification. Full run checks pending:
+browser, build completion, accessibility and available WebKit journeys. No new feature scope.
+Next: finish full boundary checks, record exact outcomes, commit eligible tests/records, stop.
