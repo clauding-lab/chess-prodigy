@@ -1,5 +1,10 @@
 # Personality PWA — Run 3 verification
 
+Current status: Run 3 implemented and automated acceptance verified. Latest code checkpoint
+`bbcf4f2`; 321 tests, full browser 88 passes/four existing skips, source/build checks and
+Lighthouse 100/100. Later test-only hardening and supplemental checks are detailed below.
+Physical-device acceptance is pending; this is not a release-ready or externally calibrated claim.
+
 11 September 2026 BDT. Handoff revision 2; plan `docs/plans/2026-09-11-personality-pwa-run3.md`.
 Checkout `/Users/adnanrashid/Projects/chess-prodigy`, branch `codex/personality-pwa-run3`,
 base `32c023d21229a07f6ab4f88f67f4f73a037b6d97`; initial changes empty.
@@ -216,3 +221,37 @@ R3.3 source/tests/documentation are eligible for an explicit local Conventional 
 staged scope/whitespace inspection. Latest verified prior code checkpoint is `7839444`.
 All six pre-existing unfinished task files from resumption are accounted for in R3.2/R3.3;
 there were no unrelated staged files. No database migration, live data or release operation.
+
+## Final preservation and next task
+
+Verified code checkpoint: `bbcf4f28ce20787a4da7709b35715a3e974cb679`
+(`feat: add recorded games replay rivalry and rematches`). Earlier Run 3 checkpoints:
+`be55749` baseline record, `14fadb1` guest archive/replay foundation, `0698540` scope preservation,
+`7839444` account history cache. The final closeout commit changes records only; its actual SHA
+is reported by Git and the recovery README, without amending history to embed its own hash.
+
+Actual branch `codex/personality-pwa-run3`, persistent checkout
+`/Users/adnanrashid/Projects/chess-prodigy`; Run 3 base
+`32c023d21229a07f6ab4f88f67f4f73a037b6d97`. Main unchanged at
+`f2b45b701795ea2aa03e89688ced04b8106b5928`. All six pre-existing task files are now committed;
+no unrelated changes existed. Application/test/index diff was empty after `bbcf4f2`.
+No pushes, PRs, merges, deployment, publishing, live player data or real notifications.
+
+Recovery directory exists and is owner-accessible:
+`/Users/adnanrashid/Downloads/chess-prodigy-run3-recovery-20260911-rzWj0e/`.
+Bundle verification exits 0; consolidated binary-capable patch passes `git apply --check` against
+an untouched archive of the recorded base. Patch series, records, synthetic logs/screenshots
+and restore README are retained. Refresh/verify these exports once more after the documentation
+closeout commit. Earlier Run 1/2/WebKit recovery folders remain untouched. This is a persistent
+local copy, not protection against loss of the whole Mac; no remote backup is claimed.
+
+Verified: implementation and available automated acceptance above. Blocked/pending: physical
+phone installation, audibility, actual airplane-mode/process-eviction and performance evidence;
+the separate WebKit simulated-offline tool limitation is not claimed fixed. Deferred: naming
+clearance, calibration and reviewer-strength decisions, extra personalities, PGN, iOS packaging,
+external analytics, publishing and later milestones. There are no unresolved automated failures
+or missing tools in the declared local checks after the documented corrections.
+
+Next exact task is a separately requested physical iPhone acceptance pass with an approved test
+distribution method. Do not deploy or start Milestone B automatically. Retention definitions are
+documented only; no player analytics have been collected. Run 3 stops here.

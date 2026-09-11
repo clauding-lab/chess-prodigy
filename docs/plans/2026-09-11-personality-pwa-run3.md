@@ -1,5 +1,9 @@
 # Personality PWA — Run 3 implementation plan
 
+Current status: Run 3 implementation and automated checks complete. Latest verified code
+checkpoint `bbcf4f2`; final documentation HEAD is in Git and the recovery README. Worktree clean
+before this closeout. Physical iPhone acceptance and release decisions remain pending.
+
 > Execution: follow the approved revision-2 handoff using test-first checkpoints and independent review.
 
 11 September 2026 BDT. Owner “go on” invokes bounded Run 3 after the offline investigation.
@@ -55,7 +59,7 @@ continues to protect rematches started from history.
   account adapter and focused UI tests. Test both colours, filters/unknown versions, flag off/on,
   fresh ID/seed, keyboard focus, narrow themes, loading/error/recovery and unchanged rating.
   Native guest/account browser journeys, offline replay and cross-account isolation; review/commit.
-- [ ] R3 final: existing full suite and all source/build/browser/accessibility checks; focused WebKit
+- [x] R3 final: existing full suite and all source/build/browser/accessibility checks; focused WebKit
   origin-outage and relevant new UI checks. Map full Milestone A matrix to actual evidence/limits.
   Update README/governance, both records and task-only Downloads recovery; verify bundle/patch,
   commit closeout locally and stop before Milestone B.
@@ -140,3 +144,25 @@ beta 24 plus post-test-fix two rematches. Independent whole-path and browser rev
 findings. Stage only task-owned UI/parser/test/governance/records after diff inspection and commit.
 Final action: export verified task-only recovery, record actual checkpoint/HEAD and clean status,
 then stop. Physical iPhone, naming, calibration and stronger-review decisions remain outstanding.
+
+## Closeout — 11 September 2026 BDT
+
+All planned local checkpoints are complete: `be55749` baseline, `14fadb1` guest history,
+`0698540` scope-preservation record, `7839444` account history, `bbcf4f2` Games/replay/rematch.
+The explicit Run 3 authorization resolved the earlier scope pause; no renewed approval is needed
+for keeping this branch. Branch `codex/personality-pwa-run3` remains in the persistent original
+checkout. Base `32c023d21229a07f6ab4f88f67f4f73a037b6d97`; main remains `f2b45b7`.
+No unrelated initial changes; all six unfinished task files from resumption are preserved in
+verified checkpoints. No remaining application/test diff. Closeout is documentation only.
+
+Task-only recovery is available at
+`/Users/adnanrashid/Downloads/chess-prodigy-run3-recovery-20260911-rzWj0e/`.
+Bundle verification and consolidated patch apply-check against the untouched base both pass.
+It contains a local bundle, patch series, consolidated patch, records, synthetic logs/screenshots
+and restore instructions. Refresh it to the final documentation HEAD after this commit. It is
+an owner-accessible local recovery copy, not an off-device backup. No disposable workspace used.
+
+Stop after this report. Next exact task: a separately requested physical iPhone acceptance pass
+for installation, offline relaunch/lifecycle, sound and performance, using an explicitly approved
+test distribution method. Then choose the next bounded handoff milestone; roster/strength work,
+naming clearance, stronger-review decisions, iOS packaging and any release remain deferred.
