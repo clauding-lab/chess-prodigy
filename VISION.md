@@ -8,6 +8,8 @@ On 5 September 2026 BDT the owner explicitly authorized continued autonomous bui
 
 ## Boundaries
 
+Dark mode remains the permanent default, as requested on 12 September 2026 BDT. New guest/account sessions start dark; users can still choose Wooden board and retain that saved preference. Future releases must preserve the dark default.
+
 No new paid services, replacement engine, changed practice-rating policy or public email/individual-game data. On 5 September 2026 BDT the owner also approved richer sourced opening and other-move stories, a persistent scrollable coaching history, a one-second minimum engine reply delay, smoother piece movement and a knight icon on the dark background. Preserve the original opening lines and motif source records; the expanded, sourced motif lessons supersede their displayed prose. Further unrelated coaching-content changes still need owner review. The owner additionally authorized an in-app public leaderboard of display names and practice ratings. Email is currently an unverified login identifier; no email-delivery service or automatic password recovery is configured. Secrets and the private database never enter Git. Guest records never automatically become another player's account data.
 
 Release checks cover rules, accounts and owner isolation, saved-state validation, cross-device write conflicts, reload-safe rating and game state, keyboard controls, offline guest reopening and safe updates. The owner reported successful physical phone verification on 5 September 2026 BDT; the specific device/OS and installation steps were not recorded separately.
