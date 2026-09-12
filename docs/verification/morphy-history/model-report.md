@@ -1,6 +1,6 @@
 # Historical Morphy policy and preference fit — 12 September 2026 BDT
 
-Task 2 selects the first fixed `historical-v1` model after a modest improvement in held-out static move prediction. Version 3 is supported but remains unrated pending the separate complete-game strength measurement. No deployment or rating change is part of this checkpoint.
+Task 2 selected the first fixed `historical-v1` model after a modest improvement in held-out static move prediction. Version 3 was supported but unrated at this checkpoint. Its subsequent [complete-game strength measurement](measurement-report.md) was independently accepted; prediction metrics themselves do not establish a rating. No deployment or rating change was part of this model checkpoint.
 
 ## Runtime policy
 

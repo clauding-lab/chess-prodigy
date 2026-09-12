@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.3.0] — 2026-09-12 (BDT)
+
+- New Morphy games use documented continuations from 247 validated normal games and 6,940 positions, followed by preferences learned from his games. The historical opponent uses its own repertoire; the original opening and coaching content is preserved.
+- Measure historical-v1 across 400 complete games from the initial position: Casual 1275, Club 1375 and Strong 1775 on the app's Practice Rating scale. Independent legal replay and result audits passed; historical move prediction was evaluated separately on 57 held-out whole games.
+- Preserve earlier Morphy games, rematches and fixed ratings. Explain the historical opponent and identify earlier saved opponents in the interface.
+- Protect the new version with separate local save generations and a persistent minimum client policy, including assisted games and practice reset. Preserve pending account changes, recovery copies, Home/Resume, clocks and offline updates.
+
+See the [historical sources](docs/verification/morphy-history/README.md), [model evaluation](docs/verification/morphy-history/model-report.md) and [strength measurement](docs/verification/morphy-history/measurement-report.md).
+
 ## [2.2.1] — 2026-09-12 (BDT)
 
 - Strengthen Home preview piece outlines for legibility with Linux chess fonts: light outlines on dark-board black pieces, dark outlines on wooden-board white pieces. Preserve piece colours and the playing board.

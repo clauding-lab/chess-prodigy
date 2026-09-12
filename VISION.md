@@ -66,3 +66,9 @@ Preserve guest state-v3/account-v3/history-v2 authority and older recovery keys.
 ## Home and resume — 12 September 2026 BDT
 
 The owner approved the home-screen design and implementation: welcome and opponent explanations, saved-board preview, prominent Resume game, and a resume-or-forfeit gate before replacing any started unfinished computer game. Preview the actual rating effect. Timed games continue while Home is open or the app is closed; settle elapsed time and any result before resuming. Ship under the standing hosted-app authorization after verification. Existing rating mathematics and untimed human play are preserved. The subsequent historical-Morphy request is separate from this home-screen release; its playing policy and measured ratings are unchanged here.
+
+## Historical Morphy authorization — 12 September 2026 BDT
+
+The owner approved building the historical Morphy redesign after the Home screen: use his documented moves when positions match, preferences learned from his games elsewhere, and a new strength measurement before rated release. The scoped implementation, verification, source push and deployment to the existing hostname are authorized without another approval. No additional GitHub release tag is requested.
+
+Keep the earlier Morphy opponents and their fixed rating values available for saved games and rematches. The new historical-v1 opponent has its own version and measurement; it must not be presented as a perfect reconstruction or a human/FIDE strength certification. Preserve the validated game facts, source provenance, held-out evaluation and frozen benchmark evidence. New local save generations and a persistent minimum client capability protect progress against incompatible older clients. Home/Resume, ongoing clocks, original coaching content, Classic, human matches and private data boundaries remain intact. Steinitz, Chigorin, paid services and unrelated product changes are outside this task.

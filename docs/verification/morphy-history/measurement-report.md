@@ -1,7 +1,8 @@
 # Historical Morphy complete-game measurement — 12 September 2026 BDT
 
-Status: measurement complete and ready for independent result audit. No version-3 rating, UI, storage
-or server policy changed in this task.
+Status: measurement complete and independently audited. Exact version-3 Practice Ratings 1275 / 1375 /
+1775 are accepted for the compatibility and rated-play implementation. No version-3 rating, UI,
+storage or server policy changed in this measurement task.
 
 ## Frozen protocol and conditions
 
@@ -92,5 +93,17 @@ pair mean as the sampling unit.
 The historical book includes the documented collection used to derive the policy. A move prediction
 fit and this engine-vs-engine result do not establish a perfect reconstruction of Paul Morphy, nor do
 they prove how he would play unseen modern positions. High Club and Strong draw rates further limit
-precision. The three rounded candidates remain pending the separate independent result audit and must
-not enter a rating table until that gate accepts them.
+precision.
+
+## Independent acceptance
+
+An independent read-only audit on 12 September 2026 BDT replayed all 400 games under Node 22.23.0,
+checked every pair/colour/seed/opponent identity and legal result, and recomputed all four retained
+checkpoints and rounding decisions. All 27 source fingerprints match the frozen files, archive and
+commit `5428825`. All 400 worker records and per-game hashes match; the committed compressed game
+collection reproduces the sorted raw JSON byte for byte, and all ten bundle checksums pass.
+
+The audit accepted Casual 1275, Club 1375 and Strong 1775 only for attack-development version 3 /
+historical-v1 with this model and policy. It found no blocking issue and confirmed the disclosed
+concurrency-observation and rejected zero-game initialization limits. Earlier opponent versions and
+their values remain unchanged.
