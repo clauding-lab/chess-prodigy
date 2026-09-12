@@ -1,0 +1,20 @@
+{
+  "reports": [
+    {
+      "theme": "wood",
+      "url": "http://127.0.0.1:4173/",
+      "checkedAtBDT": "2026-09-12 22:24:09 BDT",
+      "lighthouseVersion": "13.4.1",
+      "accessibilityScore": 1,
+      "failedAudits": []
+    },
+    {
+      "theme": "dark",
+      "url": "http://127.0.0.1:4173/",
+      "checkedAtBDT": "2026-09-12 22:24:14 BDT",
+      "lighthouseVersion": "13.4.1",
+      "accessibilityScore": 1,
+      "failedAudits": []
+    }
+  ]
+}
