@@ -118,3 +118,15 @@ Use the 247 legally replayed normal games and their recorded Morphy turns. Prese
 New rated eligibility requires the accepted frozen complete-game benchmark from START, production limits, colour-swapped pairs and the declared 50/100/200-pair checkpoints. Never reuse version-2 measurements for version 3 or reprice earlier receipts. Future changes to the historical playing policy, model or repertoire require a new opponent version and fresh measurement.
 
 The new local authority is guest state-v4/account-v4/history-v3, preserving every prior recovery generation and pending account version. Wire schema stays 2. Persistent minimum client policy rises to 2 after accepting version 3, including assisted games, and survives reset; older clients must not overwrite it. Preserve exact original wire acknowledgements. New setup selects the current measured version; earlier rematches preserve their original version and explain that distinction. Keep Home, elapsed clocks, neutral coaching, offline updates and private ownership intact. Verification, pushing and deployment to the existing hostname are authorized; no additional release tag is requested.
+
+## Direct Morphy plans — 12 September 2026 BDT
+
+The owner approved direct in-app Morphy-inspired implementation with explicit development/attacking
+plans, after rejecting a separate prototype. See docs/superpowers/specs/2026-09-12-morphy-plans.md.
+New version4/plans-v1 preserves exact historical book frequencies; off-book priorities are designed,
+not claimed to be learned historical moves. Versions1–3, receipts and measured values remain exact.
+This supersedes the earlier learned-preferences-only and separate prototype prerequisites for this
+new design; failed experiments remain failed. Measure fresh complete games before normal v4 setup.
+Local authority becomes state-v5/account-v5/history-v4 and permanent account policy3 after accepting
+v4, wire schema2 unchanged. Actual-app verification, source push and existing-host deployment are
+within scope; no extra release tag or live player data. Never claim perceived style from automated tests.

@@ -74,3 +74,14 @@ The owner approved the home-screen design and implementation: welcome and oppone
 The owner approved building the historical Morphy redesign after the Home screen: use his documented moves when positions match, preferences learned from his games elsewhere, and a new strength measurement before rated release. The scoped implementation, verification, source push and deployment to the existing hostname are authorized without another approval. No additional GitHub release tag is requested.
 
 Keep the earlier Morphy opponents and their fixed rating values available for saved games and rematches. The new historical-v1 opponent has its own version and measurement; it must not be presented as a perfect reconstruction or a human/FIDE strength certification. Preserve the validated game facts, source provenance, held-out evaluation and frozen benchmark evidence. New local save generations and a persistent minimum client capability protect progress against incompatible older clients. Home/Resume, ongoing clocks, original coaching content, Classic, human matches and private data boundaries remain intact. Steinitz, Chigorin, paid services and unrelated product changes are outside this task.
+
+## Direct Morphy plans authorization — 12 September 2026 BDT
+
+After the learned experiments failed, the owner approved designed Morphy-inspired playing priorities
+and explicitly requested direct implementation in the actual app, then said "go on" after the internal
+version explanation. Implement version4/plans-v1, keep documented openings and older games/ratings,
+verify development/attacking behaviour and tactical reliability, freshly measure strength and update
+the existing live app after release checks. No separate prototype or new visible opponent option.
+This changes the previous learned-off-book-preferences requirement; describe the designed policy
+honestly. Preserve earlier experiments/results and every old playing/rating policy. See the direct
+Morphy plans spec for compatibility and delivery boundaries. No additional release tag requested.
