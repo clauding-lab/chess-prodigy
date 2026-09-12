@@ -1,5 +1,12 @@
 # Chess Prodigy release verification
 
+## 12 September 2026 BDT — direct Morphy plans v2.4.0
+
+The [v2.4 delivery record](2026-09-12-morphy-plans-release.md) documents the independently audited
+400-game measurement, fixed version-4 ratings, preserved older opponents, account policy 3 and
+current release gates. Verification is in progress; the record does not yet claim source publication
+or live activation.
+
 ## 12 September 2026 BDT — historical Morphy v2.3.0
 
 The [historical Morphy delivery record](2026-09-12-historical-morphy-release.md) documents 247 validated games, independently accepted ratings from 400 complete benchmark games, preserved earlier versions, 399 passing tests, browser/accessibility evidence and the verified live deployment of source `89e68d8`. Home/Resume remains the app's opening screen.
