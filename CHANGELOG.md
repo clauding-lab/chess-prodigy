@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.4.0] — 2026-09-12 (BDT)
+
+- Give new Morphy games designed development, central-break and coordinated-attack priorities outside the unchanged documented repertoire. Neutral search governs endgames and bounds stylistic choices; coaching remains independent.
+- Measure the new plans-v1 opponent across 400 complete games: Casual 1225, Club 1400 and Strong 1625. Independent replay and calculation audits passed. These are internal Practice Ratings; earlier versions retain their own values.
+- Keep one visible Paul Morphy choice, with new setup selecting the new version and earlier saved games/rematches preserving their original behavior and ratings.
+- Advance guest/account/history recovery generations and permanently require client policy 3 after accepting version 4, including assisted games. Preserve pending saves, exact account acknowledgements, Home/Resume, clocks, explicit offline updates and dark default.
+
+See the [playing-plan checks](docs/verification/morphy-plans/behaviour-report.md) and [strength measurement](docs/verification/morphy-plans/measurement-report.md).
+
 ## [2.3.0] — 2026-09-12 (BDT)
 
 - New Morphy games use documented continuations from 247 validated normal games and 6,940 positions, followed by preferences learned from his games. The historical opponent uses its own repertoire; the original opening and coaching content is preserved.

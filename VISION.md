@@ -85,3 +85,9 @@ the existing live app after release checks. No separate prototype or new visible
 This changes the previous learned-off-book-preferences requirement; describe the designed policy
 honestly. Preserve earlier experiments/results and every old playing/rating policy. See the direct
 Morphy plans spec for compatibility and delivery boundaries. No additional release tag requested.
+
+The independently audited direct-plan ratings are Casual 1225 / Club 1400 / Strong 1625. They belong
+only to version 4; earlier ratings remain unchanged. The v2.4 update preserves one visible Morphy,
+all older games and the permanent dark default. Retain account minimum policy 3 and every recovery
+generation after acceptance of version 4; an incompatible v2.3 rollback is outside the safe release
+path. Automatic checks demonstrate specified playing behavior, not a guarantee of perceived style.

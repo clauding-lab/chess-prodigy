@@ -6,15 +6,19 @@ A chess coach you can play in your browser. Practise against three engine streng
 
 [![Chess Prodigy — dark board, three engine strengths, 185 opening lines, 27 coaching cards, hints and game review, accounts and saved progress, practice leaderboard, and offline guest play](docs/verification/hero-banner.png)](https://chess.clauding-lab.com)
 
-## New in 2.3
+## New in 2.4
 
-**Paul Morphy now draws from his documented games.** The new opponent uses 247 legally replayed normal games and 6,940 recorded positions. When a position matches, it chooses among moves Morphy actually played there, weighted by how often he played them. Elsewhere, preferences learned from his games guide the existing custom engine. Classic's opening repertoire is kept separate from this historical opponent.
+**Paul Morphy now follows designed development and attacking plans.** Outside documented positions, he prioritizes bringing new pieces into play, opening the centre when developed and safe, and coordinating more pieces around the enemy king. Endgames use neutral search. A tactical score limit bounds stylistic choices, though it cannot guarantee sound play. These are Morphy-inspired design choices, not a reconstruction of his thought or a claim that he played every move.
 
-The learned preferences showed a modest improvement in predicting moves from 57 whole games held out of training. The [historical sources and exclusions](docs/verification/morphy-history/README.md) and [model evaluation](docs/verification/morphy-history/model-report.md) document the evidence and limits of this simulation. Playing strength is measured separately through complete games against Classic.
+The documented repertoire remains unchanged: 247 legally replayed normal games and 6,940 recorded positions, choosing legal recorded moves by their occurrence counts. Familiar openings remain possible. Classic keeps its separate repertoire. See the [historical sources](docs/verification/morphy-history/README.md) and [playing-plan checks](docs/verification/morphy-plans/behaviour-report.md).
 
-The new measured Practice Ratings are Casual **1275**, Club **1375** and Strong **1775**, based on 400 complete games. All results were independently replayed and audited. See the [measurement, uncertainty and full game evidence](docs/verification/morphy-history/measurement-report.md). These values describe relative strength within this app.
+Fresh measurement across **400 complete games** gives Casual **1225**, Club **1400** and Strong **1625**. All games and calculations were independently audited. Strong measured lower than the previous version and uses its own measured value. These are strengths relative to Classic within this app, not human or FIDE ratings. See the [measurement and full game evidence](docs/verification/morphy-plans/measurement-report.md).
 
-New Morphy games use the historical opponent. Saved games and rematches keep their original opponent version and its fixed rating values; the interface explains when an earlier Morphy is being used. Hints and takebacks still make a game unrated, and earlier beta games remain unrated.
+New Morphy games use this version automatically when Morphy is enabled. There is still one Paul Morphy choice. Saved games and rematches keep their original opponent and fixed rating; the interface identifies earlier versions. Hints and takebacks make games unrated, and old beta games remain unrated. Dark mode remains the default, with a saved Wooden board preference respected.
+
+## Included from 2.3
+
+The earlier historical opponent (version 3, historical-v1) uses the same documented repertoire, followed by preferences learned from Morphy's games. Its fixed ratings remain Casual **1275**, Club **1375**, Strong **1775** for its saved games and rematches. The learned preferences showed a modest prediction improvement on 57 held-out whole games; that result applies to this earlier model. See the [model evaluation](docs/verification/morphy-history/model-report.md) and [earlier 400-game measurement](docs/verification/morphy-history/measurement-report.md).
 
 ## Included from 2.2
 
@@ -44,7 +48,7 @@ Guest history stays in this browser; account records stay with their owner. Open
 
 Damaged history is preserved and offers a download of the original data. If a completed game cannot be saved, starting another game stops with a recovery download. Retain these files for assisted recovery; there is no recovery-file import screen. Signing in does not automatically import guest games.
 
-Version 2.3 uses a new generation of guest/account save locations and preserves older copies for recovery. A damaged current save never silently falls back to an older copy. Pending account changes survive migration. After an account first saves historical Morphy, an enduring minimum client policy blocks incompatible older clients from overwriting its progress, including after assisted games or a practice reset. Rollback requires keeping the new save locations and policy table and using compatible code. Old beta games are never retroactively rated.
+Version 2.4 uses a new generation of guest/account save locations and preserves older copies for recovery. A damaged current save never silently falls back to an older copy. Pending account changes survive migration. After an account first saves the new Morphy, an enduring minimum client policy blocks incompatible older clients from overwriting its progress, including after assisted games or a practice reset. Rollback requires keeping the new save locations and policy table and using compatible code. Old beta games are never retroactively rated.
 
 Supported saved Morphy games can resume and replay with the beta disabled, but starting a new Morphy game or rematch requires the beta setting. Unknown opponent versions remain read-only with **Download recovery save**; the app never silently substitutes Classic. Older records without a clock setting default to **No clock** for rematches.
 

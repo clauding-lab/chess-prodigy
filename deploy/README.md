@@ -81,3 +81,27 @@ The new browser authority uses state-v4/account-v4/history-v3, retaining all ear
 After version-3 progress is accepted, rollback must use code that understands historical-v1 and enforces minimum policy 2. Switching back to v2.2.1 would ignore that protection. Preserve the database, policy table and recovery generations; do not restore an earlier backup simply to reverse a code deployment. Continue to take a consistent private backup before switching releases and verify the new build using isolated synthetic guests, never real player records.
 
 The [measurement report](../docs/verification/morphy-history/measurement-report.md) retains the frozen configuration, complete games, uncertainty and independent acceptance. The [model report](../docs/verification/morphy-history/model-report.md) records historical prediction separately. A future change to the playing policy, model or repertoire requires a new opponent version and fresh measurement.
+
+## Morphy playing plans — v2.4
+
+The current opponent is version 4 / plans-v1, with independently accepted Practice Ratings Casual
+1225 / Club 1400 / Strong 1625. It preserves the documented repertoire and uses designed plans
+elsewhere. Keep versions 1–3 and their exact playing policies and rating values for older games.
+Hosted builds require the literal `VITE_PERSONALITY_BETA=true`; `1` does not enable the feature.
+
+Current browser authority is state-v5/account-v5/history-v4, with all earlier recovery generations
+retained. Wire schema remains 2. Current account writes send `X-Chess-Rating-Policy: 3`. Accepting
+version 4 raises the account's permanent minimum policy to 3, including assisted games. Reset,
+Classic games and server restarts cannot lower it. Older clients cannot overwrite that account's
+progress even if they supply its current record version.
+
+After version-4 progress is accepted, do not switch back to v2.3: it cannot enforce minimum policy 3.
+Use compatible forward fixes and preserve the database, policy table and older recovery copies.
+Take the consistent private backup before activation; never restore an old database to reverse a
+code release. Test releases with disposable synthetic data, then verify the existing public hostname
+using an isolated guest. Never force an active installed game to reload.
+
+The [400-game measurement](../docs/verification/morphy-plans/measurement-report.md) retains the exact
+frozen playing source, first eligible checkpoints and uncertainty. The app's rated registration and
+version metadata change after that freeze; playing code must remain byte-identical to the measured
+source. Later playing-policy changes need their own version and fresh measurement.

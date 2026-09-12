@@ -130,3 +130,10 @@ new design; failed experiments remain failed. Measure fresh complete games befor
 Local authority becomes state-v5/account-v5/history-v4 and permanent account policy3 after accepting
 v4, wire schema2 unchanged. Actual-app verification, source push and existing-host deployment are
 within scope; no extra release tag or live player data. Never claim perceived style from automated tests.
+
+The direct plans-v1 measurement is independently accepted: Casual 1225 / Club 1400 / Strong 1625
+from 400 complete games, frozen playing source d8c376d. See
+`docs/verification/morphy-plans/measurement-report.md`. Version 2.4 uses guest state-v5/account-v5/
+history-v4 and wire schema 2; permanent minimum client policy 3 follows any accepted version-4 game,
+including assisted games, and survives reset. Keep earlier recovery generations, exact raw wire
+acknowledgements and all older playing/rating policies. Do not roll back to v2.3 after accepting v4.
