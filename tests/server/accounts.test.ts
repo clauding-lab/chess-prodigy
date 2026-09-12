@@ -9,7 +9,11 @@ import request, { type SuperAgentTest } from "supertest";
 import { afterEach, describe, expect, it } from "vitest";
 import { freshSession, reduceSession } from "../../src/game/state";
 import { legalMoves, sqIndex } from "../../src/engine/board";
-import { morphyConfig, historicalMorphyConfig } from "../../src/engine/opponents";
+import {
+  morphyConfig,
+  historicalMorphyConfig,
+  plannedMorphyConfig,
+} from "../../src/engine/opponents";
 import { createTestApplication as createApplication } from "./http-fixture";
 
 const BASE_URL = "http://127.0.0.1:4317";
@@ -738,7 +742,7 @@ it("migrates legacy policy rows additively and raises policy atomically for assi
       now: 1,
     });
     historical = reduceSession(historical, { type: "resign", now: 2 });
-    for (const policy of [undefined, "1", "3", "02"]) await put(2, historical, policy).expect(426);
+    for (const policy of [undefined, "1", "4", "02"]) await put(2, historical, policy).expect(426);
     await put(1, historical, "2").expect(409);
     // A conflicting or rejected attempt must not raise protection or archive anything.
     await put(2, freshSession(0, "still-legacy-policy"), "1").expect(200);
@@ -758,7 +762,7 @@ it("migrates legacy policy rows additively and raises policy atomically for assi
       { type: "resetRating" },
     );
     await put(4, reset, "2").expect(200);
-    for (const policy of [undefined, "1", "3"])
+    for (const policy of [undefined, "1", "4"])
       await put(5, freshSession(4, "old-device"), policy).expect(426);
     expect((await agent.get("/api/records")).body).toMatchObject({ version: 5, snapshot: reset });
     const inspect = new Database(database.path);
@@ -803,6 +807,96 @@ it("migrates legacy policy rows additively and raises policy atomically for assi
       .set("X-Chess-Rating-Policy", "1")
       .send({ expectedVersion: 1, snapshot: reset })
       .expect(426);
+  } finally {
+    await application.close();
+  }
+});
+
+it("permanently requires policy 3 after accepting an assisted planned Morphy save", async () => {
+  const database = await temporaryDatabase();
+  let application = await createApplication({
+    databasePath: database.path,
+    baseURL: BASE_URL,
+    secret: SECRET,
+  });
+  try {
+    const agent = await signedUpAgent(application.app, "planned-policy@example.com");
+    let planned = reduceSession(freshSession(0, "initial"), {
+      type: "new",
+      id: "planned",
+      now: 0,
+      setup: {
+        playerColor: "w",
+        level: "strong",
+        time: "none",
+        opponent: plannedMorphyConfig(17),
+      },
+    });
+    planned = reduceSession(planned, { type: "hint" });
+    const put = (expectedVersion: number, snapshot: typeof planned, policy?: string) => {
+      const call = agent.put("/api/records").set("Origin", BASE_URL);
+      if (policy !== undefined) call.set("X-Chess-Rating-Policy", policy);
+      return call.send({ expectedVersion, snapshot });
+    };
+    for (const policy of [undefined, "1", "2", "4", "02"])
+      await put(0, planned, policy).expect(426);
+    await put(1, planned, "3").expect(409);
+    await put(0, freshSession(1, "pre-floor"), "2").expect(200);
+    const accepted = await put(1, planned, "3").expect(200);
+    expect(JSON.stringify(accepted.body.snapshot)).toBe(JSON.stringify(planned));
+    expect(accepted.body.games).toEqual([]);
+    const reset = reduceSession(
+      reduceSession(planned, {
+        type: "new",
+        id: "classic-reset",
+        now: 2,
+        setup: { playerColor: "w", level: "club", time: "none" },
+      }),
+      { type: "resetRating" },
+    );
+    await put(2, reset, "3").expect(200);
+    for (const policy of [undefined, "1", "2", "4", "02"])
+      await put(3, freshSession(3, "older-client"), policy).expect(426);
+    expect((await agent.get("/api/records")).body).toMatchObject({ version: 3, snapshot: reset });
+    const inspect = new Database(database.path);
+    const policyRows = inspect
+      .prepare("SELECT minimum_policy FROM record_client_policy")
+      .all() as Array<{ minimum_policy: number }>;
+    expect(policyRows).toEqual([{ minimum_policy: 3 }]);
+    inspect.close();
+    await application.close();
+    application = await createApplication({
+      databasePath: database.path,
+      baseURL: BASE_URL,
+      secret: SECRET,
+    });
+    const reopened = request.agent(application.app);
+    const login = await reopened
+      .post("/api/auth/sign-in/email")
+      .set("Origin", BASE_URL)
+      .send({ email: "planned-policy@example.com", password: "correct horse battery staple" })
+      .expect(200);
+    await reopened
+      .put("/api/records")
+      .set("Origin", BASE_URL)
+      .set("X-Chess-Account", login.body.user.id)
+      .set("X-Chess-Rating-Policy", "2")
+      .send({ expectedVersion: 3, snapshot: reset })
+      .expect(426);
+    await reopened
+      .put("/api/records")
+      .set("Origin", BASE_URL)
+      .set("X-Chess-Account", login.body.user.id)
+      .set("X-Chess-Rating-Policy", "3")
+      .send({ expectedVersion: 3, snapshot: reset })
+      .expect(200);
+    const other = await signedUpAgent(application.app, "planned-policy-other@example.com");
+    await other
+      .put("/api/records")
+      .set("Origin", BASE_URL)
+      .set("X-Chess-Rating-Policy", "2")
+      .send({ expectedVersion: 0, snapshot: freshSession(4, "independent-owner") })
+      .expect(200);
   } finally {
     await application.close();
   }

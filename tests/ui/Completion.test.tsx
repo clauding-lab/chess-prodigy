@@ -176,6 +176,6 @@ it.each([1, 2, 3])(
     fireEvent.click(screen.getByRole("button", { name: "New game", exact: true }));
     fireEvent.click(screen.getByRole("button", { name: "Paul Morphy", exact: true }));
     fireEvent.click(screen.getByRole("button", { name: "Start", exact: true }));
-    expect(saved().game.opponent.version).toBe(3);
+    expect(saved().game.opponent.version).toBe(4);
   },
 );

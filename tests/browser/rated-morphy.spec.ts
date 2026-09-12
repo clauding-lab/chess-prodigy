@@ -1,9 +1,13 @@
 import { enterPlay } from "./enter-play";
 import { expect, test } from "@playwright/test";
 import { freshSession, reduceSession } from "../../src/game/state";
-import { ratedMorphyConfig, historicalMorphyConfig } from "../../src/engine/opponents";
+import {
+  ratedMorphyConfig,
+  historicalMorphyConfig,
+  plannedMorphyConfig,
+} from "../../src/engine/opponents";
 
-for (const version of [2, 3] as const)
+for (const version of [2, 3, 4] as const)
   test(`account Morphy v${version} completion syncs its measured receipt once and restores its private archive`, async ({
     page,
   }, info) => {
@@ -27,13 +31,17 @@ for (const version of [2, 3] as const)
         playerColor: "w",
         level: "club",
         time: "none",
-        opponent: (version === 2 ? ratedMorphyConfig : historicalMorphyConfig)(91),
+        opponent: (version === 2
+          ? ratedMorphyConfig
+          : version === 3
+            ? historicalMorphyConfig
+            : plannedMorphyConfig)(91),
       },
     });
     const headers = {
       Origin: origin,
       "X-Chess-Account": user.id,
-      "X-Chess-Rating-Policy": version === 2 ? "1" : "2",
+      "X-Chess-Rating-Policy": version === 2 ? "1" : version === 3 ? "2" : "3",
     };
     expect(
       (
@@ -65,7 +73,7 @@ for (const version of [2, 3] as const)
     const before = await read();
     expect(before.snapshot.rating.history.at(-1)).toMatchObject({
       opp: "Paul Morphy · Club",
-      oppRating: 1375,
+      oppRating: version === 4 ? 1400 : 1375,
       score: 0,
     });
     expect(before.games).toHaveLength(1);
@@ -74,8 +82,8 @@ for (const version of [2, 3] as const)
       opponent: { version },
       unratedReason: null,
     });
-    if (version === 3) {
-      for (const olderPolicy of [undefined, "1"]) {
+    if (version >= 3) {
+      for (const olderPolicy of version === 3 ? [undefined, "1"] : [undefined, "1", "2"]) {
         const rejected = await page.request.put(origin + "/api/records", {
           headers: {
             Origin: origin,

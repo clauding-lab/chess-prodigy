@@ -246,12 +246,21 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
         .get(userId) as { minimum_policy: number } | undefined;
       const requiredPolicy = Math.max(
         policyRow?.minimum_policy ?? 0,
-        measured ? (snapshot.game.opponent.version === 3 ? 2 : 1) : 0,
+        measured
+          ? snapshot.game.opponent.version === 4
+            ? 3
+            : snapshot.game.opponent.version === 3
+              ? 2
+              : 1
+          : 0,
       );
       const capability = request.get("X-Chess-Rating-Policy");
       if (
         requiredPolicy > 0 &&
-        !((capability === "1" || capability === "2") && Number(capability) >= requiredPolicy)
+        !(
+          (capability === "1" || capability === "2" || capability === "3") &&
+          Number(capability) >= requiredPolicy
+        )
       )
         return "upgrade";
       if (measured)

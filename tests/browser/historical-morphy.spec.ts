@@ -1,8 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
 import { freshSession, reduceSession } from "../../src/game/state";
-import { ratedMorphyConfig } from "../../src/engine/opponents";
+import { historicalMorphyConfig } from "../../src/engine/opponents";
 import { applyMove, legalMoves, sanFor } from "../../src/engine/board";
-import { SAVE_KEY, MEASURED_SAVE_KEY } from "../../src/storage/store";
+import { SAVE_KEY, HISTORICAL_SAVE_KEY } from "../../src/storage/store";
 import type { Session } from "../../src/game/types";
 import { enterPlay } from "./enter-play";
 
@@ -14,19 +14,19 @@ async function move(page: Page, from: string, to: string) {
 }
 
 for (const color of ["White", "Black"] as const)
-  test(`historical selection as ${color} uses recorded repertoire and resumes its exact configuration`, async ({
+  test(`planned Morphy selection as ${color} uses recorded openings and resumes its exact configuration`, async ({
     page,
   }, info) => {
     test.skip(
       process.env.VITE_PERSONALITY_BETA !== "true",
-      "New historical selection is default-off.",
+      "New planned selection is default-off.",
     );
     await page.goto("/");
     await page.getByRole("button", { name: "Play Paul Morphy", exact: true }).click();
     const setup = page.getByRole("dialog", { name: "New game" });
-    await expect(setup).toContainText("247 validated games");
-    await expect(setup.getByRole("button", { name: "Strong 1775", exact: true })).toBeVisible();
-    await setup.getByRole("button", { name: "Casual 1275", exact: true }).click();
+    await expect(setup).toContainText("recorded openings plus designed development");
+    await expect(setup.getByRole("button", { name: "Strong 1625", exact: true })).toBeVisible();
+    await setup.getByRole("button", { name: "Casual 1225", exact: true }).click();
     await setup.getByRole("button", { name: color, exact: true }).click();
     await setup.getByRole("button", { name: "No clock", exact: true }).click();
     await setup.getByRole("button", { name: "Start", exact: true }).click();
@@ -37,8 +37,8 @@ for (const color of ["White", "Black"] as const)
     const before = await saved(page);
     expect(before.game.opponent).toMatchObject({
       id: "attack-development",
-      version: 3,
-      engine: "historical-v1",
+      version: 4,
+      engine: "plans-v1",
     });
     expect(before.game.rated).toBe(true);
     if (color === "Black") expect(before.game.hist[0].san).toBe("e4");
@@ -58,7 +58,7 @@ for (const color of ["White", "Black"] as const)
   });
 
 for (const switchToCurrent of [false, true])
-  test(`version-2 save migration preserves its receipt and ${switchToCurrent ? "explicit selection chooses version 3" : "rematch keeps version 2"}`, async ({
+  test(`version-3 save migration preserves its receipt and ${switchToCurrent ? "explicit selection chooses version 4" : "rematch keeps version 3"}`, async ({
     page,
   }, info) => {
     const now = Date.now();
@@ -66,7 +66,12 @@ for (const switchToCurrent of [false, true])
       type: "new",
       now,
       id: "older-measured-morphy",
-      setup: { playerColor: "w", level: "strong", time: "none", opponent: ratedMorphyConfig(91) },
+      setup: {
+        playerColor: "w",
+        level: "strong",
+        time: "none",
+        opponent: historicalMorphyConfig(91),
+      },
     });
     session.preferences.coach = false;
     for (const san of ["e4", "e5"]) {
@@ -91,7 +96,7 @@ for (const switchToCurrent of [false, true])
     );
     await page.goto("/api/test-migration-seed");
     await page.evaluate(({ key, raw }) => localStorage.setItem(key, raw), {
-      key: MEASURED_SAVE_KEY,
+      key: HISTORICAL_SAVE_KEY,
       raw,
     });
     await page.goto("/");
@@ -102,7 +107,7 @@ for (const switchToCurrent of [false, true])
     expect(migrated.game.opponent).toEqual(session.game.opponent);
     expect(migrated.game.ratingApplied).toEqual(receipt);
     expect(migrated.rating).toEqual(previousRating);
-    expect(await page.evaluate((key) => localStorage.getItem(key), MEASURED_SAVE_KEY)).toBe(raw);
+    expect(await page.evaluate((key) => localStorage.getItem(key), HISTORICAL_SAVE_KEY)).toBe(raw);
     const rematch = page
       .getByRole("dialog", { name: "Resignation" })
       .getByRole("button", { name: "Rematch", exact: true });
@@ -113,14 +118,14 @@ for (const switchToCurrent of [false, true])
     await rematch.click();
     const setup = page.getByRole("dialog", { name: "New game" });
     await expect(setup).toContainText("This rematch keeps the earlier opponent");
-    await expect(setup.getByRole("button", { name: "Strong 1825", exact: true })).toHaveAttribute(
+    await expect(setup.getByRole("button", { name: "Strong 1775", exact: true })).toHaveAttribute(
       "aria-pressed",
       "true",
     );
     if (switchToCurrent) {
       await setup.getByRole("button", { name: "Paul Morphy", exact: true }).click();
       await expect(setup).not.toContainText("This rematch keeps the earlier opponent");
-      await expect(setup.getByRole("button", { name: "Strong 1775", exact: true })).toHaveAttribute(
+      await expect(setup.getByRole("button", { name: "Strong 1625", exact: true })).toHaveAttribute(
         "aria-pressed",
         "true",
       );
@@ -133,8 +138,8 @@ for (const switchToCurrent of [false, true])
     });
     await setup.getByRole("button", { name: "Start", exact: true }).click();
     const next = await saved(page);
-    expect(next.game.opponent.version).toBe(switchToCurrent ? 3 : 2);
+    expect(next.game.opponent.version).toBe(switchToCurrent ? 4 : 3);
     expect(next.game.id).not.toBe(session.game.id);
     expect(next.rating).toEqual(previousRating);
-    expect(await page.evaluate((key) => localStorage.getItem(key), MEASURED_SAVE_KEY)).toBe(raw);
+    expect(await page.evaluate((key) => localStorage.getItem(key), HISTORICAL_SAVE_KEY)).toBe(raw);
   });

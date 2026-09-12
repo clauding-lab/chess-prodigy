@@ -29,7 +29,7 @@ test("a stopped native worker recovers once; repeated failure exposes an actiona
   expect(await page.evaluate(() => window.__aiAttempts)).toBe(2);
   expect(
     await page.evaluate(
-      () => JSON.parse(localStorage.getItem("chess-prodigy-state-v4")).game.hist.length,
+      () => JSON.parse(localStorage.getItem("chess-prodigy-state-v5")).game.hist.length,
     ),
   ).toBe(1);
   await page.evaluate(() => (window.__dropAi = false));
@@ -37,7 +37,7 @@ test("a stopped native worker recovers once; repeated failure exposes an actiona
   await expect
     .poll(() =>
       page.evaluate(
-        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v4")).game.hist.length,
+        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v5")).game.hist.length,
       ),
     )
     .toBe(2);

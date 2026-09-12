@@ -10,7 +10,7 @@ test("a board tap unlocks audio during a browser-approved gesture", async ({ pag
   await expect
     .poll(() =>
       page.evaluate(
-        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v4")!).game.hist.length,
+        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v5")!).game.hist.length,
       ),
     )
     .toBe(2);

@@ -2,7 +2,7 @@ import { enterPlay } from "./enter-play";
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 const saved = (page) =>
-  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v4")));
+  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v5")));
 async function start(page, { strong = false, timed = false } = {}) {
   await page.goto("/");
   await enterPlay(page);
@@ -149,11 +149,11 @@ test("cached app reopens offline and calculates an out-of-book reply", async ({
   await expect(reopened.getByRole("dialog")).not.toContainText("analysing…", { timeout: 15000 });
 });
 test("corrupt saves remain untouched during play until recovery is confirmed", async ({ page }) => {
-  await page.addInitScript(() => localStorage.setItem("chess-prodigy-state-v4", "broken"));
+  await page.addInitScript(() => localStorage.setItem("chess-prodigy-state-v5", "broken"));
   await page.goto("/");
   await enterPlay(page);
   await page.getByRole("button", { name: "Start", exact: true }).click();
-  expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v4"))).toBe("broken");
+  expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v5"))).toBe("broken");
   await expect(page.getByText(/damaged|corrupt|could not be read/i)).toBeVisible();
   await page.getByRole("button", { name: "Enable saving", exact: true }).click();
   await page

@@ -31,7 +31,7 @@ test("name, both themes, layout and legal play", async ({ page }, info) => {
   await expect
     .poll(() =>
       page.evaluate(
-        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v4")).game.hist.length,
+        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v5")).game.hist.length,
       ),
     )
     .toBe(2);
@@ -122,7 +122,7 @@ test("clock catches up after delayed callbacks and preserves timeout", async ({ 
   await expect
     .poll(() =>
       page.evaluate(
-        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v4")).game.hist.length,
+        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v5")).game.hist.length,
       ),
     )
     .toBe(2);

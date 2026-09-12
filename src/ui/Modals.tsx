@@ -12,6 +12,7 @@ import {
   morphyConfig,
   ratedMorphyConfig,
   historicalMorphyConfig,
+  plannedMorphyConfig,
   opponentName,
 } from "../engine/opponents";
 import { opponentPracticeRating } from "../rating/opponents";
@@ -81,17 +82,22 @@ export function SetupModal({
       ? morphyConfig(0)
       : draft.opponentVersion === 2
         ? ratedMorphyConfig(0)
-        : historicalMorphyConfig(0)
+        : draft.opponentVersion === 3
+          ? historicalMorphyConfig(0)
+          : plannedMorphyConfig(0)
     : CLASSIC;
   return (
     <Modal closeOnBackdrop={false} closeOnEscape={!!onCancel} onClose={onCancel} title="New game">
       {rematchNote && <p className="note">{rematchNote}</p>}
-      {morphy && (draft.opponentVersion === 1 || draft.opponentVersion === 2) && (
-        <p className="note">
-          This rematch keeps the earlier opponent. New Morphy games use his documented repertoire;
-          select Paul Morphy above to switch.
-        </p>
-      )}
+      {morphy &&
+        (draft.opponentVersion === 1 ||
+          draft.opponentVersion === 2 ||
+          draft.opponentVersion === 3) && (
+          <p className="note">
+            This rematch keeps the earlier opponent. New Morphy games use recorded openings and
+            designed plans; select Paul Morphy above to switch.
+          </p>
+        )}
       {startError && (
         <div className="note" role="alert">
           {startError}{" "}
@@ -131,7 +137,7 @@ export function SetupModal({
               className={`btn${morphy ? " on" : ""}`}
               aria-pressed={morphy}
               onClick={() =>
-                setDraft({ ...draft, opponentId: "attack-development", opponentVersion: 3 })
+                setDraft({ ...draft, opponentId: "attack-development", opponentVersion: 4 })
               }
               type="button"
             >
@@ -146,7 +152,9 @@ export function SetupModal({
           <p>
             {draft.opponentVersion === 1 || draft.opponentVersion === 2
               ? "A style-inspired simulation that favours active pieces and open lines."
-              : "A historical simulation using recorded moves in matching positions and learned preferences elsewhere, drawn from 247 validated games."}
+              : draft.opponentVersion === 3
+                ? "A historical simulation using recorded moves in matching positions and learned preferences elsewhere, drawn from 247 validated games."
+                : "A simulation using recorded openings plus designed development, central-break and king-attack plans inspired by Morphy's games."}
           </p>
           {legacyMorphy
             ? "This rematch uses the original unrated beta. Select Paul Morphy above to start a rated game."
@@ -429,7 +437,7 @@ export function setupFromDraft(draft: SetupDraft, betaEnabled = false): Setup {
   if (
     draft.opponentId === "attack-development" &&
     draft.opponentVersion !== undefined &&
-    ![1, 2, 3].includes(draft.opponentVersion)
+    ![1, 2, 3, 4].includes(draft.opponentVersion)
   )
     throw new Error("Opponent version is unavailable.");
   return {
@@ -442,7 +450,9 @@ export function setupFromDraft(draft: SetupDraft, betaEnabled = false): Setup {
             ? morphyConfig
             : draft.opponentVersion === 2
               ? ratedMorphyConfig
-              : historicalMorphyConfig)(crypto.getRandomValues(new Uint32Array(1))[0]),
+              : draft.opponentVersion === 3
+                ? historicalMorphyConfig
+                : plannedMorphyConfig)(crypto.getRandomValues(new Uint32Array(1))[0]),
         }
       : {}),
   };

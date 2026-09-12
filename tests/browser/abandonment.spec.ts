@@ -18,8 +18,8 @@ test("new-game warning previews the loss and offers a safe return", async ({ pag
   session.rating.rating = 1500;
   session.rating.peak = 1500;
   await page.addInitScript((snapshot) => {
-    if (!localStorage.getItem("chess-prodigy-state-v4")) {
-      localStorage.setItem("chess-prodigy-state-v4", JSON.stringify(snapshot));
+    if (!localStorage.getItem("chess-prodigy-state-v5")) {
+      localStorage.setItem("chess-prodigy-state-v5", JSON.stringify(snapshot));
     }
   }, session);
   await page.goto("/");
@@ -39,7 +39,7 @@ test("new-game warning previews the loss and offers a safe return", async ({ pag
   await dialog.getByRole("button", { name: "Resume game", exact: true }).click();
   await expect(dialog).toHaveCount(0);
   const read = () =>
-    page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v4")!));
+    page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v5")!));
   expect((await read()).rating.rating).toBe(1500);
   expect((await read()).game.id).toBe("warning-preview");
   await page.getByRole("button", { name: "New game", exact: true }).click();

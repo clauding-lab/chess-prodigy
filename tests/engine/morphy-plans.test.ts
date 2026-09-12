@@ -28,9 +28,9 @@ const centre = "r1bqkb1r/ppp2ppp/2np1n2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w kq - 
 const attack = "r4rk1/ppp2ppp/2npbn2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w - - 0 16";
 
 // These fail if the new dispatch silently falls through to an older engine or is made rated early.
-test("dispatches synthetic version4 as supported, distinct and unrated", () => {
+test("dispatches measured version4 as supported, distinct and rated", () => {
   expect(isSupportedOpponent(plannedMorphyConfig(12))).toBe(true);
-  expect(isRatedOpponent(plannedMorphyConfig(12))).toBe(false);
+  expect(isRatedOpponent(plannedMorphyConfig(12))).toBe(true);
   expect(isSupportedOpponent({ ...plannedMorphyConfig(12), engine: "historical-v1" })).toBe(false);
   const p = fromFEN(development);
   expect(chooseOpponentMove(p, "club", ["Qh5"], plannedMorphyConfig(12), 8, fixed)).toEqual(

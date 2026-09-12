@@ -125,15 +125,15 @@ it("isolates measured guest progress from late writes by the previous app while 
   expect(loadSavedState(storage, 3, "fallback").status).toBe("corrupt");
 });
 
-it("migrates the previous measured save into v4 without stale v3 writes taking authority", () => {
+it("migrates the former current save into v5 without stale v4 writes taking authority", () => {
   const storage = new MemoryStorage(),
-    raw = JSON.stringify(freshSession(0, "v3-original"));
-  storage.setItem("chess-prodigy-state-v3", raw);
+    raw = JSON.stringify(freshSession(0, "v4-original"));
+  storage.setItem("chess-prodigy-state-v4", raw);
   const loaded = loadSavedState(storage, 1, "fallback");
   expect(saveState(storage, loaded.session)).toBe(true);
-  expect(storage.getItem("chess-prodigy-state-v3")).toBe(raw);
-  storage.setItem("chess-prodigy-state-v3", JSON.stringify(freshSession(2, "stale-v3")));
-  expect(loadSavedState(storage, 3, "fallback").session.game.id).toBe("v3-original");
-  storage.setItem("chess-prodigy-state-v4", "corrupt-current");
+  expect(storage.getItem("chess-prodigy-state-v4")).toBe(raw);
+  storage.setItem("chess-prodigy-state-v4", JSON.stringify(freshSession(2, "stale-v4")));
+  expect(loadSavedState(storage, 3, "fallback").session.game.id).toBe("v4-original");
+  storage.setItem("chess-prodigy-state-v5", "corrupt-current");
   expect(loadSavedState(storage, 4, "fallback").status).toBe("corrupt");
 });

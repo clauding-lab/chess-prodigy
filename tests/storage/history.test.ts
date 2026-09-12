@@ -138,14 +138,14 @@ it("copies even unchanged legacy history once so an old tab cannot replace the n
   expect(loadGuestHistory(storage)).toMatchObject({ status: "ready", games: [] });
 });
 
-it("migrates measured history into v3 once and preserves corrupt current authority", () => {
+it("migrates former current history into v4 once and preserves corrupt current authority", () => {
   const storage = new Memory(),
     old = JSON.stringify({ version: 1, games: [] });
-  storage.setItem("chess-prodigy-guest-history-v2", old);
+  storage.setItem("chess-prodigy-guest-history-v3", old);
   expect(saveGuestProgress(storage, completed("historical"))).toBe(true);
-  expect(storage.getItem("chess-prodigy-guest-history-v2")).toBe(old);
-  storage.setItem("chess-prodigy-guest-history-v2", "stale-corruption");
+  expect(storage.getItem("chess-prodigy-guest-history-v3")).toBe(old);
+  storage.setItem("chess-prodigy-guest-history-v3", "stale-corruption");
   expect(loadGuestHistory(storage).games.map((g) => g.id)).toEqual(["historical"]);
-  storage.setItem("chess-prodigy-guest-history-v3", "current-corruption");
+  storage.setItem("chess-prodigy-guest-history-v4", "current-corruption");
   expect(loadGuestHistory(storage)).toMatchObject({ status: "corrupt", raw: "current-corruption" });
 });

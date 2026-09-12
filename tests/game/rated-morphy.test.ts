@@ -5,6 +5,7 @@ import {
   morphyConfig,
   ratedMorphyConfig,
   historicalMorphyConfig,
+  plannedMorphyConfig,
   isRatedOpponent,
 } from "../../src/engine/opponents";
 import { parseSavedState } from "../../src/storage/schema";
@@ -117,6 +118,9 @@ it.each([
   [3, "casual", 1275],
   [3, "club", 1375],
   [3, "strong", 1775],
+  [4, "casual", 1225],
+  [4, "club", 1400],
+  [4, "strong", 1625],
 ] as const)(
   "keeps version %s %s receipts fixed at %s through forfeit, reload and undo",
   (version, level, rating) => {
@@ -128,7 +132,12 @@ it.each([
         playerColor: "w",
         level,
         time: "none",
-        opponent: version === 2 ? ratedMorphyConfig(4) : historicalMorphyConfig(4),
+        opponent:
+          version === 2
+            ? ratedMorphyConfig(4)
+            : version === 3
+              ? historicalMorphyConfig(4)
+              : plannedMorphyConfig(4),
       },
     });
     s = move(s, "e4");
@@ -153,6 +162,18 @@ it("rates only exact measured historical configurations", () => {
   for (const change of [
     { version: 4 },
     { engine: "style-v1" },
+    { randomPolicy: "ambient-v1" },
+    { seed: null },
+  ])
+    expect(isRatedOpponent({ ...config, ...change })).toBe(false);
+});
+
+it("rates only exact measured planned configurations", () => {
+  const config = plannedMorphyConfig(7);
+  expect(isRatedOpponent(config)).toBe(true);
+  for (const change of [
+    { version: 5 },
+    { engine: "historical-v1" },
     { randomPolicy: "ambient-v1" },
     { seed: null },
   ])

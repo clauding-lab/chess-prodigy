@@ -61,7 +61,10 @@ export function isSupportedOpponent(c: OpponentConfig): boolean {
 }
 
 export function isRatedOpponent(c: OpponentConfig): boolean {
-  return isSupportedOpponent(c) && (c.id === "classic" || c.version === 2 || c.version === 3);
+  return (
+    isSupportedOpponent(c) &&
+    (c.id === "classic" || c.version === 2 || c.version === 3 || c.version === 4)
+  );
 }
 
 export const personalityBetaEnabled = (value: string | undefined): boolean => value === "true";

@@ -13,11 +13,18 @@ export const HISTORICAL_MORPHY_RATINGS: Readonly<Record<Level, number>> = Object
   club: 1375,
   strong: 1775,
 });
+// Immutable calibration for attack-development/version 4, plans-v1.
+export const PLANNED_MORPHY_RATINGS: Readonly<Record<Level, number>> = Object.freeze({
+  casual: 1225,
+  club: 1400,
+  strong: 1625,
+});
 export function opponentPracticeRating(opponent: OpponentConfig, level: Level): number | null {
   if (!isSupportedOpponent(opponent)) return null;
   if (opponent.id === "classic") return ENGINE_ELO[level];
   if (opponent.version === 2) return MORPHY_RATINGS[level];
   if (opponent.version === 3) return HISTORICAL_MORPHY_RATINGS[level];
+  if (opponent.version === 4) return PLANNED_MORPHY_RATINGS[level];
   return null;
 }
 export function opponentRatingLabel(

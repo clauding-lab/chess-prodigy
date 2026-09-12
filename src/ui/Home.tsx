@@ -3,7 +3,7 @@ import type { Rating } from "../rating/fide";
 import { LEVEL_LABEL } from "../rating/fide";
 import { opponentName, isSupportedOpponent } from "../engine/opponents";
 import { GLYPH } from "./Board";
-import { HISTORICAL_MORPHY_RATINGS } from "../rating/opponents";
+import { PLANNED_MORPHY_RATINGS } from "../rating/opponents";
 import "./home.css";
 
 const clock = (ms: number) => {
@@ -53,10 +53,10 @@ export function Home({
                   {game.setup.playerColor === "w" ? "White" : "Black"}
                 </p>
                 {game.opponent.id === "attack-development" &&
-                  [1, 2].includes(game.opponent.version) && (
+                  [1, 2, 3].includes(game.opponent.version) && (
                     <p className="home-caption">
-                      This saved game keeps the earlier opponent. New Morphy games use his
-                      documented repertoire.
+                      This saved game keeps the earlier opponent. New Morphy games use his recorded
+                      openings and designed plans.
                     </p>
                   )}
                 {game.clocks ? (
@@ -185,16 +185,16 @@ export function Home({
                 </div>
               </div>
               <p>
-                Paul Morphy was an American chess master of the 1800s. This historical simulation
-                uses his recorded moves in matching positions and learned preferences elsewhere,
-                drawn from 247 validated games.
+                Paul Morphy was an American chess master of the 1800s. This simulation uses recorded
+                openings plus designed development, central-break and king-attack plans inspired by
+                his games.
               </p>
               <details>
                 <summary>Who was Paul Morphy?</summary>
                 <p>
-                  An American chess master of the 1800s, Morphy became famous for his brilliant
-                  attacking games. His documented games guide this simulation; it is not a perfect
-                  recreation of the person or a measure of his human playing strength.
+                  An American chess master of the 1800s, Morphy became famous for brilliant
+                  attacking games. His documented games inspire these designed priorities; this is
+                  not a perfect recreation of the person or a measure of his human playing strength.
                 </p>
                 <a
                   href="https://timkr.home.xs4all.nl/ChessTutor/morphy.htm"
@@ -218,7 +218,7 @@ export function Home({
         <p className="home-rating-note">
           {betaEnabled ? "Both opponents offer" : "Classic offers"} Casual, Club and Strong.{" "}
           {betaEnabled &&
-            `Morphy’s measured strengths are ${HISTORICAL_MORPHY_RATINGS.casual}, ${HISTORICAL_MORPHY_RATINGS.club} and ${HISTORICAL_MORPHY_RATINGS.strong}. `}
+            `Morphy’s measured strengths are ${PLANNED_MORPHY_RATINGS.casual}, ${PLANNED_MORPHY_RATINGS.club} and ${PLANNED_MORPHY_RATINGS.strong}. `}
           Practice Ratings measure progress within this app. Hints and takebacks make a game
           unrated.
         </p>
