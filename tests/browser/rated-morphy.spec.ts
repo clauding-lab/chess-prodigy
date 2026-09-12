@@ -1,4 +1,12 @@
 import { enterPlay } from "./enter-play";
+import { createHash } from "node:crypto";
+
+test.beforeEach(async ({ context }, info) => {
+  const bytes = createHash("sha256")
+    .update(info.project.name + info.testId)
+    .digest();
+  await context.setExtraHTTPHeaders({ "CF-Connecting-IP": `192.0.${bytes[0]}.${bytes[1]}` });
+});
 import { expect, test } from "@playwright/test";
 import { freshSession, reduceSession } from "../../src/game/state";
 import {

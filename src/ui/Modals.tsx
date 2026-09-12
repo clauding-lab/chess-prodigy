@@ -95,7 +95,7 @@ export function SetupModal({
           draft.opponentVersion === 3) && (
           <p className="note">
             This rematch keeps the earlier opponent. New Morphy games use recorded openings and
-            designed plans; select Paul Morphy above to switch.
+            designed plans; select Paul Morphy to switch.
           </p>
         )}
       {startError && (

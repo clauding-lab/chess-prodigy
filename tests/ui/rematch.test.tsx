@@ -32,6 +32,7 @@ it.each(["Paul Morphy", "Classic"])(
   (opponent) => {
     render(<RematchFixture />);
     expect(screen.getByText(/This rematch keeps the earlier opponent/)).toBeTruthy();
+    expect(screen.queryByText(/Paul Morphy above/)).toBeNull();
     expect(screen.getByText(clockNote)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: opponent, exact: true }));
     expect(screen.queryByText(/This rematch keeps the earlier opponent/)).toBeNull();

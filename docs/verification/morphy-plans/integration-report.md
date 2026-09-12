@@ -55,3 +55,11 @@ Task 3 changed 35 owned source/test files (321 insertions, 143 deletions, chiefl
 ## Task 4 cross-coverage addition
 
 The production-origin-stopped browser matrix now includes exact version 4 / `plans-v1` saves for both player colours. Each case uses the real planned opponent and worker while the disposable origin is stopped, then verifies service-worker reopening, continued legal play, neutral review, unchanged rating before completion, rated settlement, reload and recorded-game replay. This closes the offline actual-app gap without changing production source.
+
+## Enabled-browser review fixes
+
+The first full enabled browser run reported 115 passes, 4 skips and 3 failures. Two failures were stale Task 3 expectations: the current setup now asserts Club 1400, and the earlier-rematch notice no longer says the Paul Morphy control is “above” when it is in the same control row.
+
+The remaining failure was the sixth parameterized rated-Morphy signup returning HTTP 429. The preserved Playwright trace places the failure at `POST /api/auth/sign-up/email` before any record request. Better Auth intentionally permits five signups per 300 seconds per forwarded client IP; all six rated-Morphy cases shared the loopback identity in one disposable server process. The browser fixture now assigns a stable unique `CF-Connecting-IP` from the project and test identity, matching the existing account-suite pattern and modelling separate clients. Production authentication and records rate limits are unchanged.
+
+Focused verification after the fixes: `tests/ui/rematch.test.tsx` passed 3/3 after first failing 2/3 on the exact “above” assertion; the existing true-enabled bundle passed all 8 affected Playwright cases across desktop and mobile (two current-setup cases plus all six version 2/3/4 account cases). The previously failing mobile version 4 signup passed as the sixth rated-Morphy case.

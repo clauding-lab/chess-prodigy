@@ -49,7 +49,7 @@ test("new personality selection follows the build flag and keeps keyboard/focus 
     await expect(dialog).toContainText(
       "Rated practice — strength measured against Classic within this app.",
     );
-    await expect(dialog.getByRole("button", { name: "Club 1375", exact: true })).toBeVisible();
+    await expect(dialog.getByRole("button", { name: "Club 1400", exact: true })).toBeVisible();
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
     await page.screenshot({ path: `/tmp/chess-prodigy-run2/beta-setup-${info.project.name}.png` });
   } else await expect(morphy).toHaveCount(0);
