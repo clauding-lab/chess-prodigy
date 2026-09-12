@@ -66,16 +66,38 @@ adds browser coverage and changes no production source. The final delivery recor
 exact reviewed, pushed and deployed commits rather than treating these checkpoints as prospective
 release success.
 
-## Release gates still pending
+## Release gates
 
 | Gate | Current state |
 | --- | --- |
-| Full enabled real-Chrome browser suite | Pending controller result |
-| Exact-candidate default-off production build | Pending controller result |
-| Lighthouse accessibility in dark and wooden themes | Pass; 100/100 each on the enabled build before the copy-only correction |
-| Final whole-branch independent review | Pending controller result |
+| Full enabled real-Chrome browser suite | Pass; 118 passed and four intentional skips in 5.6 minutes |
+| Post-fix default-off production build | Pass at source commit `9b15185` |
+| Post-fix enabled production build | Pass with literal `VITE_PERSONALITY_BETA=true` at source commit `9b15185` |
+| Lighthouse accessibility in dark and wooden themes | Pass; 100/100 each on the rebuilt enabled candidate |
+| Final whole-branch source/spec/TypeScript/security review | APPROVE through `48d21aa`; no Critical or Important findings; one minor evidence sentence corrected in this update |
+| Final evidence-only factual recheck | Pending after this documentation update |
 | GitHub CI on exact pushed source | Pending; source not yet recorded as pushed |
-| Existing-host backup, target build, activation and live checks | Pending; v2.4.0 not yet recorded as live |
+| Linux candidate install/typecheck/enabled build | Pass on Node 22.22.2 from archive of `48d21aa` |
+| Existing-host backup, activation and live checks | Pending; v2.4.0 not yet recorded as live |
+
+Documentation commit `48d21aa` follows the two post-fix builds and does not change application or
+build inputs.
+
+## Prepared server candidate
+
+Archive `48d21aa` was uploaded to the existing Hetzner host with SHA-256
+`a5e4c10b484c512c33fb0453d0b07860b7bdc4da2d506e4bdd974f3b9f4a9e39`. The hash matched on the
+target. A clean locked install, typecheck and literal-`true` enabled build passed on Linux x64 with
+Node 22.22.2 under `/opt/chess-prodigy/releases/2.4.0-20260912-48d21aa-plans`.
+
+This prepares a candidate only. Production still points to
+`2.3.0-20260912-89e68d8-historical`; no v2.4 backup, symlink switch, service restart or live check has
+been recorded. Candidate source remains exactly `48d21aa`; the eventual pushed tip may follow it only
+with verification-document changes under `docs/verification/`. Before activation, the controller
+must verify that exact diff and that public assets match the locally rebuilt enabled bundle. Any
+runtime, build-configuration or package change requires a new candidate archive and build. The final
+record will identify candidate source and the later evidence commit separately rather than claim the
+whole Git trees are byte-identical.
 
 An earlier local browser invocation built with `VITE_PERSONALITY_BETA=true` but omitted the flag from
 the Playwright process. Its expected flag-mismatch failures were interrupted with exit 130 and are
@@ -93,7 +115,15 @@ location-specific “above” wording in the same UI area; it was not an asserti
 complete test results are retained as pre-fix diagnostic evidence. The scoped fixture repair gives
 the test its own deterministic project/test identity and updates the v4 expectation and wording;
 production rate limits remain unchanged. Three focused UI checks and eight focused browser checks
-passed at correction commit `9b15185`. The browser gate still requires the full enabled rerun.
+passed at correction commit `9b15185`, then the full enabled matrix was rerun.
+
+The resulting full enabled rerun passed all 118 executed checks in desktop Chrome and iPhone 13
+emulation in 5.6 minutes. Its four intentional skips were the desktop-only touch-audio case and three
+mobile duplicates of account session/conflict/preference cases. Coverage includes actual version-4
+worker moves, both colors, old-version resume/rematch, rated account completion and restore, policy
+protection, stopped-origin offline reopening, neutral review, Home/clocks and explicit waiting
+service-worker updates. Expected preview-only connection refusals to the absent optional port 4317
+account API remain harness diagnostics; account journeys use the disposable port 4318 server.
 
 The release strategy and its practical tradeoffs are preserved in the
 [public decision record](morphy-plans/decision-record.md). Physical-device behavior is not inferred

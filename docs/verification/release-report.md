@@ -5,7 +5,8 @@
 The [v2.4 delivery record](2026-09-12-morphy-plans-release.md) documents the independently audited
 400-game measurement, fixed version-4 ratings, preserved older opponents, account policy 3 and
 current release gates. Verification is in progress; the record does not yet claim source publication
-or live activation.
+or live activation. Local enabled browser, default/enabled build and both-theme accessibility checks
+are complete; GitHub CI and existing-host activation remain pending.
 
 ## 12 September 2026 BDT — historical Morphy v2.3.0
 

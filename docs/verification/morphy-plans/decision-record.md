@@ -47,6 +47,13 @@ proves wrong. The accepted product scope is in the
     lint, formatting, unit/integration tests, a default build, the default browser suite and secret
     scanning on the exact pushed source. Repeating the same full default browser suite locally would
     add time without distinct coverage. Deployment remains blocked until CI passes.
+12. **Keep the prepared server candidate at exact source `48d21aa` while later commits add release
+    evidence only.** Before activation, verify that the pushed-tip diff contains only files under
+    `docs/verification/`, that CI tested identical runtime/build inputs, that the original archive
+    hash still matches, and that served assets match the local final enabled bundle. This avoids an
+    unnecessary Linux rebuild for documentation while keeping source identities explicit. The cost
+    is two recorded identities: candidate source and later evidence tip. Any runtime, build or package
+    change invalidates this ruling and requires a new archive and build.
 
 These decisions preserve versions 1–3, their exact ratings and receipts, the documented repertoire,
 the permanent dark default, private ownership and explicit service-worker updates. Future playing

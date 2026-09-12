@@ -58,8 +58,10 @@ The production-origin-stopped browser matrix now includes exact version 4 / `pla
 
 ## Enabled-browser review fixes
 
-The first full enabled browser run reported 115 passes, 4 skips and 3 failures. Two failures were stale Task 3 expectations: the current setup now asserts Club 1400, and the earlier-rematch notice no longer says the Paul Morphy control is “above” when it is in the same control row.
+The first full enabled browser run reported 115 passes, 4 skips and 3 failures. Two failures were the desktop and mobile forms of one stale Task 3 expectation: current setup now asserts the accepted version-4 Club value 1400 instead of 1375. Separately, visual review found that the earlier-rematch notice should no longer say the Paul Morphy control is “above” when it is in the same control row.
 
 The remaining failure was the sixth parameterized rated-Morphy signup returning HTTP 429. The preserved Playwright trace places the failure at `POST /api/auth/sign-up/email` before any record request. Better Auth intentionally permits five signups per 300 seconds per forwarded client IP; all six rated-Morphy cases shared the loopback identity in one disposable server process. The browser fixture now assigns a stable unique `CF-Connecting-IP` from the project and test identity, matching the existing account-suite pattern and modelling separate clients. Production authentication and records rate limits are unchanged.
 
 Focused verification after the fixes: `tests/ui/rematch.test.tsx` passed 3/3 after first failing 2/3 on the exact “above” assertion; the existing true-enabled bundle passed all 8 affected Playwright cases across desktop and mobile (two current-setup cases plus all six version 2/3/4 account cases). The previously failing mobile version 4 signup passed as the sixth rated-Morphy case.
+
+The final full enabled browser rerun passed 118 checks with 4 intentional skips in 5.6 minutes. The skips were the desktop touch-only audio case and three mobile duplicates of account session, conflict and preference cases. Expected preview-only connection refusals to the absent optional account API on port 4317 remained harness diagnostics; authenticated journeys used the disposable server on port 4318.
