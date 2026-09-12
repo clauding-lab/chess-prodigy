@@ -13,7 +13,7 @@ function promotionGame(now:number){
 }
 test('keyboard chooses an underpromotion from a legally replayed saved game',async({page})=>{
  const session=promotionGame(Date.now());session.preferences.coach=false;
- await page.addInitScript(s=>localStorage.setItem('chess-prodigy-state-v2',JSON.stringify(s)),session);
+ await page.addInitScript(s=>localStorage.setItem('chess-prodigy-state-v3',JSON.stringify(s)),session);
  await page.goto('/');
  await page.getByRole('button',{name:'b7, white pawn'}).focus();await page.keyboard.press('Enter');
  await page.keyboard.press('ArrowUp');await page.keyboard.press('ArrowLeft');await page.keyboard.press('Enter');
@@ -27,12 +27,12 @@ test('promotion picker closes on timeout and never commits a late promotion',asy
  session.preferences.coach=false;
  await page.clock.install({time:new Date(now)});
  await page.clock.pauseAt(new Date(now));
- await page.addInitScript(s=>localStorage.setItem('chess-prodigy-state-v2',JSON.stringify(s)),session);
+ await page.addInitScript(s=>localStorage.setItem('chess-prodigy-state-v3',JSON.stringify(s)),session);
  await page.goto('/');
  await page.getByRole('button',{name:'b7, white pawn'}).click();await page.getByRole('button',{name:'a8, black rook'}).click();
  await expect(page.getByRole('dialog',{name:'Promote to'})).toBeVisible();
  await page.clock.fastForward('00:02');
  await expect(page.getByRole('dialog',{name:'Time out'})).toBeVisible();
  await expect(page.getByRole('button',{name:'Promote to queen'})).toHaveCount(0);
- expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('chess-prodigy-state-v2')!).game.hist.length)).toBe(8);
+ expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('chess-prodigy-state-v3')!).game.hist.length)).toBe(8);
 });

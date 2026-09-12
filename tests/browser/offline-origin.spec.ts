@@ -60,7 +60,7 @@ async function startOrigin() {
 }
 
 const saved = (page: Page): Promise<Session> =>
-  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!));
+  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!));
 
 function seedSession(profile: "Classic" | "Morphy", color: "w" | "b") {
   const now = Date.now();
@@ -100,7 +100,7 @@ for (const profile of ["Classic", "Morphy"] as const)
         // Reload/reopen must preserve storage themselves; no init script can restore it.
         await page.goto(`${origin.url}/api/seed-fixture`);
         await page.evaluate((value) => {
-          localStorage.setItem("chess-prodigy-state-v2", JSON.stringify(value));
+          localStorage.setItem("chess-prodigy-state-v3", JSON.stringify(value));
         }, seed);
         await page.goto(origin.url);
         await expect(page.locator(".status")).toContainText("Your move");

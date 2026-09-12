@@ -151,6 +151,7 @@ export default function App({
       level: record.level,
       time: record.time ?? "none",
       opponentId: record.opponent.id === "attack-development" ? "attack-development" : "classic",
+      opponentVersion: record.opponent.version,
     });
     setRematchNote(
       record.time === undefined

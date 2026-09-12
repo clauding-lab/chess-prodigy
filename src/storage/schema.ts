@@ -5,9 +5,16 @@ import { annotateAll } from "../coach/annotate";
 import { isNeutralEvaluation, reviewHistoryIdentities } from "../engine/reviewer";
 import { TIME_CONTROLS } from "../game/state";
 import type { Game, HistoryEntry, RatingReceipt, Session } from "../game/types";
-import { ENGINE_ELO, LEVEL_LABEL, ratingUpdate } from "../rating/fide";
+import { ratingUpdate } from "../rating/fide";
 import type { Rating, RatingEntry } from "../rating/fide";
-import { CLASSIC, isOpponentConfig } from "../engine/opponents";
+import {
+  CLASSIC,
+  isOpponentConfig,
+  isRatedOpponent,
+  isSupportedOpponent,
+} from "../engine/opponents";
+
+import { opponentPracticeRating, opponentRatingLabel } from "../rating/opponents";
 
 export const isUnratedReason = (value: unknown): value is Game["unratedReason"] =>
   value === null ||
@@ -272,14 +279,23 @@ function receiptMatches(session: Session): boolean {
         ? 1
         : 0;
   const now = Date.parse(`${last.date}T00:00:00+06:00`);
+  const supported = isSupportedOpponent(session.game.opponent);
+  const opponentRating = supported
+    ? opponentPracticeRating(session.game.opponent, session.game.setup.level)
+    : last.oppRating;
+  if (opponentRating === null) return false;
   const expected = ratingUpdate(
     receipt.before,
-    ENGINE_ELO[session.game.setup.level],
+    opponentRating,
     score,
     {
-      opp:
-        LEVEL_LABEL[session.game.setup.level] +
-        (session.game.over.reason === "Abandoned" ? " (abandoned)" : ""),
+      opp: !supported
+        ? last.opp
+        : opponentRatingLabel(
+            session.game.opponent,
+            session.game.setup.level,
+            session.game.over.reason === "Abandoned",
+          ),
     },
     now,
   );
@@ -338,8 +354,15 @@ export function parseSavedState(
     !(metadata.takebackUsed === null || bool(metadata.takebackUsed)) ||
     metadata.rated !== (metadata.unratedReason === null) ||
     (metadata.takebackUsed === true && metadata.rated) ||
-    (metadata.opponent.id !== "classic" && (metadata.rated || metadata.ratingApplied !== null)) ||
-    (metadata.opponent.id === "attack-development" && metadata.unratedReason !== "beta")
+    (metadata.opponent.id !== "classic" &&
+      !isRatedOpponent(metadata.opponent) &&
+      (metadata.rated || metadata.ratingApplied !== null)) ||
+    (metadata.opponent.id === "attack-development" &&
+      isRatedOpponent(metadata.opponent) &&
+      metadata.unratedReason === "beta") ||
+    (metadata.opponent.id === "attack-development" &&
+      !isRatedOpponent(metadata.opponent) &&
+      metadata.unratedReason !== "beta")
   )
     return null;
   if (session.game.hintUsed && session.game.rated) return null;

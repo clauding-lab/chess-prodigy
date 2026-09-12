@@ -17,8 +17,8 @@ test("opening and earlier move stories stay readable through play and a saved-ga
   page,
 }, info) => {
   await page.addInitScript((session) => {
-    if (!localStorage.getItem("chess-prodigy-state-v2"))
-      localStorage.setItem("chess-prodigy-state-v2", JSON.stringify(session));
+    if (!localStorage.getItem("chess-prodigy-state-v3"))
+      localStorage.setItem("chess-prodigy-state-v3", JSON.stringify(session));
   }, savedGame());
   await page.goto("/");
   const opening = page.getByRole("button", { name: /About this opening/ });
@@ -35,7 +35,7 @@ test("opening and earlier move stories stay readable through play and a saved-ga
   await expect
     .poll(() =>
       page.evaluate(
-        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!).game.hist.length,
+        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!).game.hist.length,
       ),
     )
     .toBe(6);
@@ -73,7 +73,7 @@ test("a legal move slides before the engine replies, with reduced-motion support
     return {
       duration: animation?.effect?.getTiming().duration,
       transform: getComputedStyle(piece).transform,
-      moves: JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!).game.hist.length,
+      moves: JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!).game.hist.length,
     };
   });
   expect(motion.duration).toBe(350);
@@ -82,7 +82,7 @@ test("a legal move slides before the engine replies, with reduced-motion support
   await expect
     .poll(() =>
       page.evaluate(
-        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!).game.hist.length,
+        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!).game.hist.length,
       ),
     )
     .toBe(2);

@@ -599,3 +599,79 @@ it("acknowledges exact legacy wire saves while modern consumers invalidate deriv
     await application.close();
   }
 });
+
+it("permanently fences old clients after measured Morphy, including after Classic and rating reset", async () => {
+  const database = await temporaryDatabase();
+  let application = await createApplication({
+    databasePath: database.path,
+    baseURL: BASE_URL,
+    secret: SECRET,
+  });
+  try {
+    const agent = await signedUpAgent(application.app, "measured@example.com");
+    let s = reduceSession(freshSession(0, "first"), {
+      type: "new",
+      id: "measured",
+      now: 0,
+      setup: {
+        playerColor: "w",
+        level: "club",
+        time: "none",
+        opponent: { ...morphyConfig(2), version: 2 },
+      },
+    });
+    s = reduceSession(s, { type: "hint" });
+    await agent
+      .put("/api/records")
+      .set("Origin", BASE_URL)
+      .send({ expectedVersion: 0, snapshot: s })
+      .expect(426);
+    const accepted = await agent
+      .put("/api/records")
+      .set("Origin", BASE_URL)
+      .set("X-Chess-Rating-Policy", "1")
+      .send({ expectedVersion: 0, snapshot: s })
+      .expect(200);
+    expect(accepted.body.snapshot).toEqual(s);
+    s = reduceSession(s, {
+      type: "new",
+      id: "classic",
+      now: 1,
+      setup: { playerColor: "w", level: "club", time: "none" },
+    });
+    s = reduceSession(s, { type: "resetRating" });
+    await agent
+      .put("/api/records")
+      .set("Origin", BASE_URL)
+      .set("X-Chess-Rating-Policy", "1")
+      .send({ expectedVersion: 1, snapshot: s })
+      .expect(200);
+    await agent
+      .put("/api/records")
+      .set("Origin", BASE_URL)
+      .send({ expectedVersion: 2, snapshot: freshSession(2, "old-device") })
+      .expect(426);
+    const kept = await agent.get("/api/records").expect(200);
+    expect(kept.body).toMatchObject({ version: 2, snapshot: s });
+    await application.close();
+    application = await createApplication({
+      databasePath: database.path,
+      baseURL: BASE_URL,
+      secret: SECRET,
+    });
+    const reopened = request.agent(application.app);
+    const login = await reopened
+      .post("/api/auth/sign-in/email")
+      .set("Origin", BASE_URL)
+      .send({ email: "measured@example.com", password: "correct horse battery staple" })
+      .expect(200);
+    await reopened
+      .put("/api/records")
+      .set("Origin", BASE_URL)
+      .set("X-Chess-Account", login.body.user.id)
+      .send({ expectedVersion: 2, snapshot: freshSession(2, "old-after-restart") })
+      .expect(426);
+  } finally {
+    await application.close();
+  }
+});

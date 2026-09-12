@@ -1,0 +1,7 @@
+# Accepted calibration evidence — 12 September 2026 BDT
+
+400 synthetic engine games; no player data. `games.jsonl.gz` contains filename plus complete game record per line. Summaries retain full precision; manifests identify source, production limits, Node and machine. `SHA256SUMS` covers these files. `measured-harness.tar.gz` is the exact harness used with source commit d0ef938; the parallel worker was added after the initial manifests and its separate pre-launch hash is retained.
+
+To inspect/recompute the accepted results: check out d0ef938 in an isolated directory, install its locked dependencies with Node22.23.0, extract measured-harness.tar.gz there, and expand each JSONL record's `game` into its named `file` in a separate results directory together with the manifests. From that checkout run `npx tsx scripts/calibration/run.ts casual RESULTS 100`, then `club RESULTS 50` and `strong RESULTS 50`. Cached games are legally replayed, not re-searched. Manifest verification requires matching recorded hardware/runtime; inspect evidence on another system without falsifying those manifests. Fresh matches use a new results directory and will differ with timing/hardware despite fixed seeds.
+
+The maintained harness under scripts/calibration now fingerprints its worker too and explicitly checks its machine; use it for new measurements, never overwrite the retained accepted manifest to resume with changed code.

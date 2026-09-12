@@ -11,9 +11,10 @@ import {
 import { detectMotifs } from "../coach/motifs";
 import { annotateAll } from "../coach/annotate";
 import { isNeutralEvaluation, reviewHistory } from "../engine/reviewer";
-import { defaultRating, ratingUpdate, ENGINE_ELO, LEVEL_LABEL } from "../rating/fide";
+import { defaultRating, ratingUpdate } from "../rating/fide";
 import type { Action, Game, GameResult, Setup, Session, SessionAction, TimeControl } from "./types";
 import { CLASSIC, isRatedOpponent, isSupportedOpponent } from "../engine/opponents";
+import { opponentPracticeRating, opponentRatingLabel } from "../rating/opponents";
 export const TIME_CONTROLS: Record<TimeControl, { label: string; ms: number | null; inc: number }> =
   {
     none: { label: "No clock", ms: null, inc: 0 },
@@ -25,6 +26,8 @@ export function freshGame(setup: Setup, now: number, id: string): Game {
   const opponent = { ...(setup.opponent ?? CLASSIC) };
   if (!isSupportedOpponent(opponent))
     throw new Error("This opponent configuration is unavailable. Saved progress is preserved.");
+  if (isRatedOpponent(opponent) && opponentPracticeRating(opponent, setup.level) === null)
+    throw new Error("This opponent difficulty has no measured rating yet.");
   const st = START(),
     ms = TIME_CONTROLS[setup.time].ms;
   return {
@@ -198,11 +201,13 @@ export function settleRating(s: Session, now: number): Session {
       : (g.over.result === "1-0" ? "w" : "b") === g.setup.playerColor
         ? 1
         : 0;
+  const opponentRating = opponentPracticeRating(g.opponent, g.setup.level);
+  if (opponentRating === null) return s;
   const { next, delta } = ratingUpdate(
     s.rating,
-    ENGINE_ELO[g.setup.level],
+    opponentRating,
     score,
-    { opp: LEVEL_LABEL[g.setup.level] + (g.over.reason === "Abandoned" ? " (abandoned)" : "") },
+    { opp: opponentRatingLabel(g.opponent, g.setup.level, g.over.reason === "Abandoned") },
     now,
   );
   return {

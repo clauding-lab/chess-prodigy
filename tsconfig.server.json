@@ -6,5 +6,10 @@
     "types": ["node"],
     "noEmit": true
   },
-  "include": ["server", "scripts/test-account-server.ts"]
+  "include": [
+    "server",
+    "scripts/test-account-server.ts",
+    "scripts/calibration",
+    "tests/calibration"
+  ]
 }

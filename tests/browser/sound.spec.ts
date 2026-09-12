@@ -5,7 +5,7 @@ test("a board tap unlocks audio during a browser-approved gesture", async ({ pag
   await page.getByRole("button", { name: "Start", exact: true }).click();
   await page.getByRole("button", { name: "e2, white pawn", exact: true }).click();
   await page.getByRole("button", { name: "e4, empty", exact: true }).click();
-  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!).game.hist.length)).toBe(2);
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!).game.hist.length)).toBe(2);
   await page.addInitScript(() => {
     const Native = window.AudioContext;
     Object.assign(window, { permittedAudioStarts: 0 });

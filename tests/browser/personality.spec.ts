@@ -7,7 +7,7 @@ import { legalMoves, sqName } from "../../src/engine/board";
 import type { Session } from "../../src/game/types";
 
 const saved = (page: Page): Promise<Session> =>
-  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!));
+  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!));
 function beta(color: "w" | "b" = "w") {
   const now = Date.now();
   const s = reduceSession(freshSession(now, "initial"), {
@@ -21,8 +21,8 @@ function beta(color: "w" | "b" = "w") {
 }
 async function seed(page: Page, s: Session) {
   await page.addInitScript((value) => {
-    if (!localStorage.getItem("chess-prodigy-state-v2"))
-      localStorage.setItem("chess-prodigy-state-v2", JSON.stringify(value));
+    if (!localStorage.getItem("chess-prodigy-state-v3"))
+      localStorage.setItem("chess-prodigy-state-v3", JSON.stringify(value));
   }, s);
 }
 async function move(page: Page, from: string, to: string) {
@@ -44,8 +44,10 @@ test("new personality selection follows the build flag and keeps keyboard/focus 
     await morphy.focus();
     await morphy.press("Enter");
     await expect(dialog).toContainText("Attack & development");
-    await expect(dialog).toContainText("Unrated beta — opponent calibration pending.");
-    await expect(dialog.getByRole("button", { name: "Club", exact: true })).toBeVisible();
+    await expect(dialog).toContainText(
+      "Rated practice — strength measured against Classic within this app.",
+    );
+    await expect(dialog.getByRole("button", { name: "Club 1375", exact: true })).toBeVisible();
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
     await page.screenshot({ path: `/tmp/chess-prodigy-run2/beta-setup-${info.project.name}.png` });
   } else await expect(morphy).toHaveCount(0);
@@ -131,14 +133,14 @@ test("unavailable configuration exports a usable recovery copy without replacing
   await page.goto("/");
   await expect(page.getByText(/saved opponent version is unavailable/)).toBeVisible();
   await expect(page.getByRole("button", { name: "New game", exact: true })).toBeDisabled();
-  const original = await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v2"));
+  const original = await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v3"));
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download recovery save" }).click();
   const artifact = await download;
   const copy = JSON.parse(await readFile((await artifact.path())!, "utf8"));
   expect(copy.game).toEqual(s.game);
   expect(copy.rating).toEqual(s.rating);
-  expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v2"))).toBe(original);
+  expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v3"))).toBe(original);
 });
 
 test("account Morphy resume and terminal archive retain identity without rating or guest writes", async ({
@@ -173,7 +175,7 @@ test("account Morphy resume and terminal archive retain identity without rating 
   await page.getByRole("button", { name: "Resign", exact: true }).click();
   await page.getByRole("dialog").getByRole("button", { name: "Resign", exact: true }).click();
   await expect(page.getByRole("dialog")).toContainText(
-    "Unrated beta — opponent calibration pending",
+    "Unrated beta — this opponent predates rated Morphy",
   );
   await expect(page.getByText("Saved to account", { exact: true }).first()).toBeVisible();
   const get = () =>
@@ -189,7 +191,7 @@ test("account Morphy resume and terminal archive retain identity without rating 
     assisted: false,
   });
   expect(records.snapshot.rating).toEqual(s.rating);
-  expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v2"))).toBeNull();
+  expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v3"))).toBeNull();
   await page.reload();
   await expect(page.getByRole("dialog")).toContainText("Unrated beta");
   expect((await get()).games).toHaveLength(1);

@@ -1,0 +1,30 @@
+{
+  "protocol": "morphy-paired-v1",
+  "level": "strong",
+  "maxPlies": 1000,
+  "anchor": 1800,
+  "settings": {
+    "depth": 4,
+    "ms": 2000,
+    "noise": 0,
+    "book": 1
+  },
+  "node": "v22.23.0",
+  "arch": "arm64",
+  "platform": "darwin",
+  "cpu": "Apple M5 Pro",
+  "source": {
+    "src/engine/board.ts": "48549435f7a6f68abb5f787fb9003cbfb542992d0c5737c72dcd17a3ca0637ef",
+    "src/engine/eval.ts": "5f4b90319c7727dbc73dcaa9e50a735eb90c04a1a42a07ab4f1fd4fe65431b6f",
+    "src/engine/search.ts": "a32478c6699873c2d2b7203c2d0423bb184f6e2f5730f79372c400f3fcfd7f9d",
+    "src/engine/morphy.ts": "9668835e9facf3627512436c8f65fa18aeec93cea3fb010d98a798942b910efb",
+    "src/engine/opponents.ts": "2fa0f57a42bca2a0550824ea264b59800c8dad47710732e84e24f2ed0812b48e",
+    "src/engine/types.ts": "da64d8348539270d09ce0ed5d85ed3cb97ebfe436e9d7ce15eb98554e167ba81",
+    "src/book/lines.ts": "9a10ecbcca745d1129512d6557793117c60c1bc28bc133c97f3e6fb2d22011d6",
+    "src/book/book.ts": "47e78bd99f49421e4aff4339e6430401ec28617ea87394d6c0468f6e921dd81e",
+    "src/rating/fide.ts": "ba89dd9517bd8e571d3d0304a54d20ee68b6dc39a30f092b250b375e9504d52a",
+    "scripts/calibration/core.ts": "7b0ab219b0f6d8a3bded3f10b30275e94d75574f0ee252f7c36ef73b4b3b1d5c",
+    "scripts/calibration/match.ts": "427e1cad25c710a8db9494c808976c0ea0ca7ed1abf9fdbbc4c33daf183bd7e7",
+    "scripts/calibration/run.ts": "63f44bb6d91110b87e323a272d5d4d66d1e305f7f2c90105ab8eb2b311921879"
+  }
+}

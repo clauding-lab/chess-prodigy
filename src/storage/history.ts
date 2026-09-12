@@ -5,7 +5,8 @@ import { ARCHIVE_LIMIT, updateArchive } from "../game/archive";
 import { parseSavedState } from "./schema";
 import { saveState, type StorageLike } from "./store";
 
-export const GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v1";
+export const GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v2";
+export const PREVIOUS_GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v1";
 export interface HistoryResult {
   games: GameRecord[];
   status: "ready" | "corrupt" | "unavailable" | "incomplete";
@@ -30,7 +31,7 @@ export function loadGuestHistory(storage: StorageLike | null): HistoryResult {
   let raw: string | null;
   try {
     if (!storage) return { games: [], status: "unavailable" };
-    raw = storage.getItem(GUEST_HISTORY_KEY);
+    raw = storage.getItem(GUEST_HISTORY_KEY) ?? storage.getItem(PREVIOUS_GUEST_HISTORY_KEY);
   } catch {
     return { games: [], status: "unavailable" };
   }
@@ -53,7 +54,10 @@ export function saveGuestProgress(storage: StorageLike | null, session: Session)
       const games = updateArchive(history.games, normalized);
       const encoded = JSON.stringify({ version: 1, games });
       if (encoded.length > 2500000 || !parseHistory({ version: 1, games })) archived = false;
-      else if (JSON.stringify(games) !== JSON.stringify(history.games))
+      else if (
+        storage.getItem(GUEST_HISTORY_KEY) === null ||
+        JSON.stringify(games) !== JSON.stringify(history.games)
+      )
         storage.setItem(GUEST_HISTORY_KEY, encoded);
     } catch {
       archived = false;

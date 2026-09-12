@@ -370,3 +370,23 @@ it("migrates legacy pending terminal writes without losing their version or ackn
   expect(JSON.parse(storage.getItem(accountStorageKey("legacy"))!).snapshot.game.evals).toEqual({});
   sync.dispose();
 });
+
+it("preserves pending v2 account writes in an isolated generation despite an old tab overwriting its queue", () => {
+  const storage = new MemoryStorage(),
+    snapshot = freshSession(0, "pending-new");
+  const oldKey = "chess-prodigy-account-v2:user",
+    raw = JSON.stringify({ baseVersion: 7, pending: [{ snapshot, terminal: false }], snapshot });
+  storage.setItem(oldKey, raw);
+  const sync = new AccountSync("user", storage);
+  expect(sync.initialize({ ...empty, version: 7, snapshot }).game.id).toBe("pending-new");
+  expect(storage.getItem(oldKey)).toBe(raw);
+  storage.setItem(
+    oldKey,
+    JSON.stringify({ baseVersion: 99, pending: [], snapshot: freshSession(0, "stale") }),
+  );
+  const restored = new AccountSync("user", storage);
+  expect(
+    restored.initialize({ ...empty, version: 8, snapshot: freshSession(0, "cloud") }).game.id,
+  ).toBe("pending-new");
+  expect(restored.status().pending).toBe(1);
+});

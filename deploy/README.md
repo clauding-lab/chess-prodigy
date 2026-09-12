@@ -67,3 +67,7 @@ Generate push keys once with `web-push.generateVAPIDKeys()` and preserve them ac
 The worker scans every 15 seconds; reminders are eligible after ten minutes. Delivery gets four bounded attempts; old-turn reminders are discarded before dispatch. Limits are 20 email attempts/address/day and 250/day from this app. Provider acceptance is not proof of inbox delivery. A crash after external acceptance can produce a duplicate retry; no exactly-once external-delivery guarantee is made. A notification already handed to a provider cannot be recalled after a move.
 
 Check aggregate `notification_jobs` counts grouped by status for pending/sent/failed/limited jobs. Do not print recipient or subscription records in public logs. Push opt-in is per device. Expired subscriptions are deleted on provider 404/410; account switching unsubscribes mismatched device ownership before showing the new account.
+
+## Rated Morphy — v2.1
+
+Build hosted releases with `VITE_PERSONALITY_BETA=true`; the source default remains off. The new `record_client_policy` table is additive and records which accounts require measured-rating client support. Preserve it permanently, including after a practice reset. Browser saves now use state-v3/account-v3/history-v2 keys with older keys retained for recovery. Rollback must retain all new data and use code that understands measured Morphy version 2; simply restoring v2.0 code after rated games is unsafe. See the dated calibration report for fixed strengths and verification evidence.

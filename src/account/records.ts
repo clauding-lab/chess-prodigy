@@ -1,5 +1,5 @@
 import { isUnratedReason, parseSavedState } from "../storage/schema";
-import { CLASSIC, isOpponentConfig } from "../engine/opponents";
+import { CLASSIC, isOpponentConfig, isRatedOpponent } from "../engine/opponents";
 import type { GameRecord, RecordsEnvelope } from "./types";
 import { ARCHIVE_MOVE_LIMIT } from "../game/archive";
 
@@ -51,11 +51,17 @@ export function parseGameRecord(value: unknown): GameRecord | null {
     !isOpponentConfig(value.opponent) ||
     !isUnratedReason(value.unratedReason) ||
     !(value.assisted === null || typeof value.assisted === "boolean") ||
+    value.rated !== (value.unratedReason === null) ||
+    (value.opponent.id === "attack-development" &&
+      isRatedOpponent(value.opponent) &&
+      value.unratedReason === "beta") ||
     (value.rated &&
       (value.unratedReason !== null ||
         value.assisted === true ||
-        value.opponent.id !== "classic")) ||
-    (value.opponent.id === "attack-development" && value.unratedReason !== "beta")
+        (value.opponent.id !== "classic" && !isRatedOpponent(value.opponent)))) ||
+    (value.opponent.id === "attack-development" &&
+      !isRatedOpponent(value.opponent) &&
+      value.unratedReason !== "beta")
   )
     return null;
   return value as unknown as GameRecord;

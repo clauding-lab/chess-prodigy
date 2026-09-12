@@ -18,7 +18,7 @@ import {
   weightedBookMoves,
   chooseOpponentMove,
 } from "../../src/engine/morphy";
-import { CLASSIC, morphyConfig } from "../../src/engine/opponents";
+import { CLASSIC, morphyConfig, ratedMorphyConfig } from "../../src/engine/opponents";
 import { bookLookup } from "../../src/book/book";
 import { executeEngineRequest } from "../../src/worker/execute";
 import type { Position } from "../../src/engine/types";
@@ -218,4 +218,15 @@ describe("Morphy style-v1", () => {
     },
     20000,
   );
+});
+
+it("the measured version retains the beta move policy at every difficulty", () => {
+  for (const level of ["casual", "club", "strong"] as const) {
+    for (const seed of [1, 91]) {
+      const p = START();
+      expect(
+        chooseOpponentMove(p, level, ["e4", "d4", "Nf3"], ratedMorphyConfig(seed), 0, fixed),
+      ).toEqual(chooseOpponentMove(p, level, ["e4", "d4", "Nf3"], morphyConfig(seed), 0, fixed));
+    }
+  }
 });

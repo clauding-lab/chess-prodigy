@@ -61,7 +61,7 @@ it.each(["White", "Black"])(
     fireEvent.click(screen.getByRole("button", { name: "Paul Morphy", exact: true }));
     expect(screen.getByText("Attack & development")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: color, exact: true }));
-    fireEvent.click(screen.getByRole("button", { name: "Casual", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Casual 1200", exact: true }));
     fireEvent.click(screen.getByRole("button", { name: "Start", exact: true }));
     if (color === "White") {
       fireEvent.click(screen.getByRole("button", { name: "e2, white pawn" }));
@@ -72,16 +72,16 @@ it.each(["White", "Black"])(
     });
     const before = saved();
     expect(before.game).toMatchObject({
-      rated: false,
+      rated: true,
       ratingApplied: null,
-      unratedReason: "beta",
-      opponent: { id: "attack-development", version: 1 },
+      unratedReason: null,
+      opponent: { id: "attack-development", version: 2 },
     });
     expect(before.rating.games).toBe(0);
     expect(screen.getByText("Paul Morphy · Casual")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Flip", exact: true }));
     expect(screen.getByText("Paul Morphy · Casual")).toBeTruthy();
-    expect(screen.getByText(/Unrated beta — opponent calibration pending/)).toBeTruthy();
+    expect(screen.queryByText(/Unrated beta/)).toBeNull();
     const ai = jobs.find((job) => job.type === "ai")!;
     expect(ai).toMatchObject({ opponent: before.game.opponent });
     for (const job of jobs.filter((job) => job.type === "analyse"))
@@ -94,12 +94,12 @@ it.each(["White", "Black"])(
     expect(screen.getByText("Paul Morphy · Casual")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Resign", exact: true }));
     const confirm = screen.getByRole("dialog", { name: "Resign this game?" });
-    expect(confirm.textContent).not.toContain("rating adjusted");
+    expect(confirm.textContent).toContain("rating adjusted");
     fireEvent.click(within(confirm).getByRole("button", { name: "Resign", exact: true }));
     const result = screen.getByRole("dialog", { name: "Resignation" });
-    expect(result.textContent).toContain("Unrated beta — opponent calibration pending");
+    expect(result.textContent).not.toContain("Unrated beta");
     expect(result.textContent).not.toContain("takeback used");
-    expect(saved().rating).toEqual(before.rating);
+    expect(saved().rating.games).toBe(before.rating.games + 1);
   },
 );
 

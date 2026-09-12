@@ -36,7 +36,7 @@ function seedTimedPlayerTurn(remaining = 100) {
     ...session,
     game: { ...session.game, clocks: { ...session.game.clocks!, w: remaining }, clockAt: now },
   };
-  localStorage.setItem("chess-prodigy-state-v2", JSON.stringify(session));
+  localStorage.setItem("chess-prodigy-state-v3", JSON.stringify(session));
 }
 it("starts, plays a legal move, receives an engine reply and preserves theme across reload", async () => {
   vi.useFakeTimers();
@@ -52,9 +52,9 @@ it("starts, plays a legal move, receives an engine reply and preserves theme acr
   // The reply deliberately waits at least one second; a one-second wall-clock
   // polling deadline races that requirement under a busy full-suite run.
   await act(async () => vi.advanceTimersByTimeAsync(999));
-  expect(JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!).game.hist).toHaveLength(1);
+  expect(JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!).game.hist).toHaveLength(1);
   await act(async () => vi.advanceTimersByTimeAsync(1));
-  expect(JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!).game.hist).toHaveLength(2);
+  expect(JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!).game.hist).toHaveLength(2);
   fireEvent.click(screen.getByRole("button", { name: "Wooden board" }));
   view.unmount();
   render(<App />);
@@ -125,12 +125,12 @@ it("keeps timed computer replies running while the player views friend games", a
     now,
   });
   session = { ...session, game: { ...session.game, clocks: { w: 10000, b: 2500 } } };
-  localStorage.setItem("chess-prodigy-state-v2", JSON.stringify(session));
+  localStorage.setItem("chess-prodigy-state-v3", JSON.stringify(session));
   render(<App suspended />);
   await act(async () => {
     await vi.advanceTimersByTimeAsync(1500);
   });
-  const saved = JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!);
+  const saved = JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!);
   expect(saved.game.hist).toHaveLength(2);
   expect(saved.game.over).toBeNull();
 });
@@ -139,10 +139,10 @@ it.each([1400, 1500.25])(
   "previews abandonment at rating %s and preserves it when the player keeps playing",
   async (value) => {
     seedTimedPlayerTurn(300000);
-    const session = JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!);
+    const session = JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!);
     session.rating.rating = value;
     session.rating.peak = value;
-    localStorage.setItem("chess-prodigy-state-v2", JSON.stringify(session));
+    localStorage.setItem("chess-prodigy-state-v3", JSON.stringify(session));
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: "New game", exact: true }));
     expect(
@@ -156,7 +156,7 @@ it.each([1400, 1500.25])(
       ),
     ).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Keep playing", exact: true }));
-    expect(JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!).rating.rating).toBe(value);
+    expect(JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!).rating.rating).toBe(value);
     fireEvent.click(screen.getByRole("button", { name: "New game", exact: true }));
     fireEvent.click(screen.getByRole("button", { name: /Strong/ }));
     expect(
@@ -167,7 +167,7 @@ it.each([1400, 1500.25])(
       ),
     ).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Abandon and start", exact: true }));
-    const saved = JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!);
+    const saved = JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!);
     expect(Math.round(saved.rating.rating)).toBe(value === 1400 ? 1400 : 1472);
     expect(saved.rating.games).toBe(1);
     expect(saved.game.setup.level).toBe("strong");

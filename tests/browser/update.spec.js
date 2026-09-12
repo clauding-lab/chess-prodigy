@@ -26,20 +26,20 @@ test('a real waiting service worker defers active play and preserves saves when 
   if(await page.getByRole('button',{name:'Start',exact:true}).isVisible())await page.getByRole('button',{name:'Start',exact:true}).click();
   await expect.poll(()=>page.evaluate(()=>!!navigator.serviceWorker.controller)).toBe(true);
   await page.getByRole('button',{name:'e2, white pawn'}).click();await page.getByRole('button',{name:'e4, empty'}).click();
-  await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('chess-prodigy-state-v2')).game.hist.length)).toBe(2);
-  const oldId=await page.evaluate(()=>JSON.parse(localStorage.getItem('chess-prodigy-state-v2')).game.id);
+  await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('chess-prodigy-state-v3')).game.hist.length)).toBe(2);
+  const oldId=await page.evaluate(()=>JSON.parse(localStorage.getItem('chess-prodigy-state-v3')).game.id);
   version=2;
   await page.evaluate(async()=>{const r=await navigator.serviceWorker.getRegistration();await r.update();});
   await expect.poll(()=>page.evaluate(async()=>!!(await navigator.serviceWorker.getRegistration()).waiting)).toBe(true);
   await expect(page.getByLabel('App update')).toContainText('wait until your game finishes');
   await expect(page.getByRole('button',{name:'Update now',exact:true})).toHaveCount(0);
-  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('chess-prodigy-state-v2')).game.id)).toBe(oldId);
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('chess-prodigy-state-v3')).game.id)).toBe(oldId);
   await page.getByRole('button',{name:'Resign',exact:true}).click();await page.getByRole('dialog').getByRole('button',{name:'Resign',exact:true}).click();
   await page.getByRole('button',{name:'View board',exact:true}).click();
-  const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('chess-prodigy-state-v2')));
+  const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('chess-prodigy-state-v3')));
   await expect(page.getByRole('button',{name:'Update now',exact:true})).toBeVisible();
   await Promise.all([page.waitForEvent('load'),page.getByRole('button',{name:'Update now',exact:true}).click()]);
-  const after=await page.evaluate(()=>JSON.parse(localStorage.getItem('chess-prodigy-state-v2')));
+  const after=await page.evaluate(()=>JSON.parse(localStorage.getItem('chess-prodigy-state-v3')));
   expect(after.game).toEqual(before.game);expect(after.rating).toEqual(before.rating);expect(after.preferences).toEqual(before.preferences);
   await expect(page.locator('meta[name="chess-test-release"]')).toHaveAttribute('content','2');
  }finally{await new Promise(resolve=>server.close(resolve));}

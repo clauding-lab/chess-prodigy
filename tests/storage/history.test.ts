@@ -127,3 +127,13 @@ it("reconciles an interrupted undo from the still-authoritative terminal active 
   expect(loadGuestHistory(storage).games).toHaveLength(1);
   expect(authoritative.rating).toEqual(s.rating);
 });
+
+it("copies even unchanged legacy history once so an old tab cannot replace the new archive", () => {
+  const storage = new Memory(),
+    old = JSON.stringify({ version: 1, games: [] });
+  storage.setItem("chess-prodigy-guest-history-v1", old);
+  expect(saveGuestProgress(storage, freshSession(0, "active"))).toBe(true);
+  expect(storage.getItem("chess-prodigy-guest-history-v1")).toBe(old);
+  storage.setItem("chess-prodigy-guest-history-v1", "stale-corruption");
+  expect(loadGuestHistory(storage)).toMatchObject({ status: "ready", games: [] });
+});

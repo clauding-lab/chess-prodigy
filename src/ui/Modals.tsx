@@ -1,13 +1,14 @@
 import { GLYPH } from "./Board";
 import { Modal } from "./Modal";
-import { ENGINE_ELO, FIDE_FLOOR, LEVEL_LABEL, ratingUpdate, type Rating } from "../rating/fide";
+import { FIDE_FLOOR, LEVEL_LABEL, ratingUpdate, type Rating } from "../rating/fide";
 import { TIME_CONTROLS } from "../game/state";
 import { bookLookup } from "../book/book";
 import { MOTIFS } from "../coach/motifs";
 import type { Color, Level, Move } from "../engine/types";
 import type { Game, Setup, TimeControl } from "../game/types";
 import type { ReactNode } from "react";
-import { morphyConfig, opponentName } from "../engine/opponents";
+import { CLASSIC, morphyConfig, ratedMorphyConfig, opponentName } from "../engine/opponents";
+import { opponentPracticeRating } from "../rating/opponents";
 import { unratedDescription } from "../game/eligibility";
 import type { HistoryResult } from "../storage/history";
 import { RecordedRivalry } from "./RecordedGames";
@@ -17,6 +18,7 @@ export type SetupDraft = {
   level: Level;
   time: TimeControl;
   opponentId?: "classic" | "attack-development";
+  opponentVersion?: number;
 };
 export interface Confirmation {
   title: string;
@@ -55,10 +57,24 @@ export function SetupModal({
   const abandoning = game.started && !game.over && game.rated;
   const before = Math.round(rating.rating);
   const after = Math.round(
-    ratingUpdate(rating, ENGINE_ELO[game.setup.level], 0, { opp: "" }, 0).next.rating,
+    game.rated && opponentPracticeRating(game.opponent, game.setup.level) !== null
+      ? ratingUpdate(
+          rating,
+          opponentPracticeRating(game.opponent, game.setup.level)!,
+          0,
+          { opp: "" },
+          0,
+        ).next.rating
+      : rating.rating,
   );
   const loss = before - after;
   const morphy = betaEnabled && draft.opponentId === "attack-development";
+  const legacyMorphy = morphy && draft.opponentVersion === 1;
+  const selectedOpponent = morphy
+    ? legacyMorphy
+      ? morphyConfig(0)
+      : ratedMorphyConfig(0)
+    : CLASSIC;
   return (
     <Modal closeOnBackdrop={false} closeOnEscape={!!onCancel} onClose={onCancel} title="New game">
       {rematchNote && <p className="note">{rematchNote}</p>}
@@ -100,7 +116,9 @@ export function SetupModal({
             <button
               className={`btn${morphy ? " on" : ""}`}
               aria-pressed={morphy}
-              onClick={() => setDraft({ ...draft, opponentId: "attack-development" })}
+              onClick={() =>
+                setDraft({ ...draft, opponentId: "attack-development", opponentVersion: 2 })
+              }
               type="button"
             >
               Paul Morphy
@@ -112,7 +130,9 @@ export function SetupModal({
         <div className="note" role="status">
           <strong>Attack &amp; development</strong>
           <p>A style-inspired simulation that favours active pieces and open lines.</p>
-          Unrated beta — opponent calibration pending.
+          {legacyMorphy
+            ? "This rematch uses the original unrated beta. Select Paul Morphy above to start a rated game."
+            : "Rated practice — strength measured against Classic within this app. Hints and takebacks make the game unrated."}
         </div>
       )}
       <div className="optrow">
@@ -149,10 +169,10 @@ export function SetupModal({
               type="button"
             >
               {LEVEL_LABEL[v]}
-              {!morphy && (
+              {opponentPracticeRating(selectedOpponent, v) !== null && (
                 <>
                   <br />
-                  <span className="subtext">{ENGINE_ELO[v]}</span>
+                  <span className="subtext">{opponentPracticeRating(selectedOpponent, v)}</span>
                 </>
               )}
             </button>
@@ -388,12 +408,22 @@ export function ConfirmModal({ value, onCancel }: { value: Confirmation; onCance
 export function setupFromDraft(draft: SetupDraft, betaEnabled = false): Setup {
   if (draft.opponentId === "attack-development" && !betaEnabled)
     throw new Error("New personality games are disabled in this build.");
+  if (
+    draft.opponentId === "attack-development" &&
+    draft.opponentVersion !== undefined &&
+    ![1, 2].includes(draft.opponentVersion)
+  )
+    throw new Error("Opponent version is unavailable.");
   return {
     playerColor: draft.color === "rand" ? (Math.random() < 0.5 ? "w" : "b") : draft.color,
     level: draft.level,
     time: draft.time,
     ...(draft.opponentId === "attack-development"
-      ? { opponent: morphyConfig(crypto.getRandomValues(new Uint32Array(1))[0]) }
+      ? {
+          opponent: (draft.opponentVersion === 1 ? morphyConfig : ratedMorphyConfig)(
+            crypto.getRandomValues(new Uint32Array(1))[0],
+          ),
+        }
       : {}),
   };
 }

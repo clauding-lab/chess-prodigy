@@ -109,3 +109,18 @@ it("invalidates untrusted review data even for an unavailable read-only opponent
   expect(parsed.game.hist[0]).toMatchObject({ ann: null, better: null });
   expect(storage.getItem(SAVE_KEY)).toBe(raw);
 });
+
+it("isolates measured guest progress from late writes by the previous app while retaining its bytes", () => {
+  const storage = new MemoryStorage(),
+    old = JSON.stringify(freshSession(0, "old-beta-app"));
+  storage.setItem("chess-prodigy-state-v2", old);
+  const migrated = loadSavedState(storage, 0, "fallback").session;
+  expect(migrated.game.id).toBe("old-beta-app");
+  const next = { ...migrated, game: { ...migrated.game, id: "new-app" } };
+  expect(saveState(storage, next)).toBe(true);
+  expect(storage.getItem("chess-prodigy-state-v2")).toBe(old);
+  storage.setItem("chess-prodigy-state-v2", JSON.stringify(freshSession(1, "stale-tab")));
+  expect(loadSavedState(storage, 2, "fallback").session.game.id).toBe("new-app");
+  storage.setItem(SAVE_KEY, "broken-current");
+  expect(loadSavedState(storage, 3, "fallback").status).toBe("corrupt");
+});

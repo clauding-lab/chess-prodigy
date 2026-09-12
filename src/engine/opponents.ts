@@ -43,23 +43,24 @@ export function isOpponentConfig(value: unknown): value is OpponentConfig {
 
 export function isSupportedOpponent(c: OpponentConfig): boolean {
   return (
-    c.version === 1 &&
-    ((c.id === "classic" &&
+    (c.version === 1 &&
+      c.id === "classic" &&
       c.engine === "classic-v1" &&
       c.randomPolicy === "ambient-v1" &&
       c.seed === null) ||
-      (c.id === "attack-development" &&
-        c.engine === "style-v1" &&
-        c.randomPolicy === "seeded-per-ply-v1" &&
-        c.seed !== null &&
-        Number.isInteger(c.seed) &&
-        c.seed >= 0 &&
-        c.seed <= 0xffffffff))
+    ((c.version === 1 || c.version === 2) &&
+      c.id === "attack-development" &&
+      c.engine === "style-v1" &&
+      c.randomPolicy === "seeded-per-ply-v1" &&
+      c.seed !== null &&
+      Number.isInteger(c.seed) &&
+      c.seed >= 0 &&
+      c.seed <= 0xffffffff)
   );
 }
 
 export function isRatedOpponent(c: OpponentConfig): boolean {
-  return c.id === "classic" && isSupportedOpponent(c);
+  return isSupportedOpponent(c) && (c.id === "classic" || c.version === 2);
 }
 
 export const personalityBetaEnabled = (value: string | undefined): boolean => value === "true";
@@ -69,3 +70,7 @@ export const opponentName = (c: OpponentConfig): string =>
     : c.id === "attack-development"
       ? "Paul Morphy"
       : "Unavailable opponent";
+
+export function ratedMorphyConfig(seed: number): OpponentConfig {
+  return { ...morphyConfig(seed), version: 2 };
+}

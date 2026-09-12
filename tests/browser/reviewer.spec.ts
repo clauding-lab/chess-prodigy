@@ -3,7 +3,7 @@ import { freshSession, reduceSession } from "../../src/game/state";
 import { morphyConfig } from "../../src/engine/opponents";
 
 const saved = (page: import("@playwright/test").Page) =>
-  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!));
+  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!));
 
 for (const opponent of ["Classic", "Morphy"] as const)
   test(`native worker ${opponent} scores cannot survive as review, including legacy reload`, async ({
@@ -18,8 +18,8 @@ for (const opponent of ["Classic", "Morphy"] as const)
         setup: { playerColor: "w", level: "club", time: "none", opponent: morphyConfig(42) },
       });
       await page.addInitScript((value) => {
-        if (!localStorage.getItem("chess-prodigy-state-v2"))
-          localStorage.setItem("chess-prodigy-state-v2", JSON.stringify(value));
+        if (!localStorage.getItem("chess-prodigy-state-v3"))
+          localStorage.setItem("chess-prodigy-state-v3", JSON.stringify(value));
       }, s);
     }
     await page.addInitScript(() => {
@@ -60,7 +60,7 @@ for (const opponent of ["Classic", "Morphy"] as const)
       expect(evaluation.review.purpose).toBe("neutral-review");
     }
     const legacy = await page.evaluate(() => {
-      const session = JSON.parse(localStorage.getItem("chess-prodigy-state-v2")!);
+      const session = JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!);
       session.preferences.coach = false;
       for (const evaluation of Object.values(session.game.evals) as Array<{
         score: number;
@@ -77,7 +77,7 @@ for (const opponent of ["Classic", "Morphy"] as const)
     });
     // Seed after the old document closes, so pagehide cannot overwrite the fixture.
     await page.addInitScript(
-      (value) => localStorage.setItem("chess-prodigy-state-v2", JSON.stringify(value)),
+      (value) => localStorage.setItem("chess-prodigy-state-v3", JSON.stringify(value)),
       legacy,
     );
     await page.reload();

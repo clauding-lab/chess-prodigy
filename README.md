@@ -6,15 +6,21 @@ A chess coach you can play in your browser. Practise against three engine streng
 
 [![Chess Prodigy — dark board, three engine strengths, 185 opening lines, 27 coaching cards, hints and game review, accounts and saved progress, practice leaderboard, and offline guest play](docs/verification/hero-banner.png)](https://chess.clauding-lab.com)
 
-## New in 2.0
+## New in 2.1
+
+**Paul Morphy now supports rated practice:** Casual **1200**, Club **1375**, Strong **1825**, measured across 400 games against Classic. These are relative strengths on this app's Practice Rating scale, not FIDE estimates. New Morphy games count; earlier beta games and their rematches remain unrated. Hints and takebacks still make games unrated. See the [measurement, uncertainty and evidence](docs/verification/2026-09-12-morphy-calibration.md).
+
+Morphy is enabled on the hosted site. Source builds retain the optional `VITE_PERSONALITY_BETA=true` setting. Existing installed copies offer **Update now** after the active game ends; updates never force a game reload.
+
+## Included from 2.0
 
 - **Games, replay and rematches:** browse up to 200 completed computer games and replay their moves without changing your active game or rating. Rematch keeps the opponent, difficulty, colour and clock settings, with a chance to change them before starting.
 - **Private opponent records:** compare retained wins, draws and losses by opponent version and difficulty. Assisted and unassisted games stay separate; older records may have unknown assistance. These counts cover retained games, not lifetime totals.
 - **Independent coaching review:** hints and move annotations use a neutral reviewer, separate from the opponent's playing style. Old or incomplete evaluation data is not presented as a trustworthy review.
-- **Optional Paul Morphy beta:** an attack-and-development style at Casual, Club and Strong difficulty. It works for guests without signing in, remains **off by default**, and every Morphy game is **unrated**. Enable it using the command below.
+- **Optional Paul Morphy opponent:** an attack-and-development style at Casual, Club and Strong difficulty. It works for guests without signing in. Enable it in local builds using the command below.
 - **Safer saved games:** versioned opponents, recoverable legacy saves and a corrected draw when time expires against an opponent with only a king. Existing Classic ratings and 1v1 play are preserved.
 
-This is the **2.0.0 source release**. Publishing it does not update the hosted app; deployment is a separate step. Morphy's playing strength and historical fidelity are not independently calibrated, and physical-device installation/audio checks remain outstanding.
+Morphy's historical fidelity and human playing strength are not established by the internal benchmark. Physical-device installation/audio checks remain outstanding.
 
 ### Saved games and recovery
 
@@ -22,7 +28,7 @@ Guest history stays in this browser; account records stay with their owner. Open
 
 Damaged history is preserved and offers a download of the original data. If a completed game cannot be saved, starting another game stops with a recovery download. Retain these files for assisted recovery; there is no recovery-file import screen. Signing in does not automatically import guest games.
 
-Version 2 saves preserve original v1 guest/account keys and identify legacy opponents as Classic. An unreadable v2 save never silently falls back to v1. Once an account has accepted v2, older v1-only clients cannot overwrite it. Rollback requires retaining v2 data and restoring compatible code; there is no database schema migration or retroactive rating change.
+Version 2.1 uses separate guest/account save locations and preserves older copies for recovery. A damaged current save never silently falls back to an older copy. Pending account changes survive migration. After an account first saves measured Morphy, an enduring server marker blocks older clients from overwriting its progress. Rollback requires keeping the new save locations and additive policy table and using compatible code. Old beta games are never retroactively rated.
 
 Supported saved Morphy games can resume and replay with the beta disabled, but starting a new Morphy game or rematch requires the beta setting. Unknown opponent versions remain read-only with **Download recovery save**; the app never silently substitutes Classic. Older records without a clock setting default to **No clock** for rematches.
 
@@ -34,7 +40,7 @@ Human games are untimed. Brevo email and optional device push alert the inviter 
 
 **1v1 Rating** starts at 1200 and uses Elo with K=32; the first ten games are provisional. Completed results update both players once. **H2H** tracks lifetime wins against each opponent, with draws shown separately. No hints or takebacks during human matches; coaching/review opens after the result. The account menu includes **Edit name**; changing a name preserves all records and ratings.
 
-**Practice Rating** measures performance within this app. It is neither an official FIDE rating nor a calibrated estimate. Its existing mathematics and history are unchanged; 1v1 has a separate rating and leaderboard tab.
+**Practice Rating** measures performance within this app. It is not an official FIDE rating or an estimate of human tournament strength. Its existing mathematics and history are unchanged; 1v1 has a separate rating and leaderboard tab.
 
 After your first completed 1v1 game, **H2H** appears in the top bar. Open it to see each opponent and your lifetime wins, draws and losses. Both participants can see their shared results; other players cannot access that matchup's history.
 

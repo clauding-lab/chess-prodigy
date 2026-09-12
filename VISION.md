@@ -56,3 +56,9 @@ README/changelog/version, fast-forwarding main and cutting the v2.0.0 GitHub rel
 now authorized. This supersedes the earlier local-only publishing restriction. Deployment
 is separate and is not part of this request. Preserve the default-off, unrated Morphy beta,
 private data boundaries and the documented calibration/device limitations.
+
+## Rated Morphy authorization — 12 September 2026 BDT
+
+The owner requested deployment of v2.0.0, then enabled hosted Morphy, then explicitly approved measuring Morphy and making it rated with a live update. This supersedes the earlier unrated/local-only boundaries for this scoped change. Version 2 of attack-development retains style-v1 with fixed measured Practice Ratings Casual 1200 / Club 1375 / Strong 1825. Version 1 beta games and their rematches remain unrated. Classic and human rating mathematics are unchanged. Hints/takebacks exclude rating. See docs/verification/2026-09-12-morphy-calibration.md and its retained 400-game evidence.
+
+Preserve guest state-v3/account-v3/history-v2 authority and older recovery keys. Wire schema remains v2. The additive record_client_policy marker permanently requires measured-rating client support after first accepting measured Morphy, including assisted games and after reset. Never roll back to incompatible code or delete this protection. Hosted builds enable VITE_PERSONALITY_BETA; local source defaults remain off.

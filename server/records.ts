@@ -8,6 +8,8 @@ import { archiveGame } from "../src/game/archive.js";
 import { parseGameRecord } from "../src/account/records.js";
 import type { ChessAuth } from "./auth.js";
 
+import { isRatedOpponent } from "../src/engine/opponents.js";
+
 const MAX_SNAPSHOT_BYTES = 256 * 1024;
 const MAX_HISTORY = 500;
 const MAX_ARCHIVED_GAMES = 200;
@@ -56,6 +58,9 @@ function initialize(database: Database.Database): void {
     );
     CREATE INDEX IF NOT EXISTS game_records_owner_completed
       ON game_records(user_id, completed_at DESC);
+    CREATE TABLE IF NOT EXISTS record_client_policy (
+      user_id TEXT PRIMARY KEY REFERENCES user(id) ON DELETE CASCADE
+    );
     CREATE TABLE IF NOT EXISTS record_rate_limits (
       user_id TEXT NOT NULL REFERENCES user(id) ON DELETE CASCADE,
       route TEXT NOT NULL,
@@ -225,6 +230,18 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
         (JSON.parse(current.snapshot) as { version: number }).version >= 2
       )
         return "upgrade";
+      const measured =
+        snapshot.game.opponent.id === "attack-development" &&
+        isRatedOpponent(snapshot.game.opponent);
+      const protectedAccount = database
+        .prepare("SELECT user_id FROM record_client_policy WHERE user_id = ?")
+        .get(userId);
+      if ((measured || protectedAccount) && request.get("X-Chess-Rating-Policy") !== "1")
+        return "upgrade";
+      if (measured)
+        database
+          .prepare("INSERT OR IGNORE INTO record_client_policy(user_id) VALUES (?)")
+          .run(userId);
       const updatedAt = new Date().toISOString();
       database
         .prepare(

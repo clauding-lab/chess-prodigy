@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.1.0] — 2026-09-12 (BDT)
+
+- Measured Paul Morphy against Classic across 400 synthetic games: Casual 1200, Club 1375, Strong 1825 on the existing app scale. Full games, estimates, uncertainty and source fingerprints are retained.
+- New versioned Morphy games affect Practice Rating; legacy beta games remain unrated. Hints, takebacks, once-only settlement and Classic/1v1 formulas are preserved.
+- Separate local save generations retain older recovery copies and protect new progress from older tabs. Persistent server policy blocks obsolete writes after measured Morphy, including after reset.
+- Hosted Morphy stays enabled. Updates wait for explicit action after the active game ends.
+
+See the [calibration and verification record](docs/verification/2026-09-12-morphy-calibration.md). These values are internal relative measurements, not FIDE ratings.
+
 ## [2.0.0] — 2026-09-11 (BDT)
 
 - Games history for the most recent 200 completed computer games, legal read-only replay, private retained results by opponent version/difficulty, and rematches with preserved setup choices.
