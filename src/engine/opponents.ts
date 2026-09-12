@@ -48,9 +48,9 @@ export function isSupportedOpponent(c: OpponentConfig): boolean {
       c.engine === "classic-v1" &&
       c.randomPolicy === "ambient-v1" &&
       c.seed === null) ||
-    ((c.version === 1 || c.version === 2) &&
+    ((((c.version === 1 || c.version === 2) && c.engine === "style-v1") ||
+      (c.version === 3 && c.engine === "historical-v1")) &&
       c.id === "attack-development" &&
-      c.engine === "style-v1" &&
       c.randomPolicy === "seeded-per-ply-v1" &&
       c.seed !== null &&
       Number.isInteger(c.seed) &&
@@ -73,4 +73,8 @@ export const opponentName = (c: OpponentConfig): string =>
 
 export function ratedMorphyConfig(seed: number): OpponentConfig {
   return { ...morphyConfig(seed), version: 2 };
+}
+
+export function historicalMorphyConfig(seed: number): OpponentConfig {
+  return { ...morphyConfig(seed), version: 3, engine: "historical-v1" };
 }

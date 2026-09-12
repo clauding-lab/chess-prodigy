@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "policy": "historical-v1",
+  "featureNames": [
+    "development",
+    "bishop-mobility",
+    "rook-files",
+    "central-presence",
+    "king-ring-pressure",
+    "castling-placement",
+    "connected-rooks",
+    "checks",
+    "premature-queen-exposure",
+    "knight-activity"
+  ],
+  "weights": [
+    0.3977798061409949, 0.328570021123927, 0.46377908621925523, 0.23698159283071654,
+    0.47858249742385894, 0.7305212066122687, 0.22724216055879434, -0.07992135161737296,
+    -0.2710873530079114, 0.2831924180230368
+  ],
+  "stylePawnBounds": [-2.5, 2.5],
+  "trainingProtocol": "historical-preference-v1",
+  "corpusSha256": "77a770ddbc030b2684521624284ca36eb5afee7dc239beb44bc20561cd766a07",
+  "featuresSha256": "1be6bdd493f0fe7a448f747b15119643f43aeb6b111a7caf443db60cf4328b03"
+}
