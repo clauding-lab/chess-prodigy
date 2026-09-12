@@ -29,6 +29,8 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // Includes the compact historical repertoires in the engine worker for offline play.
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         importScripts: ["/push-handler.js"],
         globPatterns: ["**/*.{js,css,html,png,svg,woff2}"],
         navigateFallbackDenylist: [/^\/verification\//, /^\/api\//],
