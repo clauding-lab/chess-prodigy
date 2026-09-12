@@ -204,15 +204,6 @@ export function AccountShell() {
   const account = boot.kind === "account" ? boot : null;
   const controls = (
     <div className="account-bar">
-      {account && syncStatus && (
-        <span className="cloud-status" role="status">
-          {syncStatus.state === "syncing"
-            ? "Saving…"
-            : syncStatus.state === "idle" && syncStatus.pending === 0
-              ? "Saved to account"
-              : "Pending changes"}
-        </span>
-      )}
       <button className="linkbtn" onClick={() => setLeaderboardOpen(true)}>
         Leaderboard
       </button>
@@ -245,6 +236,15 @@ export function AccountShell() {
       <button className="linkbtn" onClick={() => setAboutOpen(true)}>
         About
       </button>
+      {account && syncStatus && (
+        <span className="cloud-status" role="status">
+          {syncStatus.state === "syncing"
+            ? "Saving…"
+            : syncStatus.state === "idle" && syncStatus.pending === 0
+              ? "Saved to account"
+              : "Pending changes"}
+        </span>
+      )}
     </div>
   );
   const conflict = account && syncStatus?.state === "conflict";

@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.4.2] — 2026-09-13 (BDT)
+
+- Place account saving status on its own centered line beneath the navigation controls, including on narrow screens.
+
 ## [2.4.1] — 2026-09-12 (BDT)
 
 - Add About beside the account control, showing the installed app version, developer Adnan Rashid and the GitHub repository. The panel works offline and follows the selected theme.

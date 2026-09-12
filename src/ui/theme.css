@@ -84,7 +84,7 @@ body:has(.app[data-theme="dark"]) [data-modal-root] {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 16px;
+  gap: 6px 16px;
   margin: -6px 0 7px;
 }
 .brand {
@@ -234,7 +234,8 @@ body:has(.app[data-theme="dark"]) [data-modal-root] {
   font-size: 13px;
 }
 .cloud-status {
-  margin-right: auto;
+  flex-basis: 100%;
+  text-align: center;
   align-self: center;
   font-size: 11px;
   opacity: 0.7;
