@@ -2,7 +2,7 @@
 
 **[Play Chess Prodigy](https://chess.clauding-lab.com)** · [Releases](https://github.com/clauding-lab/chess-prodigy/releases)
 
-Open **About** beside the account button for the installed app version, developer credit and GitHub link.
+Open **About** beside the account button for the installed app version, developer credit and GitHub link. Account saving status appears on its own line below the navigation controls.
 
 A chess coach you can play in your browser. Practise against three engine strengths, explore opening plans, ask for a hint and review your moves. Play as a guest or create an account to keep your progress across devices.
 
