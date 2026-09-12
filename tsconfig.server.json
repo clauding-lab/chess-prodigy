@@ -10,6 +10,7 @@
     "server",
     "scripts/test-account-server.ts",
     "scripts/calibration",
+    "scripts/morphy-history",
     "tests/calibration"
   ]
 }

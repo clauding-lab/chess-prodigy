@@ -34,7 +34,7 @@ function splitRecords(text: string): string[] {
   const normalized = text
     .replace(/^\uFEFF/, "")
     .replace(/\r\n?/g, "\n")
-    .replace(/\u001a/g, "");
+    .replaceAll(String.fromCharCode(26), "");
   return normalized
     .trim()
     .split(/\n[ \t]*\n(?=[ \t]*\[[A-Za-z])/g)

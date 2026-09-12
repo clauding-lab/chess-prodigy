@@ -13,9 +13,9 @@
     "typecheck:server": "tsc -p tsconfig.server.json",
     "test:browser": "playwright test",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.server.json",
-    "lint": "eslint src server scripts/test-account-server.ts scripts/calibration deploy/backup.mjs --max-warnings=0",
-    "format:check": "prettier --check src tests/engine tests/coach tests/game tests/storage tests/worker tests/ui vite.config.ts tsconfig.json server tests/server tests/account scripts/test-account-server.ts deploy/backup.mjs tsconfig.server.json scripts/calibration tests/calibration",
-    "format": "prettier --write src tests/engine tests/coach tests/game tests/storage tests/worker tests/ui vite.config.ts tsconfig.json server tests/server tests/account scripts/test-account-server.ts deploy/backup.mjs tsconfig.server.json scripts/calibration tests/calibration",
+    "lint": "eslint src server scripts/test-account-server.ts scripts/calibration scripts/morphy-history deploy/backup.mjs --max-warnings=0",
+    "format:check": "prettier --check src tests/engine tests/coach tests/game tests/storage tests/worker tests/ui vite.config.ts tsconfig.json server tests/server tests/account scripts/test-account-server.ts deploy/backup.mjs tsconfig.server.json scripts/calibration scripts/morphy-history tests/calibration",
+    "format": "prettier --write src tests/engine tests/coach tests/game tests/storage tests/worker tests/ui vite.config.ts tsconfig.json server tests/server tests/account scripts/test-account-server.ts deploy/backup.mjs tsconfig.server.json scripts/calibration scripts/morphy-history tests/calibration",
     "preview": "vite preview --host 127.0.0.1",
     "test:accessibility": "node scripts/check-accessibility.mjs",
     "icons": "node scripts/generate-icons.mjs"
