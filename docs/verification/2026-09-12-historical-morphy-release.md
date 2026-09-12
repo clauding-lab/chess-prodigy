@@ -1,8 +1,7 @@
 # Historical Morphy delivery — 12 September 2026 BDT
 
-Status: compatibility implementation has passed review; final application verification is in progress. Production
-still runs the completed Home/Resume release v2.2.1. This record will identify the exact verified source
-and deployment after the remaining checks pass.
+Status: complete and live as v2.3.0 at https://chess.clauding-lab.com, following the completed
+Home/Resume release. Deployed source: `89e68d8ef665fdd1534d4130b3d76649df7f44dc`.
 
 The owner explicitly approved documented-game moves in matching positions, preferences learned from
 Morphy's games elsewhere, and a new strength measurement before rated release, following Home.
@@ -98,12 +97,59 @@ backend at port 4317 is absent; authenticated checks use the separate disposable
 
 ## Production
 
-Whole-branch review and production verification remain pending. No new production deployment is
-claimed by this checkpoint.
+Whole-branch review approved `6794a0b` without findings. It confirmed frozen playing behavior,
+historical/model/measurement consistency, exact versioned ratings, atomic account protection and
+recovery-key precedence. Expected negative-authentication diagnostics were closed as non-findings,
+and the selection-derived rematch explanation resolved the earlier minor.
+
+The first GitHub run (`34688576170`) and target check exposed one test allowance that was too short:
+the exhaustive 247-game validation took 23.477 seconds on GitHub and 31.679 seconds on the server,
+exceeding its 15-second limit. The other 398 tests passed on each. Commit `89e68d8` raises only that
+batch test's bounded allowance to 60 seconds and documents the measured reason. All assertions,
+playing code and historical data remain unchanged. Fifteen focused tests passed, and the independent
+reviewer approved the narrow correction. This does not alter runtime engine time limits.
+
+The corrected source passed [GitHub run 34688881976](https://github.com/clauding-lab/chess-prodigy/actions/runs/34688881976):
+secret scanning, source checks, 399 tests, production build and 108 browser checks with eight expected
+skips. The Linux server independently passed a clean locked install, type checking, all 399 tests
+and the enabled production build on Node 22.22.2. Its exhaustive corpus test took 31.008 seconds;
+the full test run took 189.34 seconds. No assertion was removed to accommodate this machine.
+
+Activated `/opt/chess-prodigy/releases/2.3.0-20260912-89e68d8-historical` at **16:45:22 BDT** on
+12 September 2026. A fresh consistent private backup at **16:45:19 BDT** passed SQLite integrity
+checking before the switch. The source archive SHA-256 matched on transfer:
+`0248409408f51ad2da645322103a0a4b07b59eae226b83e9dd01116a3c27f2ec`.
+The first, never-activated candidate was removed after its source archive and failed-check log were
+retained; previous production releases and private data remain preserved.
+
+Public HTML, main JavaScript, styles, engine worker and service worker all match the target hashes:
+
+| Artifact | Public file | SHA-256 |
+| --- | --- | --- |
+| HTML | `index.html` | `6af11f828c6af459d194d79900b4763761de618f9446da8ff2012af75b2a21d2` |
+| Main | `assets/index-BTnnioiZ.js` | `eacd8a1e73d8fb181b1f2b1582e76a4b61a5053d18a4cb6c5a8313b66cb001bd` |
+| Styles | `assets/index-CucnTj6h.css` | `752269f280697479fa8b7769f55fd7dc55adfdbbd10af3b0082b4f3dd5849080` |
+| Engine | `assets/engine.worker-1gqz3FRn.js` | `b3e820e04bd2993d1dcb7c47edf82e039cf53387d5a5a1e14739bbfcaf3a9284` |
+| Service worker | `sw.js` | `1a16af931d3ceb0985cb8f65dc2ba6f9662ddcf09cea7ee4028e5a9ee61e24d2` |
+
+The enabled offline package contains 15 precached entries totaling 1,166.28 KiB. Public health
+returns 200/ok and unauthenticated private records return 401, both with `Cache-Control: no-store`.
+The service is active/running, has zero restart loops and emitted no error-priority journal entries
+after activation. Initial loopback connection retries during the three-second restart succeeded.
+
+The real waiting-update check used only an isolated synthetic guest. Its v2 Club game with e4/Nf6
+remained on the old client while the update waited, without a forced reload. After resignation and
+explicit Update now, v2.3 Home preserved the exact game ID, full move history, opponent configuration,
+rating state, receipt and one rated-game count. The old rematch displayed 1200/1375/1825 with the
+earlier-opponent explanation. Explicit Paul Morphy selection removed that explanation and displayed
+1275/1375/1775. The resulting rated version-3/historical-v1 game replied to e4 with the documented e5.
+Reload returned Home with a prominent Resume button and identical game, moves, opponent and rating.
+The synthetic browser session was closed after its evidence was retained. No real player account
+or game was used for testing.
 
 Detailed local evidence is retained in
-`/Users/adnanrashid/Downloads/chess-prodigy-historical-morphy-20260912/`. A separate isolated guest
-session holds a v2 Club game with moves e4/Nf6 for the real update check; no live player account is used.
+`/Users/adnanrashid/Downloads/chess-prodigy-historical-morphy-20260912/`, including source archives,
+raw benchmark games, reviews, browser logs, screenshots and the completed live update check.
 Physical-device installation, audio and performance evidence remains separate from browser emulation.
 
 ## Implementation decisions
