@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.2.1] — 2026-09-12 (BDT)
+
+- Strengthen Home preview piece outlines for legibility with Linux chess fonts: light outlines on dark-board black pieces, dark outlines on wooden-board white pieces. Preserve piece colours and the playing board.
+
 ## [2.2.0] — 2026-09-12 (BDT)
 
 - Home replaces the automatic setup dialog, with a saved-board preview, prominent Resume game, result access, opponent introductions and links to games, accounts and friend play.

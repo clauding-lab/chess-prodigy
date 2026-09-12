@@ -97,7 +97,7 @@
 }
 .home-piece.b {
   color: #141820;
-  -webkit-text-stroke: 0.65px #aaa;
+  -webkit-text-stroke: 0.04em #ddd6ca;
 }
 .home-position figcaption {
   font-size: 12px;
@@ -262,6 +262,12 @@
 }
 .app[data-theme="wood"] .home-mini-board {
   border-color: #68472e;
+}
+.app[data-theme="wood"] .home-piece.w {
+  -webkit-text-stroke: 0.04em #141820;
+}
+.app[data-theme="wood"] .home-piece.b {
+  -webkit-text-stroke: 0;
 }
 @media (max-width: 700px) {
   .home-hero {
