@@ -8,6 +8,7 @@ import { playMatch, verifySavedMatch, type MatchOptions, type MatchResult } from
 import {
   HISTORICAL_PROTOCOL,
   PLANS_PROTOCOL,
+  CHIGORIN_PROTOCOL,
   LEGACY_PROTOCOL,
   assertManifest,
   machineIdentity,
@@ -82,7 +83,7 @@ const manifest: CalibrationManifest = {
   interval: { method: "approximate-pair-wilson-v1", z: 2.4, maximumWidth: 300 },
   ...machine,
   concurrency,
-  source: sourceFingerprints(),
+  source: sourceFingerprints(protocol),
 };
 const manifestPath = join(directory, `${level}-manifest.json`);
 if (existsSync(manifestPath)) {
@@ -134,7 +135,9 @@ if (mode === "--init-only") {
         eligible:
           measured.eligible &&
           (protocol === LEGACY_PROTOCOL ||
-            ((protocol === HISTORICAL_PROTOCOL || protocol === PLANS_PROTOCOL) &&
+            ((protocol === HISTORICAL_PROTOCOL ||
+              protocol === PLANS_PROTOCOL ||
+              protocol === CHIGORIN_PROTOCOL) &&
               maxPlies === 1000)),
         protocol,
         opponentVersion: manifest.opponent.version,

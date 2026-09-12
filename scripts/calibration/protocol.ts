@@ -9,8 +9,12 @@ import { sampleOpening } from "./core";
 export const LEGACY_PROTOCOL = "morphy-paired-v1";
 export const HISTORICAL_PROTOCOL = "morphy-historical-paired-v1";
 export const PLANS_PROTOCOL = "morphy-plans-paired-v1";
+export const CHIGORIN_PROTOCOL = "chigorin-plans-paired-v1";
 export type CalibrationProtocol =
-  typeof LEGACY_PROTOCOL | typeof HISTORICAL_PROTOCOL | typeof PLANS_PROTOCOL;
+  | typeof LEGACY_PROTOCOL
+  | typeof HISTORICAL_PROTOCOL
+  | typeof PLANS_PROTOCOL
+  | typeof CHIGORIN_PROTOCOL;
 
 export const EXPECTED_SOURCE_FILES = Object.freeze([
   "package.json",
@@ -46,9 +50,9 @@ export const EXPECTED_SOURCE_FILES = Object.freeze([
 ]);
 
 export interface CalibrationOpponentIdentity {
-  id: "attack-development";
+  id: "attack-development" | "chigorin";
   version: 1 | 3 | 4;
-  engine: "style-v1" | "historical-v1" | "plans-v1";
+  engine: "style-v1" | "historical-v1" | "plans-v1" | "chigorin-plans-v1";
   randomPolicy: "seeded-per-ply-v1";
 }
 
@@ -86,12 +90,24 @@ export interface CalibrationManifest {
 
 export function parseProtocol(value: string | undefined): CalibrationProtocol {
   if (value === undefined) return LEGACY_PROTOCOL;
-  if (value === LEGACY_PROTOCOL || value === HISTORICAL_PROTOCOL || value === PLANS_PROTOCOL)
+  if (
+    value === LEGACY_PROTOCOL ||
+    value === HISTORICAL_PROTOCOL ||
+    value === PLANS_PROTOCOL ||
+    value === CHIGORIN_PROTOCOL
+  )
     return value;
   throw new Error(`Unsupported calibration protocol: ${value}`);
 }
 
 export function opponentIdentity(protocol: CalibrationProtocol): CalibrationOpponentIdentity {
+  if (protocol === CHIGORIN_PROTOCOL)
+    return {
+      id: "chigorin",
+      version: 1,
+      engine: "chigorin-plans-v1",
+      randomPolicy: "seeded-per-ply-v1",
+    };
   if (protocol === PLANS_PROTOCOL)
     return {
       id: "attack-development",
@@ -118,9 +134,17 @@ export function openingForProtocol(protocol: CalibrationProtocol, seed: number):
   return protocol === LEGACY_PROTOCOL ? sampleOpening(seed) : [];
 }
 
-export function sourceFingerprints(): Record<string, string> {
+function sourceFiles(protocol: CalibrationProtocol): readonly string[] {
+  return protocol === CHIGORIN_PROTOCOL
+    ? [...EXPECTED_SOURCE_FILES, "src/engine/chigorin.ts", "src/book/chigorin-book.json"]
+    : EXPECTED_SOURCE_FILES;
+}
+
+export function sourceFingerprints(
+  protocol: CalibrationProtocol = LEGACY_PROTOCOL,
+): Record<string, string> {
   return Object.fromEntries(
-    EXPECTED_SOURCE_FILES.map((file) => [
+    sourceFiles(protocol).map((file) => [
       file,
       createHash("sha256").update(readFileSync(file)).digest("hex"),
     ]),
@@ -133,13 +157,14 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 export function assertExactSourceFingerprints(
   source: unknown,
+  protocol: CalibrationProtocol = LEGACY_PROTOCOL,
 ): asserts source is Record<string, string> {
   if (!isRecord(source)) throw new Error("Calibration manifest fingerprints are missing");
   const supplied = Object.keys(source).sort(),
-    expected = [...EXPECTED_SOURCE_FILES].sort();
+    expected = [...sourceFiles(protocol)].sort();
   if (JSON.stringify(supplied) !== JSON.stringify(expected))
     throw new Error("Calibration manifest fingerprint set mismatch");
-  for (const file of EXPECTED_SOURCE_FILES) {
+  for (const file of sourceFiles(protocol)) {
     const hash = source[file];
     if (typeof hash !== "string" || !/^[a-f0-9]{64}$/.test(hash))
       throw new Error(`Calibration manifest fingerprint is invalid: ${file}`);
@@ -204,5 +229,5 @@ export function assertManifest(
     Number(value.maxPlies) > 1000
   )
     throw new Error("Calibration manifest identity or machine mismatch");
-  assertExactSourceFingerprints(value.source);
+  assertExactSourceFingerprints(value.source, expected.protocol);
 }

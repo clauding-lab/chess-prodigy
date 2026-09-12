@@ -391,7 +391,7 @@ it("preserves pending v2 account writes in an isolated generation despite an old
   expect(restored.status().pending).toBe(1);
 });
 
-it("migrates the v4 pending queue into v5 and sends policy 3 with the same owner and versions", async () => {
+it("migrates the v4 pending queue into v6 and sends policy 4 with the same owner and versions", async () => {
   const storage = new MemoryStorage(),
     snapshot = freshSession(0, "pending-v3");
   const raw = JSON.stringify({
@@ -404,12 +404,12 @@ it("migrates the v4 pending queue into v5 and sends policy 3 with the same owner
   const sent: number[] = [];
   const sync = new AccountSync("user", storage, async (_url, init) => {
     const headers = new Headers(init?.headers);
-    expect(headers.get("X-Chess-Rating-Policy")).toBe("3");
+    expect(headers.get("X-Chess-Rating-Policy")).toBe("4");
     expect(headers.get("X-Chess-Account")).toBe("user");
     const body = JSON.parse(String(init?.body));
     sent.push(body.expectedVersion);
     expect(
-      JSON.parse(storage.getItem("chess-prodigy-account-v5:user")!).pending[0].snapshot,
+      JSON.parse(storage.getItem("chess-prodigy-account-v6:user")!).pending[0].snapshot,
     ).toEqual(snapshot);
     return new Response(JSON.stringify({ ...empty, version: 6, snapshot }));
   });
@@ -417,6 +417,6 @@ it("migrates the v4 pending queue into v5 and sends policy 3 with the same owner
   await sync.flush();
   expect(sent).toEqual([5]);
   expect(storage.getItem("chess-prodigy-account-v4:user")).toBe(raw);
-  expect(storage.getItem("chess-prodigy-account-v5:other")).toBeNull();
+  expect(storage.getItem("chess-prodigy-account-v6:other")).toBeNull();
   expect(sync.status()).toMatchObject({ state: "idle", pending: 0 });
 });

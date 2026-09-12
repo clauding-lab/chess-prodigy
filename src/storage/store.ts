@@ -2,7 +2,8 @@ import { freshSession, reduceSession } from "../game/state";
 import type { Session } from "../game/types";
 import { isRating, parseSavedState } from "./schema";
 
-export const SAVE_KEY = "chess-prodigy-state-v5";
+export const SAVE_KEY = "chess-prodigy-state-v6";
+export const PLANNED_SAVE_KEY = "chess-prodigy-state-v5";
 export const HISTORICAL_SAVE_KEY = "chess-prodigy-state-v4";
 export const MEASURED_SAVE_KEY = "chess-prodigy-state-v3";
 export const BETA_SAVE_KEY = "chess-prodigy-state-v2";
@@ -31,6 +32,7 @@ export function loadSavedState(
   let raw: string | null;
   try {
     raw = storage.getItem(SAVE_KEY);
+    if (raw === null) raw = storage.getItem(PLANNED_SAVE_KEY);
     if (raw === null) raw = storage.getItem(HISTORICAL_SAVE_KEY);
     if (raw === null) raw = storage.getItem(MEASURED_SAVE_KEY);
     if (raw === null) raw = storage.getItem(BETA_SAVE_KEY);

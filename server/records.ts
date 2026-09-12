@@ -8,7 +8,7 @@ import { archiveGame } from "../src/game/archive.js";
 import { parseGameRecord } from "../src/account/records.js";
 import type { ChessAuth } from "./auth.js";
 
-import { isRatedOpponent } from "../src/engine/opponents.js";
+import { isRatedOpponent, isSupportedOpponent } from "../src/engine/opponents.js";
 
 const MAX_SNAPSHOT_BYTES = 256 * 1024;
 const MAX_HISTORY = 500;
@@ -241,29 +241,33 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
       const measured =
         snapshot.game.opponent.id === "attack-development" &&
         isRatedOpponent(snapshot.game.opponent);
+      const chigorin =
+        snapshot.game.opponent.id === "chigorin" && isSupportedOpponent(snapshot.game.opponent);
       const policyRow = database
         .prepare("SELECT minimum_policy FROM record_client_policy WHERE user_id = ?")
         .get(userId) as { minimum_policy: number } | undefined;
       const requiredPolicy = Math.max(
         policyRow?.minimum_policy ?? 0,
-        measured
-          ? snapshot.game.opponent.version === 4
-            ? 3
-            : snapshot.game.opponent.version === 3
-              ? 2
-              : 1
-          : 0,
+        chigorin
+          ? 4
+          : measured
+            ? snapshot.game.opponent.version === 4
+              ? 3
+              : snapshot.game.opponent.version === 3
+                ? 2
+                : 1
+            : 0,
       );
       const capability = request.get("X-Chess-Rating-Policy");
       if (
         requiredPolicy > 0 &&
         !(
-          (capability === "1" || capability === "2" || capability === "3") &&
+          (capability === "1" || capability === "2" || capability === "3" || capability === "4") &&
           Number(capability) >= requiredPolicy
         )
       )
         return "upgrade";
-      if (measured)
+      if (measured || chigorin)
         database
           .prepare(
             `INSERT INTO record_client_policy(user_id, minimum_policy) VALUES (?, ?)

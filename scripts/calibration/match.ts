@@ -10,15 +10,17 @@ import {
 import { chooseAiMove } from "../../src/engine/search";
 import { chooseOpponentMove } from "../../src/engine/morphy";
 import {
+  chigorinConfig,
   historicalMorphyConfig,
   morphyConfig,
   plannedMorphyConfig,
 } from "../../src/engine/opponents";
+import type { CalibrationProtocol } from "./protocol";
 import { bookLookup } from "../../src/book/book";
 import type { Color, Level } from "../../src/engine/types";
 import { terminalResult, seededRandom } from "./core";
 export interface MatchOptions {
-  protocol?: "morphy-paired-v1" | "morphy-historical-paired-v1" | "morphy-plans-paired-v1";
+  protocol?: CalibrationProtocol;
   opponentVersion?: 1 | 3 | 4;
   level: Level;
   morphyColor: Color;
@@ -31,10 +33,12 @@ function opponentForOptions(options: MatchOptions) {
     options.protocol !== undefined &&
     options.protocol !== "morphy-paired-v1" &&
     options.protocol !== "morphy-historical-paired-v1" &&
-    options.protocol !== "morphy-plans-paired-v1"
+    options.protocol !== "morphy-plans-paired-v1" &&
+    options.protocol !== "chigorin-plans-paired-v1"
   )
     throw new Error(`Unsupported calibration protocol: ${String(options.protocol)}`);
   if (
+    (options.protocol === "chigorin-plans-paired-v1" && options.opponentVersion !== 1) ||
     (options.protocol === "morphy-plans-paired-v1" && options.opponentVersion !== 4) ||
     (options.protocol === "morphy-historical-paired-v1" && options.opponentVersion !== 3) ||
     (options.protocol === "morphy-paired-v1" && options.opponentVersion !== 1) ||
@@ -43,10 +47,12 @@ function opponentForOptions(options: MatchOptions) {
     throw new Error("Calibration protocol and opponent version mismatch");
   if (
     (options.protocol === "morphy-historical-paired-v1" ||
-      options.protocol === "morphy-plans-paired-v1") &&
+      options.protocol === "morphy-plans-paired-v1" ||
+      options.protocol === "chigorin-plans-paired-v1") &&
     options.opening.length !== 0
   )
     throw new Error("Historical calibration must start from START with an empty opening");
+  if (options.protocol === "chigorin-plans-paired-v1") return chigorinConfig(options.seed);
   if (options.protocol === "morphy-plans-paired-v1") return plannedMorphyConfig(options.seed);
   return options.protocol === "morphy-historical-paired-v1"
     ? historicalMorphyConfig(options.seed)

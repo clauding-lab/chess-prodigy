@@ -742,7 +742,7 @@ it("migrates legacy policy rows additively and raises policy atomically for assi
       now: 1,
     });
     historical = reduceSession(historical, { type: "resign", now: 2 });
-    for (const policy of [undefined, "1", "4", "02"]) await put(2, historical, policy).expect(426);
+    for (const policy of [undefined, "1", "5", "02"]) await put(2, historical, policy).expect(426);
     await put(1, historical, "2").expect(409);
     // A conflicting or rejected attempt must not raise protection or archive anything.
     await put(2, freshSession(0, "still-legacy-policy"), "1").expect(200);
@@ -762,7 +762,7 @@ it("migrates legacy policy rows additively and raises policy atomically for assi
       { type: "resetRating" },
     );
     await put(4, reset, "2").expect(200);
-    for (const policy of [undefined, "1", "4"])
+    for (const policy of [undefined, "1", "5"])
       await put(5, freshSession(4, "old-device"), policy).expect(426);
     expect((await agent.get("/api/records")).body).toMatchObject({ version: 5, snapshot: reset });
     const inspect = new Database(database.path);
@@ -838,7 +838,7 @@ it("permanently requires policy 3 after accepting an assisted planned Morphy sav
       if (policy !== undefined) call.set("X-Chess-Rating-Policy", policy);
       return call.send({ expectedVersion, snapshot });
     };
-    for (const policy of [undefined, "1", "2", "4", "02"])
+    for (const policy of [undefined, "1", "2", "5", "02"])
       await put(0, planned, policy).expect(426);
     await put(1, planned, "3").expect(409);
     await put(0, freshSession(1, "pre-floor"), "2").expect(200);
@@ -855,7 +855,7 @@ it("permanently requires policy 3 after accepting an assisted planned Morphy sav
       { type: "resetRating" },
     );
     await put(2, reset, "3").expect(200);
-    for (const policy of [undefined, "1", "2", "4", "02"])
+    for (const policy of [undefined, "1", "2", "5", "02"])
       await put(3, freshSession(3, "older-client"), policy).expect(426);
     expect((await agent.get("/api/records")).body).toMatchObject({ version: 3, snapshot: reset });
     const inspect = new Database(database.path);
@@ -896,6 +896,106 @@ it("permanently requires policy 3 after accepting an assisted planned Morphy sav
       .set("Origin", BASE_URL)
       .set("X-Chess-Rating-Policy", "2")
       .send({ expectedVersion: 0, snapshot: freshSession(4, "independent-owner") })
+      .expect(200);
+  } finally {
+    await application.close();
+  }
+});
+
+it("accepts the Chigorin-capable policy4 client for existing measured Morphy without changing wire", async () => {
+  const database = await temporaryDatabase();
+  const application = await createApplication({
+    databasePath: database.path,
+    baseURL: BASE_URL,
+    secret: SECRET,
+  });
+  try {
+    const agent = await signedUpAgent(application.app, "policy4-existing@example.com");
+    const snapshot = reduceSession(freshSession(0, "initial"), {
+      type: "new",
+      id: "existing-morphy",
+      now: 0,
+      setup: { playerColor: "w", level: "club", time: "none", opponent: plannedMorphyConfig(22) },
+    });
+    const accepted = await agent
+      .put("/api/records")
+      .set("Origin", BASE_URL)
+      .set("X-Chess-Rating-Policy", "4")
+      .send({ expectedVersion: 0, snapshot })
+      .expect(200);
+    expect(JSON.stringify(accepted.body.snapshot)).toBe(JSON.stringify(snapshot));
+  } finally {
+    await application.close();
+  }
+});
+
+it("permanently requires policy4 after assisted Chigorin including reset and server restart", async () => {
+  const { chigorinConfig } = await import("../../src/engine/opponents");
+  const database = await temporaryDatabase();
+  let application = await createApplication({
+    databasePath: database.path,
+    baseURL: BASE_URL,
+    secret: SECRET,
+  });
+  try {
+    const agent = await signedUpAgent(application.app, "chigorin-floor@example.com");
+    const initial = reduceSession(freshSession(0, "before"), {
+      type: "new",
+      id: "chigorin",
+      now: 0,
+      setup: { playerColor: "w", level: "club", time: "none", opponent: chigorinConfig(9) },
+    });
+    const assisted = reduceSession(initial, { type: "hint" });
+    const put = (version: number, snapshot: typeof assisted, policy: string) =>
+      agent
+        .put("/api/records")
+        .set("Origin", BASE_URL)
+        .set("X-Chess-Rating-Policy", policy)
+        .send({ expectedVersion: version, snapshot });
+    for (const policy of ["1", "2", "3", "04", "5"]) await put(0, assisted, policy).expect(426);
+    const accepted = await put(0, assisted, "4").expect(200);
+    expect(JSON.stringify(accepted.body.snapshot)).toBe(JSON.stringify(assisted));
+    const reset = reduceSession(freshSession(1, "classic-reset"), { type: "resetRating" });
+    await put(1, reset, "4").expect(200);
+    await put(2, reset, "3").expect(426);
+    const inspect = new Database(database.path);
+    expect(inspect.prepare("SELECT minimum_policy FROM record_client_policy").all()).toEqual([
+      { minimum_policy: 4 },
+    ]);
+    inspect.close();
+    await application.close();
+    application = await createApplication({
+      databasePath: database.path,
+      baseURL: BASE_URL,
+      secret: SECRET,
+    });
+    const reopened = request.agent(application.app);
+    const login = await reopened
+      .post("/api/auth/sign-in/email")
+      .set("Origin", BASE_URL)
+      .send({ email: "chigorin-floor@example.com", password: "correct horse battery staple" })
+      .expect(200);
+    for (const policy of ["1", "2", "3"])
+      await reopened
+        .put("/api/records")
+        .set("Origin", BASE_URL)
+        .set("X-Chess-Account", login.body.user.id)
+        .set("X-Chess-Rating-Policy", policy)
+        .send({ expectedVersion: 2, snapshot: reset })
+        .expect(426);
+    await reopened
+      .put("/api/records")
+      .set("Origin", BASE_URL)
+      .set("X-Chess-Account", login.body.user.id)
+      .set("X-Chess-Rating-Policy", "4")
+      .send({ expectedVersion: 2, snapshot: reset })
+      .expect(200);
+    const other = await signedUpAgent(application.app, "chigorin-floor-other@example.com");
+    await other
+      .put("/api/records")
+      .set("Origin", BASE_URL)
+      .set("X-Chess-Rating-Policy", "1")
+      .send({ expectedVersion: 0, snapshot: freshSession(0, "other") })
       .expect(200);
   } finally {
     await application.close();
