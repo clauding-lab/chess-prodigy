@@ -35,8 +35,33 @@ type ParsedSource = ReturnType<typeof parseHistoricalPgn> & {
   gameRecordIndexes: Map<string, number>;
 };
 
+export interface HistoricalSourceTexts {
+  primary: string;
+  seriousHoldout: string;
+}
+
 function sha256(bytes: string | Buffer): string {
   return createHash("sha256").update(bytes).digest("hex");
+}
+
+function parseSource(
+  text: string,
+  provenance: Pick<ParsedSource, "archiveName" | "pgnName" | "archiveSha256">,
+): ParsedSource {
+  const parsed = parseHistoricalPgn(text);
+  const excludedIndexes = new Set(parsed.excluded.map(({ index }) => index));
+  const acceptedIndexes = Array.from(
+    { length: parsed.games.length + parsed.excluded.length },
+    (_, index) => index + 1,
+  ).filter((index) => !excludedIndexes.has(index));
+  return {
+    ...parsed,
+    ...provenance,
+    pgnSha256: sha256(text),
+    gameRecordIndexes: new Map(
+      parsed.games.map((game, index) => [game.id, acceptedIndexes[index]]),
+    ),
+  };
 }
 
 function readSource(source: (typeof SOURCES)[keyof typeof SOURCES]): ParsedSource {
@@ -46,25 +71,14 @@ function readSource(source: (typeof SOURCES)[keyof typeof SOURCES]): ParsedSourc
       `${source.archiveName} fingerprint changed: expected ${source.archiveSha256}, got ${actualArchiveHash}`,
     );
   }
-  const text = execFileSync("unzip", ["-p", source.archive, source.pgnName], {
-    encoding: "utf8",
-  });
-  const parsed = parseHistoricalPgn(text);
-  const excludedIndexes = new Set(parsed.excluded.map(({ index }) => index));
-  const acceptedIndexes = Array.from(
-    { length: parsed.games.length + parsed.excluded.length },
-    (_, index) => index + 1,
-  ).filter((index) => !excludedIndexes.has(index));
-  return {
-    ...parsed,
-    archiveName: source.archiveName,
-    pgnName: source.pgnName,
-    archiveSha256: actualArchiveHash,
-    pgnSha256: sha256(text),
-    gameRecordIndexes: new Map(
-      parsed.games.map((game, index) => [game.id, acceptedIndexes[index]]),
-    ),
-  };
+  return parseSource(
+    execFileSync("unzip", ["-p", source.archive, source.pgnName], { encoding: "utf8" }),
+    {
+      archiveName: source.archiveName,
+      pgnName: source.pgnName,
+      archiveSha256: actualArchiveHash,
+    },
+  );
 }
 
 function reasonCategory(reason: string): string {
@@ -120,9 +134,21 @@ function metadataMatch(game: HistoricalGame, primaryGames: HistoricalGame[]) {
   );
 }
 
-export function importHistoricalCorpus() {
-  const primary = readSource(SOURCES.primary);
-  const serious = readSource(SOURCES.seriousHoldout);
+export function importHistoricalCorpus(sourceTexts?: HistoricalSourceTexts) {
+  const primary = sourceTexts
+    ? parseSource(sourceTexts.primary, {
+        archiveName: "in-memory-primary",
+        pgnName: "in-memory-primary.pgn",
+        archiveSha256: sha256(sourceTexts.primary),
+      })
+    : readSource(SOURCES.primary);
+  const serious = sourceTexts
+    ? parseSource(sourceTexts.seriousHoldout, {
+        archiveName: "in-memory-serious-holdout",
+        pgnName: "in-memory-serious-holdout.pgn",
+        archiveSha256: sha256(sourceTexts.seriousHoldout),
+      })
+    : readSource(SOURCES.seriousHoldout);
   const rawPrimaryIds = new Set(primary.games.map((game) => game.id));
   const conflicts = serious.games.flatMap((seriousGame) => {
     if (rawPrimaryIds.has(seriousGame.id)) return [];
@@ -205,8 +231,12 @@ export function importHistoricalCorpus() {
   return { gamesArtifact, book };
 }
 
-const repositoryRoot = fileURLToPath(new URL("../../", import.meta.url));
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (
+  import.meta.url.startsWith("file:") &&
+  process.argv[1] &&
+  resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+) {
+  const repositoryRoot = fileURLToPath(new URL("../../", import.meta.url));
   const { gamesArtifact, book } = importHistoricalCorpus();
   writeFileSync(
     resolve(repositoryRoot, "src/book/morphy-games.json"),

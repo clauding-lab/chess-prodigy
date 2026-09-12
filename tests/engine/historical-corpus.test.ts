@@ -10,6 +10,7 @@ import {
 } from "../../src/engine/board";
 import generatedBook from "../../src/book/morphy-book.json";
 import generatedCorpus from "../../src/book/morphy-games.json";
+import { importHistoricalCorpus } from "../../scripts/morphy-history/import";
 import {
   assertHistoricalBookLegal,
   buildHistoricalBook,
@@ -158,6 +159,38 @@ describe("historical Morphy PGN corpus", () => {
 });
 
 describe("historical Morphy repertoire", () => {
+  it("excludes both legal variants of a cross-source conflict during import", () => {
+    const conflictPrimary = pgn('[White "Morphy"]\n[Black "Conflict"]', "1.e4 e5 *");
+    const conflictSerious = pgn('[White "Morphy"]\n[Black "Conflict"]', "1.e4 c5 *");
+    const clean = pgn('[White "Morphy"]\n[Black "Clean"]', "1.d4 d5 *");
+    const { gamesArtifact, book } = importHistoricalCorpus({
+      primary: [conflictPrimary, clean].join("\n\n"),
+      seriousHoldout: [conflictSerious, clean].join("\n\n"),
+    });
+    const primaryConflictId = "87a1b3f2b4a51d2f9aaabb562feecb5fb9acb895bd0ef5c21a4131418f62e721";
+    const seriousConflictId = "22615f62c85ae12711e92cdcadf01b837e319712bf6100a5f8c55d978da9160a";
+    const cleanId = "6273615b29dc8be8b7f942224fd31f584ee8b2e0b63838b506f45d096f911927";
+
+    expect(gamesArtifact.games.map((game) => game.id)).toEqual([cleanId]);
+    expect(gamesArtifact.holdoutIds).toEqual([cleanId]);
+    expect(gamesArtifact.games.map((game) => game.id)).not.toContain(primaryConflictId);
+    expect(gamesArtifact.games.map((game) => game.id)).not.toContain(seriousConflictId);
+    expect(gamesArtifact.holdoutIds).not.toContain(primaryConflictId);
+    expect(gamesArtifact.holdoutIds).not.toContain(seriousConflictId);
+    expect(book).toEqual({ [posKey(START())]: [["d2d4", 1]] });
+    expect(gamesArtifact.crossSourceConflicts).toEqual([
+      expect.objectContaining({
+        primaryRecordIndex: 1,
+        primaryId: primaryConflictId,
+        seriousRecordIndex: 1,
+        seriousId: seriousConflictId,
+        firstDifferentPly: 2,
+        primaryMove: "e5",
+        seriousMove: "c5",
+      }),
+    ]);
+  });
+
   it("indexes only Morphy's own turns and counts actual UCI continuations", () => {
     const parsed = parseHistoricalPgn(
       [
