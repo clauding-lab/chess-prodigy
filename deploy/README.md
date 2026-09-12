@@ -71,3 +71,13 @@ Check aggregate `notification_jobs` counts grouped by status for pending/sent/fa
 ## Rated Morphy — v2.1
 
 Build hosted releases with `VITE_PERSONALITY_BETA=true`; the source default remains off. The new `record_client_policy` table is additive and records which accounts require measured-rating client support. Preserve it permanently, including after a practice reset. Browser saves now use state-v3/account-v3/history-v2 keys with older keys retained for recovery. Rollback must retain all new data and use code that understands measured Morphy version 2; simply restoring v2.0 code after rated games is unsafe. See the dated calibration report for fixed strengths and verification evidence.
+
+## Historical Morphy — v2.3
+
+Historical-v1 is opponent version 3, with independently accepted Practice Ratings Casual 1275 / Club 1375 / Strong 1775. The hosted build still requires `VITE_PERSONALITY_BETA=true`. Keep versions 1 and 2, their existing engine behavior and their rating values available for earlier saves and rematches.
+
+The new browser authority uses state-v4/account-v4/history-v3, retaining all earlier keys for recovery. The wire format remains schema 2. The existing `record_client_policy` table gains a minimum supported client policy: earlier protected accounts retain minimum 1, and accepting version 3 raises the minimum permanently to 2, even for assisted games or after a practice reset. Current writes send `X-Chess-Rating-Policy: 2`.
+
+After version-3 progress is accepted, rollback must use code that understands historical-v1 and enforces minimum policy 2. Switching back to v2.2.1 would ignore that protection. Preserve the database, policy table and recovery generations; do not restore an earlier backup simply to reverse a code deployment. Continue to take a consistent private backup before switching releases and verify the new build using isolated synthetic guests, never real player records.
+
+The [measurement report](../docs/verification/morphy-history/measurement-report.md) retains the frozen configuration, complete games, uncertainty and independent acceptance. The [model report](../docs/verification/morphy-history/model-report.md) records historical prediction separately. A future change to the playing policy, model or repertoire requires a new opponent version and fresh measurement.
