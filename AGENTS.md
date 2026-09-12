@@ -137,3 +137,17 @@ from 400 complete games, frozen playing source d8c376d. See
 history-v4 and wire schema 2; permanent minimum client policy 3 follows any accepted version-4 game,
 including assisted games, and survives reset. Keep earlier recovery generations, exact raw wire
 acknowledgements and all older playing/rating policies. Do not roll back to v2.3 after accepting v4.
+
+## Next historical opponents — remembered 12 September 2026 BDT
+
+The owner requested Chigorin, Spassky, Tal, Fischer and Steinitz next, following the same
+process as the completed Morphy work. Preserve this roadmap across sessions. The immediate
+request was to remember it and save the session, not to start the five implementations now.
+Use sourced, legally validated historical openings; develop and verify distinctive playing
+priorities beyond those openings in the actual app; independently review behavior and tactical
+reliability; freshly measure each frozen opponent before rated release. Preserve earlier games,
+rematches, fixed rating receipts and compatibility protections. Do not merely rename Classic,
+reuse Morphy's strength measurements, or repeat rejected prototypes as if they succeeded.
+Read docs/verification/morphy-plans/decision-record.md and measurement-report.md before planning.
+The user listed Chigorin first; implementation order and each player's detailed design remain to
+be settled when this work resumes. Dark remains the permanent default.
