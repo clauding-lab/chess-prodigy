@@ -104,7 +104,7 @@ has one reachable area square c7 and seven legal bishop destinations; Bd8 is nev
 This adds no check-only term. The original board/search/version1–3 policy remains unchanged.
 
 
-Common deadline is also passed as optional sixth searchRootCandidates argument: the root search
+Common deadline is also passed as optional fifth searchRootCandidates argument: the root search
 uses min(start+remainingMs, absoluteDeadline), and plans-v1 supplies overallDeadline-30ms. This
 prevents time spent between budget calculation and search setup from extending the common budget.
-Standalone five-argument consumers retain the ordinary relative budget.
+Standalone four-argument consumers retain the ordinary relative budget.

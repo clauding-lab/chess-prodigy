@@ -38,7 +38,7 @@
     "scripts/calibration/run.ts": "ce3f996a35cf866347894758f11df6fe77cb1fdb6c47913bdf764d929bcdbedd",
     "scripts/calibration/worker.ts": "8f8dd999680dd7e655f1b94aaa1ac93ec13c9d4af25ac5721328f124c27d6e36",
     "scripts/calibration/plans-behaviour.ts": "4a23abf584fa2c2e1085baa095c8c17cf70f0501680ac992bfed2735ee8d20d9",
-    "docs/verification/morphy-plans/behaviour-protocol.md": "7de06df08a8c1efb6780319c1f107710a150cf6862c41e93d5c037b510a33959"
+    "docs/verification/morphy-plans/behaviour-protocol.md": "6f90ee60287b51eafb6749b275a3ec1ae9db034640c93091634a22378e94d80b"
   },
   "limits": "Production budgets; 30ms reserved inside each move budget",
   "claim": "Engineering checks and descriptive decisions only; neither strength calibration nor a perceived-style pass",
@@ -54,7 +54,7 @@
       "deadlineFallbacks": 0,
       "changedFromClassic": 14,
       "maximumNeutralLoss": 0,
-      "maximumElapsedMs": 27.685332999999986
+      "maximumElapsedMs": 27.514374999999973
     },
     "club": {
       "positions": 22,
@@ -67,7 +67,7 @@
       "deadlineFallbacks": 0,
       "changedFromClassic": 4,
       "maximumNeutralLoss": 90,
-      "maximumElapsedMs": 108.93695800000006
+      "maximumElapsedMs": 115.391459
     },
     "strong": {
       "positions": 22,
@@ -80,7 +80,7 @@
       "deadlineFallbacks": 0,
       "changedFromClassic": 8,
       "maximumNeutralLoss": 70,
-      "maximumElapsedMs": 1971.2796249999992
+      "maximumElapsedMs": 1971.3444170000002
     }
   },
   "decisions": [
@@ -96,8 +96,8 @@
       "classic": "Qd8#",
       "classicUci": "g5d8",
       "differsFromClassic": false,
-      "elapsedMs": 2.0232500000000186,
-      "classicElapsedMs": 1.397166999999996,
+      "elapsedMs": 1.9722920000000101,
+      "classicElapsedMs": 1.347582999999986,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -128,8 +128,8 @@
       "classic": "Qd1#",
       "classicUci": "g4d1",
       "differsFromClassic": false,
-      "elapsedMs": 2.685167000000007,
-      "classicElapsedMs": 1.2757909999999981,
+      "elapsedMs": 2.688999999999993,
+      "classicElapsedMs": 1.250458000000009,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -160,8 +160,8 @@
       "classic": "Rxa2",
       "classicUci": "a1a2",
       "differsFromClassic": false,
-      "elapsedMs": 2.1430830000000185,
-      "classicElapsedMs": 2.1854160000000036,
+      "elapsedMs": 2.3742909999999995,
+      "classicElapsedMs": 2.046958999999987,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -193,8 +193,8 @@
       "classic": "Rxa7",
       "classicUci": "a8a7",
       "differsFromClassic": false,
-      "elapsedMs": 1.1173750000000098,
-      "classicElapsedMs": 0.5802910000000168,
+      "elapsedMs": 1.1772919999999942,
+      "classicElapsedMs": 0.7682080000000155,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -226,8 +226,8 @@
       "classic": "Qh5+",
       "classicUci": "d1h5",
       "differsFromClassic": true,
-      "elapsedMs": 1.9381669999999929,
-      "classicElapsedMs": 0.6444999999999936,
+      "elapsedMs": 1.9577500000000043,
+      "classicElapsedMs": 0.6402089999999987,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -258,8 +258,8 @@
       "classic": "Qh4+",
       "classicUci": "d8h4",
       "differsFromClassic": true,
-      "elapsedMs": 0.6769590000000107,
-      "classicElapsedMs": 0.6066250000000082,
+      "elapsedMs": 0.6908750000000055,
+      "classicElapsedMs": 0.6214579999999899,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -290,8 +290,8 @@
       "classic": "Rxd2",
       "classicUci": "d1d2",
       "differsFromClassic": false,
-      "elapsedMs": 0.5565420000000074,
-      "classicElapsedMs": 0.618458000000004,
+      "elapsedMs": 0.597834000000006,
+      "classicElapsedMs": 0.6101669999999899,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -323,8 +323,8 @@
       "classic": "Rxd7",
       "classicUci": "d8d7",
       "differsFromClassic": false,
-      "elapsedMs": 0.6073750000000189,
-      "classicElapsedMs": 0.5796670000000006,
+      "elapsedMs": 0.5963329999999871,
+      "classicElapsedMs": 0.6132499999999936,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -356,8 +356,8 @@
       "classic": "d4",
       "classicUci": "d2d4",
       "differsFromClassic": true,
-      "elapsedMs": 12.033958000000013,
-      "classicElapsedMs": 1.6066670000000158,
+      "elapsedMs": 12.073000000000008,
+      "classicElapsedMs": 1.6734170000000006,
       "plan": {
         "mode": "develop",
         "target": "home-minors-and-castling"
@@ -401,8 +401,8 @@
       "classic": "Nf6",
       "classicUci": "g8f6",
       "differsFromClassic": false,
-      "elapsedMs": 3.6302909999999997,
-      "classicElapsedMs": 1.457459,
+      "elapsedMs": 3.647583999999995,
+      "classicElapsedMs": 1.4677499999999952,
       "plan": {
         "mode": "develop",
         "target": "home-minors-and-castling"
@@ -446,8 +446,8 @@
       "classic": "Bxa7",
       "classicUci": "e3a7",
       "differsFromClassic": true,
-      "elapsedMs": 27.685332999999986,
-      "classicElapsedMs": 6.974375000000009,
+      "elapsedMs": 27.514374999999973,
+      "classicElapsedMs": 7.034209000000004,
       "plan": {
         "mode": "open-centre",
         "target": "d/e-files"
@@ -492,8 +492,8 @@
       "classic": "Bxa2",
       "classicUci": "e6a2",
       "differsFromClassic": true,
-      "elapsedMs": 13.072291000000007,
-      "classicElapsedMs": 4.812667000000005,
+      "elapsedMs": 13.226459000000006,
+      "classicElapsedMs": 4.8459589999999935,
       "plan": {
         "mode": "open-centre",
         "target": "d/e-files"
@@ -538,8 +538,8 @@
       "classic": "d4",
       "classicUci": "d3d4",
       "differsFromClassic": false,
-      "elapsedMs": 6.808084000000008,
-      "classicElapsedMs": 3.702208999999982,
+      "elapsedMs": 7.122667000000007,
+      "classicElapsedMs": 3.8457500000000095,
       "plan": {
         "mode": "open-centre",
         "target": "d/e-files"
@@ -583,8 +583,8 @@
       "classic": "a5",
       "classicUci": "a7a5",
       "differsFromClassic": true,
-      "elapsedMs": 6.904875000000004,
-      "classicElapsedMs": 3.4790419999999926,
+      "elapsedMs": 8.57566700000001,
+      "classicElapsedMs": 3.798917000000017,
       "plan": {
         "mode": "open-centre",
         "target": "d/e-files"
@@ -628,8 +628,8 @@
       "classic": "Bxa7",
       "classicUci": "e3a7",
       "differsFromClassic": true,
-      "elapsedMs": 11.32220799999999,
-      "classicElapsedMs": 3.965040999999985,
+      "elapsedMs": 11.331792000000007,
+      "classicElapsedMs": 4.060416999999973,
       "plan": {
         "mode": "king-attack",
         "target": "g8"
@@ -674,8 +674,8 @@
       "classic": "Bxa2",
       "classicUci": "e6a2",
       "differsFromClassic": true,
-      "elapsedMs": 10.662333999999987,
-      "classicElapsedMs": 4.200041999999996,
+      "elapsedMs": 10.861249999999984,
+      "classicElapsedMs": 4.25954200000001,
       "plan": {
         "mode": "king-attack",
         "target": "g1"
@@ -720,8 +720,8 @@
       "classic": "Bxa7",
       "classicUci": "e3a7",
       "differsFromClassic": true,
-      "elapsedMs": 11.621375,
-      "classicElapsedMs": 4.016249999999957,
+      "elapsedMs": 11.411583000000007,
+      "classicElapsedMs": 4.007082999999966,
       "plan": {
         "mode": "king-attack",
         "target": "g8"
@@ -766,8 +766,8 @@
       "classic": "Bxa2",
       "classicUci": "e6a2",
       "differsFromClassic": true,
-      "elapsedMs": 10.971832999999947,
-      "classicElapsedMs": 4.132249999999999,
+      "elapsedMs": 10.686166000000014,
+      "classicElapsedMs": 4.238833,
       "plan": {
         "mode": "king-attack",
         "target": "g1"
@@ -812,8 +812,8 @@
       "classic": "Kf2",
       "classicUci": "e1f2",
       "differsFromClassic": true,
-      "elapsedMs": 0.5252500000000282,
-      "classicElapsedMs": 0.4255829999999605,
+      "elapsedMs": 0.5349579999999605,
+      "classicElapsedMs": 0.42737499999998363,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -844,8 +844,8 @@
       "classic": "Kf7",
       "classicUci": "e8f7",
       "differsFromClassic": true,
-      "elapsedMs": 0.4716669999999681,
-      "classicElapsedMs": 0.44325000000003456,
+      "elapsedMs": 0.46870799999999235,
+      "classicElapsedMs": 0.4235830000000078,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -876,8 +876,8 @@
       "classic": "Rf1",
       "classicUci": "b1f1",
       "differsFromClassic": true,
-      "elapsedMs": 0.09991700000000492,
-      "classicElapsedMs": 0.07937499999997044,
+      "elapsedMs": 0.10079200000001265,
+      "classicElapsedMs": 0.07795800000002373,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -908,8 +908,8 @@
       "classic": "Rh8",
       "classicUci": "b8h8",
       "differsFromClassic": true,
-      "elapsedMs": 0.09812499999998181,
-      "classicElapsedMs": 0.07974999999999,
+      "elapsedMs": 0.10124999999999318,
+      "classicElapsedMs": 0.07941699999997809,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -940,8 +940,8 @@
       "classic": "Qd8#",
       "classicUci": "g5d8",
       "differsFromClassic": false,
-      "elapsedMs": 0.18779100000000426,
-      "classicElapsedMs": 0.30229099999996834,
+      "elapsedMs": 0.18904199999997218,
+      "classicElapsedMs": 0.315166999999974,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -972,8 +972,8 @@
       "classic": "Qd1#",
       "classicUci": "g4d1",
       "differsFromClassic": false,
-      "elapsedMs": 0.18012499999997544,
-      "classicElapsedMs": 0.2545000000000073,
+      "elapsedMs": 0.18645799999995916,
+      "classicElapsedMs": 0.3049159999999915,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -1004,8 +1004,8 @@
       "classic": "Rxa2",
       "classicUci": "a1a2",
       "differsFromClassic": false,
-      "elapsedMs": 2.3555410000000165,
-      "classicElapsedMs": 0.4012920000000122,
+      "elapsedMs": 2.3472919999999817,
+      "classicElapsedMs": 0.39854199999996354,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -1037,8 +1037,8 @@
       "classic": "Rxa7",
       "classicUci": "a8a7",
       "differsFromClassic": false,
-      "elapsedMs": 2.26320800000002,
-      "classicElapsedMs": 0.4287919999999872,
+      "elapsedMs": 2.280750000000012,
+      "classicElapsedMs": 0.41679199999998673,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -1070,8 +1070,8 @@
       "classic": "Kf2",
       "classicUci": "g1f2",
       "differsFromClassic": false,
-      "elapsedMs": 4.8091249999999945,
-      "classicElapsedMs": 2.776707999999985,
+      "elapsedMs": 4.804209000000014,
+      "classicElapsedMs": 2.8422089999999685,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -1102,8 +1102,8 @@
       "classic": "Kf7",
       "classicUci": "g8f7",
       "differsFromClassic": false,
-      "elapsedMs": 4.467166999999961,
-      "classicElapsedMs": 2.176583999999991,
+      "elapsedMs": 4.424958000000004,
+      "classicElapsedMs": 2.2142920000000004,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -1134,8 +1134,8 @@
       "classic": "Rxd2",
       "classicUci": "d1d2",
       "differsFromClassic": false,
-      "elapsedMs": 3.082457999999974,
-      "classicElapsedMs": 0.4440000000000168,
+      "elapsedMs": 3.08220799999998,
+      "classicElapsedMs": 0.4515830000000278,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -1167,8 +1167,8 @@
       "classic": "Rxd7",
       "classicUci": "d8d7",
       "differsFromClassic": false,
-      "elapsedMs": 3.2077079999999683,
-      "classicElapsedMs": 0.7146669999999631,
+      "elapsedMs": 3.2026670000000195,
+      "classicElapsedMs": 0.6860419999999863,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -1200,8 +1200,8 @@
       "classic": "Nc3",
       "classicUci": "b1c3",
       "differsFromClassic": true,
-      "elapsedMs": 24.89516599999996,
-      "classicElapsedMs": 4.963458000000003,
+      "elapsedMs": 24.633583999999985,
+      "classicElapsedMs": 5.06654199999997,
       "plan": {
         "mode": "develop",
         "target": "home-minors-and-castling"
@@ -1245,8 +1245,8 @@
       "classic": "Nc6",
       "classicUci": "b8c6",
       "differsFromClassic": true,
-      "elapsedMs": 35.49929100000003,
-      "classicElapsedMs": 7.807874999999967,
+      "elapsedMs": 35.630416999999966,
+      "classicElapsedMs": 7.66029199999997,
       "plan": {
         "mode": "develop",
         "target": "home-minors-and-castling"
@@ -1290,8 +1290,8 @@
       "classic": "Bxe6",
       "classicUci": "c4e6",
       "differsFromClassic": false,
-      "elapsedMs": 108.93695800000006,
-      "classicElapsedMs": 7.925624999999968,
+      "elapsedMs": 115.391459,
+      "classicElapsedMs": 9.667582999999922,
       "plan": {
         "mode": "open-centre",
         "target": "d/e-files"
@@ -1336,8 +1336,8 @@
       "classic": "Bxe3",
       "classicUci": "c5e3",
       "differsFromClassic": false,
-      "elapsedMs": 93.18141700000001,
-      "classicElapsedMs": 7.809750000000008,
+      "elapsedMs": 97.96616700000004,
+      "classicElapsedMs": 7.867834000000016,
       "plan": {
         "mode": "open-centre",
         "target": "d/e-files"
@@ -1382,8 +1382,8 @@
       "classic": "Bd5",
       "classicUci": "c4d5",
       "differsFromClassic": true,
-      "elapsedMs": 95.94883300000004,
-      "classicElapsedMs": 31.920332999999914,
+      "elapsedMs": 97.18566699999997,
+      "classicElapsedMs": 32.02724999999998,
       "plan": {
         "mode": "open-centre",
         "target": "d/e-files"
@@ -1427,8 +1427,8 @@
       "classic": "Nd4",
       "classicUci": "c6d4",
       "differsFromClassic": true,
-      "elapsedMs": 87.57829200000003,
-      "classicElapsedMs": 46.488249999999994,
+      "elapsedMs": 87.87870799999996,
+      "classicElapsedMs": 46.63424999999995,
       "plan": {
         "mode": "open-centre",
         "target": "d/e-files"
@@ -1472,8 +1472,8 @@
       "classic": "Bxe6",
       "classicUci": "c4e6",
       "differsFromClassic": false,
-      "elapsedMs": 97.31266600000004,
-      "classicElapsedMs": 6.97666700000002,
+      "elapsedMs": 99.34470799999997,
+      "classicElapsedMs": 6.758375000000001,
       "plan": {
         "mode": "king-attack",
         "target": "g8"
@@ -1518,8 +1518,8 @@
       "classic": "Bxe3",
       "classicUci": "c5e3",
       "differsFromClassic": false,
-      "elapsedMs": 89.76008300000012,
-      "classicElapsedMs": 6.573957999999948,
+      "elapsedMs": 90.91187500000001,
+      "classicElapsedMs": 6.470291999999972,
       "plan": {
         "mode": "king-attack",
         "target": "g1"
@@ -1564,8 +1564,8 @@
       "classic": "Bxe6",
       "classicUci": "c4e6",
       "differsFromClassic": false,
-      "elapsedMs": 95.41208400000005,
-      "classicElapsedMs": 6.771375000000035,
+      "elapsedMs": 96.44187499999998,
+      "classicElapsedMs": 6.591666000000032,
       "plan": {
         "mode": "king-attack",
         "target": "g8"
@@ -1610,8 +1610,8 @@
       "classic": "Bxe3",
       "classicUci": "c5e3",
       "differsFromClassic": false,
-      "elapsedMs": 87.63891699999999,
-      "classicElapsedMs": 6.353166999999985,
+      "elapsedMs": 88.09895799999981,
+      "classicElapsedMs": 6.341666000000032,
       "plan": {
         "mode": "king-attack",
         "target": "g1"
@@ -1656,8 +1656,8 @@
       "classic": "Rf1",
       "classicUci": "h1f1",
       "differsFromClassic": false,
-      "elapsedMs": 3.89650000000006,
-      "classicElapsedMs": 2.7295839999999316,
+      "elapsedMs": 3.983833000000004,
+      "classicElapsedMs": 2.711041000000023,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -1688,8 +1688,8 @@
       "classic": "Rf8",
       "classicUci": "h8f8",
       "differsFromClassic": false,
-      "elapsedMs": 3.7321249999999964,
-      "classicElapsedMs": 1.296875,
+      "elapsedMs": 3.7964999999999236,
+      "classicElapsedMs": 1.3108340000001135,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -1720,8 +1720,8 @@
       "classic": "Kb2",
       "classicUci": "a1b2",
       "differsFromClassic": false,
-      "elapsedMs": 0.92450000000008,
-      "classicElapsedMs": 0.35716600000000653,
+      "elapsedMs": 0.890041999999994,
+      "classicElapsedMs": 0.33645799999999326,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -1752,8 +1752,8 @@
       "classic": "Kb7",
       "classicUci": "a8b7",
       "differsFromClassic": false,
-      "elapsedMs": 0.8570000000001983,
-      "classicElapsedMs": 0.5022079999998823,
+      "elapsedMs": 0.8353329999999914,
+      "classicElapsedMs": 0.49616599999990285,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -1784,8 +1784,8 @@
       "classic": "Qd8#",
       "classicUci": "g5d8",
       "differsFromClassic": false,
-      "elapsedMs": 0.16991699999994125,
-      "classicElapsedMs": 0.145958999999948,
+      "elapsedMs": 0.16054200000007768,
+      "classicElapsedMs": 0.15449999999987085,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -1816,8 +1816,8 @@
       "classic": "Qd1#",
       "classicUci": "g4d1",
       "differsFromClassic": false,
-      "elapsedMs": 0.16295900000000074,
-      "classicElapsedMs": 0.15304199999991397,
+      "elapsedMs": 0.16162499999995816,
+      "classicElapsedMs": 0.14599999999995816,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -1848,8 +1848,8 @@
       "classic": "Rxa2",
       "classicUci": "a1a2",
       "differsFromClassic": false,
-      "elapsedMs": 79.26012500000002,
-      "classicElapsedMs": 5.511207999999897,
+      "elapsedMs": 77.85787499999992,
+      "classicElapsedMs": 5.407500000000027,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -1881,8 +1881,8 @@
       "classic": "Rxa7",
       "classicUci": "a8a7",
       "differsFromClassic": false,
-      "elapsedMs": 129.00487500000008,
-      "classicElapsedMs": 4.935874999999896,
+      "elapsedMs": 130.5664589999999,
+      "classicElapsedMs": 4.76112500000022,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -1914,8 +1914,8 @@
       "classic": "Qh5+",
       "classicUci": "d1h5",
       "differsFromClassic": false,
-      "elapsedMs": 353.60370799999987,
-      "classicElapsedMs": 72.20837499999993,
+      "elapsedMs": 352.341042,
+      "classicElapsedMs": 72.65912500000013,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -1946,8 +1946,8 @@
       "classic": "Qh4+",
       "classicUci": "d8h4",
       "differsFromClassic": false,
-      "elapsedMs": 232.25116600000024,
-      "classicElapsedMs": 50.80983400000014,
+      "elapsedMs": 232.74054200000023,
+      "classicElapsedMs": 50.702584000000115,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -1978,8 +1978,8 @@
       "classic": "Rxd2",
       "classicUci": "d1d2",
       "differsFromClassic": false,
-      "elapsedMs": 114.49229200000036,
-      "classicElapsedMs": 5.068417000000409,
+      "elapsedMs": 114.79054199999973,
+      "classicElapsedMs": 5.039291999999932,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -2011,8 +2011,8 @@
       "classic": "Rxd7",
       "classicUci": "d8d7",
       "differsFromClassic": false,
-      "elapsedMs": 124.24150000000009,
-      "classicElapsedMs": 3.377124999999978,
+      "elapsedMs": 125.29233299999987,
+      "classicElapsedMs": 3.3837909999997464,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -2044,8 +2044,8 @@
       "classic": "Nc3",
       "classicUci": "b1c3",
       "differsFromClassic": true,
-      "elapsedMs": 1970.8883329999999,
-      "classicElapsedMs": 296.63837500000045,
+      "elapsedMs": 1970.9120830000006,
+      "classicElapsedMs": 300.0116250000001,
       "plan": {
         "mode": "develop",
         "target": "home-minors-and-castling"
@@ -2089,8 +2089,8 @@
       "classic": "Nc6",
       "classicUci": "b8c6",
       "differsFromClassic": true,
-      "elapsedMs": 1970.889542,
-      "classicElapsedMs": 411.8045000000002,
+      "elapsedMs": 1971.0010000000002,
+      "classicElapsedMs": 422.47504200000003,
       "plan": {
         "mode": "develop",
         "target": "home-minors-and-castling"
@@ -2134,8 +2134,8 @@
       "classic": "Bxe6",
       "classicUci": "c4e6",
       "differsFromClassic": false,
-      "elapsedMs": 1971.1102919999994,
-      "classicElapsedMs": 543.9349170000005,
+      "elapsedMs": 1971.2517909999997,
+      "classicElapsedMs": 557.6064159999987,
       "plan": {
         "mode": "open-centre",
         "target": "d/e-files"
@@ -2180,8 +2180,8 @@
       "classic": "Bxe3",
       "classicUci": "c5e3",
       "differsFromClassic": false,
-      "elapsedMs": 1971.1483750000007,
-      "classicElapsedMs": 536.5848330000008,
+      "elapsedMs": 1971.142749999999,
+      "classicElapsedMs": 549.265374999999,
       "plan": {
         "mode": "open-centre",
         "target": "d/e-files"
@@ -2226,8 +2226,8 @@
       "classic": "Ng5",
       "classicUci": "f3g5",
       "differsFromClassic": true,
-      "elapsedMs": 1971.2389590000002,
-      "classicElapsedMs": 838.1088749999999,
+      "elapsedMs": 1971.3444170000002,
+      "classicElapsedMs": 862.4592499999999,
       "plan": {
         "mode": "open-centre",
         "target": "d/e-files"
@@ -2271,8 +2271,8 @@
       "classic": "Ng4",
       "classicUci": "f6g4",
       "differsFromClassic": true,
-      "elapsedMs": 1971.2796249999992,
-      "classicElapsedMs": 1081.5508749999972,
+      "elapsedMs": 1971.200499999999,
+      "classicElapsedMs": 1101.5693750000028,
       "plan": {
         "mode": "open-centre",
         "target": "d/e-files"
@@ -2316,8 +2316,8 @@
       "classic": "Nd5",
       "classicUci": "c3d5",
       "differsFromClassic": true,
-      "elapsedMs": 1971.1559169999964,
-      "classicElapsedMs": 312.9569169999995,
+      "elapsedMs": 1971.1434999999983,
+      "classicElapsedMs": 323.1359590000029,
       "plan": {
         "mode": "king-attack",
         "target": "g8"
@@ -2362,8 +2362,8 @@
       "classic": "Nd4",
       "classicUci": "c6d4",
       "differsFromClassic": true,
-      "elapsedMs": 1971.235332999997,
-      "classicElapsedMs": 323.60283399999753,
+      "elapsedMs": 1971.162124999999,
+      "classicElapsedMs": 335.3522919999996,
       "plan": {
         "mode": "king-attack",
         "target": "g1"
@@ -2408,8 +2408,8 @@
       "classic": "Nd5",
       "classicUci": "c3d5",
       "differsFromClassic": true,
-      "elapsedMs": 1971.0898750000015,
-      "classicElapsedMs": 539.5713340000002,
+      "elapsedMs": 1971.1810420000002,
+      "classicElapsedMs": 545.2345000000023,
       "plan": {
         "mode": "king-attack",
         "target": "g8"
@@ -2454,8 +2454,8 @@
       "classic": "Nd4",
       "classicUci": "c6d4",
       "differsFromClassic": true,
-      "elapsedMs": 1971.1053339999999,
-      "classicElapsedMs": 446.0965840000026,
+      "elapsedMs": 1971.3217499999992,
+      "classicElapsedMs": 466.56124999999884,
       "plan": {
         "mode": "king-attack",
         "target": "g1"
@@ -2500,8 +2500,8 @@
       "classic": "Rf1",
       "classicUci": "h1f1",
       "differsFromClassic": false,
-      "elapsedMs": 246.07408299999952,
-      "classicElapsedMs": 43.20245900000009,
+      "elapsedMs": 257.09704200000124,
+      "classicElapsedMs": 45.62766699999702,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -2532,8 +2532,8 @@
       "classic": "Rf8",
       "classicUci": "h8f8",
       "differsFromClassic": false,
-      "elapsedMs": 142.1679170000025,
-      "classicElapsedMs": 29.245082999997976,
+      "elapsedMs": 150.34937499999796,
+      "classicElapsedMs": 31.11554099999921,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -2564,8 +2564,8 @@
       "classic": "Rb7",
       "classicUci": "b1b7",
       "differsFromClassic": false,
-      "elapsedMs": 34.831374999997934,
-      "classicElapsedMs": 11.426250000000437,
+      "elapsedMs": 36.83212499999718,
+      "classicElapsedMs": 12.330709000001661,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -2596,8 +2596,8 @@
       "classic": "Rb2",
       "classicUci": "b8b2",
       "differsFromClassic": false,
-      "elapsedMs": 26.351957999999286,
-      "classicElapsedMs": 11.69062500000291,
+      "elapsedMs": 27.828999999997905,
+      "classicElapsedMs": 12.032125000001543,
       "plan": {
         "mode": "active-pieces",
         "target": "board"
@@ -2638,8 +2638,8 @@
             "classic": "Nc3",
             "classicUci": "b1c3",
             "differsFromClassic": true,
-            "elapsedMs": 29.008499999999913,
-            "classicElapsedMs": 5.4805840000008175,
+            "elapsedMs": 29.428625000000466,
+            "classicElapsedMs": 5.911250000001019,
             "plan": {
               "mode": "develop",
               "target": "home-minors-and-castling"
@@ -2683,8 +2683,8 @@
             "classic": "Nc6",
             "classicUci": "b8c6",
             "differsFromClassic": true,
-            "elapsedMs": 30.792333000001236,
-            "classicElapsedMs": 8.658666999999696,
+            "elapsedMs": 32.216457999998966,
+            "classicElapsedMs": 9.138915999999881,
             "plan": {
               "mode": "develop",
               "target": "home-minors-and-castling"
@@ -2730,8 +2730,8 @@
             "classic": "Nc3",
             "classicUci": "b1c3",
             "differsFromClassic": false,
-            "elapsedMs": 42.487042000000656,
-            "classicElapsedMs": 14.013749999998254,
+            "elapsedMs": 43.12145900000178,
+            "classicElapsedMs": 14.17462499999965,
             "plan": {
               "mode": "develop",
               "target": "home-minors-and-castling"
@@ -2775,8 +2775,8 @@
             "classic": "Nc6",
             "classicUci": "b8c6",
             "differsFromClassic": false,
-            "elapsedMs": 42.02654199999961,
-            "classicElapsedMs": 11.919832999999926,
+            "elapsedMs": 44.80562500000087,
+            "classicElapsedMs": 12.436166999999841,
             "plan": {
               "mode": "develop",
               "target": "home-minors-and-castling"
@@ -2822,8 +2822,8 @@
             "classic": "d4",
             "classicUci": "d2d4",
             "differsFromClassic": true,
-            "elapsedMs": 44.98162500000035,
-            "classicElapsedMs": 15.484457999998995,
+            "elapsedMs": 47.19220800000039,
+            "classicElapsedMs": 16.603417000002082,
             "plan": {
               "mode": "develop",
               "target": "home-minors-and-castling"
@@ -2867,8 +2867,8 @@
             "classic": "d5",
             "classicUci": "d7d5",
             "differsFromClassic": true,
-            "elapsedMs": 47.48320899999817,
-            "classicElapsedMs": 21.66349999999875,
+            "elapsedMs": 48.707416999997804,
+            "classicElapsedMs": 22.73633300000074,
             "plan": {
               "mode": "develop",
               "target": "home-minors-and-castling"
@@ -2922,8 +2922,8 @@
             "classic": "Bd5",
             "classicUci": "c4d5",
             "differsFromClassic": true,
-            "elapsedMs": 112.77841600000102,
-            "classicElapsedMs": 37.5970410000009,
+            "elapsedMs": 118.88112499999988,
+            "classicElapsedMs": 39.73358300000109,
             "plan": {
               "mode": "open-centre",
               "target": "d/e-files"
@@ -2967,8 +2967,8 @@
             "classic": "Nd4",
             "classicUci": "c6d4",
             "differsFromClassic": true,
-            "elapsedMs": 103.6180830000012,
-            "classicElapsedMs": 53.33533300000272,
+            "elapsedMs": 110.4162920000017,
+            "classicElapsedMs": 58.11841600000116,
             "plan": {
               "mode": "open-centre",
               "target": "d/e-files"
@@ -3014,8 +3014,8 @@
             "classic": "Nxd4",
             "classicUci": "f3d4",
             "differsFromClassic": false,
-            "elapsedMs": 108.15366699999868,
-            "classicElapsedMs": 12.720792000000074,
+            "elapsedMs": 113.97641700000167,
+            "classicElapsedMs": 13.323875000001863,
             "plan": {
               "mode": "open-centre",
               "target": "d/e-files"
@@ -3047,8 +3047,8 @@
             "classic": "Nxd5",
             "classicUci": "f6d5",
             "differsFromClassic": false,
-            "elapsedMs": 102.02720800000316,
-            "classicElapsedMs": 11.633166999999958,
+            "elapsedMs": 109.69416700000147,
+            "classicElapsedMs": 12.71387500000128,
             "plan": {
               "mode": "open-centre",
               "target": "d/e-files"
@@ -3090,8 +3090,8 @@
             "classic": "Bxe6",
             "classicUci": "c4e6",
             "differsFromClassic": false,
-            "elapsedMs": 113.89166699999987,
-            "classicElapsedMs": 7.959500000000844,
+            "elapsedMs": 122.59524999999849,
+            "classicElapsedMs": 8.554000000000087,
             "plan": {
               "mode": "king-attack",
               "target": "g8"
@@ -3136,8 +3136,8 @@
             "classic": "Bxe3",
             "classicUci": "c5e3",
             "differsFromClassic": false,
-            "elapsedMs": 105.41562500000146,
-            "classicElapsedMs": 7.636207999999897,
+            "elapsedMs": 111.20175000000017,
+            "classicElapsedMs": 8.216374999999971,
             "plan": {
               "mode": "king-attack",
               "target": "g1"
@@ -3184,8 +3184,8 @@
             "classic": "Nb5",
             "classicUci": "c3b5",
             "differsFromClassic": true,
-            "elapsedMs": 59.974999999998545,
-            "classicElapsedMs": 18.345667000001413,
+            "elapsedMs": 63.97187499999927,
+            "classicElapsedMs": 19.929791999998997,
             "plan": {
               "mode": "king-attack",
               "target": "g8"
@@ -3229,8 +3229,8 @@
             "classic": "Nb4",
             "classicUci": "c6b4",
             "differsFromClassic": true,
-            "elapsedMs": 63.58008300000074,
-            "classicElapsedMs": 28.562792000000627,
+            "elapsedMs": 69.45550000000003,
+            "classicElapsedMs": 31.163250000001426,
             "plan": {
               "mode": "king-attack",
               "target": "g1"

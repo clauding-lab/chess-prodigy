@@ -12,8 +12,8 @@ version bodies are unchanged. No strength calibration, app release, push or depl
   identity to `choosePlannedMove`. The public `AiResult` and worker request shape are unchanged.
 - `searchRootCandidates(position,maxDepth,ms,now?,absoluteDeadline?)` returns `{candidates,depth,
   fallback,timedOut}`. Candidate scores are mover-relative, fallback score is White-relative.
-  The optional sixth argument is an approved interface addendum: `min(start+ms,absoluteDeadline)`
-  prevents setup latency from extending the outer deadline. Ordinary five-argument use is unchanged.
+  The optional fifth argument is an approved interface addendum: `min(start+ms,absoluteDeadline)`
+  prevents setup latency from extending the outer deadline. Ordinary four-argument use is unchanged.
 - `morphyPlan(position)` returns `{mode,target}`. `planFeatures(position,side)` exposes legal home-minor,
   king-area, bishop/rook access and useful rook-file counts. `planProgress(position,legalMove)` returns
   `{terms,bonus}` for the current goal; its move argument must be legal in the given position.
@@ -127,3 +127,15 @@ Task2 should independently review this checkpoint, freeze it, then use
 max1000plies/no adjudication and the predeclared50/100/200-pair checkpoints. No measured v3 rating
 may be reused. Task3 owns measured eligibility, setup and storage/account compatibility; actual-app,
 full-suite/build/browser/accessibility and deployment checks remain with the controller.
+
+## Independent review correction
+
+Review approved the code/data with one documentation correction: `absoluteDeadline` is the fifth
+argument, and the original interface takes four arguments. Corrected those counts in this report
+and the fingerprinted behaviour protocol. No playing code, coefficients, fixtures or tests changed.
+
+Reran the exact diagnostic command and verified every current source fingerprint. All66 decisions,
+Classic comparisons, progress terms, completed depths, neutral losses and reason labels match the
+previous checkpoint. The refreshed maximum elapsed times are27.5/115.4/1971.3ms for Casual/Club/Strong;
+plan and fallback totals are unchanged. Current behaviour.json/behaviour-report.md contain this rerun;
+the original results remain in commit1f52d9e. No full test repeat was needed for this prose correction.
