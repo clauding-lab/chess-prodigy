@@ -2,16 +2,23 @@ import { BOOK_LINES } from "../../src/book/lines";
 import { inCheck, insufficientMaterial, legalMoves, posKey } from "../../src/engine/board";
 import type { Position } from "../../src/engine/types";
 export type Score = 0 | 0.5 | 1;
-export function terminalScore(position: Position, keys: Map<string, number>): Score | null {
+export type ResultReason =
+  "checkmate" | "stalemate" | "fifty-move-rule" | "threefold-repetition" | "insufficient-material";
+export function terminalResult(
+  position: Position,
+  keys: Map<string, number>,
+): { score: Score; reason: ResultReason } | null {
   if (!legalMoves(position).length)
-    return inCheck(position, position.turn) ? (position.turn === "w" ? 0 : 1) : 0.5;
-  if (
-    position.halfmove >= 100 ||
-    (keys.get(posKey(position)) ?? 0) >= 3 ||
-    insufficientMaterial(position.board)
-  )
-    return 0.5;
+    return inCheck(position, position.turn)
+      ? { score: position.turn === "w" ? 0 : 1, reason: "checkmate" }
+      : { score: 0.5, reason: "stalemate" };
+  if (position.halfmove >= 100) return { score: 0.5, reason: "fifty-move-rule" };
+  if ((keys.get(posKey(position)) ?? 0) >= 3) return { score: 0.5, reason: "threefold-repetition" };
+  if (insufficientMaterial(position.board)) return { score: 0.5, reason: "insufficient-material" };
   return null;
+}
+export function terminalScore(position: Position, keys: Map<string, number>): Score | null {
+  return terminalResult(position, keys)?.score ?? null;
 }
 export function seededRandom(seed: number): () => number {
   let state = seed >>> 0;
