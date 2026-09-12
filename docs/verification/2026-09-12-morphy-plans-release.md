@@ -1,7 +1,9 @@
 # Direct Morphy plans delivery — 12 September 2026 BDT
 
-Status: **release verification in progress** for Chess Prodigy v2.4.0. The candidate is not yet
-recorded here as pushed or live. No additional GitHub release tag is requested.
+Status: **complete and live** as Chess Prodigy v2.4.0 at https://chess.clauding-lab.com, verified at
+22:47:10 BDT on 12 September 2026. Pushed verification tip is
+`e273553ad61029facd4ab806acc7647a2123da6a`; deployed application source is `48d21aa`. This final
+record follows as verification-only documentation. No additional GitHub release tag was requested.
 
 The owner approved a designed Morphy-inspired policy in the actual app after the learned experiments
 failed their separate acceptance criteria. New Paul Morphy games use version 4 / `plans-v1` when the
@@ -56,6 +58,7 @@ database, policy table and all save generations.
 | Frozen measurement review | APPROVE; 400 games, 31,168 legal plies and 279 source files independently audited |
 | Rated integration review | APPROVE; TypeScript, account ownership, SQLite transaction and policy-floor paths reviewed |
 | Unit/integration suite at integration checkpoint | 426 passed across 46 files |
+| Fresh unit/integration suite on pushed main | 426 passed across 46 files in 7.05 seconds |
 | Source checks at integration checkpoint | Typecheck, lint and formatting passed |
 | Production build at integration checkpoint | Default-off build passed, including service-worker generation |
 | Version-4 offline browser coverage review | APPROVE; both colors added with real worker and stopped disposable origin |
@@ -74,30 +77,68 @@ release success.
 | Post-fix default-off production build | Pass at source commit `9b15185` |
 | Post-fix enabled production build | Pass with literal `VITE_PERSONALITY_BETA=true` at source commit `9b15185` |
 | Lighthouse accessibility in dark and wooden themes | Pass; 100/100 each on the rebuilt enabled candidate |
-| Final whole-branch source/spec/TypeScript/security review | APPROVE through `48d21aa`; no Critical or Important findings; one minor evidence sentence corrected in this update |
-| Final evidence-only factual recheck | Pending after this documentation update |
-| GitHub CI on exact pushed source | Pending; source not yet recorded as pushed |
+| Final source/spec/TypeScript/security and evidence review | APPROVE at `e273553`; no open findings |
+| GitHub CI on exact pushed source | Pass: [run 34705686358](https://github.com/clauding-lab/chess-prodigy/actions/runs/34705686358) |
 | Linux candidate install/typecheck/enabled build | Pass on Node 22.22.2 from archive of `48d21aa` |
-| Existing-host backup, activation and live checks | Pending; v2.4.0 not yet recorded as live |
+| Isolated Linux candidate smoke check | Pass; health and frontend 200 with synthetic SQLite, notifications off and application closed afterward |
+| Candidate asset identity | Pass; all 13 target asset hashes match the retained local manifest |
+| Existing-host backup and atomic activation | Pass; backup service succeeded before switching to the v2.4 candidate |
+| Public asset and isolated-guest live checks | Pass at 22:47:10 BDT |
 
 Documentation commit `48d21aa` follows the two post-fix builds and does not change application or
 build inputs.
 
-## Prepared server candidate
+## Server candidate and activation
 
 Archive `48d21aa` was uploaded to the existing Hetzner host with SHA-256
 `a5e4c10b484c512c33fb0453d0b07860b7bdc4da2d506e4bdd974f3b9f4a9e39`. The hash matched on the
 target. A clean locked install, typecheck and literal-`true` enabled build passed on Linux x64 with
 Node 22.22.2 under `/opt/chess-prodigy/releases/2.4.0-20260912-48d21aa-plans`.
 
-This prepares a candidate only. Production still points to
-`2.3.0-20260912-89e68d8-historical`; no v2.4 backup, symlink switch, service restart or live check has
-been recorded. Candidate source remains exactly `48d21aa`; the eventual pushed tip may follow it only
-with verification-document changes under `docs/verification/`. Before activation, the controller
-must verify that exact diff and that public assets match the locally rebuilt enabled bundle. Any
-runtime, build-configuration or package change requires a new candidate archive and build. The final
-record will identify candidate source and the later evidence commit separately rather than claim the
-whole Git trees are byte-identical.
+Candidate source remains exactly `48d21aa`; later pushed commits contain verification documents only.
+Before activation, the controller verified that exact diff and that public assets match the locally
+rebuilt enabled bundle. Any runtime, build-configuration or package change would have required a new
+candidate archive and build. This record identifies candidate source and the later evidence commit
+separately rather than claim the whole Git trees are byte-identical.
+
+The exact `48d21aa..e273553` comparison contains 13 files, all under `docs/verification/`; runtime,
+tests, package metadata and build configuration are unchanged. Main was fast-forwarded and pushed at
+`e273553ad61029facd4ab806acc7647a2123da6a`. A fresh main test run passed 426 tests across 46 files
+in 7.05 seconds. Final source and evidence review approved that tip with no open findings.
+
+Before activation, the standalone Linux candidate used a new synthetic SQLite database, disabled
+notifications and an ephemeral loopback port. Health returned 200/ok and the frontend returned 200
+referencing `assets/index-BozyUQuP.js`; the application closed cleanly afterward. All 13 candidate
+asset hashes match [the retained local manifest](morphy-plans/release-assets.sha256). This did not
+read or modify a live player account or record.
+
+GitHub CI passed both jobs on exact pushed tip `e273553`. It repeated source checks, 426 unit and
+integration tests across 46 files, the default-off build, secret scanning and the default-off browser
+matrix. The browser job passed 114 checks with eight intentional skips in 6.9 minutes.
+
+The consistent private backup service reported success with exit status 0 before the atomic current
+link switched to `/opt/chess-prodigy/releases/2.4.0-20260912-48d21aa-plans`. The application service
+is active and loopback health returns 200/ok; three initial connection retries occurred within the
+bounded ten-attempt restart check. No database restore occurred and no secret or live player record
+was read. At 22:47:27 BDT, the final service query reported active/running, exit status 0 and zero
+restarts.
+
+## Live verification
+
+At 22:47:10 BDT, public health returned 200/ok with `Cache-Control: no-store`, and all 13 public
+application assets matched the retained release inventory. An isolated 390×844 Chrome guest opened
+with the permanent dark default and displayed version-4 values Casual 1225, Club 1400 and Strong
+1625. A fresh rated version 4 / `plans-v1` game played legal `h3 … Nc6`; neither move was a recorded
+book move. Reload returned Home with Resume and preserved the exact game ID, move history and
+opponent configuration. The browser reported no page errors.
+
+Machine-readable results are retained in the [live check](morphy-plans/live-check.json), with the
+[mobile setup](morphy-plans/live-setup-mobile.png) and [resumed game](morphy-plans/live-game-mobile.png)
+screenshots.
+
+The live check used guest storage only. It did not inspect, create or change a real player account or
+record, and it did not exercise notifications. Browser emulation at 390×844 is not physical-device
+evidence. No new tag was created.
 
 An earlier local browser invocation built with `VITE_PERSONALITY_BETA=true` but omitted the flag from
 the Playwright process. Its expected flag-mismatch failures were interrupted with exit 130 and are

@@ -55,6 +55,11 @@ proves wrong. The accepted product scope is in the
     is two recorded identities: candidate source and later evidence tip. Any runtime, build or package
     change invalidates this ruling and requires a new archive and build.
 
+Applied status: `48d21aa..e273553` contains exactly 13 files under `docs/verification/` and no runtime,
+test, package or build-configuration change. The candidate remains exact source `48d21aa`; pushed
+main and its CI evidence identity are `e273553ad61029facd4ab806acc7647a2123da6a`. CI passed on that
+tip before the backed-up atomic activation of candidate source `48d21aa`.
+
 These decisions preserve versions 1–3, their exact ratings and receipts, the documented repertoire,
 the permanent dark default, private ownership and explicit service-worker updates. Future playing
 policy or repertoire changes require a new internal opponent version and fresh measurement.
