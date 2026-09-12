@@ -169,16 +169,9 @@ export default function App({
       opponentVersion: record.opponent.version,
     });
     setRematchNote(
-      [
-        record.time === undefined
-          ? "Original clock setting was not recorded; choose a time control."
-          : null,
-        record.opponent.id === "attack-development" && [1, 2].includes(record.opponent.version)
-          ? "This rematch keeps the earlier opponent. New Morphy games use his documented repertoire; select Paul Morphy above to switch."
-          : null,
-      ]
-        .filter(Boolean)
-        .join(" ") || null,
+      record.time === undefined
+        ? "Original clock setting was not recorded; choose a time control."
+        : null,
     );
     setStartError(null);
     setShowGames(false);

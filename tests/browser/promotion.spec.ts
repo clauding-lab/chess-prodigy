@@ -23,7 +23,7 @@ test("keyboard chooses an underpromotion from a legally replayed saved game", as
   const session = promotionGame(Date.now());
   session.preferences.coach = false;
   await page.addInitScript(
-    (s) => localStorage.setItem("chess-prodigy-state-v3", JSON.stringify(s)),
+    (s) => localStorage.setItem("chess-prodigy-state-v4", JSON.stringify(s)),
     session,
   );
   await page.goto("/");
@@ -46,7 +46,7 @@ test("promotion picker closes on timeout and never commits a late promotion", as
   await page.clock.install({ time: new Date(now) });
   await page.clock.pauseAt(new Date(now));
   await page.addInitScript(
-    (s) => localStorage.setItem("chess-prodigy-state-v3", JSON.stringify(s)),
+    (s) => localStorage.setItem("chess-prodigy-state-v4", JSON.stringify(s)),
     session,
   );
   await page.goto("/");
@@ -59,7 +59,7 @@ test("promotion picker closes on timeout and never commits a late promotion", as
   await expect(page.getByRole("button", { name: "Promote to queen" })).toHaveCount(0);
   expect(
     await page.evaluate(
-      () => JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!).game.hist.length,
+      () => JSON.parse(localStorage.getItem("chess-prodigy-state-v4")!).game.hist.length,
     ),
   ).toBe(8);
 });

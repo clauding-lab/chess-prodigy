@@ -86,6 +86,12 @@ export function SetupModal({
   return (
     <Modal closeOnBackdrop={false} closeOnEscape={!!onCancel} onClose={onCancel} title="New game">
       {rematchNote && <p className="note">{rematchNote}</p>}
+      {morphy && (draft.opponentVersion === 1 || draft.opponentVersion === 2) && (
+        <p className="note">
+          This rematch keeps the earlier opponent. New Morphy games use his documented repertoire;
+          select Paul Morphy above to switch.
+        </p>
+      )}
       {startError && (
         <div className="note" role="alert">
           {startError}{" "}

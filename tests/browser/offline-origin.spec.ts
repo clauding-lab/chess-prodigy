@@ -4,7 +4,12 @@ import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
 import { freshSession, reduceSession } from "../../src/game/state";
-import { CLASSIC, morphyConfig } from "../../src/engine/opponents";
+import {
+  CLASSIC,
+  morphyConfig,
+  ratedMorphyConfig,
+  historicalMorphyConfig,
+} from "../../src/engine/opponents";
 import { applyMove, legalMoves, sanFor, sqName } from "../../src/engine/board";
 import type { Session } from "../../src/game/types";
 
@@ -61,9 +66,12 @@ async function startOrigin() {
 }
 
 const saved = (page: Page): Promise<Session> =>
-  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!));
+  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v4")!));
 
-function seedSession(profile: "Classic" | "Morphy", color: "w" | "b") {
+function seedSession(
+  profile: "Classic" | "Morphy" | "Measured Morphy" | "Historical Morphy",
+  color: "w" | "b",
+) {
   const now = Date.now();
   let session = reduceSession(freshSession(now, "initial"), {
     type: "new",
@@ -73,7 +81,14 @@ function seedSession(profile: "Classic" | "Morphy", color: "w" | "b") {
       playerColor: color,
       level: "casual",
       time: "none",
-      opponent: profile === "Classic" ? CLASSIC : morphyConfig(4),
+      opponent:
+        profile === "Classic"
+          ? CLASSIC
+          : profile === "Morphy"
+            ? morphyConfig(4)
+            : profile === "Measured Morphy"
+              ? ratedMorphyConfig(4)
+              : historicalMorphyConfig(4),
     },
   });
   // Legally seed an out-of-book, already-started game on the human's turn.
@@ -88,12 +103,12 @@ function seedSession(profile: "Classic" | "Morphy", color: "w" | "b") {
   return session;
 }
 
-for (const profile of ["Classic", "Morphy"] as const)
+for (const profile of ["Classic", "Morphy", "Measured Morphy", "Historical Morphy"] as const)
   for (const color of ["w", "b"] as const)
     test(`${profile} ${color} reloads, reopens, plays and reviews with its origin stopped`, async ({
       page,
       context,
-    }) => {
+    }, info) => {
       const origin = await startOrigin();
       try {
         const seed = seedSession(profile, color);
@@ -102,7 +117,7 @@ for (const profile of ["Classic", "Morphy"] as const)
         await page.goto(`${origin.url}/api/seed-fixture`);
         await enterPlay(page);
         await page.evaluate((value) => {
-          localStorage.setItem("chess-prodigy-state-v3", JSON.stringify(value));
+          localStorage.setItem("chess-prodigy-state-v4", JSON.stringify(value));
         }, seed);
         await page.goto(origin.url);
         await enterPlay(page);
@@ -168,7 +183,7 @@ for (const profile of ["Classic", "Morphy"] as const)
           expect(value.review?.purpose).toBe("neutral-review");
         expect(reviewed.rating).toEqual(before.rating);
         expect(reviewed.game.opponent).toEqual(before.game.opponent);
-        expect(reviewed.game.rated).toBe(profile === "Classic");
+        expect(reviewed.game.rated).toBe(profile !== "Morphy");
         expect(reviewed.game.ratingApplied).toBeNull();
         await reopened.getByRole("button", { name: "Close", exact: true }).click();
         // Review may finish at a preliminary depth on a slower runner. Stop passive
@@ -182,6 +197,10 @@ for (const profile of ["Classic", "Morphy"] as const)
           .click();
         await reopened.getByRole("button", { name: "View board", exact: true }).click();
         const completed = await saved(reopened);
+        await reopened.screenshot({
+          path: info.outputPath(`offline-${profile}-${color}-${info.project.name}.png`),
+          fullPage: true,
+        });
         await reopened.reload();
         await enterPlay(reopened);
         await reopened.getByRole("button", { name: "View board", exact: true }).click();

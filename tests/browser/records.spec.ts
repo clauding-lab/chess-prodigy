@@ -10,7 +10,7 @@ import { GUEST_HISTORY_KEY } from "../../src/storage/history";
 import type { GameRecord } from "../../src/account/types";
 import type { Session, Setup } from "../../src/game/types";
 
-const STATE_KEY = "chess-prodigy-state-v3";
+const STATE_KEY = "chess-prodigy-state-v4";
 const accountBase = "http://127.0.0.1:4318";
 const saved = (page: Page): Promise<Session> =>
   page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), STATE_KEY);

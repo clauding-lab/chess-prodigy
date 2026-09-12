@@ -115,9 +115,8 @@ it("opens a historical rematch with an honest missing clock default", async () =
   fireEvent.click(screen.getByRole("button", { name: "Games" }));
   await act(async () => {});
   fireEvent.click(screen.getByRole("button", { name: "Rematch recorded game 2" }));
-  expect(screen.getByText(/Original clock setting was not recorded/).textContent).toContain(
-    "earlier opponent",
-  );
+  expect(screen.getByText(/Original clock setting was not recorded/)).toBeTruthy();
+  expect(screen.getByText(/This rematch keeps the earlier opponent/)).toBeTruthy();
   expect(screen.getByRole("button", { name: "No clock" }).getAttribute("aria-pressed")).toBe(
     "true",
   );

@@ -78,9 +78,9 @@ test("account records restore on another session while guest play stays isolated
   await enterPlay(second);
   await expect(second.getByRole("dialog", { name: "New game" })).toBeVisible();
   await expect
-    .poll(() => second.evaluate(() => localStorage.getItem("chess-prodigy-state-v3")))
+    .poll(() => second.evaluate(() => localStorage.getItem("chess-prodigy-state-v4")))
     .not.toBeNull();
-  const guestBefore = await second.evaluate(() => localStorage.getItem("chess-prodigy-state-v3"));
+  const guestBefore = await second.evaluate(() => localStorage.getItem("chess-prodigy-state-v4"));
   await second
     .getByRole("dialog", { name: "New game" })
     .getByRole("button", { name: "Sign in" })
@@ -99,7 +99,7 @@ test("account records restore on another session while guest play stays isolated
   await expect(second.getByRole("dialog", { name })).toContainText("Resignation");
   await second.getByRole("button", { name: "Sign out" }).click();
   await expect(second.getByRole("button", { name: "Sign in" }).first()).toBeVisible();
-  expect(await second.evaluate(() => localStorage.getItem("chess-prodigy-state-v3"))).toBe(
+  expect(await second.evaluate(() => localStorage.getItem("chess-prodigy-state-v4"))).toBe(
     guestBefore,
   );
   await other.close();
