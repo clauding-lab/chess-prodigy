@@ -1,0 +1,153 @@
+[
+  {
+    "level": "casual",
+    "games": 200,
+    "pairs": 100,
+    "invalidColorPairs": 0,
+    "wins": 165,
+    "draws": 26,
+    "losses": 9,
+    "unresolved": 0,
+    "protocols": [
+      "morphy-historical-paired-v1"
+    ],
+    "versions": [
+      3
+    ],
+    "engines": [
+      "historical-v1"
+    ],
+    "openingLengths": [
+      0
+    ],
+    "maxPlies": [
+      1000
+    ],
+    "morphyWhiteNonE4": 0,
+    "reasonCounts": [
+      {
+        "reason": "checkmate",
+        "count": 174
+      },
+      {
+        "reason": "fifty-move-rule",
+        "count": 1
+      },
+      {
+        "reason": "threefold-repetition",
+        "count": 25
+      }
+    ],
+    "plies": {
+      "minimum": 16,
+      "maximum": 293,
+      "mean": 58.92
+    },
+    "elapsedMs": {
+      "minimum": 24.263083999999992,
+      "maximum": 395.841417,
+      "total": 27833.230248000003,
+      "mean": 139.16615124
+    },
+    "morphyMsTotal": 13860.839879000001,
+    "classicMsTotal": 13182.850390000001
+  },
+  {
+    "level": "club",
+    "games": 100,
+    "pairs": 50,
+    "invalidColorPairs": 0,
+    "wins": 33,
+    "draws": 43,
+    "losses": 24,
+    "unresolved": 0,
+    "protocols": [
+      "morphy-historical-paired-v1"
+    ],
+    "versions": [
+      3
+    ],
+    "engines": [
+      "historical-v1"
+    ],
+    "openingLengths": [
+      0
+    ],
+    "maxPlies": [
+      1000
+    ],
+    "morphyWhiteNonE4": 0,
+    "reasonCounts": [
+      {
+        "reason": "checkmate",
+        "count": 57
+      },
+      {
+        "reason": "threefold-repetition",
+        "count": 43
+      }
+    ],
+    "plies": {
+      "minimum": 25,
+      "maximum": 145,
+      "mean": 83.52
+    },
+    "elapsedMs": {
+      "minimum": 329.439042,
+      "maximum": 1386.729625,
+      "total": 79805.211621,
+      "mean": 798.0521162099999
+    },
+    "morphyMsTotal": 47111.859139,
+    "classicMsTotal": 32181.40420000001
+  },
+  {
+    "level": "strong",
+    "games": 100,
+    "pairs": 50,
+    "invalidColorPairs": 0,
+    "wins": 15,
+    "draws": 60,
+    "losses": 25,
+    "unresolved": 0,
+    "protocols": [
+      "morphy-historical-paired-v1"
+    ],
+    "versions": [
+      3
+    ],
+    "engines": [
+      "historical-v1"
+    ],
+    "openingLengths": [
+      0
+    ],
+    "maxPlies": [
+      1000
+    ],
+    "morphyWhiteNonE4": 0,
+    "reasonCounts": [
+      {
+        "reason": "checkmate",
+        "count": 40
+      },
+      {
+        "reason": "threefold-repetition",
+        "count": 60
+      }
+    ],
+    "plies": {
+      "minimum": 41,
+      "maximum": 154,
+      "mean": 89.93
+    },
+    "elapsedMs": {
+      "minimum": 15340.303957999999,
+      "maximum": 79556.574833,
+      "total": 3445200.3428389993,
+      "mean": 34452.003428389995
+    },
+    "morphyMsTotal": 2012244.525221001,
+    "classicMsTotal": 1432199.51999
+  }
+]

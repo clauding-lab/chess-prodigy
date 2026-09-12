@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 2,
+  "protocol": "morphy-historical-paired-v1",
+  "opponent": {
+    "id": "attack-development",
+    "version": 3,
+    "engine": "historical-v1",
+    "randomPolicy": "seeded-per-ply-v1"
+  },
+  "classic": {
+    "id": "classic",
+    "version": 1,
+    "engine": "classic-v1",
+    "randomPolicy": "seeded-match-stream-v1",
+    "book": "production-book-v1"
+  },
+  "level": "casual",
+  "maxPlies": 1000,
+  "anchor": 900,
+  "productionSettings": {
+    "classic": {
+      "depth": 1,
+      "ms": 200,
+      "noise": 120,
+      "book": 0.5
+    },
+    "morphy": {
+      "depth": 1,
+      "ms": 200,
+      "noise": 120,
+      "book": 0.5
+    }
+  },
+  "openingPolicy": "start-position-v1",
+  "pairSeedPolicy": "color-swapped-20260912-v1",
+  "adjudication": "none",
+  "checkpoints": [
+    50,
+    100,
+    200
+  ],
+  "interval": {
+    "method": "approximate-pair-wilson-v1",
+    "z": 2.4,
+    "maximumWidth": 300
+  },
+  "node": "v22.23.0",
+  "arch": "arm64",
+  "platform": "darwin",
+  "cpu": "Apple M5 Pro",
+  "cpuCount": 15,
+  "concurrency": 8,
+  "source": {
+    "package.json": "0a934ed391b141b2d555d9edce8691bed970245b1b2d902ed5bd4723a73d3e3c",
+    "package-lock.json": "a4de6daeadbe960277b7b75c934ee1faf50e8f8b537d3c0cc51f17e63f7c06fa",
+    "tsconfig.json": "4f67ff63e5f740633f317197199482cbcac1934b8ef3df6731bb1ce6bbc148d5",
+    "tsconfig.server.json": "e9fe6c28ee7c74d2e29789a4527cf800f3840cebd681bccd890c3c9959cf06e5",
+    "src/engine/board.ts": "48549435f7a6f68abb5f787fb9003cbfb542992d0c5737c72dcd17a3ca0637ef",
+    "src/engine/eval.ts": "5f4b90319c7727dbc73dcaa9e50a735eb90c04a1a42a07ab4f1fd4fe65431b6f",
+    "src/engine/search.ts": "a32478c6699873c2d2b7203c2d0423bb184f6e2f5730f79372c400f3fcfd7f9d",
+    "src/engine/morphy.ts": "002d24c9e8a81f88fdada8b917a950637de019e68fa5eab5319dab554d19b478",
+    "src/engine/opponents.ts": "82ba103e472579221e507f6cede381213b78b5a5ff8203edf08ca9d4871b4a6a",
+    "src/engine/historical-features.ts": "1be6bdd493f0fe7a448f747b15119643f43aeb6b111a7caf443db60cf4328b03",
+    "src/engine/historical-morphy.ts": "e11ab939cfaa65a93f6a79fd415dcef0941c2ded6ce5876266a75cf0fd256d33",
+    "src/engine/morphy-model.json": "bcac472c15613f704ec1069c2089951312321a6f43ff2e33f0c50d69621cefc3",
+    "src/engine/types.ts": "da64d8348539270d09ce0ed5d85ed3cb97ebfe436e9d7ce15eb98554e167ba81",
+    "src/book/lines.ts": "9a10ecbcca745d1129512d6557793117c60c1bc28bc133c97f3e6fb2d22011d6",
+    "src/book/book.ts": "47e78bd99f49421e4aff4339e6430401ec28617ea87394d6c0468f6e921dd81e",
+    "src/book/morphy-games.json": "77a770ddbc030b2684521624284ca36eb5afee7dc239beb44bc20561cd766a07",
+    "src/book/morphy-book.json": "c5230029b96e9a56198d160e03dadee61e7a91d65f77af8b429823ee47049e94",
+    "src/rating/fide.ts": "ba89dd9517bd8e571d3d0304a54d20ee68b6dc39a30f092b250b375e9504d52a",
+    "scripts/morphy-history/corpus.ts": "a1ef5b636664e9709a791874497373344e2c4007f08b702e65bc450e985328c9",
+    "scripts/morphy-history/import.ts": "518088b8723e765a8fb1904e678f1f7da8ff7bfea098e49c5bd49b78aa93bea3",
+    "scripts/morphy-history/train.ts": "b18e91d1655d5c08d53f8566b76714764a83c04a9a92dab5af25364d302287ee",
+    "docs/verification/morphy-history/training.json": "2e13b6fd469d5c35f4d5cb136c7da1f205ac2c95efcc36558ed4bc589b14818c",
+    "scripts/calibration/core.ts": "179534f5ed313e5fbfafab9e24fc57b605ab5a134cefbb2f02637d825508a82c",
+    "scripts/calibration/protocol.ts": "e5830fefcf231c5ba3c8730272cb56c09e9db9783540d3038b415e033d054949",
+    "scripts/calibration/match.ts": "85fc3aadf28a1c1d201fffeb2c2b63b6b3e5faad906594a1df923e566afd8a30",
+    "scripts/calibration/run.ts": "2bd6ef0aabee59e4f84fa154bcd2cd1a6c518ad2ede3ed59f6dabcfb3056b67f",
+    "scripts/calibration/worker.ts": "6807726b3e46dba56f0fddbedf6afc6614a35b0f9f28a37b43712ca6fd68c242"
+  }
+}

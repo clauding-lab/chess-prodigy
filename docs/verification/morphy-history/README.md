@@ -55,3 +55,10 @@ The generated `morphy-games.json` retains every exclusion with its source record
 reason, source counts and hashes, unmatched holdout metadata, the accepted games and matched holdout
 IDs. `morphy-book.json` is the runtime `posKey` to `[UCI move, count]` map. The focused test legally
 replays the committed corpus and checks every stored continuation against the keyed position.
+
+## Complete-game strength measurement
+
+The frozen version-3 policy was measured against Classic from the normal initial position on
+12 September 2026 BDT. The [measurement report](measurement-report.md) records the fixed protocol,
+checkpoint decisions, internal-scale estimates and limits. Its [public evidence bundle](calibration-20260912/README.md)
+contains manifests, full-precision summaries, aggregate checks and all 400 synthetic SAN game records.

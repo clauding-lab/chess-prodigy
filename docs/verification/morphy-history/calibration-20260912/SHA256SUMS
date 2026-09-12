@@ -1,0 +1,10 @@
+f44ab3bafba165433117afc08bd1783548eae9d5a587b1fd6c292c0d6db04112  ./README.md
+23fae45d48484712d2fc816b3328579afe224ecf1f9ce1ea7f55adb86880bda3  ./casual-100-summary.json
+b278bbe2e852798540fbbd4cbf2a275b5893963aa096d38331bc9f6b56d2cafa  ./casual-50-summary.json
+38828736dc6516bcd9daac585f20181de95fd276c9b9cc468ea5eb0d53da701c  ./casual-manifest.json
+aa1ab9040a558cff15af067b314f9e9eb36ed08fa8a92175481beef63942add5  ./club-50-summary.json
+e57429d5bb106d306a50c29dfb6ee404430823d25e659b624bf88e971fab85b3  ./club-manifest.json
+1183b417be444436476cd80bea5b571d1d6dae774f7e4a133ef54203404a83eb  ./games.jsonl.gz
+d27649c1ace6ad4c7b9fb6f47c94042040f1d171c071289ec9536af17c3fae24  ./raw-aggregate.json
+e26ed492d735a36d98f68823e93c8e0e5b3e146c419c8ace4b6beb8e97432ab9  ./strong-50-summary.json
+a91f95a97aa4ac8c9c3238925752a40ea9e38ad1f68864c9aaad1f7426f4902f  ./strong-manifest.json
