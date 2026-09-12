@@ -13,9 +13,10 @@ import {
   ratedMorphyConfig,
   historicalMorphyConfig,
   plannedMorphyConfig,
+  chigorinConfig,
   opponentName,
 } from "../engine/opponents";
-import { opponentPracticeRating } from "../rating/opponents";
+import { CHIGORIN_RATINGS, opponentPracticeRating } from "../rating/opponents";
 import { unratedDescription } from "../game/eligibility";
 import type { HistoryResult } from "../storage/history";
 import { RecordedRivalry } from "./RecordedGames";
@@ -24,7 +25,7 @@ export type SetupDraft = {
   color: Color | "rand";
   level: Level;
   time: TimeControl;
-  opponentId?: "classic" | "attack-development";
+  opponentId?: "classic" | "attack-development" | "chigorin";
   opponentVersion?: number;
 };
 export interface Confirmation {
@@ -76,6 +77,7 @@ export function SetupModal({
   );
   const loss = before - after;
   const morphy = betaEnabled && draft.opponentId === "attack-development";
+  const chigorin = betaEnabled && draft.opponentId === "chigorin";
   const legacyMorphy = morphy && draft.opponentVersion === 1;
   const selectedOpponent = morphy
     ? legacyMorphy
@@ -85,7 +87,9 @@ export function SetupModal({
         : draft.opponentVersion === 3
           ? historicalMorphyConfig(0)
           : plannedMorphyConfig(0)
-    : CLASSIC;
+    : chigorin
+      ? chigorinConfig(0)
+      : CLASSIC;
   return (
     <Modal closeOnBackdrop={false} closeOnEscape={!!onCancel} onClose={onCancel} title="New game">
       {rematchNote && <p className="note">{rematchNote}</p>}
@@ -125,8 +129,8 @@ export function SetupModal({
         <span className="opt-label">Opponent</span>
         <div className="seg">
           <button
-            className={`btn${!morphy ? " on" : ""}`}
-            aria-pressed={!morphy}
+            className={`btn${!morphy && !chigorin ? " on" : ""}`}
+            aria-pressed={!morphy && !chigorin}
             onClick={() => setDraft({ ...draft, opponentId: "classic" })}
             type="button"
           >
@@ -144,6 +148,17 @@ export function SetupModal({
               Paul Morphy
             </button>
           )}
+          {betaEnabled && (
+            <button
+              className={`btn${chigorin ? " on" : ""}`}
+              aria-pressed={chigorin}
+              disabled={!CHIGORIN_RATINGS}
+              onClick={() => setDraft({ ...draft, opponentId: "chigorin", opponentVersion: 1 })}
+              type="button"
+            >
+              Mikhail Chigorin
+            </button>
+          )}
         </div>
       </div>
       {morphy && (
@@ -159,6 +174,18 @@ export function SetupModal({
           {legacyMorphy
             ? "This rematch uses the original unrated beta. Select Paul Morphy above to start a rated game."
             : "Rated practice — strength measured against Classic within this app. Hints and takebacks make the game unrated."}
+        </div>
+      )}
+      {chigorin && (
+        <div className="note" role="status">
+          <strong>Knights &amp; central counterplay</strong>
+          <p>
+            Recorded openings plus designed priorities for active knights, central counterplay and
+            coordinated attacks, inspired by Chigorin’s games.
+          </p>
+          {CHIGORIN_RATINGS
+            ? "Rated practice — strength measured against Classic within this app. Hints and takebacks make the game unrated."
+            : "Strength measurement is in progress. New games are not available yet."}
         </div>
       )}
       <div className="optrow">
@@ -221,7 +248,12 @@ export function SetupModal({
           ))}
         </div>
       </div>
-      <button className="btn primary full" onClick={onStart} type="button">
+      <button
+        className="btn primary full"
+        onClick={onStart}
+        type="button"
+        disabled={chigorin && !CHIGORIN_RATINGS}
+      >
         {abandoning ? "Abandon and start" : "Start"}
       </button>
       {accountControls && <div className="setup-account-controls">{accountControls}</div>}
@@ -432,7 +464,7 @@ export function ConfirmModal({ value, onCancel }: { value: Confirmation; onCance
 }
 
 export function setupFromDraft(draft: SetupDraft, betaEnabled = false): Setup {
-  if (draft.opponentId === "attack-development" && !betaEnabled)
+  if (draft.opponentId && draft.opponentId !== "classic" && !betaEnabled)
     throw new Error("New personality games are disabled in this build.");
   if (
     draft.opponentId === "attack-development" &&
@@ -440,6 +472,11 @@ export function setupFromDraft(draft: SetupDraft, betaEnabled = false): Setup {
     ![1, 2, 3, 4].includes(draft.opponentVersion)
   )
     throw new Error("Opponent version is unavailable.");
+  if (draft.opponentId === "chigorin") {
+    if (draft.opponentVersion !== undefined && draft.opponentVersion !== 1)
+      throw new Error("Opponent version is unavailable.");
+    if (!CHIGORIN_RATINGS) throw new Error("Chigorin strength measurement is not yet accepted.");
+  }
   return {
     playerColor: draft.color === "rand" ? (Math.random() < 0.5 ? "w" : "b") : draft.color,
     level: draft.level,
@@ -454,7 +491,9 @@ export function setupFromDraft(draft: SetupDraft, betaEnabled = false): Setup {
                 ? historicalMorphyConfig
                 : plannedMorphyConfig)(crypto.getRandomValues(new Uint32Array(1))[0]),
         }
-      : {}),
+      : draft.opponentId === "chigorin"
+        ? { opponent: chigorinConfig(crypto.getRandomValues(new Uint32Array(1))[0]) }
+        : {}),
   };
 }
 

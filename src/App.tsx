@@ -54,7 +54,9 @@ export default function App({
   const available = isSupportedOpponent(game.opponent);
   const betaEnabled = personalityBetaEnabled(import.meta.env.VITE_PERSONALITY_BETA);
   const draftOpponent =
-    betaEnabled && game.opponent.id === "attack-development" ? "attack-development" : "classic";
+    betaEnabled && (game.opponent.id === "attack-development" || game.opponent.id === "chigorin")
+      ? game.opponent.id
+      : "classic";
   const soundReady = useRef(false);
   soundReady.current = preferences.sound && !suspended;
   useEffect(
@@ -133,7 +135,7 @@ export default function App({
     setForfeitPending(false);
     setHome(false);
   }
-  function openSetup(opponentId?: "classic" | "attack-development") {
+  function openSetup(opponentId?: SetupDraft["opponentId"]) {
     setStartError(null);
     setRematchNote(null);
     setDraft({
@@ -165,7 +167,10 @@ export default function App({
       color: record.playerColor,
       level: record.level,
       time: record.time ?? "none",
-      opponentId: record.opponent.id === "attack-development" ? "attack-development" : "classic",
+      opponentId:
+        record.opponent.id === "attack-development" || record.opponent.id === "chigorin"
+          ? record.opponent.id
+          : "classic",
       opponentVersion: record.opponent.version,
     });
     setRematchNote(

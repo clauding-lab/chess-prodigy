@@ -3,7 +3,8 @@ import type { Rating } from "../rating/fide";
 import { LEVEL_LABEL } from "../rating/fide";
 import { opponentName, isSupportedOpponent } from "../engine/opponents";
 import { GLYPH } from "./Board";
-import { PLANNED_MORPHY_RATINGS } from "../rating/opponents";
+import { CHIGORIN_RATINGS, PLANNED_MORPHY_RATINGS } from "../rating/opponents";
+import type { SetupDraft } from "./Modals";
 import "./home.css";
 
 const clock = (ms: number) => {
@@ -27,7 +28,7 @@ export function Home({
   preferences: Preferences;
   betaEnabled: boolean;
   canResume: boolean;
-  onPlay(opponent?: "classic" | "attack-development"): void;
+  onPlay(opponent?: SetupDraft["opponentId"]): void;
   onResume(): void;
   onResult(): void;
   onGames(): void;
@@ -153,7 +154,7 @@ export function Home({
           <h2 id="opponents-title">Who will you play?</h2>
           <p>Choose a playing style, then a difficulty. The rules of chess stay the same.</p>
         </div>
-        <div className="home-roster">
+        <div className={`home-roster${betaEnabled ? " home-roster-personalities" : ""}`}>
           <article className="home-opponent">
             <div className="home-opponent-title">
               <span aria-hidden="true" className="home-emblem">
@@ -214,11 +215,57 @@ export function Home({
               </button>
             </article>
           )}
+          {betaEnabled && (
+            <article className="home-opponent home-chigorin">
+              <div className="home-opponent-title">
+                <span aria-hidden="true" className="home-emblem">
+                  ♞
+                </span>
+                <div>
+                  <h3>Mikhail Chigorin</h3>
+                  <p>Knights &amp; central counterplay</p>
+                </div>
+              </div>
+              <p>
+                Play against recorded openings plus designed priorities for active knights, central
+                counterplay and coordinated attacks, inspired by Chigorin’s games.
+              </p>
+              <details>
+                <summary>Who was Mikhail Chigorin?</summary>
+                <p>
+                  A leading Russian master of the late 1800s, Chigorin is remembered for inventive
+                  knight play and fighting attacks. These designed priorities are a simulation, not
+                  a perfect recreation of the person or a measure of his human playing strength.
+                </p>
+                <a
+                  href="https://www.chess.com/article/view/the-chigorin-queens-gambit-a-history-part-2"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Explore Chigorin’s playing ideas{" "}
+                  <span className="sr-only">(opens in a new tab)</span>
+                </a>
+              </details>
+              {!CHIGORIN_RATINGS && (
+                <p className="home-caption">Strength measurement in progress.</p>
+              )}
+              <button
+                className="btn"
+                disabled={!available || !CHIGORIN_RATINGS}
+                onClick={() => onPlay("chigorin")}
+              >
+                Play Mikhail Chigorin
+              </button>
+            </article>
+          )}
         </div>
         <p className="home-rating-note">
-          {betaEnabled ? "Both opponents offer" : "Classic offers"} Casual, Club and Strong.{" "}
+          {betaEnabled ? "Choose from" : "Classic offers"} Casual, Club and Strong.{" "}
           {betaEnabled &&
             `Morphy’s measured strengths are ${PLANNED_MORPHY_RATINGS.casual}, ${PLANNED_MORPHY_RATINGS.club} and ${PLANNED_MORPHY_RATINGS.strong}. `}
+          {betaEnabled &&
+            CHIGORIN_RATINGS &&
+            `Chigorin’s measured strengths are ${CHIGORIN_RATINGS.casual}, ${CHIGORIN_RATINGS.club} and ${CHIGORIN_RATINGS.strong}. `}
           Practice Ratings measure progress within this app. Hints and takebacks make a game
           unrated.
         </p>

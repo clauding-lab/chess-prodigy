@@ -67,7 +67,7 @@ async function startOrigin() {
 }
 
 const saved = (page: Page): Promise<Session> =>
-  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v5")!));
+  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v6")!));
 
 function seedSession(
   profile: "Classic" | "Morphy" | "Measured Morphy" | "Historical Morphy" | "Planned Morphy",
@@ -126,7 +126,7 @@ for (const profile of [
         await page.goto(`${origin.url}/api/seed-fixture`);
         await enterPlay(page);
         await page.evaluate((value) => {
-          localStorage.setItem("chess-prodigy-state-v5", JSON.stringify(value));
+          localStorage.setItem("chess-prodigy-state-v6", JSON.stringify(value));
         }, seed);
         await page.goto(origin.url);
         await enterPlay(page);

@@ -10,6 +10,7 @@ import {
 } from "../game/archive";
 import { TIME_CONTROLS } from "../game/state";
 import { LEVEL_LABEL } from "../rating/fide";
+import { CHIGORIN_RATINGS } from "../rating/opponents";
 import type { HistoryResult } from "../storage/history";
 import { Board } from "./Board";
 import { Modal } from "./Modal";
@@ -29,7 +30,11 @@ export interface RecordedGamesModalProps {
 }
 
 export function canRematch(record: Pick<GameRecord, "opponent">, betaEnabled: boolean): boolean {
-  return isSupportedOpponent(record.opponent) && (record.opponent.id === "classic" || betaEnabled);
+  return (
+    isSupportedOpponent(record.opponent) &&
+    (record.opponent.id === "classic" || betaEnabled) &&
+    (record.opponent.id !== "chigorin" || CHIGORIN_RATINGS !== null)
+  );
 }
 
 const rivalLabel = ({ opponent, level }: Rival) =>
@@ -395,7 +400,9 @@ export function RecordedGamesModal({
             {!canRematch(record, betaEnabled) && (
               <p className="recorded-caption">
                 {isSupportedOpponent(record.opponent)
-                  ? "Rematch unavailable: Paul Morphy beta is disabled in this build."
+                  ? record.opponent.id === "chigorin" && !CHIGORIN_RATINGS
+                    ? "Rematch unavailable: Chigorin strength measurement is not yet accepted."
+                    : `Rematch unavailable: ${opponentName(record.opponent)} beta is disabled in this build.`
                   : "Rematch unavailable: this recorded opponent configuration is not supported."}{" "}
                 Recorded moves remain available for replay.
               </p>
