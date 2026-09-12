@@ -48,6 +48,14 @@ export function isSupportedOpponent(c: OpponentConfig): boolean {
       c.engine === "classic-v1" &&
       c.randomPolicy === "ambient-v1" &&
       c.seed === null) ||
+    (c.id === "chigorin" &&
+      c.version === 1 &&
+      c.engine === "chigorin-plans-v1" &&
+      c.randomPolicy === "seeded-per-ply-v1" &&
+      Number.isInteger(c.seed) &&
+      c.seed !== null &&
+      c.seed >= 0 &&
+      c.seed <= 0xffffffff) ||
     ((((c.version === 1 || c.version === 2) && c.engine === "style-v1") ||
       (c.version === 3 && c.engine === "historical-v1") ||
       (c.version === 4 && c.engine === "plans-v1")) &&
@@ -63,7 +71,8 @@ export function isSupportedOpponent(c: OpponentConfig): boolean {
 export function isRatedOpponent(c: OpponentConfig): boolean {
   return (
     isSupportedOpponent(c) &&
-    (c.id === "classic" || c.version === 2 || c.version === 3 || c.version === 4)
+    (c.id === "classic" ||
+      (c.id === "attack-development" && (c.version === 2 || c.version === 3 || c.version === 4)))
   );
 }
 
@@ -73,7 +82,9 @@ export const opponentName = (c: OpponentConfig): string =>
     ? "Classic"
     : c.id === "attack-development"
       ? "Paul Morphy"
-      : "Unavailable opponent";
+      : c.id === "chigorin"
+        ? "Mikhail Chigorin"
+        : "Unavailable opponent";
 
 export function ratedMorphyConfig(seed: number): OpponentConfig {
   return { ...morphyConfig(seed), version: 2 };
@@ -85,4 +96,16 @@ export function historicalMorphyConfig(seed: number): OpponentConfig {
 
 export function plannedMorphyConfig(seed: number): OpponentConfig {
   return { ...morphyConfig(seed), version: 4, engine: "plans-v1" };
+}
+
+export function chigorinConfig(seed: number): OpponentConfig {
+  if (!Number.isInteger(seed) || seed < 0 || seed > 0xffffffff)
+    throw new Error("Invalid opponent seed.");
+  return {
+    id: "chigorin",
+    version: 1,
+    engine: "chigorin-plans-v1",
+    randomPolicy: "seeded-per-ply-v1",
+    seed,
+  };
 }

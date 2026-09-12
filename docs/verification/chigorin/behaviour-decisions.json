@@ -1,0 +1,551 @@
+{
+  "dateBDT": "2026-09-13",
+  "fixed": [
+    {
+      "name": "development",
+      "fen": "r1bqkbnr/pppp1pp1/2n4p/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 3",
+      "san": "Nf3",
+      "classic": "Nc3",
+      "decision": {
+        "plan": {
+          "mode": "develop",
+          "target": "minor-development-and-castling"
+        },
+        "progress": {
+          "terms": {
+            "development": 100,
+            "castle": 0,
+            "queen": 0,
+            "repeat": 0,
+            "knights": 0,
+            "outposts": 0,
+            "centralPressure": 45,
+            "centralBreak": 0,
+            "lineAccess": 0,
+            "attackers": 0,
+            "areaSquares": 0
+          },
+          "bonus": 145
+        },
+        "depth": 2,
+        "neutralLoss": 0,
+        "searchTimedOut": false,
+        "reason": "plan",
+        "result": {
+          "move": { "from": 62, "to": 45 },
+          "score": -50,
+          "book": false
+        }
+      }
+    },
+    {
+      "name": "development",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/2N4P/PPPP1PP1/R1BQKBNR b KQkq - 0 3",
+      "san": "Nf6",
+      "classic": "Nc6",
+      "decision": {
+        "plan": {
+          "mode": "develop",
+          "target": "minor-development-and-castling"
+        },
+        "progress": {
+          "terms": {
+            "development": 100,
+            "castle": 0,
+            "queen": 0,
+            "repeat": 0,
+            "knights": 0,
+            "outposts": 0,
+            "centralPressure": 45,
+            "centralBreak": 0,
+            "lineAccess": 0,
+            "attackers": 0,
+            "areaSquares": 0
+          },
+          "bonus": 145
+        },
+        "depth": 2,
+        "neutralLoss": 0,
+        "searchTimedOut": false,
+        "reason": "plan",
+        "result": {
+          "move": { "from": 6, "to": 21 },
+          "score": 50,
+          "book": false
+        }
+      }
+    },
+    {
+      "name": "knight",
+      "fen": "r1bq1rk1/pp2bppp/2n2n2/2p1p3/2P1P3/2NBBN2/PP3PPP/R2Q1RK1 w - - 0 12",
+      "san": "Nd5",
+      "classic": "Nd5",
+      "decision": {
+        "plan": { "mode": "coordinated-attack", "target": "g8" },
+        "progress": {
+          "terms": {
+            "development": 0,
+            "castle": 0,
+            "queen": 0,
+            "repeat": 0,
+            "knights": 20,
+            "outposts": 85,
+            "centralPressure": 0,
+            "centralBreak": 0,
+            "lineAccess": 0,
+            "attackers": 0,
+            "areaSquares": 0
+          },
+          "bonus": 105
+        },
+        "depth": 2,
+        "neutralLoss": 0,
+        "searchTimedOut": false,
+        "reason": "plan",
+        "result": {
+          "move": { "from": 42, "to": 27 },
+          "score": 20,
+          "book": false
+        }
+      }
+    },
+    {
+      "name": "knight",
+      "fen": "r2q1rk1/pp3ppp/2nbbn2/2p1p3/2P1P3/2N2N2/PP2BPPP/R1BQ1RK1 b - - 0 12",
+      "san": "Nd4",
+      "classic": "Qc7",
+      "decision": {
+        "plan": { "mode": "coordinated-attack", "target": "g1" },
+        "progress": {
+          "terms": {
+            "development": 0,
+            "castle": 0,
+            "queen": 0,
+            "repeat": 0,
+            "knights": 20,
+            "outposts": 85,
+            "centralPressure": 0,
+            "centralBreak": 0,
+            "lineAccess": 0,
+            "attackers": 0,
+            "areaSquares": 0
+          },
+          "bonus": 105
+        },
+        "depth": 2,
+        "neutralLoss": 0,
+        "searchTimedOut": false,
+        "reason": "plan",
+        "result": {
+          "move": { "from": 18, "to": 35 },
+          "score": -20,
+          "book": false
+        }
+      }
+    },
+    {
+      "name": "centre",
+      "fen": "r1bqkb1r/ppp2ppp/2np1n2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w kq - 0 9",
+      "san": "d4",
+      "classic": "Bd5",
+      "decision": {
+        "plan": { "mode": "coordinated-attack", "target": "e8" },
+        "progress": {
+          "terms": {
+            "development": 0,
+            "castle": 0,
+            "queen": 0,
+            "repeat": 0,
+            "knights": 0,
+            "outposts": 0,
+            "centralPressure": 45,
+            "centralBreak": 165,
+            "lineAccess": 0,
+            "attackers": 0,
+            "areaSquares": 0
+          },
+          "bonus": 210
+        },
+        "depth": 2,
+        "neutralLoss": 90,
+        "searchTimedOut": false,
+        "reason": "plan",
+        "result": {
+          "move": { "from": 43, "to": 35 },
+          "score": -30,
+          "book": false
+        }
+      }
+    },
+    {
+      "name": "centre",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NP1N2/PPP2PPP/R1BQKB1R b KQ - 0 9",
+      "san": "d5",
+      "classic": "Nd4",
+      "decision": {
+        "plan": { "mode": "coordinated-attack", "target": "e1" },
+        "progress": {
+          "terms": {
+            "development": 0,
+            "castle": 0,
+            "queen": 0,
+            "repeat": 0,
+            "knights": 0,
+            "outposts": 0,
+            "centralPressure": 45,
+            "centralBreak": 165,
+            "lineAccess": 0,
+            "attackers": 0,
+            "areaSquares": 0
+          },
+          "bonus": 210
+        },
+        "depth": 2,
+        "neutralLoss": 90,
+        "searchTimedOut": false,
+        "reason": "plan",
+        "result": {
+          "move": { "from": 19, "to": 27 },
+          "score": 30,
+          "book": false
+        }
+      }
+    },
+    {
+      "name": "attack",
+      "fen": "r4rk1/ppp2ppp/2npbn2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w - - 0 16",
+      "san": "Bxe6",
+      "classic": "Bxe6",
+      "decision": {
+        "plan": { "mode": "coordinated-attack", "target": "g8" },
+        "progress": {
+          "terms": {
+            "development": 0,
+            "castle": 0,
+            "queen": 0,
+            "repeat": 0,
+            "knights": 0,
+            "outposts": 0,
+            "centralPressure": 0,
+            "centralBreak": 0,
+            "lineAccess": 0,
+            "attackers": 115,
+            "areaSquares": 6
+          },
+          "bonus": 121
+        },
+        "depth": 2,
+        "neutralLoss": 0,
+        "searchTimedOut": false,
+        "reason": "plan",
+        "result": {
+          "move": { "from": 34, "to": 20, "capture": "bb" },
+          "score": 1245,
+          "book": false
+        }
+      }
+    },
+    {
+      "name": "attack",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NPBN2/PPP2PPP/R4RK1 b - - 0 16",
+      "san": "Bxe3",
+      "classic": "Bxe3",
+      "decision": {
+        "plan": { "mode": "coordinated-attack", "target": "g1" },
+        "progress": {
+          "terms": {
+            "development": 0,
+            "castle": 0,
+            "queen": 0,
+            "repeat": 0,
+            "knights": 0,
+            "outposts": 0,
+            "centralPressure": 0,
+            "centralBreak": 0,
+            "lineAccess": 0,
+            "attackers": 115,
+            "areaSquares": 6
+          },
+          "bonus": 121
+        },
+        "depth": 2,
+        "neutralLoss": 0,
+        "searchTimedOut": false,
+        "reason": "plan",
+        "result": {
+          "move": { "from": 26, "to": 44, "capture": "wb" },
+          "score": -1245,
+          "book": false
+        }
+      }
+    },
+    {
+      "name": "ending",
+      "fen": "7k/7p/8/8/3P4/2N5/P7/6K1 w - - 0 30",
+      "san": "Ne4",
+      "classic": "Kf2",
+      "decision": {
+        "plan": { "mode": "knight-activity", "target": "safe-central-squares" },
+        "progress": {
+          "terms": {
+            "development": 0,
+            "castle": 0,
+            "queen": 0,
+            "repeat": 0,
+            "knights": 50,
+            "outposts": 0,
+            "centralPressure": 0,
+            "centralBreak": 0,
+            "lineAccess": 0,
+            "attackers": 0,
+            "areaSquares": 0
+          },
+          "bonus": 50
+        },
+        "depth": 2,
+        "neutralLoss": 20,
+        "searchTimedOut": false,
+        "reason": "plan",
+        "result": {
+          "move": { "from": 42, "to": 36 },
+          "score": 460,
+          "book": false
+        }
+      }
+    },
+    {
+      "name": "ending",
+      "fen": "6k1/p7/2n5/3p4/8/8/7P/7K b - - 0 30",
+      "san": "Nd4",
+      "classic": "Kf7",
+      "decision": {
+        "plan": { "mode": "knight-activity", "target": "safe-central-squares" },
+        "progress": {
+          "terms": {
+            "development": 0,
+            "castle": 0,
+            "queen": 0,
+            "repeat": 0,
+            "knights": 50,
+            "outposts": 0,
+            "centralPressure": 0,
+            "centralBreak": 0,
+            "lineAccess": 0,
+            "attackers": 0,
+            "areaSquares": 0
+          },
+          "bonus": 50
+        },
+        "depth": 2,
+        "neutralLoss": 20,
+        "searchTimedOut": false,
+        "reason": "plan",
+        "result": {
+          "move": { "from": 18, "to": 35 },
+          "score": -460,
+          "book": false
+        }
+      }
+    }
+  ],
+  "production": [
+    {
+      "name": "knight",
+      "level": "casual",
+      "elapsedMs": 5.887833999999998,
+      "decision": {
+        "plan": { "mode": "coordinated-attack", "target": "g8" },
+        "progress": {
+          "terms": {
+            "development": 0,
+            "castle": 0,
+            "queen": 0,
+            "repeat": 0,
+            "knights": 20,
+            "outposts": 85,
+            "centralPressure": 0,
+            "centralBreak": 0,
+            "lineAccess": 0,
+            "attackers": 0,
+            "areaSquares": 0
+          },
+          "bonus": 105
+        },
+        "depth": 1,
+        "neutralLoss": 0,
+        "searchTimedOut": false,
+        "reason": "plan",
+        "result": {
+          "move": { "from": 42, "to": 27 },
+          "score": 40,
+          "book": false
+        }
+      }
+    },
+    {
+      "name": "attack",
+      "level": "casual",
+      "elapsedMs": 7.597999999999956,
+      "decision": {
+        "plan": { "mode": "coordinated-attack", "target": "g8" },
+        "progress": {
+          "terms": {
+            "development": 0,
+            "castle": 0,
+            "queen": 0,
+            "repeat": 0,
+            "knights": 0,
+            "outposts": 0,
+            "centralPressure": 0,
+            "centralBreak": 0,
+            "lineAccess": 0,
+            "attackers": 115,
+            "areaSquares": 6
+          },
+          "bonus": 121
+        },
+        "depth": 1,
+        "neutralLoss": 0,
+        "searchTimedOut": false,
+        "reason": "plan",
+        "result": {
+          "move": { "from": 34, "to": 20, "capture": "bb" },
+          "score": 1245,
+          "book": false
+        }
+      }
+    },
+    {
+      "name": "knight",
+      "level": "club",
+      "elapsedMs": 49.248917000000006,
+      "decision": {
+        "plan": { "mode": "coordinated-attack", "target": "g8" },
+        "progress": {
+          "terms": {
+            "development": 0,
+            "castle": 0,
+            "queen": 0,
+            "repeat": 0,
+            "knights": 20,
+            "outposts": 85,
+            "centralPressure": 0,
+            "centralBreak": 0,
+            "lineAccess": 0,
+            "attackers": 0,
+            "areaSquares": 0
+          },
+          "bonus": 105
+        },
+        "depth": 2,
+        "neutralLoss": 0,
+        "searchTimedOut": false,
+        "reason": "plan",
+        "result": {
+          "move": { "from": 42, "to": 27 },
+          "score": 20,
+          "book": false
+        }
+      }
+    },
+    {
+      "name": "attack",
+      "level": "club",
+      "elapsedMs": 64.98033400000008,
+      "decision": {
+        "plan": { "mode": "coordinated-attack", "target": "g8" },
+        "progress": {
+          "terms": {
+            "development": 0,
+            "castle": 0,
+            "queen": 0,
+            "repeat": 0,
+            "knights": 0,
+            "outposts": 0,
+            "centralPressure": 0,
+            "centralBreak": 0,
+            "lineAccess": 0,
+            "attackers": 115,
+            "areaSquares": 6
+          },
+          "bonus": 121
+        },
+        "depth": 2,
+        "neutralLoss": 0,
+        "searchTimedOut": false,
+        "reason": "plan",
+        "result": {
+          "move": { "from": 34, "to": 20, "capture": "bb" },
+          "score": 1245,
+          "book": false
+        }
+      }
+    },
+    {
+      "name": "knight",
+      "level": "strong",
+      "elapsedMs": 1970.659458,
+      "decision": {
+        "plan": { "mode": "coordinated-attack", "target": "g8" },
+        "progress": {
+          "terms": {
+            "development": 0,
+            "castle": 0,
+            "queen": 0,
+            "repeat": 0,
+            "knights": 20,
+            "outposts": 85,
+            "centralPressure": 0,
+            "centralBreak": 0,
+            "lineAccess": 0,
+            "attackers": 0,
+            "areaSquares": 0
+          },
+          "bonus": 105
+        },
+        "depth": 3,
+        "neutralLoss": 0,
+        "searchTimedOut": true,
+        "reason": "plan",
+        "result": {
+          "move": { "from": 42, "to": 27 },
+          "score": 30,
+          "book": false
+        }
+      }
+    },
+    {
+      "name": "attack",
+      "level": "strong",
+      "elapsedMs": 1950.5753749999994,
+      "decision": {
+        "plan": { "mode": "coordinated-attack", "target": "g8" },
+        "progress": {
+          "terms": {
+            "development": 0,
+            "castle": 0,
+            "queen": 0,
+            "repeat": 0,
+            "knights": 0,
+            "outposts": 0,
+            "centralPressure": 0,
+            "centralBreak": 0,
+            "lineAccess": 0,
+            "attackers": 115,
+            "areaSquares": 6
+          },
+          "bonus": 121
+        },
+        "depth": 4,
+        "neutralLoss": 5,
+        "searchTimedOut": false,
+        "reason": "plan",
+        "result": {
+          "move": { "from": 34, "to": 20, "capture": "bb" },
+          "score": 1240,
+          "book": false
+        }
+      }
+    }
+  ]
+}

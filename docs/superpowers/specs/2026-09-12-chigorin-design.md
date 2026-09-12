@@ -10,7 +10,7 @@ opponent; preserve Classic and every Morphy policy, game, rematch and fixed rati
 Identity: id `chigorin`, version 1, engine `chigorin-plans-v1`, randomPolicy
 `seeded-per-ply-v1`. Seed is an unsigned 32-bit integer. Documented legal continuations
 at matching positions are selected by recorded occurrence counts; no Classic/Morphy book substitution.
-Import https://www.pgnmentor.com/players/Chigorin.pgn, preserve its fingerprint and full excluded-record
+Import https://www.pgnmentor.com/players/Chigorin.zip (official catalog archive containing Chigorin.pgn; direct .pgn URL returns 404), preserve its fingerprint and full excluded-record
 reasons. Only exact accepted Chigorin player identities in ordinary starting-position games qualify.
 Exclude duplicates, illegal games, odds, setup, consultation and ambiguous identities. Keep original
 source and accepted game facts outside runtime imports; runtime loads compact book only.

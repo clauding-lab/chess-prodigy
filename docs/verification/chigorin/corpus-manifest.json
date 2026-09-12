@@ -1,0 +1,14 @@
+{
+  "source": "https://www.pgnmentor.com/players/Chigorin.zip",
+  "catalog": "https://www.pgnmentor.com/files.html",
+  "requestedUrl": "https://www.pgnmentor.com/players/Chigorin.pgn",
+  "requestedUrlStatus": 404,
+  "retrievedDateBDT": "2026-09-12",
+  "archiveSha256": "a0f2d72830ae1b94bb16e5ea293f5347f6ec6f56080fdaa80ac246918c4c43df",
+  "pgnSha256": "2417f6cd5cc94ec88a07b529c0b610ac9b06de5673db0f72d56670f4a2b166d0",
+  "acceptedIdentity": "Chigorin, Mikhail",
+  "accepted": 688,
+  "excluded": [],
+  "positions": 26262,
+  "continuationOccurrences": 30101
+}
