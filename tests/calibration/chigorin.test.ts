@@ -65,6 +65,7 @@ test("Chigorin worker binds book and policy fingerprints and preserves completed
     const manifest = JSON.parse(readFileSync(file, "utf8"));
     expect(manifest.opponent.id).toBe("chigorin");
     expect(manifest.source["src/engine/chigorin.ts"]).toMatch(/^[a-f0-9]{64}$/);
+    expect(manifest.source["src/engine/chigorin-book.ts"]).toMatch(/^[a-f0-9]{64}$/);
     expect(manifest.source["src/book/chigorin-book.json"]).toMatch(/^[a-f0-9]{64}$/);
     const worker = () =>
       run("scripts/calibration/worker.ts", ["casual", dir, "0", "chigorin-plans-paired-v1"]);

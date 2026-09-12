@@ -136,7 +136,12 @@ export function openingForProtocol(protocol: CalibrationProtocol, seed: number):
 
 function sourceFiles(protocol: CalibrationProtocol): readonly string[] {
   return protocol === CHIGORIN_PROTOCOL
-    ? [...EXPECTED_SOURCE_FILES, "src/engine/chigorin.ts", "src/book/chigorin-book.json"]
+    ? [
+        ...EXPECTED_SOURCE_FILES,
+        "src/engine/chigorin.ts",
+        "src/engine/chigorin-book.ts",
+        "src/book/chigorin-book.json",
+      ]
     : EXPECTED_SOURCE_FILES;
 }
 
