@@ -232,6 +232,7 @@ describe("historical Morphy repertoire", () => {
     ).toThrow("illegal continuation e2e5");
   });
 
+  // This exhaustive 247-game audit can take about 32 seconds on slower Linux runners.
   it("legally replays the committed corpus, repertoire and serious-game holdout", () => {
     const games = generatedCorpus.games as HistoricalGame[];
     const gameIds = new Set(games.map((game) => game.id));
@@ -256,5 +257,5 @@ describe("historical Morphy repertoire", () => {
     ]);
     expect(book[posKey(START())]).toEqual([["e2e4", 152]]);
     expect(() => assertHistoricalBookLegal(book, games)).not.toThrow();
-  }, 15_000);
+  }, 60_000);
 });
