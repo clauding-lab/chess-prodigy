@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.4.1] — 2026-09-12 (BDT)
+
+- Add About beside the account control, showing the installed app version, developer Adnan Rashid and the GitHub repository. The panel works offline and follows the selected theme.
+- Let crowded account controls wrap on smaller screens.
+
 ## [2.4.0] — 2026-09-12 (BDT)
 
 - Give new Morphy games designed development, central-break and coordinated-attack priorities outside the unchanged documented repertoire. Neutral search governs endgames and bounds stylistic choices; coaching remains independent.

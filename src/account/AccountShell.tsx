@@ -3,6 +3,7 @@ import App from "../App";
 import { freshSession } from "../game/state";
 import type { GameStorageAdapter } from "../game/useGame";
 import { Modal } from "../ui/Modal";
+import { AboutModal } from "../ui/AboutModal";
 import { ApiError, getAccountSession, getRecords, signOut } from "./api";
 import { AccountModal, AuthModal, LeaderboardModal } from "./AccountModals";
 import { AccountSync, type AccountSyncStatus } from "./sync";
@@ -52,6 +53,7 @@ export function AccountShell() {
   const [boot, setBoot] = useState<Boot>({ kind: "loading" });
   const [authOpen, setAuthOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [syncStatus, setSyncStatus] = useState<AccountSyncStatus | null>(null);
   const [h2hOpenFor, setH2hOpenFor] = useState<string | null>(null);
@@ -240,6 +242,9 @@ export function AccountShell() {
             ? account.user.name
             : "Sign in"}
       </button>
+      <button className="linkbtn" onClick={() => setAboutOpen(true)}>
+        About
+      </button>
     </div>
   );
   const conflict = account && syncStatus?.state === "conflict";
@@ -314,6 +319,7 @@ export function AccountShell() {
         />
       )}
       {leaderboardOpen && <LeaderboardModal onClose={() => setLeaderboardOpen(false)} />}
+      {aboutOpen && <AboutModal onClose={() => setAboutOpen(false)} />}
       {hasH2h && h2hHistory && h2hOpenFor === h2hUserId && (
         <HeadToHeadModal
           history={h2hHistory}

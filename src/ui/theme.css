@@ -82,6 +82,7 @@ body:has(.app[data-theme="dark"]) [data-modal-root] {
 .account-bar {
   width: min(94vw, 480px);
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
   gap: 16px;
   margin: -6px 0 7px;
