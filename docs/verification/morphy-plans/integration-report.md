@@ -51,3 +51,7 @@ The only change in `src/engine/opponents.ts` is rated eligibility for already-su
 ## Scope
 
 Task 3 changed 35 owned source/test files (321 insertions, 143 deletions, chiefly current-key fixture replacements) plus this report. Controller-owned release documents and package metadata were left unstaged. No push, deployment, tag, release or live-player data action was performed.
+
+## Task 4 cross-coverage addition
+
+The production-origin-stopped browser matrix now includes exact version 4 / `plans-v1` saves for both player colours. Each case uses the real planned opponent and worker while the disposable origin is stopped, then verifies service-worker reopening, continued legal play, neutral review, unchanged rating before completion, rated settlement, reload and recorded-game replay. This closes the offline actual-app gap without changing production source.

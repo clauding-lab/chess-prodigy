@@ -9,6 +9,7 @@ import {
   morphyConfig,
   ratedMorphyConfig,
   historicalMorphyConfig,
+  plannedMorphyConfig,
 } from "../../src/engine/opponents";
 import { applyMove, legalMoves, sanFor, sqName } from "../../src/engine/board";
 import type { Session } from "../../src/game/types";
@@ -69,7 +70,7 @@ const saved = (page: Page): Promise<Session> =>
   page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v5")!));
 
 function seedSession(
-  profile: "Classic" | "Morphy" | "Measured Morphy" | "Historical Morphy",
+  profile: "Classic" | "Morphy" | "Measured Morphy" | "Historical Morphy" | "Planned Morphy",
   color: "w" | "b",
 ) {
   const now = Date.now();
@@ -88,7 +89,9 @@ function seedSession(
             ? morphyConfig(4)
             : profile === "Measured Morphy"
               ? ratedMorphyConfig(4)
-              : historicalMorphyConfig(4),
+              : profile === "Historical Morphy"
+                ? historicalMorphyConfig(4)
+                : plannedMorphyConfig(4),
     },
   });
   // Legally seed an out-of-book, already-started game on the human's turn.
@@ -103,7 +106,13 @@ function seedSession(
   return session;
 }
 
-for (const profile of ["Classic", "Morphy", "Measured Morphy", "Historical Morphy"] as const)
+for (const profile of [
+  "Classic",
+  "Morphy",
+  "Measured Morphy",
+  "Historical Morphy",
+  "Planned Morphy",
+] as const)
   for (const color of ["w", "b"] as const)
     test(`${profile} ${color} reloads, reopens, plays and reviews with its origin stopped`, async ({
       page,
