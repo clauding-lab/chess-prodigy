@@ -8,7 +8,9 @@ import { sampleOpening } from "./core";
 
 export const LEGACY_PROTOCOL = "morphy-paired-v1";
 export const HISTORICAL_PROTOCOL = "morphy-historical-paired-v1";
-export type CalibrationProtocol = typeof LEGACY_PROTOCOL | typeof HISTORICAL_PROTOCOL;
+export const PLANS_PROTOCOL = "morphy-plans-paired-v1";
+export type CalibrationProtocol =
+  typeof LEGACY_PROTOCOL | typeof HISTORICAL_PROTOCOL | typeof PLANS_PROTOCOL;
 
 export const EXPECTED_SOURCE_FILES = Object.freeze([
   "package.json",
@@ -19,6 +21,7 @@ export const EXPECTED_SOURCE_FILES = Object.freeze([
   "src/engine/eval.ts",
   "src/engine/search.ts",
   "src/engine/morphy.ts",
+  "src/engine/morphy-plans.ts",
   "src/engine/opponents.ts",
   "src/engine/historical-features.ts",
   "src/engine/historical-morphy.ts",
@@ -38,12 +41,14 @@ export const EXPECTED_SOURCE_FILES = Object.freeze([
   "scripts/calibration/match.ts",
   "scripts/calibration/run.ts",
   "scripts/calibration/worker.ts",
+  "scripts/calibration/plans-behaviour.ts",
+  "docs/verification/morphy-plans/behaviour-protocol.md",
 ]);
 
 export interface CalibrationOpponentIdentity {
   id: "attack-development";
-  version: 1 | 3;
-  engine: "style-v1" | "historical-v1";
+  version: 1 | 3 | 4;
+  engine: "style-v1" | "historical-v1" | "plans-v1";
   randomPolicy: "seeded-per-ply-v1";
 }
 
@@ -81,11 +86,19 @@ export interface CalibrationManifest {
 
 export function parseProtocol(value: string | undefined): CalibrationProtocol {
   if (value === undefined) return LEGACY_PROTOCOL;
-  if (value === LEGACY_PROTOCOL || value === HISTORICAL_PROTOCOL) return value;
+  if (value === LEGACY_PROTOCOL || value === HISTORICAL_PROTOCOL || value === PLANS_PROTOCOL)
+    return value;
   throw new Error(`Unsupported calibration protocol: ${value}`);
 }
 
 export function opponentIdentity(protocol: CalibrationProtocol): CalibrationOpponentIdentity {
+  if (protocol === PLANS_PROTOCOL)
+    return {
+      id: "attack-development",
+      version: 4,
+      engine: "plans-v1",
+      randomPolicy: "seeded-per-ply-v1",
+    };
   return protocol === HISTORICAL_PROTOCOL
     ? {
         id: "attack-development",
@@ -102,7 +115,7 @@ export function opponentIdentity(protocol: CalibrationProtocol): CalibrationOppo
 }
 
 export function openingForProtocol(protocol: CalibrationProtocol, seed: number): string[] {
-  return protocol === HISTORICAL_PROTOCOL ? [] : sampleOpening(seed);
+  return protocol === LEGACY_PROTOCOL ? sampleOpening(seed) : [];
 }
 
 export function sourceFingerprints(): Record<string, string> {
@@ -162,7 +175,7 @@ export function assertManifest(
     },
     expectedSettings = { classic: LEVEL_CFG[expected.level], morphy: LEVEL_CFG[expected.level] },
     expectedOpening =
-      expected.protocol === HISTORICAL_PROTOCOL ? "start-position-v1" : "sampled-six-ply-v1";
+      expected.protocol === LEGACY_PROTOCOL ? "sampled-six-ply-v1" : "start-position-v1";
   if (
     value.schemaVersion !== 2 ||
     value.protocol !== expected.protocol ||

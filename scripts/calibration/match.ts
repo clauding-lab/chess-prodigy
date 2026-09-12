@@ -9,13 +9,17 @@ import {
 } from "../../src/engine/board";
 import { chooseAiMove } from "../../src/engine/search";
 import { chooseOpponentMove } from "../../src/engine/morphy";
-import { historicalMorphyConfig, morphyConfig } from "../../src/engine/opponents";
+import {
+  historicalMorphyConfig,
+  morphyConfig,
+  plannedMorphyConfig,
+} from "../../src/engine/opponents";
 import { bookLookup } from "../../src/book/book";
 import type { Color, Level } from "../../src/engine/types";
 import { terminalResult, seededRandom } from "./core";
 export interface MatchOptions {
-  protocol?: "morphy-paired-v1" | "morphy-historical-paired-v1";
-  opponentVersion?: 1 | 3;
+  protocol?: "morphy-paired-v1" | "morphy-historical-paired-v1" | "morphy-plans-paired-v1";
+  opponentVersion?: 1 | 3 | 4;
   level: Level;
   morphyColor: Color;
   seed: number;
@@ -26,17 +30,24 @@ function opponentForOptions(options: MatchOptions) {
   if (
     options.protocol !== undefined &&
     options.protocol !== "morphy-paired-v1" &&
-    options.protocol !== "morphy-historical-paired-v1"
+    options.protocol !== "morphy-historical-paired-v1" &&
+    options.protocol !== "morphy-plans-paired-v1"
   )
     throw new Error(`Unsupported calibration protocol: ${String(options.protocol)}`);
   if (
+    (options.protocol === "morphy-plans-paired-v1" && options.opponentVersion !== 4) ||
     (options.protocol === "morphy-historical-paired-v1" && options.opponentVersion !== 3) ||
     (options.protocol === "morphy-paired-v1" && options.opponentVersion !== 1) ||
     (options.protocol === undefined && options.opponentVersion !== undefined)
   )
     throw new Error("Calibration protocol and opponent version mismatch");
-  if (options.protocol === "morphy-historical-paired-v1" && options.opening.length !== 0)
+  if (
+    (options.protocol === "morphy-historical-paired-v1" ||
+      options.protocol === "morphy-plans-paired-v1") &&
+    options.opening.length !== 0
+  )
     throw new Error("Historical calibration must start from START with an empty opening");
+  if (options.protocol === "morphy-plans-paired-v1") return plannedMorphyConfig(options.seed);
   return options.protocol === "morphy-historical-paired-v1"
     ? historicalMorphyConfig(options.seed)
     : morphyConfig(options.seed);

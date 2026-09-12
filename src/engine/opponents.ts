@@ -49,7 +49,8 @@ export function isSupportedOpponent(c: OpponentConfig): boolean {
       c.randomPolicy === "ambient-v1" &&
       c.seed === null) ||
     ((((c.version === 1 || c.version === 2) && c.engine === "style-v1") ||
-      (c.version === 3 && c.engine === "historical-v1")) &&
+      (c.version === 3 && c.engine === "historical-v1") ||
+      (c.version === 4 && c.engine === "plans-v1")) &&
       c.id === "attack-development" &&
       c.randomPolicy === "seeded-per-ply-v1" &&
       c.seed !== null &&
@@ -77,4 +78,8 @@ export function ratedMorphyConfig(seed: number): OpponentConfig {
 
 export function historicalMorphyConfig(seed: number): OpponentConfig {
   return { ...morphyConfig(seed), version: 3, engine: "historical-v1" };
+}
+
+export function plannedMorphyConfig(seed: number): OpponentConfig {
+  return { ...morphyConfig(seed), version: 4, engine: "plans-v1" };
 }

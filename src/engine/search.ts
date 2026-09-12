@@ -264,3 +264,73 @@ export function chooseAiMove(
   }
   return { move: best, score: null, book: false };
 }
+
+/** Complete neutral alternatives. Scores are mover-relative; fallback is White-relative. */
+export interface RootCandidates {
+  candidates: { move: Move; score: number }[];
+  depth: number;
+  fallback: SearchResult;
+  timedOut: boolean;
+}
+
+export function searchRootCandidates(
+  position: Position,
+  maxDepth: number,
+  ms: number,
+  now: Clock = () => performance.now(),
+  absoluteDeadline = Infinity,
+): RootCandidates {
+  const context: Context = {
+    deadline: Math.min(absoluteDeadline, now() + Math.max(0, ms)),
+    now,
+    table: new Map(),
+    nodes: 0,
+    evaluate,
+  };
+  const moves = orderMoves(legalMoves(position)),
+    sign = position.turn === "w" ? 1 : -1;
+  const result: RootCandidates = {
+    candidates: [],
+    depth: 0,
+    timedOut: false,
+    fallback: { move: moves[0] ?? null, score: evaluate(position), depth: 0 },
+  };
+  if (!moves.length) {
+    result.fallback.score = inCheck(position, position.turn) ? -MATE * sign : 0;
+    return result;
+  }
+  if (position.halfmove >= 100 || insufficientMaterial(position.board)) {
+    result.fallback = { move: null, score: 0, depth: 0 };
+    return result;
+  }
+  try {
+    for (let depth = 1; depth <= maxDepth; depth++) {
+      const iteration: RootCandidates["candidates"] = [];
+      for (const move of moves) {
+        // No bound from another root can masquerade as this alternative's exact value.
+        context.table.clear();
+        const score = -negamax(
+          applyMove(position, move),
+          depth - 1,
+          -Infinity,
+          Infinity,
+          1,
+          context,
+        );
+        iteration.push({ move, score });
+      }
+      checkTime(context);
+      const best = iteration.reduce((a, b) => (b.score > a.score ? b : a));
+      result.candidates = iteration;
+      result.depth = depth;
+      result.fallback = { move: best.move, score: best.score * sign, depth };
+      if (Math.abs(best.score) > MATE - 100) break;
+    }
+  } catch (error) {
+    if (error !== TIMEOUT) throw error;
+    result.timedOut = true;
+  } finally {
+    context.table.clear();
+  }
+  return result;
+}

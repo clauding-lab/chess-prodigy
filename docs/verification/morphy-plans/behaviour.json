@@ -1,0 +1,3269 @@
+{
+  "protocol": "morphy-plans-behaviour-v1",
+  "dateBDT": "12 September 2026",
+  "machine": {
+    "node": "v22.23.0",
+    "arch": "arm64",
+    "platform": "darwin",
+    "cpu": "Apple M5 Pro",
+    "cpuCount": 15
+  },
+  "source": {
+    "package.json": "bfc78d9beb41e41125c90e497c8a961e4f36386dd5ed30d0378904a5abb5662f",
+    "package-lock.json": "30d7bb2b2977eb0920f874a050133680989acac74f66673cd3bc57802afdf9c5",
+    "tsconfig.json": "4f67ff63e5f740633f317197199482cbcac1934b8ef3df6731bb1ce6bbc148d5",
+    "tsconfig.server.json": "e9fe6c28ee7c74d2e29789a4527cf800f3840cebd681bccd890c3c9959cf06e5",
+    "src/engine/board.ts": "48549435f7a6f68abb5f787fb9003cbfb542992d0c5737c72dcd17a3ca0637ef",
+    "src/engine/eval.ts": "5f4b90319c7727dbc73dcaa9e50a735eb90c04a1a42a07ab4f1fd4fe65431b6f",
+    "src/engine/search.ts": "8492c5e56d6d756f5a61084b2a74e7c8cffeeedd686f2ef4324fce6f73ddcf43",
+    "src/engine/morphy.ts": "7eccc12b971bd0d181668f15729a11401afe2ce077e7917c0286ccb3284bbd67",
+    "src/engine/morphy-plans.ts": "7802da82eb756cdf28c55e70f67e13695d66831a7b8be323c4ca900f509f047d",
+    "src/engine/opponents.ts": "e388f8d9ae4d8bd511f911fd92f2e4b583902f815a75cdb4108a5c7ddf0c706e",
+    "src/engine/historical-features.ts": "1be6bdd493f0fe7a448f747b15119643f43aeb6b111a7caf443db60cf4328b03",
+    "src/engine/historical-morphy.ts": "e11ab939cfaa65a93f6a79fd415dcef0941c2ded6ce5876266a75cf0fd256d33",
+    "src/engine/morphy-model.json": "bcac472c15613f704ec1069c2089951312321a6f43ff2e33f0c50d69621cefc3",
+    "src/engine/types.ts": "da64d8348539270d09ce0ed5d85ed3cb97ebfe436e9d7ce15eb98554e167ba81",
+    "src/book/lines.ts": "9a10ecbcca745d1129512d6557793117c60c1bc28bc133c97f3e6fb2d22011d6",
+    "src/book/book.ts": "47e78bd99f49421e4aff4339e6430401ec28617ea87394d6c0468f6e921dd81e",
+    "src/book/morphy-games.json": "77a770ddbc030b2684521624284ca36eb5afee7dc239beb44bc20561cd766a07",
+    "src/book/morphy-book.json": "c5230029b96e9a56198d160e03dadee61e7a91d65f77af8b429823ee47049e94",
+    "src/rating/fide.ts": "ba89dd9517bd8e571d3d0304a54d20ee68b6dc39a30f092b250b375e9504d52a",
+    "scripts/morphy-history/corpus.ts": "a1ef5b636664e9709a791874497373344e2c4007f08b702e65bc450e985328c9",
+    "scripts/morphy-history/import.ts": "518088b8723e765a8fb1904e678f1f7da8ff7bfea098e49c5bd49b78aa93bea3",
+    "scripts/morphy-history/train.ts": "b18e91d1655d5c08d53f8566b76714764a83c04a9a92dab5af25364d302287ee",
+    "docs/verification/morphy-history/training.json": "2e13b6fd469d5c35f4d5cb136c7da1f205ac2c95efcc36558ed4bc589b14818c",
+    "scripts/calibration/core.ts": "179534f5ed313e5fbfafab9e24fc57b605ab5a134cefbb2f02637d825508a82c",
+    "scripts/calibration/protocol.ts": "843f1eb82cf7504755f732cab82a5d63e3e25208c4a2a692cd7690ad278f84fb",
+    "scripts/calibration/match.ts": "24a56ee00053d5949c81d26356ad3f71a4f99c185f0dd616ba9cf7f37325dac7",
+    "scripts/calibration/run.ts": "ce3f996a35cf866347894758f11df6fe77cb1fdb6c47913bdf764d929bcdbedd",
+    "scripts/calibration/worker.ts": "8f8dd999680dd7e655f1b94aaa1ac93ec13c9d4af25ac5721328f124c27d6e36",
+    "scripts/calibration/plans-behaviour.ts": "4a23abf584fa2c2e1085baa095c8c17cf70f0501680ac992bfed2735ee8d20d9",
+    "docs/verification/morphy-plans/behaviour-protocol.md": "7de06df08a8c1efb6780319c1f107710a150cf6862c41e93d5c037b510a33959"
+  },
+  "limits": "Production budgets; 30ms reserved inside each move budget",
+  "claim": "Engineering checks and descriptive decisions only; neither strength calibration nor a perceived-style pass",
+  "byLevel": {
+    "casual": {
+      "positions": 22,
+      "reasons": {
+        "mate": 2,
+        "neutral": 10,
+        "plan": 10
+      },
+      "searchTimeouts": 0,
+      "deadlineFallbacks": 0,
+      "changedFromClassic": 14,
+      "maximumNeutralLoss": 0,
+      "maximumElapsedMs": 27.685332999999986
+    },
+    "club": {
+      "positions": 22,
+      "reasons": {
+        "mate": 2,
+        "neutral": 10,
+        "plan": 10
+      },
+      "searchTimeouts": 0,
+      "deadlineFallbacks": 0,
+      "changedFromClassic": 4,
+      "maximumNeutralLoss": 90,
+      "maximumElapsedMs": 108.93695800000006
+    },
+    "strong": {
+      "positions": 22,
+      "reasons": {
+        "mate": 2,
+        "neutral": 10,
+        "plan": 10
+      },
+      "searchTimeouts": 10,
+      "deadlineFallbacks": 0,
+      "changedFromClassic": 8,
+      "maximumNeutralLoss": 70,
+      "maximumElapsedMs": 1971.2796249999992
+    }
+  },
+  "decisions": [
+    {
+      "name": "unique-mate",
+      "fen": "7k/8/6K1/6Q1/8/8/8/8 w - - 0 1",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Qd8#",
+      "uci": "g5d8",
+      "classic": "Qd8#",
+      "classicUci": "g5d8",
+      "differsFromClassic": false,
+      "elapsedMs": 2.0232500000000186,
+      "classicElapsedMs": 1.397166999999996,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "mate",
+      "result": {
+        "move": {
+          "from": 30,
+          "to": 3
+        },
+        "score": 99999,
+        "book": false
+      }
+    },
+    {
+      "name": "unique-mate",
+      "fen": "8/8/8/8/6q1/6k1/8/7K b - - 0 1",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Qd1#",
+      "uci": "g4d1",
+      "classic": "Qd1#",
+      "classicUci": "g4d1",
+      "differsFromClassic": false,
+      "elapsedMs": 2.685167000000007,
+      "classicElapsedMs": 1.2757909999999981,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "mate",
+      "result": {
+        "move": {
+          "from": 38,
+          "to": 59
+        },
+        "score": -99999,
+        "book": false
+      }
+    },
+    {
+      "name": "free-queen",
+      "fen": "4k3/8/8/8/8/8/q7/R3K3 w - - 0 1",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rxa2",
+      "uci": "a1a2",
+      "classic": "Rxa2",
+      "classicUci": "a1a2",
+      "differsFromClassic": false,
+      "elapsedMs": 2.1430830000000185,
+      "classicElapsedMs": 2.1854160000000036,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 56,
+          "to": 48,
+          "capture": "bq"
+        },
+        "score": 495,
+        "book": false
+      }
+    },
+    {
+      "name": "free-queen",
+      "fen": "r3k3/Q7/8/8/8/8/8/4K3 b - - 0 1",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rxa7",
+      "uci": "a8a7",
+      "classic": "Rxa7",
+      "classicUci": "a8a7",
+      "differsFromClassic": false,
+      "elapsedMs": 1.1173750000000098,
+      "classicElapsedMs": 0.5802910000000168,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 0,
+          "to": 8,
+          "capture": "wq"
+        },
+        "score": -495,
+        "book": false
+      }
+    },
+    {
+      "name": "poisoned-pawn",
+      "fen": "3rk3/8/8/3p4/8/8/8/3Q2K1 w - - 0 20",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Kf2",
+      "uci": "g1f2",
+      "classic": "Qh5+",
+      "classicUci": "d1h5",
+      "differsFromClassic": true,
+      "elapsedMs": 1.9381669999999929,
+      "classicElapsedMs": 0.6444999999999936,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 62,
+          "to": 53
+        },
+        "score": 300,
+        "book": false
+      }
+    },
+    {
+      "name": "poisoned-pawn",
+      "fen": "3q2k1/8/8/8/3P4/8/8/3RK3 b - - 0 20",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Kf7",
+      "uci": "g8f7",
+      "classic": "Qh4+",
+      "classicUci": "d8h4",
+      "differsFromClassic": true,
+      "elapsedMs": 0.6769590000000107,
+      "classicElapsedMs": 0.6066250000000082,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 6,
+          "to": 13
+        },
+        "score": -300,
+        "book": false
+      }
+    },
+    {
+      "name": "recapture",
+      "fen": "4k3/8/8/8/8/8/3q4/3R2K1 w - - 0 20",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rxd2",
+      "uci": "d1d2",
+      "classic": "Rxd2",
+      "classicUci": "d1d2",
+      "differsFromClassic": false,
+      "elapsedMs": 0.5565420000000074,
+      "classicElapsedMs": 0.618458000000004,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 59,
+          "to": 51,
+          "capture": "bq"
+        },
+        "score": 500,
+        "book": false
+      }
+    },
+    {
+      "name": "recapture",
+      "fen": "3r2k1/3Q4/8/8/8/8/8/4K3 b - - 0 20",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rxd7",
+      "uci": "d8d7",
+      "classic": "Rxd7",
+      "classicUci": "d8d7",
+      "differsFromClassic": false,
+      "elapsedMs": 0.6073750000000189,
+      "classicElapsedMs": 0.5796670000000006,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 3,
+          "to": 11,
+          "capture": "wq"
+        },
+        "score": -500,
+        "book": false
+      }
+    },
+    {
+      "name": "development",
+      "fen": "r1bqkbnr/pppp1pp1/2n4p/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 3",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Nf3",
+      "uci": "g1f3",
+      "classic": "d4",
+      "classicUci": "d2d4",
+      "differsFromClassic": true,
+      "elapsedMs": 12.033958000000013,
+      "classicElapsedMs": 1.6066670000000158,
+      "plan": {
+        "mode": "develop",
+        "target": "home-minors-and-castling"
+      },
+      "progress": {
+        "terms": {
+          "development": 110,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 0,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 110
+      },
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 62,
+          "to": 45
+        },
+        "score": 0,
+        "book": false
+      }
+    },
+    {
+      "name": "development",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/2N4P/PPPP1PP1/R1BQKBNR b KQkq - 0 3",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Nf6",
+      "uci": "g8f6",
+      "classic": "Nf6",
+      "classicUci": "g8f6",
+      "differsFromClassic": false,
+      "elapsedMs": 3.6302909999999997,
+      "classicElapsedMs": 1.457459,
+      "plan": {
+        "mode": "develop",
+        "target": "home-minors-and-castling"
+      },
+      "progress": {
+        "terms": {
+          "development": 110,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 0,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 110
+      },
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 6,
+          "to": 21
+        },
+        "score": 0,
+        "book": false
+      }
+    },
+    {
+      "name": "guarded-centre",
+      "fen": "r2qkb1r/ppp2ppp/2npbn2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w kq - 0 9",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe6",
+      "uci": "c4e6",
+      "classic": "Bxa7",
+      "classicUci": "e3a7",
+      "differsFromClassic": true,
+      "elapsedMs": 27.685332999999986,
+      "classicElapsedMs": 6.974375000000009,
+      "plan": {
+        "mode": "open-centre",
+        "target": "d/e-files"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 30,
+          "attackers": 25,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 55
+      },
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 34,
+          "to": 20,
+          "capture": "bb"
+        },
+        "score": 60,
+        "book": false
+      }
+    },
+    {
+      "name": "guarded-centre",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NPBN2/PPP2PPP/R2QKB1R b KQ - 0 9",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe3",
+      "uci": "c5e3",
+      "classic": "Bxa2",
+      "classicUci": "e6a2",
+      "differsFromClassic": true,
+      "elapsedMs": 13.072291000000007,
+      "classicElapsedMs": 4.812667000000005,
+      "plan": {
+        "mode": "open-centre",
+        "target": "d/e-files"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 30,
+          "attackers": 25,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 55
+      },
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 26,
+          "to": 44,
+          "capture": "wb"
+        },
+        "score": -60,
+        "book": false
+      }
+    },
+    {
+      "name": "central-break",
+      "fen": "r1bqkb1r/ppp2ppp/2np1n2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w kq - 0 9",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "d4",
+      "uci": "d3d4",
+      "classic": "d4",
+      "classicUci": "d3d4",
+      "differsFromClassic": false,
+      "elapsedMs": 6.808084000000008,
+      "classicElapsedMs": 3.702208999999982,
+      "plan": {
+        "mode": "open-centre",
+        "target": "d/e-files"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 150,
+          "lineAccess": -10,
+          "attackers": 0,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 140
+      },
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 43,
+          "to": 35
+        },
+        "score": 90,
+        "book": false
+      }
+    },
+    {
+      "name": "central-break",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NP1N2/PPP2PPP/R1BQKB1R b KQ - 0 9",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "d5",
+      "uci": "d6d5",
+      "classic": "a5",
+      "classicUci": "a7a5",
+      "differsFromClassic": true,
+      "elapsedMs": 6.904875000000004,
+      "classicElapsedMs": 3.4790419999999926,
+      "plan": {
+        "mode": "open-centre",
+        "target": "d/e-files"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 150,
+          "lineAccess": -10,
+          "attackers": 0,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 140
+      },
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 19,
+          "to": 27
+        },
+        "score": -90,
+        "book": false
+      }
+    },
+    {
+      "name": "coordination",
+      "fen": "r4rk1/ppp2ppp/2npbn2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w - - 0 16",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe6",
+      "uci": "c4e6",
+      "classic": "Bxa7",
+      "classicUci": "e3a7",
+      "differsFromClassic": true,
+      "elapsedMs": 11.32220799999999,
+      "classicElapsedMs": 3.965040999999985,
+      "plan": {
+        "mode": "king-attack",
+        "target": "g8"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 80,
+          "areaSquares": 8,
+          "rookFiles": 0
+        },
+        "bonus": 88
+      },
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 34,
+          "to": 20,
+          "capture": "bb"
+        },
+        "score": 1245,
+        "book": false
+      }
+    },
+    {
+      "name": "coordination",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NPBN2/PPP2PPP/R4RK1 b - - 0 16",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe3",
+      "uci": "c5e3",
+      "classic": "Bxa2",
+      "classicUci": "e6a2",
+      "differsFromClassic": true,
+      "elapsedMs": 10.662333999999987,
+      "classicElapsedMs": 4.200041999999996,
+      "plan": {
+        "mode": "king-attack",
+        "target": "g1"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 80,
+          "areaSquares": 8,
+          "rookFiles": 0
+        },
+        "bonus": 88
+      },
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 26,
+          "to": 44,
+          "capture": "wb"
+        },
+        "score": -1245,
+        "book": false
+      }
+    },
+    {
+      "name": "balanced-coordination",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w - - 0 16",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe6",
+      "uci": "c4e6",
+      "classic": "Bxa7",
+      "classicUci": "e3a7",
+      "differsFromClassic": true,
+      "elapsedMs": 11.621375,
+      "classicElapsedMs": 4.016249999999957,
+      "plan": {
+        "mode": "king-attack",
+        "target": "g8"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 80,
+          "areaSquares": 8,
+          "rookFiles": 0
+        },
+        "bonus": 88
+      },
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 34,
+          "to": 20,
+          "capture": "bb"
+        },
+        "score": 350,
+        "book": false
+      }
+    },
+    {
+      "name": "balanced-coordination",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NPBN2/PPP2PPP/R2Q1RK1 b - - 0 16",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe3",
+      "uci": "c5e3",
+      "classic": "Bxa2",
+      "classicUci": "e6a2",
+      "differsFromClassic": true,
+      "elapsedMs": 10.971832999999947,
+      "classicElapsedMs": 4.132249999999999,
+      "plan": {
+        "mode": "king-attack",
+        "target": "g1"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 80,
+          "areaSquares": 8,
+          "rookFiles": 0
+        },
+        "bonus": 88
+      },
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 26,
+          "to": 44,
+          "capture": "wb"
+        },
+        "score": -350,
+        "book": false
+      }
+    },
+    {
+      "name": "pinned",
+      "fen": "4r3/8/8/8/6k1/8/4N3/4K2R w - - 0 20",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Kd2",
+      "uci": "e1d2",
+      "classic": "Kf2",
+      "classicUci": "e1f2",
+      "differsFromClassic": true,
+      "elapsedMs": 0.5252500000000282,
+      "classicElapsedMs": 0.4255829999999605,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 60,
+          "to": 51
+        },
+        "score": 330,
+        "book": false
+      }
+    },
+    {
+      "name": "pinned",
+      "fen": "4k2r/4n3/8/6K1/8/8/8/4R3 b - - 0 20",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Kd7",
+      "uci": "e8d7",
+      "classic": "Kf7",
+      "classicUci": "e8f7",
+      "differsFromClassic": true,
+      "elapsedMs": 0.4716669999999681,
+      "classicElapsedMs": 0.44325000000003456,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 4,
+          "to": 11
+        },
+        "score": -330,
+        "book": false
+      }
+    },
+    {
+      "name": "ending",
+      "fen": "7k/7p/8/8/8/8/P7/KR6 w - - 0 30",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Kb2",
+      "uci": "a1b2",
+      "classic": "Rf1",
+      "classicUci": "b1f1",
+      "differsFromClassic": true,
+      "elapsedMs": 0.09991700000000492,
+      "classicElapsedMs": 0.07937499999997044,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 56,
+          "to": 49
+        },
+        "score": 520,
+        "book": false
+      }
+    },
+    {
+      "name": "ending",
+      "fen": "kr6/p7/8/8/8/8/7P/7K b - - 0 30",
+      "level": "casual",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Kb7",
+      "uci": "a8b7",
+      "classic": "Rh8",
+      "classicUci": "b8h8",
+      "differsFromClassic": true,
+      "elapsedMs": 0.09812499999998181,
+      "classicElapsedMs": 0.07974999999999,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 0,
+          "to": 9
+        },
+        "score": -520,
+        "book": false
+      }
+    },
+    {
+      "name": "unique-mate",
+      "fen": "7k/8/6K1/6Q1/8/8/8/8 w - - 0 1",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Qd8#",
+      "uci": "g5d8",
+      "classic": "Qd8#",
+      "classicUci": "g5d8",
+      "differsFromClassic": false,
+      "elapsedMs": 0.18779100000000426,
+      "classicElapsedMs": 0.30229099999996834,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "mate",
+      "result": {
+        "move": {
+          "from": 30,
+          "to": 3
+        },
+        "score": 99999,
+        "book": false
+      }
+    },
+    {
+      "name": "unique-mate",
+      "fen": "8/8/8/8/6q1/6k1/8/7K b - - 0 1",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Qd1#",
+      "uci": "g4d1",
+      "classic": "Qd1#",
+      "classicUci": "g4d1",
+      "differsFromClassic": false,
+      "elapsedMs": 0.18012499999997544,
+      "classicElapsedMs": 0.2545000000000073,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "mate",
+      "result": {
+        "move": {
+          "from": 38,
+          "to": 59
+        },
+        "score": -99999,
+        "book": false
+      }
+    },
+    {
+      "name": "free-queen",
+      "fen": "4k3/8/8/8/8/8/q7/R3K3 w - - 0 1",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rxa2",
+      "uci": "a1a2",
+      "classic": "Rxa2",
+      "classicUci": "a1a2",
+      "differsFromClassic": false,
+      "elapsedMs": 2.3555410000000165,
+      "classicElapsedMs": 0.4012920000000122,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 56,
+          "to": 48,
+          "capture": "bq"
+        },
+        "score": 465,
+        "book": false
+      }
+    },
+    {
+      "name": "free-queen",
+      "fen": "r3k3/Q7/8/8/8/8/8/4K3 b - - 0 1",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rxa7",
+      "uci": "a8a7",
+      "classic": "Rxa7",
+      "classicUci": "a8a7",
+      "differsFromClassic": false,
+      "elapsedMs": 2.26320800000002,
+      "classicElapsedMs": 0.4287919999999872,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 0,
+          "to": 8,
+          "capture": "wq"
+        },
+        "score": -465,
+        "book": false
+      }
+    },
+    {
+      "name": "poisoned-pawn",
+      "fen": "3rk3/8/8/3p4/8/8/8/3Q2K1 w - - 0 20",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Kf2",
+      "uci": "g1f2",
+      "classic": "Kf2",
+      "classicUci": "g1f2",
+      "differsFromClassic": false,
+      "elapsedMs": 4.8091249999999945,
+      "classicElapsedMs": 2.776707999999985,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 62,
+          "to": 53
+        },
+        "score": 270,
+        "book": false
+      }
+    },
+    {
+      "name": "poisoned-pawn",
+      "fen": "3q2k1/8/8/8/3P4/8/8/3RK3 b - - 0 20",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Kf7",
+      "uci": "g8f7",
+      "classic": "Kf7",
+      "classicUci": "g8f7",
+      "differsFromClassic": false,
+      "elapsedMs": 4.467166999999961,
+      "classicElapsedMs": 2.176583999999991,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 6,
+          "to": 13
+        },
+        "score": -270,
+        "book": false
+      }
+    },
+    {
+      "name": "recapture",
+      "fen": "4k3/8/8/8/8/8/3q4/3R2K1 w - - 0 20",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rxd2",
+      "uci": "d1d2",
+      "classic": "Rxd2",
+      "classicUci": "d1d2",
+      "differsFromClassic": false,
+      "elapsedMs": 3.082457999999974,
+      "classicElapsedMs": 0.4440000000000168,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 59,
+          "to": 51,
+          "capture": "bq"
+        },
+        "score": 470,
+        "book": false
+      }
+    },
+    {
+      "name": "recapture",
+      "fen": "3r2k1/3Q4/8/8/8/8/8/4K3 b - - 0 20",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rxd7",
+      "uci": "d8d7",
+      "classic": "Rxd7",
+      "classicUci": "d8d7",
+      "differsFromClassic": false,
+      "elapsedMs": 3.2077079999999683,
+      "classicElapsedMs": 0.7146669999999631,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 3,
+          "to": 11,
+          "capture": "wq"
+        },
+        "score": -470,
+        "book": false
+      }
+    },
+    {
+      "name": "development",
+      "fen": "r1bqkbnr/pppp1pp1/2n4p/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 3",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Nf3",
+      "uci": "g1f3",
+      "classic": "Nc3",
+      "classicUci": "b1c3",
+      "differsFromClassic": true,
+      "elapsedMs": 24.89516599999996,
+      "classicElapsedMs": 4.963458000000003,
+      "plan": {
+        "mode": "develop",
+        "target": "home-minors-and-castling"
+      },
+      "progress": {
+        "terms": {
+          "development": 110,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 0,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 110
+      },
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 62,
+          "to": 45
+        },
+        "score": -50,
+        "book": false
+      }
+    },
+    {
+      "name": "development",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/2N4P/PPPP1PP1/R1BQKBNR b KQkq - 0 3",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Nf6",
+      "uci": "g8f6",
+      "classic": "Nc6",
+      "classicUci": "b8c6",
+      "differsFromClassic": true,
+      "elapsedMs": 35.49929100000003,
+      "classicElapsedMs": 7.807874999999967,
+      "plan": {
+        "mode": "develop",
+        "target": "home-minors-and-castling"
+      },
+      "progress": {
+        "terms": {
+          "development": 110,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 0,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 110
+      },
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 6,
+          "to": 21
+        },
+        "score": 50,
+        "book": false
+      }
+    },
+    {
+      "name": "guarded-centre",
+      "fen": "r2qkb1r/ppp2ppp/2npbn2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w kq - 0 9",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe6",
+      "uci": "c4e6",
+      "classic": "Bxe6",
+      "classicUci": "c4e6",
+      "differsFromClassic": false,
+      "elapsedMs": 108.93695800000006,
+      "classicElapsedMs": 7.925624999999968,
+      "plan": {
+        "mode": "open-centre",
+        "target": "d/e-files"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 30,
+          "attackers": 25,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 55
+      },
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 34,
+          "to": 20,
+          "capture": "bb"
+        },
+        "score": 60,
+        "book": false
+      }
+    },
+    {
+      "name": "guarded-centre",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NPBN2/PPP2PPP/R2QKB1R b KQ - 0 9",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe3",
+      "uci": "c5e3",
+      "classic": "Bxe3",
+      "classicUci": "c5e3",
+      "differsFromClassic": false,
+      "elapsedMs": 93.18141700000001,
+      "classicElapsedMs": 7.809750000000008,
+      "plan": {
+        "mode": "open-centre",
+        "target": "d/e-files"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 30,
+          "attackers": 25,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 55
+      },
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 26,
+          "to": 44,
+          "capture": "wb"
+        },
+        "score": -60,
+        "book": false
+      }
+    },
+    {
+      "name": "central-break",
+      "fen": "r1bqkb1r/ppp2ppp/2np1n2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w kq - 0 9",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "d4",
+      "uci": "d3d4",
+      "classic": "Bd5",
+      "classicUci": "c4d5",
+      "differsFromClassic": true,
+      "elapsedMs": 95.94883300000004,
+      "classicElapsedMs": 31.920332999999914,
+      "plan": {
+        "mode": "open-centre",
+        "target": "d/e-files"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 150,
+          "lineAccess": -10,
+          "attackers": 0,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 140
+      },
+      "depth": 2,
+      "neutralLoss": 90,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 43,
+          "to": 35
+        },
+        "score": -30,
+        "book": false
+      }
+    },
+    {
+      "name": "central-break",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NP1N2/PPP2PPP/R1BQKB1R b KQ - 0 9",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "d5",
+      "uci": "d6d5",
+      "classic": "Nd4",
+      "classicUci": "c6d4",
+      "differsFromClassic": true,
+      "elapsedMs": 87.57829200000003,
+      "classicElapsedMs": 46.488249999999994,
+      "plan": {
+        "mode": "open-centre",
+        "target": "d/e-files"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 150,
+          "lineAccess": -10,
+          "attackers": 0,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 140
+      },
+      "depth": 2,
+      "neutralLoss": 90,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 19,
+          "to": 27
+        },
+        "score": 30,
+        "book": false
+      }
+    },
+    {
+      "name": "coordination",
+      "fen": "r4rk1/ppp2ppp/2npbn2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w - - 0 16",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe6",
+      "uci": "c4e6",
+      "classic": "Bxe6",
+      "classicUci": "c4e6",
+      "differsFromClassic": false,
+      "elapsedMs": 97.31266600000004,
+      "classicElapsedMs": 6.97666700000002,
+      "plan": {
+        "mode": "king-attack",
+        "target": "g8"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 80,
+          "areaSquares": 8,
+          "rookFiles": 0
+        },
+        "bonus": 88
+      },
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 34,
+          "to": 20,
+          "capture": "bb"
+        },
+        "score": 1245,
+        "book": false
+      }
+    },
+    {
+      "name": "coordination",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NPBN2/PPP2PPP/R4RK1 b - - 0 16",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe3",
+      "uci": "c5e3",
+      "classic": "Bxe3",
+      "classicUci": "c5e3",
+      "differsFromClassic": false,
+      "elapsedMs": 89.76008300000012,
+      "classicElapsedMs": 6.573957999999948,
+      "plan": {
+        "mode": "king-attack",
+        "target": "g1"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 80,
+          "areaSquares": 8,
+          "rookFiles": 0
+        },
+        "bonus": 88
+      },
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 26,
+          "to": 44,
+          "capture": "wb"
+        },
+        "score": -1245,
+        "book": false
+      }
+    },
+    {
+      "name": "balanced-coordination",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w - - 0 16",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe6",
+      "uci": "c4e6",
+      "classic": "Bxe6",
+      "classicUci": "c4e6",
+      "differsFromClassic": false,
+      "elapsedMs": 95.41208400000005,
+      "classicElapsedMs": 6.771375000000035,
+      "plan": {
+        "mode": "king-attack",
+        "target": "g8"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 80,
+          "areaSquares": 8,
+          "rookFiles": 0
+        },
+        "bonus": 88
+      },
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 34,
+          "to": 20,
+          "capture": "bb"
+        },
+        "score": 350,
+        "book": false
+      }
+    },
+    {
+      "name": "balanced-coordination",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NPBN2/PPP2PPP/R2Q1RK1 b - - 0 16",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe3",
+      "uci": "c5e3",
+      "classic": "Bxe3",
+      "classicUci": "c5e3",
+      "differsFromClassic": false,
+      "elapsedMs": 87.63891699999999,
+      "classicElapsedMs": 6.353166999999985,
+      "plan": {
+        "mode": "king-attack",
+        "target": "g1"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 80,
+          "areaSquares": 8,
+          "rookFiles": 0
+        },
+        "bonus": 88
+      },
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 26,
+          "to": 44,
+          "capture": "wb"
+        },
+        "score": -350,
+        "book": false
+      }
+    },
+    {
+      "name": "pinned",
+      "fen": "4r3/8/8/8/6k1/8/4N3/4K2R w - - 0 20",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rf1",
+      "uci": "h1f1",
+      "classic": "Rf1",
+      "classicUci": "h1f1",
+      "differsFromClassic": false,
+      "elapsedMs": 3.89650000000006,
+      "classicElapsedMs": 2.7295839999999316,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 63,
+          "to": 61
+        },
+        "score": 300,
+        "book": false
+      }
+    },
+    {
+      "name": "pinned",
+      "fen": "4k2r/4n3/8/6K1/8/8/8/4R3 b - - 0 20",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rf8",
+      "uci": "h8f8",
+      "classic": "Rf8",
+      "classicUci": "h8f8",
+      "differsFromClassic": false,
+      "elapsedMs": 3.7321249999999964,
+      "classicElapsedMs": 1.296875,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 7,
+          "to": 5
+        },
+        "score": -300,
+        "book": false
+      }
+    },
+    {
+      "name": "ending",
+      "fen": "7k/7p/8/8/8/8/P7/KR6 w - - 0 30",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Kb2",
+      "uci": "a1b2",
+      "classic": "Kb2",
+      "classicUci": "a1b2",
+      "differsFromClassic": false,
+      "elapsedMs": 0.92450000000008,
+      "classicElapsedMs": 0.35716600000000653,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 56,
+          "to": 49
+        },
+        "score": 500,
+        "book": false
+      }
+    },
+    {
+      "name": "ending",
+      "fen": "kr6/p7/8/8/8/8/7P/7K b - - 0 30",
+      "level": "club",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Kb7",
+      "uci": "a8b7",
+      "classic": "Kb7",
+      "classicUci": "a8b7",
+      "differsFromClassic": false,
+      "elapsedMs": 0.8570000000001983,
+      "classicElapsedMs": 0.5022079999998823,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 2,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 0,
+          "to": 9
+        },
+        "score": -500,
+        "book": false
+      }
+    },
+    {
+      "name": "unique-mate",
+      "fen": "7k/8/6K1/6Q1/8/8/8/8 w - - 0 1",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Qd8#",
+      "uci": "g5d8",
+      "classic": "Qd8#",
+      "classicUci": "g5d8",
+      "differsFromClassic": false,
+      "elapsedMs": 0.16991699999994125,
+      "classicElapsedMs": 0.145958999999948,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "mate",
+      "result": {
+        "move": {
+          "from": 30,
+          "to": 3
+        },
+        "score": 99999,
+        "book": false
+      }
+    },
+    {
+      "name": "unique-mate",
+      "fen": "8/8/8/8/6q1/6k1/8/7K b - - 0 1",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Qd1#",
+      "uci": "g4d1",
+      "classic": "Qd1#",
+      "classicUci": "g4d1",
+      "differsFromClassic": false,
+      "elapsedMs": 0.16295900000000074,
+      "classicElapsedMs": 0.15304199999991397,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 1,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "mate",
+      "result": {
+        "move": {
+          "from": 38,
+          "to": 59
+        },
+        "score": -99999,
+        "book": false
+      }
+    },
+    {
+      "name": "free-queen",
+      "fen": "4k3/8/8/8/8/8/q7/R3K3 w - - 0 1",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rxa2",
+      "uci": "a1a2",
+      "classic": "Rxa2",
+      "classicUci": "a1a2",
+      "differsFromClassic": false,
+      "elapsedMs": 79.26012500000002,
+      "classicElapsedMs": 5.511207999999897,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 4,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 56,
+          "to": 48,
+          "capture": "bq"
+        },
+        "score": 465,
+        "book": false
+      }
+    },
+    {
+      "name": "free-queen",
+      "fen": "r3k3/Q7/8/8/8/8/8/4K3 b - - 0 1",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rxa7",
+      "uci": "a8a7",
+      "classic": "Rxa7",
+      "classicUci": "a8a7",
+      "differsFromClassic": false,
+      "elapsedMs": 129.00487500000008,
+      "classicElapsedMs": 4.935874999999896,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 4,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 0,
+          "to": 8,
+          "capture": "wq"
+        },
+        "score": -465,
+        "book": false
+      }
+    },
+    {
+      "name": "poisoned-pawn",
+      "fen": "3rk3/8/8/3p4/8/8/8/3Q2K1 w - - 0 20",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Qh5+",
+      "uci": "d1h5",
+      "classic": "Qh5+",
+      "classicUci": "d1h5",
+      "differsFromClassic": false,
+      "elapsedMs": 353.60370799999987,
+      "classicElapsedMs": 72.20837499999993,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 4,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 59,
+          "to": 31
+        },
+        "score": 275,
+        "book": false
+      }
+    },
+    {
+      "name": "poisoned-pawn",
+      "fen": "3q2k1/8/8/8/3P4/8/8/3RK3 b - - 0 20",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Qh4+",
+      "uci": "d8h4",
+      "classic": "Qh4+",
+      "classicUci": "d8h4",
+      "differsFromClassic": false,
+      "elapsedMs": 232.25116600000024,
+      "classicElapsedMs": 50.80983400000014,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 4,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 3,
+          "to": 39
+        },
+        "score": -275,
+        "book": false
+      }
+    },
+    {
+      "name": "recapture",
+      "fen": "4k3/8/8/8/8/8/3q4/3R2K1 w - - 0 20",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rxd2",
+      "uci": "d1d2",
+      "classic": "Rxd2",
+      "classicUci": "d1d2",
+      "differsFromClassic": false,
+      "elapsedMs": 114.49229200000036,
+      "classicElapsedMs": 5.068417000000409,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 4,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 59,
+          "to": 51,
+          "capture": "bq"
+        },
+        "score": 470,
+        "book": false
+      }
+    },
+    {
+      "name": "recapture",
+      "fen": "3r2k1/3Q4/8/8/8/8/8/4K3 b - - 0 20",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rxd7",
+      "uci": "d8d7",
+      "classic": "Rxd7",
+      "classicUci": "d8d7",
+      "differsFromClassic": false,
+      "elapsedMs": 124.24150000000009,
+      "classicElapsedMs": 3.377124999999978,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 4,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 3,
+          "to": 11,
+          "capture": "wq"
+        },
+        "score": -470,
+        "book": false
+      }
+    },
+    {
+      "name": "development",
+      "fen": "r1bqkbnr/pppp1pp1/2n4p/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 3",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Nf3",
+      "uci": "g1f3",
+      "classic": "Nc3",
+      "classicUci": "b1c3",
+      "differsFromClassic": true,
+      "elapsedMs": 1970.8883329999999,
+      "classicElapsedMs": 296.63837500000045,
+      "plan": {
+        "mode": "develop",
+        "target": "home-minors-and-castling"
+      },
+      "progress": {
+        "terms": {
+          "development": 110,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 0,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 110
+      },
+      "depth": 3,
+      "neutralLoss": 0,
+      "searchTimedOut": true,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 62,
+          "to": 45
+        },
+        "score": 0,
+        "book": false
+      }
+    },
+    {
+      "name": "development",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/2N4P/PPPP1PP1/R1BQKBNR b KQkq - 0 3",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Nf6",
+      "uci": "g8f6",
+      "classic": "Nc6",
+      "classicUci": "b8c6",
+      "differsFromClassic": true,
+      "elapsedMs": 1970.889542,
+      "classicElapsedMs": 411.8045000000002,
+      "plan": {
+        "mode": "develop",
+        "target": "home-minors-and-castling"
+      },
+      "progress": {
+        "terms": {
+          "development": 110,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 0,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 110
+      },
+      "depth": 3,
+      "neutralLoss": 0,
+      "searchTimedOut": true,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 6,
+          "to": 21
+        },
+        "score": 0,
+        "book": false
+      }
+    },
+    {
+      "name": "guarded-centre",
+      "fen": "r2qkb1r/ppp2ppp/2npbn2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w kq - 0 9",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe6",
+      "uci": "c4e6",
+      "classic": "Bxe6",
+      "classicUci": "c4e6",
+      "differsFromClassic": false,
+      "elapsedMs": 1971.1102919999994,
+      "classicElapsedMs": 543.9349170000005,
+      "plan": {
+        "mode": "open-centre",
+        "target": "d/e-files"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 30,
+          "attackers": 25,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 55
+      },
+      "depth": 3,
+      "neutralLoss": 0,
+      "searchTimedOut": true,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 34,
+          "to": 20,
+          "capture": "bb"
+        },
+        "score": 80,
+        "book": false
+      }
+    },
+    {
+      "name": "guarded-centre",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NPBN2/PPP2PPP/R2QKB1R b KQ - 0 9",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe3",
+      "uci": "c5e3",
+      "classic": "Bxe3",
+      "classicUci": "c5e3",
+      "differsFromClassic": false,
+      "elapsedMs": 1971.1483750000007,
+      "classicElapsedMs": 536.5848330000008,
+      "plan": {
+        "mode": "open-centre",
+        "target": "d/e-files"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 30,
+          "attackers": 25,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 55
+      },
+      "depth": 3,
+      "neutralLoss": 0,
+      "searchTimedOut": true,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 26,
+          "to": 44,
+          "capture": "wb"
+        },
+        "score": -80,
+        "book": false
+      }
+    },
+    {
+      "name": "central-break",
+      "fen": "r1bqkb1r/ppp2ppp/2np1n2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w kq - 0 9",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "d4",
+      "uci": "d3d4",
+      "classic": "Ng5",
+      "classicUci": "f3g5",
+      "differsFromClassic": true,
+      "elapsedMs": 1971.2389590000002,
+      "classicElapsedMs": 838.1088749999999,
+      "plan": {
+        "mode": "open-centre",
+        "target": "d/e-files"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 150,
+          "lineAccess": -10,
+          "attackers": 0,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 140
+      },
+      "depth": 3,
+      "neutralLoss": 70,
+      "searchTimedOut": true,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 43,
+          "to": 35
+        },
+        "score": 80,
+        "book": false
+      }
+    },
+    {
+      "name": "central-break",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NP1N2/PPP2PPP/R1BQKB1R b KQ - 0 9",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "d5",
+      "uci": "d6d5",
+      "classic": "Ng4",
+      "classicUci": "f6g4",
+      "differsFromClassic": true,
+      "elapsedMs": 1971.2796249999992,
+      "classicElapsedMs": 1081.5508749999972,
+      "plan": {
+        "mode": "open-centre",
+        "target": "d/e-files"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 150,
+          "lineAccess": -10,
+          "attackers": 0,
+          "areaSquares": 0,
+          "rookFiles": 0
+        },
+        "bonus": 140
+      },
+      "depth": 3,
+      "neutralLoss": 70,
+      "searchTimedOut": true,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 19,
+          "to": 27
+        },
+        "score": -80,
+        "book": false
+      }
+    },
+    {
+      "name": "coordination",
+      "fen": "r4rk1/ppp2ppp/2npbn2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w - - 0 16",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe6",
+      "uci": "c4e6",
+      "classic": "Nd5",
+      "classicUci": "c3d5",
+      "differsFromClassic": true,
+      "elapsedMs": 1971.1559169999964,
+      "classicElapsedMs": 312.9569169999995,
+      "plan": {
+        "mode": "king-attack",
+        "target": "g8"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 80,
+          "areaSquares": 8,
+          "rookFiles": 0
+        },
+        "bonus": 88
+      },
+      "depth": 3,
+      "neutralLoss": 0,
+      "searchTimedOut": true,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 34,
+          "to": 20,
+          "capture": "bb"
+        },
+        "score": 1265,
+        "book": false
+      }
+    },
+    {
+      "name": "coordination",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NPBN2/PPP2PPP/R4RK1 b - - 0 16",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe3",
+      "uci": "c5e3",
+      "classic": "Nd4",
+      "classicUci": "c6d4",
+      "differsFromClassic": true,
+      "elapsedMs": 1971.235332999997,
+      "classicElapsedMs": 323.60283399999753,
+      "plan": {
+        "mode": "king-attack",
+        "target": "g1"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 80,
+          "areaSquares": 8,
+          "rookFiles": 0
+        },
+        "bonus": 88
+      },
+      "depth": 3,
+      "neutralLoss": 0,
+      "searchTimedOut": true,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 26,
+          "to": 44,
+          "capture": "wb"
+        },
+        "score": -1265,
+        "book": false
+      }
+    },
+    {
+      "name": "balanced-coordination",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w - - 0 16",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe6",
+      "uci": "c4e6",
+      "classic": "Nd5",
+      "classicUci": "c3d5",
+      "differsFromClassic": true,
+      "elapsedMs": 1971.0898750000015,
+      "classicElapsedMs": 539.5713340000002,
+      "plan": {
+        "mode": "king-attack",
+        "target": "g8"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 80,
+          "areaSquares": 8,
+          "rookFiles": 0
+        },
+        "bonus": 88
+      },
+      "depth": 3,
+      "neutralLoss": 0,
+      "searchTimedOut": true,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 34,
+          "to": 20,
+          "capture": "bb"
+        },
+        "score": 370,
+        "book": false
+      }
+    },
+    {
+      "name": "balanced-coordination",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NPBN2/PPP2PPP/R2Q1RK1 b - - 0 16",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Bxe3",
+      "uci": "c5e3",
+      "classic": "Nd4",
+      "classicUci": "c6d4",
+      "differsFromClassic": true,
+      "elapsedMs": 1971.1053339999999,
+      "classicElapsedMs": 446.0965840000026,
+      "plan": {
+        "mode": "king-attack",
+        "target": "g1"
+      },
+      "progress": {
+        "terms": {
+          "development": 0,
+          "castle": 0,
+          "repeat": 0,
+          "queen": 0,
+          "centralBreak": 0,
+          "lineAccess": 0,
+          "attackers": 80,
+          "areaSquares": 8,
+          "rookFiles": 0
+        },
+        "bonus": 88
+      },
+      "depth": 3,
+      "neutralLoss": 0,
+      "searchTimedOut": true,
+      "reason": "plan",
+      "result": {
+        "move": {
+          "from": 26,
+          "to": 44,
+          "capture": "wb"
+        },
+        "score": -370,
+        "book": false
+      }
+    },
+    {
+      "name": "pinned",
+      "fen": "4r3/8/8/8/6k1/8/4N3/4K2R w - - 0 20",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rf1",
+      "uci": "h1f1",
+      "classic": "Rf1",
+      "classicUci": "h1f1",
+      "differsFromClassic": false,
+      "elapsedMs": 246.07408299999952,
+      "classicElapsedMs": 43.20245900000009,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 4,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 63,
+          "to": 61
+        },
+        "score": 310,
+        "book": false
+      }
+    },
+    {
+      "name": "pinned",
+      "fen": "4k2r/4n3/8/6K1/8/8/8/4R3 b - - 0 20",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rf8",
+      "uci": "h8f8",
+      "classic": "Rf8",
+      "classicUci": "h8f8",
+      "differsFromClassic": false,
+      "elapsedMs": 142.1679170000025,
+      "classicElapsedMs": 29.245082999997976,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 4,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 7,
+          "to": 5
+        },
+        "score": -310,
+        "book": false
+      }
+    },
+    {
+      "name": "ending",
+      "fen": "7k/7p/8/8/8/8/P7/KR6 w - - 0 30",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rb7",
+      "uci": "b1b7",
+      "classic": "Rb7",
+      "classicUci": "b1b7",
+      "differsFromClassic": false,
+      "elapsedMs": 34.831374999997934,
+      "classicElapsedMs": 11.426250000000437,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 4,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 57,
+          "to": 9
+        },
+        "score": 510,
+        "book": false
+      }
+    },
+    {
+      "name": "ending",
+      "fen": "kr6/p7/8/8/8/8/7P/7K b - - 0 30",
+      "level": "strong",
+      "ply": 30,
+      "seed": 9,
+      "clock": "real",
+      "chosen": "Rb2",
+      "uci": "b8b2",
+      "classic": "Rb2",
+      "classicUci": "b8b2",
+      "differsFromClassic": false,
+      "elapsedMs": 26.351957999999286,
+      "classicElapsedMs": 11.69062500000291,
+      "plan": {
+        "mode": "active-pieces",
+        "target": "board"
+      },
+      "progress": null,
+      "depth": 4,
+      "neutralLoss": 0,
+      "searchTimedOut": false,
+      "reason": "neutral",
+      "result": {
+        "move": {
+          "from": 1,
+          "to": 49
+        },
+        "score": -510,
+        "book": false
+      }
+    }
+  ],
+  "traces": [
+    {
+      "name": "development",
+      "replies": [
+        "a6",
+        "d6"
+      ],
+      "turns": [
+        {
+          "white": {
+            "name": "development",
+            "fen": "r1bqkbnr/pppp1pp1/2n4p/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 3",
+            "level": "club",
+            "ply": 30,
+            "seed": 9,
+            "clock": "fixed-depth",
+            "chosen": "Nf3",
+            "uci": "g1f3",
+            "classic": "Nc3",
+            "classicUci": "b1c3",
+            "differsFromClassic": true,
+            "elapsedMs": 29.008499999999913,
+            "classicElapsedMs": 5.4805840000008175,
+            "plan": {
+              "mode": "develop",
+              "target": "home-minors-and-castling"
+            },
+            "progress": {
+              "terms": {
+                "development": 110,
+                "castle": 0,
+                "repeat": 0,
+                "queen": 0,
+                "centralBreak": 0,
+                "lineAccess": 0,
+                "attackers": 0,
+                "areaSquares": 0,
+                "rookFiles": 0
+              },
+              "bonus": 110
+            },
+            "depth": 2,
+            "neutralLoss": 0,
+            "searchTimedOut": false,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 62,
+                "to": 45
+              },
+              "score": -50,
+              "book": false
+            }
+          },
+          "black": {
+            "name": "development",
+            "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/2N4P/PPPP1PP1/R1BQKBNR b KQkq - 0 3",
+            "level": "club",
+            "ply": 30,
+            "seed": 9,
+            "clock": "fixed-depth",
+            "chosen": "Nf6",
+            "uci": "g8f6",
+            "classic": "Nc6",
+            "classicUci": "b8c6",
+            "differsFromClassic": true,
+            "elapsedMs": 30.792333000001236,
+            "classicElapsedMs": 8.658666999999696,
+            "plan": {
+              "mode": "develop",
+              "target": "home-minors-and-castling"
+            },
+            "progress": {
+              "terms": {
+                "development": 110,
+                "castle": 0,
+                "repeat": 0,
+                "queen": 0,
+                "centralBreak": 0,
+                "lineAccess": 0,
+                "attackers": 0,
+                "areaSquares": 0,
+                "rookFiles": 0
+              },
+              "bonus": 110
+            },
+            "depth": 2,
+            "neutralLoss": 0,
+            "searchTimedOut": false,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 6,
+                "to": 21
+              },
+              "score": 50,
+              "book": false
+            }
+          }
+        },
+        {
+          "white": {
+            "name": "development",
+            "fen": "r1bqkbnr/1ppp1pp1/p1n4p/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 4",
+            "level": "club",
+            "ply": 32,
+            "seed": 9,
+            "clock": "fixed-depth",
+            "chosen": "Nc3",
+            "uci": "b1c3",
+            "classic": "Nc3",
+            "classicUci": "b1c3",
+            "differsFromClassic": false,
+            "elapsedMs": 42.487042000000656,
+            "classicElapsedMs": 14.013749999998254,
+            "plan": {
+              "mode": "develop",
+              "target": "home-minors-and-castling"
+            },
+            "progress": {
+              "terms": {
+                "development": 110,
+                "castle": 0,
+                "repeat": 0,
+                "queen": 0,
+                "centralBreak": 0,
+                "lineAccess": 0,
+                "attackers": 0,
+                "areaSquares": 0,
+                "rookFiles": 0
+              },
+              "bonus": 110
+            },
+            "depth": 2,
+            "neutralLoss": 0,
+            "searchTimedOut": false,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 57,
+                "to": 42
+              },
+              "score": 0,
+              "book": false
+            }
+          },
+          "black": {
+            "name": "development",
+            "fen": "rnbqkb1r/pppp1ppp/5n2/4p3/4P3/P1N4P/1PPP1PP1/R1BQKBNR b KQkq - 0 4",
+            "level": "club",
+            "ply": 32,
+            "seed": 9,
+            "clock": "fixed-depth",
+            "chosen": "Nc6",
+            "uci": "b8c6",
+            "classic": "Nc6",
+            "classicUci": "b8c6",
+            "differsFromClassic": false,
+            "elapsedMs": 42.02654199999961,
+            "classicElapsedMs": 11.919832999999926,
+            "plan": {
+              "mode": "develop",
+              "target": "home-minors-and-castling"
+            },
+            "progress": {
+              "terms": {
+                "development": 110,
+                "castle": 0,
+                "repeat": 0,
+                "queen": 0,
+                "centralBreak": 0,
+                "lineAccess": 0,
+                "attackers": 0,
+                "areaSquares": 0,
+                "rookFiles": 0
+              },
+              "bonus": 110
+            },
+            "depth": 2,
+            "neutralLoss": 0,
+            "searchTimedOut": false,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 1,
+                "to": 18
+              },
+              "score": 0,
+              "book": false
+            }
+          }
+        },
+        {
+          "white": {
+            "name": "development",
+            "fen": "r1bqkbnr/1pp2pp1/p1np3p/4p3/4P3/2N2N2/PPPP1PPP/R1BQKB1R w KQkq - 0 5",
+            "level": "club",
+            "ply": 34,
+            "seed": 9,
+            "clock": "fixed-depth",
+            "chosen": "Bc4",
+            "uci": "f1c4",
+            "classic": "d4",
+            "classicUci": "d2d4",
+            "differsFromClassic": true,
+            "elapsedMs": 44.98162500000035,
+            "classicElapsedMs": 15.484457999998995,
+            "plan": {
+              "mode": "develop",
+              "target": "home-minors-and-castling"
+            },
+            "progress": {
+              "terms": {
+                "development": 110,
+                "castle": 0,
+                "repeat": 0,
+                "queen": 0,
+                "centralBreak": 0,
+                "lineAccess": 0,
+                "attackers": 0,
+                "areaSquares": 0,
+                "rookFiles": 0
+              },
+              "bonus": 110
+            },
+            "depth": 2,
+            "neutralLoss": 20,
+            "searchTimedOut": false,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 61,
+                "to": 34
+              },
+              "score": 0,
+              "book": false
+            }
+          },
+          "black": {
+            "name": "development",
+            "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p3/4P3/P1NP3P/1PP2PP1/R1BQKBNR b KQkq - 0 5",
+            "level": "club",
+            "ply": 34,
+            "seed": 9,
+            "clock": "fixed-depth",
+            "chosen": "Bc5",
+            "uci": "f8c5",
+            "classic": "d5",
+            "classicUci": "d7d5",
+            "differsFromClassic": true,
+            "elapsedMs": 47.48320899999817,
+            "classicElapsedMs": 21.66349999999875,
+            "plan": {
+              "mode": "develop",
+              "target": "home-minors-and-castling"
+            },
+            "progress": {
+              "terms": {
+                "development": 110,
+                "castle": 0,
+                "repeat": 0,
+                "queen": 0,
+                "centralBreak": 0,
+                "lineAccess": 0,
+                "attackers": 0,
+                "areaSquares": 0,
+                "rookFiles": 0
+              },
+              "bonus": 110
+            },
+            "depth": 2,
+            "neutralLoss": 20,
+            "searchTimedOut": false,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 5,
+                "to": 26
+              },
+              "score": 0,
+              "book": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "central-break",
+      "replies": [
+        "exd4"
+      ],
+      "turns": [
+        {
+          "white": {
+            "name": "central-break",
+            "fen": "r1bqkb1r/ppp2ppp/2np1n2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w kq - 0 9",
+            "level": "club",
+            "ply": 30,
+            "seed": 9,
+            "clock": "fixed-depth",
+            "chosen": "d4",
+            "uci": "d3d4",
+            "classic": "Bd5",
+            "classicUci": "c4d5",
+            "differsFromClassic": true,
+            "elapsedMs": 112.77841600000102,
+            "classicElapsedMs": 37.5970410000009,
+            "plan": {
+              "mode": "open-centre",
+              "target": "d/e-files"
+            },
+            "progress": {
+              "terms": {
+                "development": 0,
+                "castle": 0,
+                "repeat": 0,
+                "queen": 0,
+                "centralBreak": 150,
+                "lineAccess": -10,
+                "attackers": 0,
+                "areaSquares": 0,
+                "rookFiles": 0
+              },
+              "bonus": 140
+            },
+            "depth": 2,
+            "neutralLoss": 90,
+            "searchTimedOut": false,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 43,
+                "to": 35
+              },
+              "score": -30,
+              "book": false
+            }
+          },
+          "black": {
+            "name": "central-break",
+            "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NP1N2/PPP2PPP/R1BQKB1R b KQ - 0 9",
+            "level": "club",
+            "ply": 30,
+            "seed": 9,
+            "clock": "fixed-depth",
+            "chosen": "d5",
+            "uci": "d6d5",
+            "classic": "Nd4",
+            "classicUci": "c6d4",
+            "differsFromClassic": true,
+            "elapsedMs": 103.6180830000012,
+            "classicElapsedMs": 53.33533300000272,
+            "plan": {
+              "mode": "open-centre",
+              "target": "d/e-files"
+            },
+            "progress": {
+              "terms": {
+                "development": 0,
+                "castle": 0,
+                "repeat": 0,
+                "queen": 0,
+                "centralBreak": 150,
+                "lineAccess": -10,
+                "attackers": 0,
+                "areaSquares": 0,
+                "rookFiles": 0
+              },
+              "bonus": 140
+            },
+            "depth": 2,
+            "neutralLoss": 90,
+            "searchTimedOut": false,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 19,
+                "to": 27
+              },
+              "score": 30,
+              "book": false
+            }
+          }
+        },
+        {
+          "white": {
+            "name": "central-break",
+            "fen": "r1bqkb1r/ppp2ppp/2np1n2/8/2BpP3/2N1BN2/PPP2PPP/R2Q1RK1 w kq - 0 10",
+            "level": "club",
+            "ply": 32,
+            "seed": 9,
+            "clock": "fixed-depth",
+            "chosen": "Nxd4",
+            "uci": "f3d4",
+            "classic": "Nxd4",
+            "classicUci": "f3d4",
+            "differsFromClassic": false,
+            "elapsedMs": 108.15366699999868,
+            "classicElapsedMs": 12.720792000000074,
+            "plan": {
+              "mode": "open-centre",
+              "target": "d/e-files"
+            },
+            "progress": null,
+            "depth": 2,
+            "neutralLoss": 0,
+            "searchTimedOut": false,
+            "reason": "neutral",
+            "result": {
+              "move": {
+                "from": 45,
+                "to": 35,
+                "capture": "bp"
+              },
+              "score": 85,
+              "book": false
+            }
+          },
+          "black": {
+            "name": "central-break",
+            "fen": "r2q1rk1/ppp2ppp/2n1bn2/2bPp3/8/2NP1N2/PPP2PPP/R1BQKB1R b KQ - 0 10",
+            "level": "club",
+            "ply": 32,
+            "seed": 9,
+            "clock": "fixed-depth",
+            "chosen": "Nxd5",
+            "uci": "f6d5",
+            "classic": "Nxd5",
+            "classicUci": "f6d5",
+            "differsFromClassic": false,
+            "elapsedMs": 102.02720800000316,
+            "classicElapsedMs": 11.633166999999958,
+            "plan": {
+              "mode": "open-centre",
+              "target": "d/e-files"
+            },
+            "progress": null,
+            "depth": 2,
+            "neutralLoss": 0,
+            "searchTimedOut": false,
+            "reason": "neutral",
+            "result": {
+              "move": {
+                "from": 21,
+                "to": 27,
+                "capture": "wp"
+              },
+              "score": -85,
+              "book": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "coordination",
+      "replies": [
+        "fxe6"
+      ],
+      "turns": [
+        {
+          "white": {
+            "name": "coordination",
+            "fen": "r4rk1/ppp2ppp/2npbn2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w - - 0 16",
+            "level": "club",
+            "ply": 30,
+            "seed": 9,
+            "clock": "fixed-depth",
+            "chosen": "Bxe6",
+            "uci": "c4e6",
+            "classic": "Bxe6",
+            "classicUci": "c4e6",
+            "differsFromClassic": false,
+            "elapsedMs": 113.89166699999987,
+            "classicElapsedMs": 7.959500000000844,
+            "plan": {
+              "mode": "king-attack",
+              "target": "g8"
+            },
+            "progress": {
+              "terms": {
+                "development": 0,
+                "castle": 0,
+                "repeat": 0,
+                "queen": 0,
+                "centralBreak": 0,
+                "lineAccess": 0,
+                "attackers": 80,
+                "areaSquares": 8,
+                "rookFiles": 0
+              },
+              "bonus": 88
+            },
+            "depth": 2,
+            "neutralLoss": 0,
+            "searchTimedOut": false,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 34,
+                "to": 20,
+                "capture": "bb"
+              },
+              "score": 1245,
+              "book": false
+            }
+          },
+          "black": {
+            "name": "coordination",
+            "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NPBN2/PPP2PPP/R4RK1 b - - 0 16",
+            "level": "club",
+            "ply": 30,
+            "seed": 9,
+            "clock": "fixed-depth",
+            "chosen": "Bxe3",
+            "uci": "c5e3",
+            "classic": "Bxe3",
+            "classicUci": "c5e3",
+            "differsFromClassic": false,
+            "elapsedMs": 105.41562500000146,
+            "classicElapsedMs": 7.636207999999897,
+            "plan": {
+              "mode": "king-attack",
+              "target": "g1"
+            },
+            "progress": {
+              "terms": {
+                "development": 0,
+                "castle": 0,
+                "repeat": 0,
+                "queen": 0,
+                "centralBreak": 0,
+                "lineAccess": 0,
+                "attackers": 80,
+                "areaSquares": 8,
+                "rookFiles": 0
+              },
+              "bonus": 88
+            },
+            "depth": 2,
+            "neutralLoss": 0,
+            "searchTimedOut": false,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 26,
+                "to": 44,
+                "capture": "wb"
+              },
+              "score": -1245,
+              "book": false
+            }
+          }
+        },
+        {
+          "white": {
+            "name": "coordination",
+            "fen": "r4rk1/ppp3pp/2nppn2/4p3/4P3/2NPBN2/PPP2PPP/R2Q1RK1 w - - 0 17",
+            "level": "club",
+            "ply": 32,
+            "seed": 9,
+            "clock": "fixed-depth",
+            "chosen": "Ng5",
+            "uci": "f3g5",
+            "classic": "Nb5",
+            "classicUci": "c3b5",
+            "differsFromClassic": true,
+            "elapsedMs": 59.974999999998545,
+            "classicElapsedMs": 18.345667000001413,
+            "plan": {
+              "mode": "king-attack",
+              "target": "g8"
+            },
+            "progress": {
+              "terms": {
+                "development": 0,
+                "castle": 0,
+                "repeat": 0,
+                "queen": 0,
+                "centralBreak": 0,
+                "lineAccess": 0,
+                "attackers": 80,
+                "areaSquares": 16,
+                "rookFiles": 0
+              },
+              "bonus": 96
+            },
+            "depth": 2,
+            "neutralLoss": 10,
+            "searchTimedOut": false,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 45,
+                "to": 30
+              },
+              "score": 1230,
+              "book": false
+            }
+          },
+          "black": {
+            "name": "coordination",
+            "fen": "r2q1rk1/ppp2ppp/2npbn2/4p3/4P3/2NPPN2/PPP3PP/R4RK1 b - - 0 17",
+            "level": "club",
+            "ply": 32,
+            "seed": 9,
+            "clock": "fixed-depth",
+            "chosen": "Ng4",
+            "uci": "f6g4",
+            "classic": "Nb4",
+            "classicUci": "c6b4",
+            "differsFromClassic": true,
+            "elapsedMs": 63.58008300000074,
+            "classicElapsedMs": 28.562792000000627,
+            "plan": {
+              "mode": "king-attack",
+              "target": "g1"
+            },
+            "progress": {
+              "terms": {
+                "development": 0,
+                "castle": 0,
+                "repeat": 0,
+                "queen": 0,
+                "centralBreak": 0,
+                "lineAccess": 0,
+                "attackers": 80,
+                "areaSquares": 16,
+                "rookFiles": 0
+              },
+              "bonus": 96
+            },
+            "depth": 2,
+            "neutralLoss": 10,
+            "searchTimedOut": false,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 21,
+                "to": 38
+              },
+              "score": -1230,
+              "book": false
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

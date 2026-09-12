@@ -11,6 +11,7 @@ import {
 import { evaluate, nonPawnMaterial } from "./eval";
 import { chooseAiMove, LEVEL_CFG, MATE, search } from "./search";
 import { isOpponentConfig, isSupportedOpponent, type OpponentConfig } from "./opponents";
+import { choosePlannedMove } from "./morphy-plans";
 import { chooseHistoricalMove } from "./historical-morphy";
 import type { AiResult, Color, Level, Move, Position } from "./types";
 
@@ -130,6 +131,7 @@ export function chooseOpponentMove(
     throw new Error("Opponent configuration is unavailable. Saved progress is preserved.");
   if (opponent.id === "classic") return chooseAiMove(position, level, bookSans, now);
   if (!Number.isSafeInteger(ply) || ply < 0) throw new Error("Invalid opponent move identity.");
+  if (opponent.version === 4) return choosePlannedMove(position, level, opponent.seed!, ply, now);
   if (opponent.version === 3)
     return chooseHistoricalMove(position, level, opponent.seed!, ply, now);
   const config = LEVEL_CFG[level],

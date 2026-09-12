@@ -213,6 +213,8 @@ test("historical runner initializes an exact version-3 manifest without starting
         "scripts/calibration/protocol.ts",
         "scripts/calibration/run.ts",
         "scripts/calibration/worker.ts",
+        "scripts/calibration/plans-behaviour.ts",
+        "docs/verification/morphy-plans/behaviour-protocol.md",
         "scripts/morphy-history/corpus.ts",
         "scripts/morphy-history/import.ts",
         "scripts/morphy-history/train.ts",
@@ -225,6 +227,7 @@ test("historical runner initializes an exact version-3 manifest without starting
         "src/engine/historical-features.ts",
         "src/engine/historical-morphy.ts",
         "src/engine/morphy-model.json",
+        "src/engine/morphy-plans.ts",
         "src/engine/morphy.ts",
         "src/engine/opponents.ts",
         "src/engine/search.ts",
@@ -459,6 +462,81 @@ test("a calibration pair worker resumes the declared protocol and never overwrit
     );
     expect(mismatch.status).not.toBe(0);
     expect(mismatch.stderr).toContain("Calibration manifest identity or machine mismatch");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}, 20000);
+
+test("plans protocol uses exact unrated v4 from START and rejects mixed identities and openings", async () => {
+  const { playMatch, verifySavedMatch } = await import("../../scripts/calibration/match");
+  const { PLANS_PROTOCOL, openingForProtocol, opponentIdentity, parseProtocol } =
+    await import("../../scripts/calibration/protocol");
+  expect(parseProtocol("morphy-plans-paired-v1")).toBe(PLANS_PROTOCOL);
+  expect(opponentIdentity(PLANS_PROTOCOL)).toEqual({
+    id: "attack-development",
+    version: 4,
+    engine: "plans-v1",
+    randomPolicy: "seeded-per-ply-v1",
+  });
+  expect(openingForProtocol(PLANS_PROTOCOL, 123)).toEqual([]);
+  const options: Parameters<typeof playMatch>[0] = {
+    protocol: PLANS_PROTOCOL,
+    opponentVersion: 4 as const,
+    level: "casual" as const,
+    morphyColor: "w" as const,
+    seed: 1,
+    opening: [],
+    maxPlies: 1,
+  };
+  const game = playMatch(options);
+  expect(game.moves).toEqual(["e4"]);
+  expect(game.opponent.engine).toBe("plans-v1");
+  expect(() => verifySavedMatch(game, options)).not.toThrow();
+  expect(() => playMatch({ ...options, opponentVersion: 3 })).toThrow(/protocol.*version/i);
+  expect(() => playMatch({ ...options, opening: ["e4"] })).toThrow(/start.*opening/i);
+  expect(() =>
+    verifySavedMatch({ ...game, opponent: { ...game.opponent, version: 3 } }, options),
+  ).toThrow(/identity/i);
+  expect(() => verifySavedMatch({ ...game, moves: ["Ke7"] }, options)).toThrow(/illegal/i);
+});
+
+test("plans worker resumes exact v4 without overwrites and rejects policy-source changes", async () => {
+  const { mkdtempSync, readFileSync, writeFileSync, rmSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+  const { spawnSync } = await import("node:child_process");
+  const dir = mkdtempSync(join(tmpdir(), "morphy-plans-worker-test-"));
+  const spawn = (script: string, args: string[]) =>
+    spawnSync(process.execPath, ["--import", "tsx", script, ...args], { encoding: "utf8" });
+  try {
+    const init = spawn("scripts/calibration/run.ts", [
+      "casual",
+      dir,
+      "1",
+      "1",
+      "morphy-plans-paired-v1",
+      "--init-only",
+    ]);
+    expect(init.status, init.stderr).toBe(0);
+    const manifestPath = join(dir, "casual-manifest.json");
+    const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+    expect(manifest.openingPolicy).toBe("start-position-v1");
+    expect(manifest.opponent.version).toBe(4);
+    expect(manifest.source["src/engine/morphy-plans.ts"]).toMatch(/^[a-f0-9]{64}$/);
+    const worker = () =>
+      spawn("scripts/calibration/worker.ts", ["casual", dir, "0", "morphy-plans-paired-v1"]);
+    const first = worker();
+    expect(first.status, first.stderr).toBe(0);
+    const file = join(dir, "casual-0000-w.json"),
+      before = readFileSync(file, "utf8");
+    expect(JSON.parse(before).opponent.engine).toBe("plans-v1");
+    expect(worker().status).toBe(0);
+    expect(readFileSync(file, "utf8")).toBe(before);
+    manifest.source["src/engine/morphy-plans.ts"] = "a".repeat(64);
+    writeFileSync(manifestPath, JSON.stringify(manifest));
+    const bad = worker();
+    expect(bad.status).not.toBe(0);
+    expect(bad.stderr).toContain("source fingerprint mismatch");
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

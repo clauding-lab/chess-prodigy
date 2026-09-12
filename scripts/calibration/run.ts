@@ -7,6 +7,7 @@ import { estimate, type Score } from "./core";
 import { playMatch, verifySavedMatch, type MatchOptions, type MatchResult } from "./match";
 import {
   HISTORICAL_PROTOCOL,
+  PLANS_PROTOCOL,
   LEGACY_PROTOCOL,
   assertManifest,
   machineIdentity,
@@ -74,7 +75,7 @@ const manifest: CalibrationManifest = {
   maxPlies,
   anchor: ENGINE_ELO[level],
   productionSettings: { classic: LEVEL_CFG[level], morphy: LEVEL_CFG[level] },
-  openingPolicy: protocol === HISTORICAL_PROTOCOL ? "start-position-v1" : "sampled-six-ply-v1",
+  openingPolicy: protocol === LEGACY_PROTOCOL ? "sampled-six-ply-v1" : "start-position-v1",
   pairSeedPolicy: "color-swapped-20260912-v1",
   adjudication: "none",
   checkpoints: [50, 100, 200],
@@ -102,7 +103,7 @@ if (mode === "--init-only") {
     for (const [index, color] of (["w", "b"] as Color[]).entries()) {
       const options: MatchOptions = {
         protocol,
-        opponentVersion: protocol === HISTORICAL_PROTOCOL ? 3 : 1,
+        opponentVersion: opponentIdentity(protocol).version,
         level,
         morphyColor: color,
         seed,
@@ -132,7 +133,9 @@ if (mode === "--init-only") {
         ...measured,
         eligible:
           measured.eligible &&
-          (protocol === LEGACY_PROTOCOL || (protocol === HISTORICAL_PROTOCOL && maxPlies === 1000)),
+          (protocol === LEGACY_PROTOCOL ||
+            ((protocol === HISTORICAL_PROTOCOL || protocol === PLANS_PROTOCOL) &&
+              maxPlies === 1000)),
         protocol,
         opponentVersion: manifest.opponent.version,
         level,

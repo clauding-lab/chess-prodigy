@@ -2,7 +2,7 @@ import { existsSync, linkSync, readFileSync, unlinkSync, writeFileSync } from "n
 import { join, resolve } from "node:path";
 import type { Level } from "../../src/engine/types";
 import { playMatch, verifySavedMatch, type MatchOptions } from "./match";
-import { HISTORICAL_PROTOCOL, assertManifest, openingForProtocol, parseProtocol } from "./protocol";
+import { opponentIdentity, assertManifest, openingForProtocol, parseProtocol } from "./protocol";
 
 const [levelText, directoryText, pairText, protocolText] = process.argv.slice(2);
 if (!(["casual", "club", "strong"] as string[]).includes(levelText) || !directoryText)
@@ -24,7 +24,7 @@ for (const morphyColor of ["w", "b"] as const) {
   const file = join(directory, `${level}-${String(pair).padStart(4, "0")}-${morphyColor}.json`),
     options: MatchOptions = {
       protocol,
-      opponentVersion: protocol === HISTORICAL_PROTOCOL ? 3 : 1,
+      opponentVersion: opponentIdentity(protocol).version,
       level,
       morphyColor,
       seed,
