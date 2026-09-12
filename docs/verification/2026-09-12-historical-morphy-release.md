@@ -74,10 +74,32 @@ The measured playing policy remains frozen: comparison from `5428825` through `1
 change to search, historical features/model, repertoire/corpus, or calibration/training code. The sole
 engine-directory difference enables rated eligibility for supported version 3 in `opponents.ts`.
 
-## Final verification and production
+## Final application verification
 
-Pending both build flags, browser/offline/accessibility checks, whole-branch
-review and production verification. No new production deployment is claimed by this checkpoint.
+The completed source passes 399 unit/integration tests across 44 files plus canonical type checking,
+lint and formatting. The rematch correction has two test-first regressions: version wording follows
+the selection while the independent unavailable-clock warning remains. One older completion test
+was updated to check both visible messages rather than assuming they shared a paragraph.
+
+The complete default-off browser suite passed 108 checks with eight expected skips in five minutes.
+Four skips require enabled new-opponent selection; three are existing phone-size account-race
+variants, and one requires a touch device. The enabled production build passed 73 targeted checks
+with three expected skips in three minutes. Both commands explicitly selected the enabled flag for
+that second run. Coverage includes both colors, documented opening choices, old-save migration,
+version-preserving rematches, current-opponent selection, account receipts/archive/reload, old-client
+rejection, Home, forfeit, neutral review and explicit waiting updates.
+
+Offline journeys actually stop a disposable origin, then reopen, play, review and archive games for
+Classic and all three Morphy versions on both screen sizes. Lighthouse scored 100 in both themes,
+including passing contrast checks. The [phone-size dark Home](morphy-history/ui-20260912/mobile-dark.png)
+and [desktop wooden Home](morphy-history/ui-20260912/desktop-wood.png) were visually inspected.
+Preview-only guest tests retain expected connection diagnostics because their optional account
+backend at port 4317 is absent; authenticated checks use the separate disposable server at 4318.
+
+## Production
+
+Whole-branch review and production verification remain pending. No new production deployment is
+claimed by this checkpoint.
 
 Detailed local evidence is retained in
 `/Users/adnanrashid/Downloads/chess-prodigy-historical-morphy-20260912/`. A separate isolated guest
