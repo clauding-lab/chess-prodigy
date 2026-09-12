@@ -1,0 +1,104 @@
+{
+  "audit": "independent-legal-replay-and-interval-recalculation-v1",
+  "reviewedCommit": "d8c376dd7613fa53e72e6850462f68e7b60cc877",
+  "protocol": "morphy-plans-paired-v1",
+  "levels": {
+    "casual": {
+      "games": 200,
+      "pairs": 100,
+      "checkpoints": [
+        {
+          "pairs": 50,
+          "rating": 1188.0637213623827,
+          "lower": 1032.4841334887471,
+          "upper": 1343.6433092360182,
+          "games": 100,
+          "unresolved": 0,
+          "eligible": false,
+          "width": 311.1591757472711,
+          "roundedNearest25": 1200
+        },
+        {
+          "pairs": 100,
+          "rating": 1215.348166226132,
+          "lower": 1097.4677432029443,
+          "upper": 1333.2285892493194,
+          "games": 200,
+          "unresolved": 0,
+          "eligible": true,
+          "width": 235.76084604637504,
+          "roundedNearest25": 1225
+        }
+      ],
+      "resultReasons": {
+        "checkmate": 174,
+        "threefold-repetition": 26
+      },
+      "plies": {
+        "total": 12494,
+        "minimum": 18,
+        "maximum": 177
+      },
+      "elapsedMs": 109176.86904499998,
+      "manifestSha256": "9af3566d022fb0746534cd826806db35565846a6b822a36af774a764e59a6d2a"
+    },
+    "club": {
+      "games": 100,
+      "pairs": 50,
+      "checkpoints": [
+        {
+          "pairs": 50,
+          "rating": 1406.0714812660146,
+          "lower": 1288.8457671371752,
+          "upper": 1523.2971953948543,
+          "games": 100,
+          "unresolved": 0,
+          "eligible": true,
+          "width": 234.45142825767903,
+          "roundedNearest25": 1400
+        }
+      ],
+      "resultReasons": {
+        "threefold-repetition": 78,
+        "checkmate": 22
+      },
+      "plies": {
+        "total": 8670,
+        "minimum": 41,
+        "maximum": 169
+      },
+      "elapsedMs": 339439.1007929999,
+      "manifestSha256": "be59eba84cdfeb117296c7ace55d53d220264451caec3df58a0dfa75c34c8088"
+    },
+    "strong": {
+      "games": 100,
+      "pairs": 50,
+      "checkpoints": [
+        {
+          "pairs": 50,
+          "rating": 1613.753563074265,
+          "lower": 1481.680952669355,
+          "upper": 1745.826173479175,
+          "games": 100,
+          "unresolved": 0,
+          "eligible": true,
+          "width": 264.1452208098199,
+          "roundedNearest25": 1625
+        }
+      ],
+      "resultReasons": {
+        "threefold-repetition": 41,
+        "checkmate": 59
+      },
+      "plies": {
+        "total": 10004,
+        "minimum": 37,
+        "maximum": 172
+      },
+      "elapsedMs": 8490363.286244003,
+      "manifestSha256": "2e00ce8ad2c4aa087cfd8fd67218a7aefd324be358f737c9bf522494b1e15e8e"
+    }
+  },
+  "totalGames": 400,
+  "verdict": "PASS"
+}

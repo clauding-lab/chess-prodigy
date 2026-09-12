@@ -1,0 +1,3206 @@
+{
+  "schemaVersion": 1,
+  "order": "lexicographic relative source path",
+  "games": [
+    {
+      "line": 1,
+      "source": "casual/casual-0000-b.json",
+      "sha256": "f8b114a3bc5df406a39d8f63544c07fd8b758f98a0395f908bc609a48be5997f",
+      "pair": 0,
+      "morphyColor": "b",
+      "seed": 539363602
+    },
+    {
+      "line": 2,
+      "source": "casual/casual-0000-w.json",
+      "sha256": "ce418d6ee075d4b6c5b6410eab5a5281c970255e9c8711ad1bd1af6bc55bc805",
+      "pair": 0,
+      "morphyColor": "w",
+      "seed": 539363602
+    },
+    {
+      "line": 3,
+      "source": "casual/casual-0001-b.json",
+      "sha256": "9f19a8d2831970bad2aaa68d9e9df5debc3b41a3eb157802ac715b560f25d0dc",
+      "pair": 1,
+      "morphyColor": "b",
+      "seed": 539371521
+    },
+    {
+      "line": 4,
+      "source": "casual/casual-0001-w.json",
+      "sha256": "18394b5aadeafab87f1531d9c7f4ce7c8dcf2b3a7070948e173f0d6b836e83cb",
+      "pair": 1,
+      "morphyColor": "w",
+      "seed": 539371521
+    },
+    {
+      "line": 5,
+      "source": "casual/casual-0002-b.json",
+      "sha256": "cb362541e41c2bd916b1d1394023349f6d274753a6710275601444552cebb317",
+      "pair": 2,
+      "morphyColor": "b",
+      "seed": 539379440
+    },
+    {
+      "line": 6,
+      "source": "casual/casual-0002-w.json",
+      "sha256": "1a57a0111f6bf3bc97cb8b3f6fdced0e4c85d24e7d249934fd8b01a6f3b14ee2",
+      "pair": 2,
+      "morphyColor": "w",
+      "seed": 539379440
+    },
+    {
+      "line": 7,
+      "source": "casual/casual-0003-b.json",
+      "sha256": "925e80714e68413a939749f26acc085a5070b036b209ea0cccc5bc4d3e947596",
+      "pair": 3,
+      "morphyColor": "b",
+      "seed": 539387359
+    },
+    {
+      "line": 8,
+      "source": "casual/casual-0003-w.json",
+      "sha256": "e76ae1ff53caf499e5d1f17613a771745991625272f02d93fdc21e3902cbf352",
+      "pair": 3,
+      "morphyColor": "w",
+      "seed": 539387359
+    },
+    {
+      "line": 9,
+      "source": "casual/casual-0004-b.json",
+      "sha256": "9b713ecd23e5d1847a5630331d2a29a4adaadc9b22d18edcc81a04b8dd9b6dcf",
+      "pair": 4,
+      "morphyColor": "b",
+      "seed": 539395278
+    },
+    {
+      "line": 10,
+      "source": "casual/casual-0004-w.json",
+      "sha256": "e13fdbff873e6ed229d7f2f7919b8f51703dd524701952813c187113f3efa2e1",
+      "pair": 4,
+      "morphyColor": "w",
+      "seed": 539395278
+    },
+    {
+      "line": 11,
+      "source": "casual/casual-0005-b.json",
+      "sha256": "23b1258c1dd2323c83187ae7acdea655dba0dd58be07a24a0bc6f1cf1c1ff5ab",
+      "pair": 5,
+      "morphyColor": "b",
+      "seed": 539403197
+    },
+    {
+      "line": 12,
+      "source": "casual/casual-0005-w.json",
+      "sha256": "ae260012ee886d54653b83abb54f82ec164fcff07a17ec6f091f4e5a094b0243",
+      "pair": 5,
+      "morphyColor": "w",
+      "seed": 539403197
+    },
+    {
+      "line": 13,
+      "source": "casual/casual-0006-b.json",
+      "sha256": "5be955b87c52274fe3a1762f2d8577d37c5546240bbc1f4d900ad027e61030b7",
+      "pair": 6,
+      "morphyColor": "b",
+      "seed": 539411116
+    },
+    {
+      "line": 14,
+      "source": "casual/casual-0006-w.json",
+      "sha256": "94da1d803e3b1796c1e32435b1154ca8616e2bbc1157771a883461b85193cf9f",
+      "pair": 6,
+      "morphyColor": "w",
+      "seed": 539411116
+    },
+    {
+      "line": 15,
+      "source": "casual/casual-0007-b.json",
+      "sha256": "98b6b781403ccf2782a51ccfca2d0dd726b5df21b2f9a84fb9aea6a4d915c9eb",
+      "pair": 7,
+      "morphyColor": "b",
+      "seed": 539419035
+    },
+    {
+      "line": 16,
+      "source": "casual/casual-0007-w.json",
+      "sha256": "bc3c0a6225223d07d914a2aa423a37f92b8880b80bba3a2ad0e2e2af804c3fb5",
+      "pair": 7,
+      "morphyColor": "w",
+      "seed": 539419035
+    },
+    {
+      "line": 17,
+      "source": "casual/casual-0008-b.json",
+      "sha256": "abdec649bc94a5c34b4a27515c619461ee3d352012ba2584996b51e886c37bdf",
+      "pair": 8,
+      "morphyColor": "b",
+      "seed": 539426954
+    },
+    {
+      "line": 18,
+      "source": "casual/casual-0008-w.json",
+      "sha256": "d4420673f58de099f1ff1e1ceb5b51d24cc1666367c034deed4cc5facf230f63",
+      "pair": 8,
+      "morphyColor": "w",
+      "seed": 539426954
+    },
+    {
+      "line": 19,
+      "source": "casual/casual-0009-b.json",
+      "sha256": "fb759209ccac36cf89c1c1f1cba65c819c6061b9303ca3d5c76e350e9f4d6e5d",
+      "pair": 9,
+      "morphyColor": "b",
+      "seed": 539434873
+    },
+    {
+      "line": 20,
+      "source": "casual/casual-0009-w.json",
+      "sha256": "eb9de8423ad30d9cce59f3579e310271945fc6e3b48ea78a9309d955a5754b96",
+      "pair": 9,
+      "morphyColor": "w",
+      "seed": 539434873
+    },
+    {
+      "line": 21,
+      "source": "casual/casual-0010-b.json",
+      "sha256": "bafa06802f9c16125da59c92220aed5e9e5b83b1142d9e4e10bc8ce257ff4cf6",
+      "pair": 10,
+      "morphyColor": "b",
+      "seed": 539442792
+    },
+    {
+      "line": 22,
+      "source": "casual/casual-0010-w.json",
+      "sha256": "75efe43af7170e36ebc896191c2147b7c8d3c47ec5d6739f45fedf363ecea0e9",
+      "pair": 10,
+      "morphyColor": "w",
+      "seed": 539442792
+    },
+    {
+      "line": 23,
+      "source": "casual/casual-0011-b.json",
+      "sha256": "eb40e4cd21ff41cc3df2aca682822c3c233cb8e3839dd70c09c1fb27d4498f16",
+      "pair": 11,
+      "morphyColor": "b",
+      "seed": 539450711
+    },
+    {
+      "line": 24,
+      "source": "casual/casual-0011-w.json",
+      "sha256": "8d4571012d41d58f98a39625d7cd9d655a406097b00592ed1abe80683c9ed8a0",
+      "pair": 11,
+      "morphyColor": "w",
+      "seed": 539450711
+    },
+    {
+      "line": 25,
+      "source": "casual/casual-0012-b.json",
+      "sha256": "04d19abb0782df849e2fafa675eb33d81b618a023f152195ae1d67c62682299f",
+      "pair": 12,
+      "morphyColor": "b",
+      "seed": 539458630
+    },
+    {
+      "line": 26,
+      "source": "casual/casual-0012-w.json",
+      "sha256": "653e9ee91fa32fdc6710854953ca59ec581b7394f7557a827888626c2aa93aff",
+      "pair": 12,
+      "morphyColor": "w",
+      "seed": 539458630
+    },
+    {
+      "line": 27,
+      "source": "casual/casual-0013-b.json",
+      "sha256": "693cd0c147f91fbe02c07c552d89138b06777a0d0a261d5f038669c9a2ee8ad8",
+      "pair": 13,
+      "morphyColor": "b",
+      "seed": 539466549
+    },
+    {
+      "line": 28,
+      "source": "casual/casual-0013-w.json",
+      "sha256": "ae6d3b7f12f780053ae9a3cb6c6d10d360fffd0cd18828c123f84d92f96a1fe9",
+      "pair": 13,
+      "morphyColor": "w",
+      "seed": 539466549
+    },
+    {
+      "line": 29,
+      "source": "casual/casual-0014-b.json",
+      "sha256": "207558207d4111181f52a9f76ce1701eccf4c57b00c6f23fb3810182bddc2af0",
+      "pair": 14,
+      "morphyColor": "b",
+      "seed": 539474468
+    },
+    {
+      "line": 30,
+      "source": "casual/casual-0014-w.json",
+      "sha256": "276c4d8ac4eaac5acda932c7fda46cba414026b1090002802eee5c352e616610",
+      "pair": 14,
+      "morphyColor": "w",
+      "seed": 539474468
+    },
+    {
+      "line": 31,
+      "source": "casual/casual-0015-b.json",
+      "sha256": "973a2f97410c9f3587bf89eed68d1565971a360a24dad0d86c4e4b76570538cc",
+      "pair": 15,
+      "morphyColor": "b",
+      "seed": 539482387
+    },
+    {
+      "line": 32,
+      "source": "casual/casual-0015-w.json",
+      "sha256": "b9a395b18109a47e0dc6bd85df0989b1a4204ad290a25bc84db6325171553519",
+      "pair": 15,
+      "morphyColor": "w",
+      "seed": 539482387
+    },
+    {
+      "line": 33,
+      "source": "casual/casual-0016-b.json",
+      "sha256": "b130773c9f0c59537f7836aa0b7a8ad5844b192719dfcb9877f48cedbd6817b1",
+      "pair": 16,
+      "morphyColor": "b",
+      "seed": 539490306
+    },
+    {
+      "line": 34,
+      "source": "casual/casual-0016-w.json",
+      "sha256": "b19a9cd619811e71bb62abc3ed309bb48819462436ddc3882f81a0d82099c600",
+      "pair": 16,
+      "morphyColor": "w",
+      "seed": 539490306
+    },
+    {
+      "line": 35,
+      "source": "casual/casual-0017-b.json",
+      "sha256": "07acd504bc6f844f5cb31e6dee27e7ecf325589b7bc082e2e71ff4edfe47b6de",
+      "pair": 17,
+      "morphyColor": "b",
+      "seed": 539498225
+    },
+    {
+      "line": 36,
+      "source": "casual/casual-0017-w.json",
+      "sha256": "20e3bf95d877cd4cc5e18311afcfce213f0560efc9415ca2abde6ca8e84b74b0",
+      "pair": 17,
+      "morphyColor": "w",
+      "seed": 539498225
+    },
+    {
+      "line": 37,
+      "source": "casual/casual-0018-b.json",
+      "sha256": "b477e6d345f6e9a7d0e34957b9197f6d048f331b259ac854fde0feb20dc0dbd3",
+      "pair": 18,
+      "morphyColor": "b",
+      "seed": 539506144
+    },
+    {
+      "line": 38,
+      "source": "casual/casual-0018-w.json",
+      "sha256": "bb5d3521e3bcff5e2f2a91fb5b327ae014468347e6744e25b2c75fab401104c0",
+      "pair": 18,
+      "morphyColor": "w",
+      "seed": 539506144
+    },
+    {
+      "line": 39,
+      "source": "casual/casual-0019-b.json",
+      "sha256": "b8ce6018f748ab25ba8a86d90dfe7fc8ed0daac066ed4071f983c3cdbb9fc844",
+      "pair": 19,
+      "morphyColor": "b",
+      "seed": 539514063
+    },
+    {
+      "line": 40,
+      "source": "casual/casual-0019-w.json",
+      "sha256": "84222e78773f2c89627f7e48099805eebde2f5bb8ce285b7688f929ad009dd41",
+      "pair": 19,
+      "morphyColor": "w",
+      "seed": 539514063
+    },
+    {
+      "line": 41,
+      "source": "casual/casual-0020-b.json",
+      "sha256": "ca526b545e0c9cb1707db4eb2128f08c341039fef4679e5e8330ec1a8577d76e",
+      "pair": 20,
+      "morphyColor": "b",
+      "seed": 539521982
+    },
+    {
+      "line": 42,
+      "source": "casual/casual-0020-w.json",
+      "sha256": "026128f8d0e78ccf7290bcd765164f77f883d2bbc368b1bc4e017b11b87b03fe",
+      "pair": 20,
+      "morphyColor": "w",
+      "seed": 539521982
+    },
+    {
+      "line": 43,
+      "source": "casual/casual-0021-b.json",
+      "sha256": "ed5381ea985d511bbf3c40c3e546461a679247b26739608d23b5d42645ebc953",
+      "pair": 21,
+      "morphyColor": "b",
+      "seed": 539529901
+    },
+    {
+      "line": 44,
+      "source": "casual/casual-0021-w.json",
+      "sha256": "19ae58b3aae1467f54721e07b2fac454954a73b542dd297d706e1ef17f42f86a",
+      "pair": 21,
+      "morphyColor": "w",
+      "seed": 539529901
+    },
+    {
+      "line": 45,
+      "source": "casual/casual-0022-b.json",
+      "sha256": "f766b6858134df95e71dda916e61c108ea116505b6be7b0d39b266ca050f1e00",
+      "pair": 22,
+      "morphyColor": "b",
+      "seed": 539537820
+    },
+    {
+      "line": 46,
+      "source": "casual/casual-0022-w.json",
+      "sha256": "de7dfff486d133b4404b060583dd94744fa2f7765bcec474644e74ad382b0f3a",
+      "pair": 22,
+      "morphyColor": "w",
+      "seed": 539537820
+    },
+    {
+      "line": 47,
+      "source": "casual/casual-0023-b.json",
+      "sha256": "d03f33f5b7abe51f2c85bde1bd5b21590bd8ef24ea8dcc6e7a241e247eb92fff",
+      "pair": 23,
+      "morphyColor": "b",
+      "seed": 539545739
+    },
+    {
+      "line": 48,
+      "source": "casual/casual-0023-w.json",
+      "sha256": "40b754eb4f329c93cd961c2eb2c4a69b9f238e354f7c0b488fc95fc621d852d0",
+      "pair": 23,
+      "morphyColor": "w",
+      "seed": 539545739
+    },
+    {
+      "line": 49,
+      "source": "casual/casual-0024-b.json",
+      "sha256": "4271e91c0195fa758397c1d53fa635f9d72cfabb98ff84d1744da89af5efce61",
+      "pair": 24,
+      "morphyColor": "b",
+      "seed": 539553658
+    },
+    {
+      "line": 50,
+      "source": "casual/casual-0024-w.json",
+      "sha256": "7da7483bf49f98e62390622298fbb682080b8d6a79faf37c7b4ad7a5b2e31b90",
+      "pair": 24,
+      "morphyColor": "w",
+      "seed": 539553658
+    },
+    {
+      "line": 51,
+      "source": "casual/casual-0025-b.json",
+      "sha256": "c64432ffc9c0e0a0001859f8776906fde59b68ef35b8b1abbcc162d994146d67",
+      "pair": 25,
+      "morphyColor": "b",
+      "seed": 539561577
+    },
+    {
+      "line": 52,
+      "source": "casual/casual-0025-w.json",
+      "sha256": "a552d077e5475b0e0e002dd82b21c8959ad7dd8732a883ce3ac994b33f055c57",
+      "pair": 25,
+      "morphyColor": "w",
+      "seed": 539561577
+    },
+    {
+      "line": 53,
+      "source": "casual/casual-0026-b.json",
+      "sha256": "95e80a35fb1820a8fe2ce95b72826a61dccca783c5bcb702607a186c55eb42af",
+      "pair": 26,
+      "morphyColor": "b",
+      "seed": 539569496
+    },
+    {
+      "line": 54,
+      "source": "casual/casual-0026-w.json",
+      "sha256": "ee0078f3f295cb7b3bb8bed5710dd5834c22f418fc8a527cf4f066575b57006b",
+      "pair": 26,
+      "morphyColor": "w",
+      "seed": 539569496
+    },
+    {
+      "line": 55,
+      "source": "casual/casual-0027-b.json",
+      "sha256": "79764b30dca8dd4df79da86bbc2b794731c3cfc56b5b6f0e2ae0b5e6e328bbf1",
+      "pair": 27,
+      "morphyColor": "b",
+      "seed": 539577415
+    },
+    {
+      "line": 56,
+      "source": "casual/casual-0027-w.json",
+      "sha256": "c4ffa65166b89b3a912c7deefa55e3d9d1c9e742c4d8c56f84345310c3dd949c",
+      "pair": 27,
+      "morphyColor": "w",
+      "seed": 539577415
+    },
+    {
+      "line": 57,
+      "source": "casual/casual-0028-b.json",
+      "sha256": "8f1c2e7b6698b8ac9faa2cfdaea54f3da14a275aa72e9a121def7c64b85559b8",
+      "pair": 28,
+      "morphyColor": "b",
+      "seed": 539585334
+    },
+    {
+      "line": 58,
+      "source": "casual/casual-0028-w.json",
+      "sha256": "010d74d8a78345518414d08e3c05d2debf90121dc666bfe8c43e52963dfa8d11",
+      "pair": 28,
+      "morphyColor": "w",
+      "seed": 539585334
+    },
+    {
+      "line": 59,
+      "source": "casual/casual-0029-b.json",
+      "sha256": "67f857284e76be80cb70960095a6e0f87dcb22d6aefb81b9f39d9c5129569977",
+      "pair": 29,
+      "morphyColor": "b",
+      "seed": 539593253
+    },
+    {
+      "line": 60,
+      "source": "casual/casual-0029-w.json",
+      "sha256": "b04e16677677c400563bbfec6459024fb1bb96fa661678e4bdf659334029e16f",
+      "pair": 29,
+      "morphyColor": "w",
+      "seed": 539593253
+    },
+    {
+      "line": 61,
+      "source": "casual/casual-0030-b.json",
+      "sha256": "fb8642efea038432c45e78dd569ede1cce198323879ad05d476c77e974211ab6",
+      "pair": 30,
+      "morphyColor": "b",
+      "seed": 539601172
+    },
+    {
+      "line": 62,
+      "source": "casual/casual-0030-w.json",
+      "sha256": "9c398e24198b66f36a601a9449f06e20cb13ec3911fe709f4d9a8b0ea3068c32",
+      "pair": 30,
+      "morphyColor": "w",
+      "seed": 539601172
+    },
+    {
+      "line": 63,
+      "source": "casual/casual-0031-b.json",
+      "sha256": "bc769ef5a5f81881a7f9e6e3511fbd6a4a42896b99b024fc8151ee6c707168ed",
+      "pair": 31,
+      "morphyColor": "b",
+      "seed": 539609091
+    },
+    {
+      "line": 64,
+      "source": "casual/casual-0031-w.json",
+      "sha256": "6402907ce0cfe36c01a15f68c9065e68b02c048ee19a79e18bab81fd9c2df9ef",
+      "pair": 31,
+      "morphyColor": "w",
+      "seed": 539609091
+    },
+    {
+      "line": 65,
+      "source": "casual/casual-0032-b.json",
+      "sha256": "27e77bd375a84d98853c3ddc559d9a1a92aa60a7184d393324546932edab9626",
+      "pair": 32,
+      "morphyColor": "b",
+      "seed": 539617010
+    },
+    {
+      "line": 66,
+      "source": "casual/casual-0032-w.json",
+      "sha256": "c0dafbd9340b2bb91ee06f4d44f9fd8a152b6d241ff135ab3b717a09c96a906a",
+      "pair": 32,
+      "morphyColor": "w",
+      "seed": 539617010
+    },
+    {
+      "line": 67,
+      "source": "casual/casual-0033-b.json",
+      "sha256": "368e21b6905ed26e0141e097f4e3037028b69a9d52f858a204d1ec33faf002b7",
+      "pair": 33,
+      "morphyColor": "b",
+      "seed": 539624929
+    },
+    {
+      "line": 68,
+      "source": "casual/casual-0033-w.json",
+      "sha256": "bc46b6cb912fda3177026fd143b147c570b20c28fb8824084ff74f690de71926",
+      "pair": 33,
+      "morphyColor": "w",
+      "seed": 539624929
+    },
+    {
+      "line": 69,
+      "source": "casual/casual-0034-b.json",
+      "sha256": "55e4d1cc813990a9fdd1651426f66e3d348c79393f8d3c5125b544e9a38fcca7",
+      "pair": 34,
+      "morphyColor": "b",
+      "seed": 539632848
+    },
+    {
+      "line": 70,
+      "source": "casual/casual-0034-w.json",
+      "sha256": "0d294908787ad377aac88dcfb1ef5611036610f50a1eb40f09bb06faae361f05",
+      "pair": 34,
+      "morphyColor": "w",
+      "seed": 539632848
+    },
+    {
+      "line": 71,
+      "source": "casual/casual-0035-b.json",
+      "sha256": "cd968e8dd84199b74c7eac2ef60d7b5b52b60ff0b3c3ad64dc2f8e125c84cb3c",
+      "pair": 35,
+      "morphyColor": "b",
+      "seed": 539640767
+    },
+    {
+      "line": 72,
+      "source": "casual/casual-0035-w.json",
+      "sha256": "7840291a334f5c11d0d8b6de5f3eeb3fbc9b2b13e9b1ec8157f0c72f3352ece6",
+      "pair": 35,
+      "morphyColor": "w",
+      "seed": 539640767
+    },
+    {
+      "line": 73,
+      "source": "casual/casual-0036-b.json",
+      "sha256": "eaa5ee957f8d736d43beb3fbc0cd7eef0ed953f0dc2ed4d72f8d90966d6360da",
+      "pair": 36,
+      "morphyColor": "b",
+      "seed": 539648686
+    },
+    {
+      "line": 74,
+      "source": "casual/casual-0036-w.json",
+      "sha256": "c7e3f3f02c0adc90a9a1598bac07689f2fb24237059e4e1f88140d5c0e4b2e61",
+      "pair": 36,
+      "morphyColor": "w",
+      "seed": 539648686
+    },
+    {
+      "line": 75,
+      "source": "casual/casual-0037-b.json",
+      "sha256": "ac828491d4982e987343c6bb53205a44dff151f38aab42b56a4af5e31b16e4f9",
+      "pair": 37,
+      "morphyColor": "b",
+      "seed": 539656605
+    },
+    {
+      "line": 76,
+      "source": "casual/casual-0037-w.json",
+      "sha256": "41e74238545821ee5992b4004c9ba4dc0f45bf730051ec95c47072dad468f876",
+      "pair": 37,
+      "morphyColor": "w",
+      "seed": 539656605
+    },
+    {
+      "line": 77,
+      "source": "casual/casual-0038-b.json",
+      "sha256": "5317ee9b072469daa737f027b94d90ed98f89c11a90c76d76e466cc2f303f2f0",
+      "pair": 38,
+      "morphyColor": "b",
+      "seed": 539664524
+    },
+    {
+      "line": 78,
+      "source": "casual/casual-0038-w.json",
+      "sha256": "a6f276f72a4b97a0ae2510011664be888fd4c711acfd6c67309c0ae06eb0dae5",
+      "pair": 38,
+      "morphyColor": "w",
+      "seed": 539664524
+    },
+    {
+      "line": 79,
+      "source": "casual/casual-0039-b.json",
+      "sha256": "a1fc634f612afd39425ce993a89fff3bede1d4c93a238202813a59bf5098e9c9",
+      "pair": 39,
+      "morphyColor": "b",
+      "seed": 539672443
+    },
+    {
+      "line": 80,
+      "source": "casual/casual-0039-w.json",
+      "sha256": "760875987a3e4bbfb436350702926d55ea72124f4bfd6705d30915ed5501dc24",
+      "pair": 39,
+      "morphyColor": "w",
+      "seed": 539672443
+    },
+    {
+      "line": 81,
+      "source": "casual/casual-0040-b.json",
+      "sha256": "fed8d0e9a199cc47e6517a382f3bdac179fcbebad9d50de9c47ef4f2ee62a96a",
+      "pair": 40,
+      "morphyColor": "b",
+      "seed": 539680362
+    },
+    {
+      "line": 82,
+      "source": "casual/casual-0040-w.json",
+      "sha256": "41a58dc3de05182f713539e93aad916030d8541f60d5fbe19860e30d4cdc25c9",
+      "pair": 40,
+      "morphyColor": "w",
+      "seed": 539680362
+    },
+    {
+      "line": 83,
+      "source": "casual/casual-0041-b.json",
+      "sha256": "ebd5efdcdbcd10dc0cc2d71d2cf2120d26363dbb9094e4d5c89c468d0e803a89",
+      "pair": 41,
+      "morphyColor": "b",
+      "seed": 539688281
+    },
+    {
+      "line": 84,
+      "source": "casual/casual-0041-w.json",
+      "sha256": "350a8785f0b8e75427ffd803d94f5f98eb5a2ba4108a73945caaa42ac30d0620",
+      "pair": 41,
+      "morphyColor": "w",
+      "seed": 539688281
+    },
+    {
+      "line": 85,
+      "source": "casual/casual-0042-b.json",
+      "sha256": "df73cb338ce70a54c2953ef16078c158dfa71aca145a859bbbf5397a11dfb6ca",
+      "pair": 42,
+      "morphyColor": "b",
+      "seed": 539696200
+    },
+    {
+      "line": 86,
+      "source": "casual/casual-0042-w.json",
+      "sha256": "2dcd9f4f3beb68e1edd2cbfa04cdf64301a1000fd7edcd1893973d19ae1a0ee5",
+      "pair": 42,
+      "morphyColor": "w",
+      "seed": 539696200
+    },
+    {
+      "line": 87,
+      "source": "casual/casual-0043-b.json",
+      "sha256": "1cb2f045f8141307b405f2ce40b5e4815b40d638115a64748cdbeefbf7757df0",
+      "pair": 43,
+      "morphyColor": "b",
+      "seed": 539704119
+    },
+    {
+      "line": 88,
+      "source": "casual/casual-0043-w.json",
+      "sha256": "da31935cc35908a494a7c2f93918567f37ef50f62ec8a114e10b8a9bc566f421",
+      "pair": 43,
+      "morphyColor": "w",
+      "seed": 539704119
+    },
+    {
+      "line": 89,
+      "source": "casual/casual-0044-b.json",
+      "sha256": "766276d890469fa37ce3508ebc2522890bd4bfcf53695e116d5f4af817f811e5",
+      "pair": 44,
+      "morphyColor": "b",
+      "seed": 539712038
+    },
+    {
+      "line": 90,
+      "source": "casual/casual-0044-w.json",
+      "sha256": "1d63fe7f0fa50ad2c4ec672715962f10b9a343de0807eaa4147648a888c2f88b",
+      "pair": 44,
+      "morphyColor": "w",
+      "seed": 539712038
+    },
+    {
+      "line": 91,
+      "source": "casual/casual-0045-b.json",
+      "sha256": "e81279682b16fbf52ee54803f9a4b6f412a5040e459fc1a9012378fbd9b5611a",
+      "pair": 45,
+      "morphyColor": "b",
+      "seed": 539719957
+    },
+    {
+      "line": 92,
+      "source": "casual/casual-0045-w.json",
+      "sha256": "ea2abdbe862a8e5f5aab102f6f50d644f319d5e1287c33f521c507a8f4de3be4",
+      "pair": 45,
+      "morphyColor": "w",
+      "seed": 539719957
+    },
+    {
+      "line": 93,
+      "source": "casual/casual-0046-b.json",
+      "sha256": "2567e4b791884c9541e96841c98c94370576fe89d7877fb7eda1a5fbb667eb79",
+      "pair": 46,
+      "morphyColor": "b",
+      "seed": 539727876
+    },
+    {
+      "line": 94,
+      "source": "casual/casual-0046-w.json",
+      "sha256": "b4b67cdc9fc043c930269f9e33b6cf86255ba0c2d4f78e0e6ba36f097d93ca2c",
+      "pair": 46,
+      "morphyColor": "w",
+      "seed": 539727876
+    },
+    {
+      "line": 95,
+      "source": "casual/casual-0047-b.json",
+      "sha256": "5eb578a38e10db9c828a497bacae811537aaf758d18de287a6a74d5beacd1e88",
+      "pair": 47,
+      "morphyColor": "b",
+      "seed": 539735795
+    },
+    {
+      "line": 96,
+      "source": "casual/casual-0047-w.json",
+      "sha256": "69aebe819e258d674e6c6106dbaa211e118bcc613213dbc08edfd74aa542b8e2",
+      "pair": 47,
+      "morphyColor": "w",
+      "seed": 539735795
+    },
+    {
+      "line": 97,
+      "source": "casual/casual-0048-b.json",
+      "sha256": "234723ce53462f9b33b74440215919c90221aa9d890a1427325991430b919da9",
+      "pair": 48,
+      "morphyColor": "b",
+      "seed": 539743714
+    },
+    {
+      "line": 98,
+      "source": "casual/casual-0048-w.json",
+      "sha256": "86992fc63887628b47788ced9508ed4494b2400c2fcc862dcd5ed3a1534baa30",
+      "pair": 48,
+      "morphyColor": "w",
+      "seed": 539743714
+    },
+    {
+      "line": 99,
+      "source": "casual/casual-0049-b.json",
+      "sha256": "3ffb569d6ea70a3123f7bb15c3cd87f22fc68d971bbb0eb863b80de42745b44e",
+      "pair": 49,
+      "morphyColor": "b",
+      "seed": 539751633
+    },
+    {
+      "line": 100,
+      "source": "casual/casual-0049-w.json",
+      "sha256": "0c5885dfa2fe0c6aed389488b18f04f589c6ab6aded3a5ed0a71fea3bb8d751b",
+      "pair": 49,
+      "morphyColor": "w",
+      "seed": 539751633
+    },
+    {
+      "line": 101,
+      "source": "casual/casual-0050-b.json",
+      "sha256": "2ef3accd7fa9e153ca41e03fab84d4f532caf7f9a8127ba23e9cfba40f3d2ecd",
+      "pair": 50,
+      "morphyColor": "b",
+      "seed": 539759552
+    },
+    {
+      "line": 102,
+      "source": "casual/casual-0050-w.json",
+      "sha256": "892a3acf2ea423ec16a808d0dcd898eb2f51eb96274da6477929f088b6a3e673",
+      "pair": 50,
+      "morphyColor": "w",
+      "seed": 539759552
+    },
+    {
+      "line": 103,
+      "source": "casual/casual-0051-b.json",
+      "sha256": "46f564efd6821d1bf79f6e00326399a98133b498d583aa8ddc32ce150ff59546",
+      "pair": 51,
+      "morphyColor": "b",
+      "seed": 539767471
+    },
+    {
+      "line": 104,
+      "source": "casual/casual-0051-w.json",
+      "sha256": "454ec30977abfcd3e97eafbb6f1da7da9172ad475da8e3bb7acb67b9b7ec6513",
+      "pair": 51,
+      "morphyColor": "w",
+      "seed": 539767471
+    },
+    {
+      "line": 105,
+      "source": "casual/casual-0052-b.json",
+      "sha256": "a5aab29465f5a1f343ff7b2330fc7a7a36595a9575a47f01b489a5f495b41cee",
+      "pair": 52,
+      "morphyColor": "b",
+      "seed": 539775390
+    },
+    {
+      "line": 106,
+      "source": "casual/casual-0052-w.json",
+      "sha256": "ba988e50771d238e521f3b2e2661fb77f66572e8f3f686ee340f31f129a14e61",
+      "pair": 52,
+      "morphyColor": "w",
+      "seed": 539775390
+    },
+    {
+      "line": 107,
+      "source": "casual/casual-0053-b.json",
+      "sha256": "5d51b125712ec1b7330aee6fc471d2c53ca7aff96234f95a9c3a1fcf925380c3",
+      "pair": 53,
+      "morphyColor": "b",
+      "seed": 539783309
+    },
+    {
+      "line": 108,
+      "source": "casual/casual-0053-w.json",
+      "sha256": "7067d54da419acf41828c74dcb19c82cf439fd401407c1990ffcb7f9c9213af5",
+      "pair": 53,
+      "morphyColor": "w",
+      "seed": 539783309
+    },
+    {
+      "line": 109,
+      "source": "casual/casual-0054-b.json",
+      "sha256": "943782591668a7cd3a1e59d0014e018d459fc0e0f43b36595fbb255ebb67fef0",
+      "pair": 54,
+      "morphyColor": "b",
+      "seed": 539791228
+    },
+    {
+      "line": 110,
+      "source": "casual/casual-0054-w.json",
+      "sha256": "f29341341eefa4e328d560117bd6c9d41b5769d6dc073e27b6e8c0cafb0292cd",
+      "pair": 54,
+      "morphyColor": "w",
+      "seed": 539791228
+    },
+    {
+      "line": 111,
+      "source": "casual/casual-0055-b.json",
+      "sha256": "99d7f2a20a6bce84ea6311d58b7c99205655d686061a28ac49ece0dc4bbd2139",
+      "pair": 55,
+      "morphyColor": "b",
+      "seed": 539799147
+    },
+    {
+      "line": 112,
+      "source": "casual/casual-0055-w.json",
+      "sha256": "fc03d3350ada40f7e537ecb296d84b2ae17d1512686d0e5b53a7561594c33261",
+      "pair": 55,
+      "morphyColor": "w",
+      "seed": 539799147
+    },
+    {
+      "line": 113,
+      "source": "casual/casual-0056-b.json",
+      "sha256": "f592c8d69a77310c32bd97f1f04c963224a2f7fdccc4611f85ac6bd2d8072956",
+      "pair": 56,
+      "morphyColor": "b",
+      "seed": 539807066
+    },
+    {
+      "line": 114,
+      "source": "casual/casual-0056-w.json",
+      "sha256": "442764f43717769de7483dee24ddfdbb0cf8c004b91612397c9a807adad4bcba",
+      "pair": 56,
+      "morphyColor": "w",
+      "seed": 539807066
+    },
+    {
+      "line": 115,
+      "source": "casual/casual-0057-b.json",
+      "sha256": "c719faa6c1bf1ef2b1c25ae495db2af34976823cedce4cb86dceb0680c64602e",
+      "pair": 57,
+      "morphyColor": "b",
+      "seed": 539814985
+    },
+    {
+      "line": 116,
+      "source": "casual/casual-0057-w.json",
+      "sha256": "410cc3dd22112d5f4a2589259377b4d7d9379126f94750ac84d86821b69abbdb",
+      "pair": 57,
+      "morphyColor": "w",
+      "seed": 539814985
+    },
+    {
+      "line": 117,
+      "source": "casual/casual-0058-b.json",
+      "sha256": "e381cfadc8ea9f3bc4727dc8e29d4d33aa21be9ef5a2fa003ebff7b1e069f6e0",
+      "pair": 58,
+      "morphyColor": "b",
+      "seed": 539822904
+    },
+    {
+      "line": 118,
+      "source": "casual/casual-0058-w.json",
+      "sha256": "ebf44e289d2907d025e09a8d703b35cad3ae8b330080952b4fe40042ecbeb31e",
+      "pair": 58,
+      "morphyColor": "w",
+      "seed": 539822904
+    },
+    {
+      "line": 119,
+      "source": "casual/casual-0059-b.json",
+      "sha256": "32babf978e50b25de42dc7cbbc9950262cd97e6c444eeee0035c1c08664ed713",
+      "pair": 59,
+      "morphyColor": "b",
+      "seed": 539830823
+    },
+    {
+      "line": 120,
+      "source": "casual/casual-0059-w.json",
+      "sha256": "4d29a2be480c836e410b1185373d3896e53254acca4ce48da87220235fb2756b",
+      "pair": 59,
+      "morphyColor": "w",
+      "seed": 539830823
+    },
+    {
+      "line": 121,
+      "source": "casual/casual-0060-b.json",
+      "sha256": "57a554166b854a8e30a2234df08ec4dbf4ae93f3ee5244761342420482028468",
+      "pair": 60,
+      "morphyColor": "b",
+      "seed": 539838742
+    },
+    {
+      "line": 122,
+      "source": "casual/casual-0060-w.json",
+      "sha256": "791b462e3f347eb0c56bea65309893fd60c08edec9f3eaf54e01859fa98f9ac1",
+      "pair": 60,
+      "morphyColor": "w",
+      "seed": 539838742
+    },
+    {
+      "line": 123,
+      "source": "casual/casual-0061-b.json",
+      "sha256": "844a7e5dbf1329af74d96b0b34bd08ac9d93111df67b5c93b16cc85259925ec4",
+      "pair": 61,
+      "morphyColor": "b",
+      "seed": 539846661
+    },
+    {
+      "line": 124,
+      "source": "casual/casual-0061-w.json",
+      "sha256": "19759094072471de58dfaec8386ae164b555d263acff24cd966acee597ddcf97",
+      "pair": 61,
+      "morphyColor": "w",
+      "seed": 539846661
+    },
+    {
+      "line": 125,
+      "source": "casual/casual-0062-b.json",
+      "sha256": "cb7366599e3f962d7bdfacc53d31d503bf4bffdd176f39da97095649162388de",
+      "pair": 62,
+      "morphyColor": "b",
+      "seed": 539854580
+    },
+    {
+      "line": 126,
+      "source": "casual/casual-0062-w.json",
+      "sha256": "953706f7f3a13c6acf28807841fbc76af491e1cabe9e571deef3822cde2cb6df",
+      "pair": 62,
+      "morphyColor": "w",
+      "seed": 539854580
+    },
+    {
+      "line": 127,
+      "source": "casual/casual-0063-b.json",
+      "sha256": "e6f2ee53629409c25d3c616d3fad421c453f05b53552dfdd2bd3fe0a68699087",
+      "pair": 63,
+      "morphyColor": "b",
+      "seed": 539862499
+    },
+    {
+      "line": 128,
+      "source": "casual/casual-0063-w.json",
+      "sha256": "5ef5c088ca104faccfe4ca922d91be6770b2d718e172adc98f7205409920d376",
+      "pair": 63,
+      "morphyColor": "w",
+      "seed": 539862499
+    },
+    {
+      "line": 129,
+      "source": "casual/casual-0064-b.json",
+      "sha256": "4267b806a8b41217ab3fdc8aaaf6ae22fff40fa3db58e89b223a1d2c3b98db26",
+      "pair": 64,
+      "morphyColor": "b",
+      "seed": 539870418
+    },
+    {
+      "line": 130,
+      "source": "casual/casual-0064-w.json",
+      "sha256": "3ad5e68013ff7642469a70725b711e77c8cad03c0c06f4d0b6f3902c241d6146",
+      "pair": 64,
+      "morphyColor": "w",
+      "seed": 539870418
+    },
+    {
+      "line": 131,
+      "source": "casual/casual-0065-b.json",
+      "sha256": "932d142bd75edd9f3741019da032a891a54861150835f244e204abb3f31fa732",
+      "pair": 65,
+      "morphyColor": "b",
+      "seed": 539878337
+    },
+    {
+      "line": 132,
+      "source": "casual/casual-0065-w.json",
+      "sha256": "140aa032fa1402986039942ae7e0d7e897dda60419c3cba655eb630071a58eef",
+      "pair": 65,
+      "morphyColor": "w",
+      "seed": 539878337
+    },
+    {
+      "line": 133,
+      "source": "casual/casual-0066-b.json",
+      "sha256": "c3f102106ec192b4b34c9663b1f0451431613092606db73bd64fa831ea372bd5",
+      "pair": 66,
+      "morphyColor": "b",
+      "seed": 539886256
+    },
+    {
+      "line": 134,
+      "source": "casual/casual-0066-w.json",
+      "sha256": "aa5f84debb6e388583c27ad5e81df9612591d5caee17eb7af0c617bca7000533",
+      "pair": 66,
+      "morphyColor": "w",
+      "seed": 539886256
+    },
+    {
+      "line": 135,
+      "source": "casual/casual-0067-b.json",
+      "sha256": "cae74ed8fda2b25eeed769fc49c31c8fbf61e8eaf69f25b5b41dc27ab5cfbdd7",
+      "pair": 67,
+      "morphyColor": "b",
+      "seed": 539894175
+    },
+    {
+      "line": 136,
+      "source": "casual/casual-0067-w.json",
+      "sha256": "ea039438c074bc2e0c056a34472a0e589521c799c8ea8e3857ab2bef8f35a763",
+      "pair": 67,
+      "morphyColor": "w",
+      "seed": 539894175
+    },
+    {
+      "line": 137,
+      "source": "casual/casual-0068-b.json",
+      "sha256": "f391bf1bd913d52d1fd0a5ebe3c16661f8f4785e801962032f03dac30d0b0659",
+      "pair": 68,
+      "morphyColor": "b",
+      "seed": 539902094
+    },
+    {
+      "line": 138,
+      "source": "casual/casual-0068-w.json",
+      "sha256": "bb53e439c868d521c9f851e11bd376adb9492205689e1c6c1663b57cb42a49a8",
+      "pair": 68,
+      "morphyColor": "w",
+      "seed": 539902094
+    },
+    {
+      "line": 139,
+      "source": "casual/casual-0069-b.json",
+      "sha256": "c37fdc331a50c399a75cbe72a735e0487f3161d6ce8e9abffc22e80691b74eef",
+      "pair": 69,
+      "morphyColor": "b",
+      "seed": 539910013
+    },
+    {
+      "line": 140,
+      "source": "casual/casual-0069-w.json",
+      "sha256": "8dbc1b450d88dbfceb7d8552dfdc608438cb8927553362f3ec4482473b0a9dce",
+      "pair": 69,
+      "morphyColor": "w",
+      "seed": 539910013
+    },
+    {
+      "line": 141,
+      "source": "casual/casual-0070-b.json",
+      "sha256": "e6de68afe568b35ac6590b8510fe11ccd64e3d4531587373805270b77773f7cd",
+      "pair": 70,
+      "morphyColor": "b",
+      "seed": 539917932
+    },
+    {
+      "line": 142,
+      "source": "casual/casual-0070-w.json",
+      "sha256": "bb42b4dd1d1f9ed2321b2c3aa6c8e36ab516a2cebfceed49f3dca9b45ca505a4",
+      "pair": 70,
+      "morphyColor": "w",
+      "seed": 539917932
+    },
+    {
+      "line": 143,
+      "source": "casual/casual-0071-b.json",
+      "sha256": "9215df51239670319dced1cebc0afd404439bb10c95a8642d4c1d2e23dee7acf",
+      "pair": 71,
+      "morphyColor": "b",
+      "seed": 539925851
+    },
+    {
+      "line": 144,
+      "source": "casual/casual-0071-w.json",
+      "sha256": "19733701e3c3348076bba2d0652ac8e87380bb65af36f5c4cdccb735f30dcc61",
+      "pair": 71,
+      "morphyColor": "w",
+      "seed": 539925851
+    },
+    {
+      "line": 145,
+      "source": "casual/casual-0072-b.json",
+      "sha256": "1be1bb505e2ffc2bdc5ebf81985c0e7765dfb8ab3d3181771dcf7c3d12539699",
+      "pair": 72,
+      "morphyColor": "b",
+      "seed": 539933770
+    },
+    {
+      "line": 146,
+      "source": "casual/casual-0072-w.json",
+      "sha256": "d4b4eb8aa537d1dd14663332b74bf46ad34c1ca68f0fbfc272fa803428e6b04f",
+      "pair": 72,
+      "morphyColor": "w",
+      "seed": 539933770
+    },
+    {
+      "line": 147,
+      "source": "casual/casual-0073-b.json",
+      "sha256": "071fe193a6329c448791c7bbb4eeff2e39b32902f873059fe52008087befc59e",
+      "pair": 73,
+      "morphyColor": "b",
+      "seed": 539941689
+    },
+    {
+      "line": 148,
+      "source": "casual/casual-0073-w.json",
+      "sha256": "c89db566b861b82ca2db9efe0fcdfa7b570d942faf93588a7953bbc75be905b1",
+      "pair": 73,
+      "morphyColor": "w",
+      "seed": 539941689
+    },
+    {
+      "line": 149,
+      "source": "casual/casual-0074-b.json",
+      "sha256": "dad85e063d62044532eb64e22733619aae9167c2d8cb977b7dbb5dc269d16ecf",
+      "pair": 74,
+      "morphyColor": "b",
+      "seed": 539949608
+    },
+    {
+      "line": 150,
+      "source": "casual/casual-0074-w.json",
+      "sha256": "c5454028e3c0cc5d57c0709a2dbc65982085fcd79cf2e878fdb7e89593df831d",
+      "pair": 74,
+      "morphyColor": "w",
+      "seed": 539949608
+    },
+    {
+      "line": 151,
+      "source": "casual/casual-0075-b.json",
+      "sha256": "c960e7fe77aad7943855eb22d47a6e1938f3d91f4eb293541c95b1b125ecce4d",
+      "pair": 75,
+      "morphyColor": "b",
+      "seed": 539957527
+    },
+    {
+      "line": 152,
+      "source": "casual/casual-0075-w.json",
+      "sha256": "294a7e128d13862b3a26644660adcf53104fd7d4e00169720521b8e8784e2a11",
+      "pair": 75,
+      "morphyColor": "w",
+      "seed": 539957527
+    },
+    {
+      "line": 153,
+      "source": "casual/casual-0076-b.json",
+      "sha256": "de4a4c739316c79b1c6192231c92977df29582ba160cf1268f82720a621b44bb",
+      "pair": 76,
+      "morphyColor": "b",
+      "seed": 539965446
+    },
+    {
+      "line": 154,
+      "source": "casual/casual-0076-w.json",
+      "sha256": "90928f8fd2ad7bdf3e8dc6e7aa3b73f59d6f3c0fb01397eb51b326ef1dc3500f",
+      "pair": 76,
+      "morphyColor": "w",
+      "seed": 539965446
+    },
+    {
+      "line": 155,
+      "source": "casual/casual-0077-b.json",
+      "sha256": "cdd4dbd917ac64cbc321ef1e8f0d5055e3d5a53e809618bebe170d04fd1fce38",
+      "pair": 77,
+      "morphyColor": "b",
+      "seed": 539973365
+    },
+    {
+      "line": 156,
+      "source": "casual/casual-0077-w.json",
+      "sha256": "8c3682bf99ac72929a193aaac17154798c694ebec02c2def17df0bc6cfde4797",
+      "pair": 77,
+      "morphyColor": "w",
+      "seed": 539973365
+    },
+    {
+      "line": 157,
+      "source": "casual/casual-0078-b.json",
+      "sha256": "d3430ac32709b879d968414f467c10eab4d1a82dccbe91d143e08fc4eb5e3b32",
+      "pair": 78,
+      "morphyColor": "b",
+      "seed": 539981284
+    },
+    {
+      "line": 158,
+      "source": "casual/casual-0078-w.json",
+      "sha256": "83a491661a3b8a30884caa9a944f79529349dc5afccb46d28f52a4ac38c07feb",
+      "pair": 78,
+      "morphyColor": "w",
+      "seed": 539981284
+    },
+    {
+      "line": 159,
+      "source": "casual/casual-0079-b.json",
+      "sha256": "6487b66e10e9effbb60ebcb16b6b8a87aed4c44f098883a8cc0729a1df3105ea",
+      "pair": 79,
+      "morphyColor": "b",
+      "seed": 539989203
+    },
+    {
+      "line": 160,
+      "source": "casual/casual-0079-w.json",
+      "sha256": "31e6ac3b435c2100776dccef74cfe749485add936e8258a1dcdd591d36f91995",
+      "pair": 79,
+      "morphyColor": "w",
+      "seed": 539989203
+    },
+    {
+      "line": 161,
+      "source": "casual/casual-0080-b.json",
+      "sha256": "d1e600a293ad54f9fac7efd2a865cd1a87e3498c576d3f03582c0b29ac6b9893",
+      "pair": 80,
+      "morphyColor": "b",
+      "seed": 539997122
+    },
+    {
+      "line": 162,
+      "source": "casual/casual-0080-w.json",
+      "sha256": "cd66b6b0bfa679c8a2e7d247de0808d8738d452be77910057748b344baa82b0e",
+      "pair": 80,
+      "morphyColor": "w",
+      "seed": 539997122
+    },
+    {
+      "line": 163,
+      "source": "casual/casual-0081-b.json",
+      "sha256": "c50fa942e4532d68b2430fb036a491d7782ef42e9276d83e8419c4dbb0c4a006",
+      "pair": 81,
+      "morphyColor": "b",
+      "seed": 540005041
+    },
+    {
+      "line": 164,
+      "source": "casual/casual-0081-w.json",
+      "sha256": "8d78dfe288ab36d2f07bfe9f79267a9abd1bd086085caeaeda7119558ef263c7",
+      "pair": 81,
+      "morphyColor": "w",
+      "seed": 540005041
+    },
+    {
+      "line": 165,
+      "source": "casual/casual-0082-b.json",
+      "sha256": "a0e490cac65c8dc534fb24269e902f8cbdc4984391b7dab954625959dd8b264f",
+      "pair": 82,
+      "morphyColor": "b",
+      "seed": 540012960
+    },
+    {
+      "line": 166,
+      "source": "casual/casual-0082-w.json",
+      "sha256": "11c477764b5811114bbd5e18322527f1d9f319690c47a1a0e0ab4738725c36e1",
+      "pair": 82,
+      "morphyColor": "w",
+      "seed": 540012960
+    },
+    {
+      "line": 167,
+      "source": "casual/casual-0083-b.json",
+      "sha256": "4788eec890d5637efb99999599cb9a2d67bdcd510c7b0b8a59ef3b4c802229ed",
+      "pair": 83,
+      "morphyColor": "b",
+      "seed": 540020879
+    },
+    {
+      "line": 168,
+      "source": "casual/casual-0083-w.json",
+      "sha256": "c8e9c5373065cea8416914ef1460839c4fa8cc2f9fb5745fbf31d521be61d408",
+      "pair": 83,
+      "morphyColor": "w",
+      "seed": 540020879
+    },
+    {
+      "line": 169,
+      "source": "casual/casual-0084-b.json",
+      "sha256": "8fd9605d8c2a223fa8216a0fbf7e063b1f8d0552c19376e867b866d29b7da204",
+      "pair": 84,
+      "morphyColor": "b",
+      "seed": 540028798
+    },
+    {
+      "line": 170,
+      "source": "casual/casual-0084-w.json",
+      "sha256": "363f5dc772d388b502ba4973a9dd428f6c17a3a923194b1a0362bb66b2bdebc5",
+      "pair": 84,
+      "morphyColor": "w",
+      "seed": 540028798
+    },
+    {
+      "line": 171,
+      "source": "casual/casual-0085-b.json",
+      "sha256": "34941b285d9267517d2a00ca579265b5ea3183c7d2a1d162c6306603c20e3abe",
+      "pair": 85,
+      "morphyColor": "b",
+      "seed": 540036717
+    },
+    {
+      "line": 172,
+      "source": "casual/casual-0085-w.json",
+      "sha256": "4584445b5b786e15aa856a069cb7ac36084bc363092ca2fcfdd5d5371e0b4538",
+      "pair": 85,
+      "morphyColor": "w",
+      "seed": 540036717
+    },
+    {
+      "line": 173,
+      "source": "casual/casual-0086-b.json",
+      "sha256": "eefcad2b384ba153d396d0b1ae13a95a621242585c8effddf59815512982c2f3",
+      "pair": 86,
+      "morphyColor": "b",
+      "seed": 540044636
+    },
+    {
+      "line": 174,
+      "source": "casual/casual-0086-w.json",
+      "sha256": "382a27e884037bbf9c9556b8aa7f587a732ec9a04041cb8112dc523ae88110a7",
+      "pair": 86,
+      "morphyColor": "w",
+      "seed": 540044636
+    },
+    {
+      "line": 175,
+      "source": "casual/casual-0087-b.json",
+      "sha256": "c4a27634aa93167027634601a0e1dcab18b0cb5ce3b868a420788385b713315e",
+      "pair": 87,
+      "morphyColor": "b",
+      "seed": 540052555
+    },
+    {
+      "line": 176,
+      "source": "casual/casual-0087-w.json",
+      "sha256": "f34f3511f905316879ecdb3cd53a73edd9110539e2cc5ac4dee0fb9e81f5bebb",
+      "pair": 87,
+      "morphyColor": "w",
+      "seed": 540052555
+    },
+    {
+      "line": 177,
+      "source": "casual/casual-0088-b.json",
+      "sha256": "290902737a35d23879e7d5eaec6dbcd70f7ed230475cd51d652f3088e2dd46c2",
+      "pair": 88,
+      "morphyColor": "b",
+      "seed": 540060474
+    },
+    {
+      "line": 178,
+      "source": "casual/casual-0088-w.json",
+      "sha256": "55fece856226963bd2900e642f5859bc8b445a7b2f0bad7c12552d7742ecac62",
+      "pair": 88,
+      "morphyColor": "w",
+      "seed": 540060474
+    },
+    {
+      "line": 179,
+      "source": "casual/casual-0089-b.json",
+      "sha256": "571e5ded6da0946bc3b3d975d251b66734a574d5e30a5ce7539f7135be46f40f",
+      "pair": 89,
+      "morphyColor": "b",
+      "seed": 540068393
+    },
+    {
+      "line": 180,
+      "source": "casual/casual-0089-w.json",
+      "sha256": "8cc6e384d95641911f6e3752705d4ec73c154bd473879535be7de71c94682965",
+      "pair": 89,
+      "morphyColor": "w",
+      "seed": 540068393
+    },
+    {
+      "line": 181,
+      "source": "casual/casual-0090-b.json",
+      "sha256": "d10c196346ecc9a7e8e4251770f4747f5eeb2969233c8d15e9464fe0487a7061",
+      "pair": 90,
+      "morphyColor": "b",
+      "seed": 540076312
+    },
+    {
+      "line": 182,
+      "source": "casual/casual-0090-w.json",
+      "sha256": "eb538eb6c610cdd661b3017ddfabe1c66ce4aee13d1c1ad5f2da46db8769bc03",
+      "pair": 90,
+      "morphyColor": "w",
+      "seed": 540076312
+    },
+    {
+      "line": 183,
+      "source": "casual/casual-0091-b.json",
+      "sha256": "43976d070b3ff2be48e90ece8130eec9efc181e07571620bfacf3ee274aa7bd7",
+      "pair": 91,
+      "morphyColor": "b",
+      "seed": 540084231
+    },
+    {
+      "line": 184,
+      "source": "casual/casual-0091-w.json",
+      "sha256": "6525c2b9d18026b621630d030a18ac7d6c2b2663d216c5c662d7cf5cea0dc032",
+      "pair": 91,
+      "morphyColor": "w",
+      "seed": 540084231
+    },
+    {
+      "line": 185,
+      "source": "casual/casual-0092-b.json",
+      "sha256": "58a8b5ff6c1ff1e8a176f618683c736bfcfe88fb8947b95b923b5c4c8e625614",
+      "pair": 92,
+      "morphyColor": "b",
+      "seed": 540092150
+    },
+    {
+      "line": 186,
+      "source": "casual/casual-0092-w.json",
+      "sha256": "c06f0da009526ca98e28591d37fa07c75001771bbdb942d59bcde5d6ee605646",
+      "pair": 92,
+      "morphyColor": "w",
+      "seed": 540092150
+    },
+    {
+      "line": 187,
+      "source": "casual/casual-0093-b.json",
+      "sha256": "5a4bd3ae429852a6318f216fb049c318173310d056c3c7b2db5dfb1ca4026fe1",
+      "pair": 93,
+      "morphyColor": "b",
+      "seed": 540100069
+    },
+    {
+      "line": 188,
+      "source": "casual/casual-0093-w.json",
+      "sha256": "9b3551f460345c9192ebef623be85fff05f0f99372b667a8d851dc7d8a652d58",
+      "pair": 93,
+      "morphyColor": "w",
+      "seed": 540100069
+    },
+    {
+      "line": 189,
+      "source": "casual/casual-0094-b.json",
+      "sha256": "3ac23d5373dc910f9a1da212580d7d7b573dbb72a716b937748b5b1117dfc630",
+      "pair": 94,
+      "morphyColor": "b",
+      "seed": 540107988
+    },
+    {
+      "line": 190,
+      "source": "casual/casual-0094-w.json",
+      "sha256": "c9762ed2a3177902ce456d60ec0ee8ca9ce4393a1abf83f865b8f6d5ad5bd2a9",
+      "pair": 94,
+      "morphyColor": "w",
+      "seed": 540107988
+    },
+    {
+      "line": 191,
+      "source": "casual/casual-0095-b.json",
+      "sha256": "e566b54e2affe7157ce8c46ff38446d95bb506c7a62b0fe3be8ba5602a0c6993",
+      "pair": 95,
+      "morphyColor": "b",
+      "seed": 540115907
+    },
+    {
+      "line": 192,
+      "source": "casual/casual-0095-w.json",
+      "sha256": "db93278f35baf179b07920e65b45b66f76d4002a04326704f7d857fa13860e25",
+      "pair": 95,
+      "morphyColor": "w",
+      "seed": 540115907
+    },
+    {
+      "line": 193,
+      "source": "casual/casual-0096-b.json",
+      "sha256": "d220b36a60283b043d126fdab576112e0fb431461d994a4b54e863db89af8b96",
+      "pair": 96,
+      "morphyColor": "b",
+      "seed": 540123826
+    },
+    {
+      "line": 194,
+      "source": "casual/casual-0096-w.json",
+      "sha256": "9ec386ac9720b661064a67f1003a42834c75696f325dd4ce294395a894ba42df",
+      "pair": 96,
+      "morphyColor": "w",
+      "seed": 540123826
+    },
+    {
+      "line": 195,
+      "source": "casual/casual-0097-b.json",
+      "sha256": "6a4c4e5070d24fa6f71babb8686499acd4b7fff95f8cbe287cf1e1d4262c23a2",
+      "pair": 97,
+      "morphyColor": "b",
+      "seed": 540131745
+    },
+    {
+      "line": 196,
+      "source": "casual/casual-0097-w.json",
+      "sha256": "c67fb3be488e73d1bfb86134d259837a7005f101cf68aec8f3e0406b1b2ce7ec",
+      "pair": 97,
+      "morphyColor": "w",
+      "seed": 540131745
+    },
+    {
+      "line": 197,
+      "source": "casual/casual-0098-b.json",
+      "sha256": "221e6cea28dffee29a5bf57bac5a12b640ff8359bba7d4d9ce244db801d25315",
+      "pair": 98,
+      "morphyColor": "b",
+      "seed": 540139664
+    },
+    {
+      "line": 198,
+      "source": "casual/casual-0098-w.json",
+      "sha256": "d3b2856e8b057abb3e3c5fb58ab93b95beb2730b7040eb7bbacf8a69a012f132",
+      "pair": 98,
+      "morphyColor": "w",
+      "seed": 540139664
+    },
+    {
+      "line": 199,
+      "source": "casual/casual-0099-b.json",
+      "sha256": "58366682224486f65632c5661e7c049dbc2a266037a5b2c539d24626f083dc87",
+      "pair": 99,
+      "morphyColor": "b",
+      "seed": 540147583
+    },
+    {
+      "line": 200,
+      "source": "casual/casual-0099-w.json",
+      "sha256": "86ed358351a0d784093e5c90575e55627d61bb4d4ef07b549b8669ab803950b4",
+      "pair": 99,
+      "morphyColor": "w",
+      "seed": 540147583
+    },
+    {
+      "line": 201,
+      "source": "club/club-0000-b.json",
+      "sha256": "d86adeba5e179960139c5de49409328457e27797c88501194e9697d3caec9b3d",
+      "pair": 0,
+      "morphyColor": "b",
+      "seed": 539363602
+    },
+    {
+      "line": 202,
+      "source": "club/club-0000-w.json",
+      "sha256": "d41f066434b9dfcff77235ebfee815c1f89e0b9b1d70928eb727fec6e459c685",
+      "pair": 0,
+      "morphyColor": "w",
+      "seed": 539363602
+    },
+    {
+      "line": 203,
+      "source": "club/club-0001-b.json",
+      "sha256": "c2888fb6a9f7ee2bd314b2780ac3f6331fd08281ec0d688a8f029cde1b3ce329",
+      "pair": 1,
+      "morphyColor": "b",
+      "seed": 539371521
+    },
+    {
+      "line": 204,
+      "source": "club/club-0001-w.json",
+      "sha256": "fc18d21be24a4ba73a86ea753a7f736b70ba28af92938c5981a8f11f9a5232ef",
+      "pair": 1,
+      "morphyColor": "w",
+      "seed": 539371521
+    },
+    {
+      "line": 205,
+      "source": "club/club-0002-b.json",
+      "sha256": "142650dc3a389821b15cbcd199bb17d5d8ef15b8c4c1a6e05b3bce7d2116dc8b",
+      "pair": 2,
+      "morphyColor": "b",
+      "seed": 539379440
+    },
+    {
+      "line": 206,
+      "source": "club/club-0002-w.json",
+      "sha256": "f95500d3cac980990846ba4f841262f22c1056f4167e7ad54a8a13a30ee842ca",
+      "pair": 2,
+      "morphyColor": "w",
+      "seed": 539379440
+    },
+    {
+      "line": 207,
+      "source": "club/club-0003-b.json",
+      "sha256": "7498fdd4b5c163bcfc0587678dfff421e2ea760578161516f740a0e3d6faa8b8",
+      "pair": 3,
+      "morphyColor": "b",
+      "seed": 539387359
+    },
+    {
+      "line": 208,
+      "source": "club/club-0003-w.json",
+      "sha256": "1d38cd2f87372710ec75dfcfd78235bfcae194d96b1a37f5c64d40fce15b5aa1",
+      "pair": 3,
+      "morphyColor": "w",
+      "seed": 539387359
+    },
+    {
+      "line": 209,
+      "source": "club/club-0004-b.json",
+      "sha256": "81870bf981f7c21b07f972719115b0e985b82fc3ead394191d91b5aeeb61087e",
+      "pair": 4,
+      "morphyColor": "b",
+      "seed": 539395278
+    },
+    {
+      "line": 210,
+      "source": "club/club-0004-w.json",
+      "sha256": "ba3b7ede00de029c2d4e41a12b773959ef80f66269644c2e39cacb296bfda892",
+      "pair": 4,
+      "morphyColor": "w",
+      "seed": 539395278
+    },
+    {
+      "line": 211,
+      "source": "club/club-0005-b.json",
+      "sha256": "ca5044e0cc72ef3d660ff9b3ef2af774a584a55e33583c243a79d83401706ae4",
+      "pair": 5,
+      "morphyColor": "b",
+      "seed": 539403197
+    },
+    {
+      "line": 212,
+      "source": "club/club-0005-w.json",
+      "sha256": "ed21bc40649872ef4c9a0bccc9b9e2fc15140b2c85fda694b8bbeb0b7a4032b0",
+      "pair": 5,
+      "morphyColor": "w",
+      "seed": 539403197
+    },
+    {
+      "line": 213,
+      "source": "club/club-0006-b.json",
+      "sha256": "f7647f689bbc4292ac42f862891c26a54fb729107822fd5551ec0de2d81b2aa4",
+      "pair": 6,
+      "morphyColor": "b",
+      "seed": 539411116
+    },
+    {
+      "line": 214,
+      "source": "club/club-0006-w.json",
+      "sha256": "0da68827b0326694ad7f488f90ebc85a392ae3b68ede753e231675add8944af0",
+      "pair": 6,
+      "morphyColor": "w",
+      "seed": 539411116
+    },
+    {
+      "line": 215,
+      "source": "club/club-0007-b.json",
+      "sha256": "7f32e7fe6b2784480729d355df7f8136cca2e598cf550422ae8e2db61663011b",
+      "pair": 7,
+      "morphyColor": "b",
+      "seed": 539419035
+    },
+    {
+      "line": 216,
+      "source": "club/club-0007-w.json",
+      "sha256": "03450f8c12920e6a2b4df49245ac5e4bb1aa7250856dd0c15d86e3bbe8c2d6b7",
+      "pair": 7,
+      "morphyColor": "w",
+      "seed": 539419035
+    },
+    {
+      "line": 217,
+      "source": "club/club-0008-b.json",
+      "sha256": "1e130a645eeaafcf9b1cbef1b3fbcad2cd5dc848a3a0540f441f2b21fcc8427f",
+      "pair": 8,
+      "morphyColor": "b",
+      "seed": 539426954
+    },
+    {
+      "line": 218,
+      "source": "club/club-0008-w.json",
+      "sha256": "f3bbe288247ab17a2589956539ebf7f46455c1f56f5e8dcf82c5c8838df777c3",
+      "pair": 8,
+      "morphyColor": "w",
+      "seed": 539426954
+    },
+    {
+      "line": 219,
+      "source": "club/club-0009-b.json",
+      "sha256": "6c3aac38eb567e58dbf33209f3c531c73b5fa6bf3e4b08c63ea56667fe991418",
+      "pair": 9,
+      "morphyColor": "b",
+      "seed": 539434873
+    },
+    {
+      "line": 220,
+      "source": "club/club-0009-w.json",
+      "sha256": "6ae7396ad6b8f3264bc627f04c9d573afd3aea6f8caece3c83d0b1f7de05d01d",
+      "pair": 9,
+      "morphyColor": "w",
+      "seed": 539434873
+    },
+    {
+      "line": 221,
+      "source": "club/club-0010-b.json",
+      "sha256": "d0f510d193adae6771a67585dee3a748bb86536663223efeeb327fb7e9078601",
+      "pair": 10,
+      "morphyColor": "b",
+      "seed": 539442792
+    },
+    {
+      "line": 222,
+      "source": "club/club-0010-w.json",
+      "sha256": "960cba5290875aed269265f29afd0e4926e34dac3d83790a387f765410320404",
+      "pair": 10,
+      "morphyColor": "w",
+      "seed": 539442792
+    },
+    {
+      "line": 223,
+      "source": "club/club-0011-b.json",
+      "sha256": "c496c7595742c872ed0679cfd21604a657ea591ac05320f5907020fa98f2a4bd",
+      "pair": 11,
+      "morphyColor": "b",
+      "seed": 539450711
+    },
+    {
+      "line": 224,
+      "source": "club/club-0011-w.json",
+      "sha256": "4ed63df8d2238ee6820516495f57338d18a65b243e9cd16e1123aaca88b8a14c",
+      "pair": 11,
+      "morphyColor": "w",
+      "seed": 539450711
+    },
+    {
+      "line": 225,
+      "source": "club/club-0012-b.json",
+      "sha256": "5f7579c35f421e68e42d7d068a25d5c66b2a3ca7b871cbe95bafd71d1322d2d8",
+      "pair": 12,
+      "morphyColor": "b",
+      "seed": 539458630
+    },
+    {
+      "line": 226,
+      "source": "club/club-0012-w.json",
+      "sha256": "314565f36b483e17169ec76bc847c8d2b93236586459639e5aeab1e9c5241b29",
+      "pair": 12,
+      "morphyColor": "w",
+      "seed": 539458630
+    },
+    {
+      "line": 227,
+      "source": "club/club-0013-b.json",
+      "sha256": "44de621ad3b6cb8cc14a590d88ed6c386c9d0f39d24391396ba5926392c68d0c",
+      "pair": 13,
+      "morphyColor": "b",
+      "seed": 539466549
+    },
+    {
+      "line": 228,
+      "source": "club/club-0013-w.json",
+      "sha256": "20d9cf5849a6927a531b8dd401ed1f7226700915ac915155fdb5ee7043752513",
+      "pair": 13,
+      "morphyColor": "w",
+      "seed": 539466549
+    },
+    {
+      "line": 229,
+      "source": "club/club-0014-b.json",
+      "sha256": "13057a544eeac6fdd8ec95ced845c850f4a58ea470c8d846f5b860ce90414381",
+      "pair": 14,
+      "morphyColor": "b",
+      "seed": 539474468
+    },
+    {
+      "line": 230,
+      "source": "club/club-0014-w.json",
+      "sha256": "ca9e38e44c9445d41c4b6f3fe845a33491732ff3dfbbb8b5e275f5bec93155cb",
+      "pair": 14,
+      "morphyColor": "w",
+      "seed": 539474468
+    },
+    {
+      "line": 231,
+      "source": "club/club-0015-b.json",
+      "sha256": "b23aef668db56672d0b3be7f45082316f98109c0ad6fc07e261a68d1edffb8c9",
+      "pair": 15,
+      "morphyColor": "b",
+      "seed": 539482387
+    },
+    {
+      "line": 232,
+      "source": "club/club-0015-w.json",
+      "sha256": "bc5edb1007bdd9893355dbdfe4f3567a4befab168bda01c07cf45a130817b359",
+      "pair": 15,
+      "morphyColor": "w",
+      "seed": 539482387
+    },
+    {
+      "line": 233,
+      "source": "club/club-0016-b.json",
+      "sha256": "4282409bb981e2710ef051639c19bf5a86695d55a44f6416e3770b60a9724142",
+      "pair": 16,
+      "morphyColor": "b",
+      "seed": 539490306
+    },
+    {
+      "line": 234,
+      "source": "club/club-0016-w.json",
+      "sha256": "0c4a9a71ab73b19cf75fb1b11e3ea1a4509801621347435c1035fe538cdf3205",
+      "pair": 16,
+      "morphyColor": "w",
+      "seed": 539490306
+    },
+    {
+      "line": 235,
+      "source": "club/club-0017-b.json",
+      "sha256": "c35bfc182e5838ee8add197360191d6f971a3893ece530cc0b9ad3c8a6d97a9b",
+      "pair": 17,
+      "morphyColor": "b",
+      "seed": 539498225
+    },
+    {
+      "line": 236,
+      "source": "club/club-0017-w.json",
+      "sha256": "4aa8a081f00cc6ecb663dc37f6845bb571232e51d07b76db880a078fb3396aa0",
+      "pair": 17,
+      "morphyColor": "w",
+      "seed": 539498225
+    },
+    {
+      "line": 237,
+      "source": "club/club-0018-b.json",
+      "sha256": "5c6ffb16aca0b1e757ce2c7f18f90f92b9916694fa95e6a21dac50357fe6ace8",
+      "pair": 18,
+      "morphyColor": "b",
+      "seed": 539506144
+    },
+    {
+      "line": 238,
+      "source": "club/club-0018-w.json",
+      "sha256": "3deaa17e140f8e72779a5b4273ee2c92acc46f28299fc7b28d73273338483ee6",
+      "pair": 18,
+      "morphyColor": "w",
+      "seed": 539506144
+    },
+    {
+      "line": 239,
+      "source": "club/club-0019-b.json",
+      "sha256": "c38c62de01c9b410d3a369db299cdca9ce1d079712e6fe6da55d4006d7f12f1e",
+      "pair": 19,
+      "morphyColor": "b",
+      "seed": 539514063
+    },
+    {
+      "line": 240,
+      "source": "club/club-0019-w.json",
+      "sha256": "5df00e02096402883a8381c09a81d6160132e912b8215acad90359e55d6c9ebe",
+      "pair": 19,
+      "morphyColor": "w",
+      "seed": 539514063
+    },
+    {
+      "line": 241,
+      "source": "club/club-0020-b.json",
+      "sha256": "e4dfc70c95c44f53682ca8ed12fb2cf0590a6b6d47fa704e04a58e8159671f9a",
+      "pair": 20,
+      "morphyColor": "b",
+      "seed": 539521982
+    },
+    {
+      "line": 242,
+      "source": "club/club-0020-w.json",
+      "sha256": "bc4b5fb30781998fab98e2e19df6e5df3c978a4efe278cad922d8c9383f4d680",
+      "pair": 20,
+      "morphyColor": "w",
+      "seed": 539521982
+    },
+    {
+      "line": 243,
+      "source": "club/club-0021-b.json",
+      "sha256": "90523ee15bc0c83241fd8a5c38568fefc51565f3202750381575a09f52245b85",
+      "pair": 21,
+      "morphyColor": "b",
+      "seed": 539529901
+    },
+    {
+      "line": 244,
+      "source": "club/club-0021-w.json",
+      "sha256": "92c4ecc26ebc81036746f7e2f7c4ddf9f04a6b76406767c045b90a1813edd0c3",
+      "pair": 21,
+      "morphyColor": "w",
+      "seed": 539529901
+    },
+    {
+      "line": 245,
+      "source": "club/club-0022-b.json",
+      "sha256": "935d74d3b7ea15c5f6b8cb3d8158f6f3d01a1b2ebbc730389723203c693671a6",
+      "pair": 22,
+      "morphyColor": "b",
+      "seed": 539537820
+    },
+    {
+      "line": 246,
+      "source": "club/club-0022-w.json",
+      "sha256": "1c9271f8bc05ab82350c74029cd558124e57256663d85f7f9f8b6e222103f0c3",
+      "pair": 22,
+      "morphyColor": "w",
+      "seed": 539537820
+    },
+    {
+      "line": 247,
+      "source": "club/club-0023-b.json",
+      "sha256": "849f9c0dd2c56af24d43a38db2711c974b4f9d056b766e82ce90477385b50f49",
+      "pair": 23,
+      "morphyColor": "b",
+      "seed": 539545739
+    },
+    {
+      "line": 248,
+      "source": "club/club-0023-w.json",
+      "sha256": "56cfbe902ca615d71378586996fa706886019c4981e378b00ad9ab9a1699631e",
+      "pair": 23,
+      "morphyColor": "w",
+      "seed": 539545739
+    },
+    {
+      "line": 249,
+      "source": "club/club-0024-b.json",
+      "sha256": "8f466129c8426a1d5a84fccf10f2d3f326eae258aadbf6976c19f5f7aefcf356",
+      "pair": 24,
+      "morphyColor": "b",
+      "seed": 539553658
+    },
+    {
+      "line": 250,
+      "source": "club/club-0024-w.json",
+      "sha256": "16902438dea1148d715df7529aeb1b7009b94f2b8a9636e14b94202da5d5c524",
+      "pair": 24,
+      "morphyColor": "w",
+      "seed": 539553658
+    },
+    {
+      "line": 251,
+      "source": "club/club-0025-b.json",
+      "sha256": "000c12e6e03a21fcfc150db3cd387e8334d02817a7263e633e59f99809d53c64",
+      "pair": 25,
+      "morphyColor": "b",
+      "seed": 539561577
+    },
+    {
+      "line": 252,
+      "source": "club/club-0025-w.json",
+      "sha256": "55ab833e12f0ffafe3cfe101145b002a5dee09b83c4c02e5f601678b57a901fc",
+      "pair": 25,
+      "morphyColor": "w",
+      "seed": 539561577
+    },
+    {
+      "line": 253,
+      "source": "club/club-0026-b.json",
+      "sha256": "bf9360d37228b9727dc34a0a803d12df74aaeeae7349e7a20afe1dab9b720d4e",
+      "pair": 26,
+      "morphyColor": "b",
+      "seed": 539569496
+    },
+    {
+      "line": 254,
+      "source": "club/club-0026-w.json",
+      "sha256": "0dde67b78ff8a0790a2899ffab613e2809885dc65f733ef1b6d369462589d4c0",
+      "pair": 26,
+      "morphyColor": "w",
+      "seed": 539569496
+    },
+    {
+      "line": 255,
+      "source": "club/club-0027-b.json",
+      "sha256": "b5cad03c4f70f0889004e312d94b4e7bcb55a8af08bd75abe864a3d946d9551a",
+      "pair": 27,
+      "morphyColor": "b",
+      "seed": 539577415
+    },
+    {
+      "line": 256,
+      "source": "club/club-0027-w.json",
+      "sha256": "38bd99a19a0e4bbb1e27cc57c6a751fa3df8a0f9fefbdef8293a57c6b377c853",
+      "pair": 27,
+      "morphyColor": "w",
+      "seed": 539577415
+    },
+    {
+      "line": 257,
+      "source": "club/club-0028-b.json",
+      "sha256": "c5dfcb2da7584856d7b44b534583b55835df431c5ec49785a795efc66204c869",
+      "pair": 28,
+      "morphyColor": "b",
+      "seed": 539585334
+    },
+    {
+      "line": 258,
+      "source": "club/club-0028-w.json",
+      "sha256": "f30b8f54c938329e3eed48bf147dd50d081e44def22227cb055c6c18f5ff2846",
+      "pair": 28,
+      "morphyColor": "w",
+      "seed": 539585334
+    },
+    {
+      "line": 259,
+      "source": "club/club-0029-b.json",
+      "sha256": "937c655918648a80edc00297ba2105652879327dd0ceb000902f935675f04c3b",
+      "pair": 29,
+      "morphyColor": "b",
+      "seed": 539593253
+    },
+    {
+      "line": 260,
+      "source": "club/club-0029-w.json",
+      "sha256": "163852b099e589a4d5723f5cd143514d5e79344bda9a77cece8cc847cc832026",
+      "pair": 29,
+      "morphyColor": "w",
+      "seed": 539593253
+    },
+    {
+      "line": 261,
+      "source": "club/club-0030-b.json",
+      "sha256": "1032df160b388334a74e0b60617ca265bc33751749c18de37ac8700bdb8c6926",
+      "pair": 30,
+      "morphyColor": "b",
+      "seed": 539601172
+    },
+    {
+      "line": 262,
+      "source": "club/club-0030-w.json",
+      "sha256": "5d6132b4a06a700ea31dce81bce2aca8283449e9bd79ac282736ac4a699a5bf4",
+      "pair": 30,
+      "morphyColor": "w",
+      "seed": 539601172
+    },
+    {
+      "line": 263,
+      "source": "club/club-0031-b.json",
+      "sha256": "a4ff8e09c65ca39f8f9c25dd63d2435210f6f1fd090a36d4b5279a7a0503681f",
+      "pair": 31,
+      "morphyColor": "b",
+      "seed": 539609091
+    },
+    {
+      "line": 264,
+      "source": "club/club-0031-w.json",
+      "sha256": "6f6b470fe01971e5e6497c2b99dd8637e157762239256f2793de95778eeb3416",
+      "pair": 31,
+      "morphyColor": "w",
+      "seed": 539609091
+    },
+    {
+      "line": 265,
+      "source": "club/club-0032-b.json",
+      "sha256": "7cbd5ac380aef8479024bab265a30ec25b490e55544ebd9452809d38e93e0a3e",
+      "pair": 32,
+      "morphyColor": "b",
+      "seed": 539617010
+    },
+    {
+      "line": 266,
+      "source": "club/club-0032-w.json",
+      "sha256": "334411e0d3a7cbe78f3d9c7f40b66068eb904f57cba03b350ee9b46fa3788948",
+      "pair": 32,
+      "morphyColor": "w",
+      "seed": 539617010
+    },
+    {
+      "line": 267,
+      "source": "club/club-0033-b.json",
+      "sha256": "9fbc4e070fbc787e9a59879bb444946cb67cc857282306b6afc5466ef0c256c8",
+      "pair": 33,
+      "morphyColor": "b",
+      "seed": 539624929
+    },
+    {
+      "line": 268,
+      "source": "club/club-0033-w.json",
+      "sha256": "902b71df889e0ada6d66ca4b2ad77f4b24c94704d3236bd89d253e4c2ffb0d75",
+      "pair": 33,
+      "morphyColor": "w",
+      "seed": 539624929
+    },
+    {
+      "line": 269,
+      "source": "club/club-0034-b.json",
+      "sha256": "5660105c8e2d7184d0136bdb90d57f3a0002747f3c6cced20408117c75d847b4",
+      "pair": 34,
+      "morphyColor": "b",
+      "seed": 539632848
+    },
+    {
+      "line": 270,
+      "source": "club/club-0034-w.json",
+      "sha256": "f02205436d915fdc37a2fffa7fa7de38e0855e2090a6597d73344325b0a0ceab",
+      "pair": 34,
+      "morphyColor": "w",
+      "seed": 539632848
+    },
+    {
+      "line": 271,
+      "source": "club/club-0035-b.json",
+      "sha256": "896d4d20f1173dcf7d09a13d5c63315da5f43a222ec158c3131bdbe9b61f60e6",
+      "pair": 35,
+      "morphyColor": "b",
+      "seed": 539640767
+    },
+    {
+      "line": 272,
+      "source": "club/club-0035-w.json",
+      "sha256": "35cde6c21ce4477c458bc57280458de11cee01403c047ab7353b10eb0fc09600",
+      "pair": 35,
+      "morphyColor": "w",
+      "seed": 539640767
+    },
+    {
+      "line": 273,
+      "source": "club/club-0036-b.json",
+      "sha256": "fc3f02901c5c4b077457462644067a3ebb9b2df64ac473e4c10d52dfda8c8306",
+      "pair": 36,
+      "morphyColor": "b",
+      "seed": 539648686
+    },
+    {
+      "line": 274,
+      "source": "club/club-0036-w.json",
+      "sha256": "16117aa92ebec19be0b008607ae00fc9e2f4c037b99e7b30c526486bbf34ad4f",
+      "pair": 36,
+      "morphyColor": "w",
+      "seed": 539648686
+    },
+    {
+      "line": 275,
+      "source": "club/club-0037-b.json",
+      "sha256": "6f3396d4150f6c52f6629cd881f0a9d65eda015acd96abeceb049cc2bfb03cdb",
+      "pair": 37,
+      "morphyColor": "b",
+      "seed": 539656605
+    },
+    {
+      "line": 276,
+      "source": "club/club-0037-w.json",
+      "sha256": "7645eb5a4a5956357ff0481976c2fa9364b55c8fa21c0e9242bb544647ecdf9d",
+      "pair": 37,
+      "morphyColor": "w",
+      "seed": 539656605
+    },
+    {
+      "line": 277,
+      "source": "club/club-0038-b.json",
+      "sha256": "0d40a2f699c0ebaa8eb95deea388410c38c806a939a0e4d911aa66997faecef4",
+      "pair": 38,
+      "morphyColor": "b",
+      "seed": 539664524
+    },
+    {
+      "line": 278,
+      "source": "club/club-0038-w.json",
+      "sha256": "986cae304717d7dddefbe8e374161d718457cc5f572f4d92deeaecca2de35f13",
+      "pair": 38,
+      "morphyColor": "w",
+      "seed": 539664524
+    },
+    {
+      "line": 279,
+      "source": "club/club-0039-b.json",
+      "sha256": "27064b386b7f492138af8852c6cf65b008256298c654be25a15e5a86652d7d44",
+      "pair": 39,
+      "morphyColor": "b",
+      "seed": 539672443
+    },
+    {
+      "line": 280,
+      "source": "club/club-0039-w.json",
+      "sha256": "197f850b2fee4b0621d45e795213df2ad85c886eefd424306417863aa2377259",
+      "pair": 39,
+      "morphyColor": "w",
+      "seed": 539672443
+    },
+    {
+      "line": 281,
+      "source": "club/club-0040-b.json",
+      "sha256": "cd340fe10932f5424bdc145c2f412d4910be4170f07f2b70c4ebf9d8e0abadb5",
+      "pair": 40,
+      "morphyColor": "b",
+      "seed": 539680362
+    },
+    {
+      "line": 282,
+      "source": "club/club-0040-w.json",
+      "sha256": "3a55eb4dfc73ded30de85753be36645f2c79f01ddc78a3f8cac973aae30fbf7f",
+      "pair": 40,
+      "morphyColor": "w",
+      "seed": 539680362
+    },
+    {
+      "line": 283,
+      "source": "club/club-0041-b.json",
+      "sha256": "42f4da7332aa21aee44baab8681506d691857f9abaa85da9bb708f744acd35c1",
+      "pair": 41,
+      "morphyColor": "b",
+      "seed": 539688281
+    },
+    {
+      "line": 284,
+      "source": "club/club-0041-w.json",
+      "sha256": "3c789bf05574f72bba1713a03e71dfd1af23fa46eb7744512bf4504ede873fd0",
+      "pair": 41,
+      "morphyColor": "w",
+      "seed": 539688281
+    },
+    {
+      "line": 285,
+      "source": "club/club-0042-b.json",
+      "sha256": "12378bf1c0f61c0c91251a1d3a1b55fc23a2b0efecaefe545a4f5d1de33d557c",
+      "pair": 42,
+      "morphyColor": "b",
+      "seed": 539696200
+    },
+    {
+      "line": 286,
+      "source": "club/club-0042-w.json",
+      "sha256": "245d7c6ebdb8ff177900bd065389b16aa5d5a5a30b279ab96ef4a0a7d04c7642",
+      "pair": 42,
+      "morphyColor": "w",
+      "seed": 539696200
+    },
+    {
+      "line": 287,
+      "source": "club/club-0043-b.json",
+      "sha256": "4efdd757672903e5a89dafc3cd1ce3e5d47db2e4205701753740f2849d68d95d",
+      "pair": 43,
+      "morphyColor": "b",
+      "seed": 539704119
+    },
+    {
+      "line": 288,
+      "source": "club/club-0043-w.json",
+      "sha256": "ab7b7ab01ad5e2bb3c2774a2e5a1649d314695803c8557daf645382e99519aca",
+      "pair": 43,
+      "morphyColor": "w",
+      "seed": 539704119
+    },
+    {
+      "line": 289,
+      "source": "club/club-0044-b.json",
+      "sha256": "35ef61b07bc36e77ba6172ea4b99a959d618b17258101ecc3d4182255202f93f",
+      "pair": 44,
+      "morphyColor": "b",
+      "seed": 539712038
+    },
+    {
+      "line": 290,
+      "source": "club/club-0044-w.json",
+      "sha256": "26e7037b1418990f197c0b4c4b7843798d1fa46dfd97d6713cf57d8d08348bdc",
+      "pair": 44,
+      "morphyColor": "w",
+      "seed": 539712038
+    },
+    {
+      "line": 291,
+      "source": "club/club-0045-b.json",
+      "sha256": "390d8a6d28e17eae24d635152dd08b5c1224357abf668e666a0a70e673a3b801",
+      "pair": 45,
+      "morphyColor": "b",
+      "seed": 539719957
+    },
+    {
+      "line": 292,
+      "source": "club/club-0045-w.json",
+      "sha256": "acb9436d143049ba847e71064ce5032e9f449d19a4db5e73776c784973df0269",
+      "pair": 45,
+      "morphyColor": "w",
+      "seed": 539719957
+    },
+    {
+      "line": 293,
+      "source": "club/club-0046-b.json",
+      "sha256": "f7a9eec075dca0d63d35f07bd05c712cb708e0b164d6ba6efd544fb3ee7059ae",
+      "pair": 46,
+      "morphyColor": "b",
+      "seed": 539727876
+    },
+    {
+      "line": 294,
+      "source": "club/club-0046-w.json",
+      "sha256": "fe6bbf7d3114d46ed52caed5bab49a72e87e08795f03726f55036af1e9e41211",
+      "pair": 46,
+      "morphyColor": "w",
+      "seed": 539727876
+    },
+    {
+      "line": 295,
+      "source": "club/club-0047-b.json",
+      "sha256": "73c22f6ae929a0df80cb1ef372d72a1bd7ea98a878962fbe927a8e246f35acc9",
+      "pair": 47,
+      "morphyColor": "b",
+      "seed": 539735795
+    },
+    {
+      "line": 296,
+      "source": "club/club-0047-w.json",
+      "sha256": "51895b0a5d116ea2508ec14f46616b54411ea142fc29bd7a900d2c450a1e9287",
+      "pair": 47,
+      "morphyColor": "w",
+      "seed": 539735795
+    },
+    {
+      "line": 297,
+      "source": "club/club-0048-b.json",
+      "sha256": "d1830aec05bf7a4b6e4478f79e8ef0315c2955ed8fa2eeca3f0c0cd99d5c1dbd",
+      "pair": 48,
+      "morphyColor": "b",
+      "seed": 539743714
+    },
+    {
+      "line": 298,
+      "source": "club/club-0048-w.json",
+      "sha256": "6c9c16e8d0fc5b838836ee2d9b192f2583b35c0014bdb7e69ba40976136ed5fe",
+      "pair": 48,
+      "morphyColor": "w",
+      "seed": 539743714
+    },
+    {
+      "line": 299,
+      "source": "club/club-0049-b.json",
+      "sha256": "7bfb7aa71e6dfbe52071eaa9d52683de9dc5f2fb9556b277c0b2feb466f40162",
+      "pair": 49,
+      "morphyColor": "b",
+      "seed": 539751633
+    },
+    {
+      "line": 300,
+      "source": "club/club-0049-w.json",
+      "sha256": "7b2fd7e70fc1cfde9e3dc5845ae8d727cf56121e29db8b56bd7ad7b31d29c748",
+      "pair": 49,
+      "morphyColor": "w",
+      "seed": 539751633
+    },
+    {
+      "line": 301,
+      "source": "strong/strong-0000-b.json",
+      "sha256": "84fba63047d19bb1f2e7f33bbd9a870539765758920718d9204c6787ebc46661",
+      "pair": 0,
+      "morphyColor": "b",
+      "seed": 539363602
+    },
+    {
+      "line": 302,
+      "source": "strong/strong-0000-w.json",
+      "sha256": "0dfeb2ac10ad7eba08b39d5eb255c4d58f94ddb9e869de6a05ab6bfbce1299d7",
+      "pair": 0,
+      "morphyColor": "w",
+      "seed": 539363602
+    },
+    {
+      "line": 303,
+      "source": "strong/strong-0001-b.json",
+      "sha256": "616a4ad970cb371ecf1cec888f39602db4923cc56bf98eb78a02dfe717650c8d",
+      "pair": 1,
+      "morphyColor": "b",
+      "seed": 539371521
+    },
+    {
+      "line": 304,
+      "source": "strong/strong-0001-w.json",
+      "sha256": "17fda1d727b6f1b503ce3d3f745d952f3e64c08bcdc72de6859dadc47de984e1",
+      "pair": 1,
+      "morphyColor": "w",
+      "seed": 539371521
+    },
+    {
+      "line": 305,
+      "source": "strong/strong-0002-b.json",
+      "sha256": "e1e52e893611f7c0cfb31cb2e17d0a3d91bde7f4ff02c69e62d7e6d9713c825a",
+      "pair": 2,
+      "morphyColor": "b",
+      "seed": 539379440
+    },
+    {
+      "line": 306,
+      "source": "strong/strong-0002-w.json",
+      "sha256": "4abf9054e741314c3d1fdc6a895d2862b381261dcdf822069ef2800e5dab4a1b",
+      "pair": 2,
+      "morphyColor": "w",
+      "seed": 539379440
+    },
+    {
+      "line": 307,
+      "source": "strong/strong-0003-b.json",
+      "sha256": "14bd662da97d647b10c797e094db5da54308579c92f07a9df6e54de3360612b9",
+      "pair": 3,
+      "morphyColor": "b",
+      "seed": 539387359
+    },
+    {
+      "line": 308,
+      "source": "strong/strong-0003-w.json",
+      "sha256": "258431915f9a646eabd1bed6361e7e19dfe64d06b35b35335595aa492cdc8cd7",
+      "pair": 3,
+      "morphyColor": "w",
+      "seed": 539387359
+    },
+    {
+      "line": 309,
+      "source": "strong/strong-0004-b.json",
+      "sha256": "aff272345f654e8bf08e189ae13b0490306230bfb01f3a788a73a4a2ec99e194",
+      "pair": 4,
+      "morphyColor": "b",
+      "seed": 539395278
+    },
+    {
+      "line": 310,
+      "source": "strong/strong-0004-w.json",
+      "sha256": "50f1d4c686ee0cbe8188309e7b67db8c1fac8ae83ccb60b5e7e44f3a2ba9cd55",
+      "pair": 4,
+      "morphyColor": "w",
+      "seed": 539395278
+    },
+    {
+      "line": 311,
+      "source": "strong/strong-0005-b.json",
+      "sha256": "b78a25fb3a9a2c82af5ceecc835bbcc9f310769cae051d4a2e83aa261215b161",
+      "pair": 5,
+      "morphyColor": "b",
+      "seed": 539403197
+    },
+    {
+      "line": 312,
+      "source": "strong/strong-0005-w.json",
+      "sha256": "2c2f2d25c7289361df961b5764954f95301e8c444642f262bb5e7dde59dc96da",
+      "pair": 5,
+      "morphyColor": "w",
+      "seed": 539403197
+    },
+    {
+      "line": 313,
+      "source": "strong/strong-0006-b.json",
+      "sha256": "906b8f2acac913d3c020fffe69b5391a5e0eb24a37589c561c9577f517832038",
+      "pair": 6,
+      "morphyColor": "b",
+      "seed": 539411116
+    },
+    {
+      "line": 314,
+      "source": "strong/strong-0006-w.json",
+      "sha256": "c0afbf244d9d4b4a082abac20677cc728ea1598872048842849814b409cb2a8c",
+      "pair": 6,
+      "morphyColor": "w",
+      "seed": 539411116
+    },
+    {
+      "line": 315,
+      "source": "strong/strong-0007-b.json",
+      "sha256": "bb20b1a28f7a4befd6f159c953935ffae01d2bbfa5e0c5c022cf77e75e3bf9e2",
+      "pair": 7,
+      "morphyColor": "b",
+      "seed": 539419035
+    },
+    {
+      "line": 316,
+      "source": "strong/strong-0007-w.json",
+      "sha256": "4c92d3b287efb81c7554c1302da98b6eae839f9c6f2589f56a14fd7ac5e206e6",
+      "pair": 7,
+      "morphyColor": "w",
+      "seed": 539419035
+    },
+    {
+      "line": 317,
+      "source": "strong/strong-0008-b.json",
+      "sha256": "1704d1d534d3e74ef12eb642a31bb633b62c39948edc07edcfd185b15a7bca2f",
+      "pair": 8,
+      "morphyColor": "b",
+      "seed": 539426954
+    },
+    {
+      "line": 318,
+      "source": "strong/strong-0008-w.json",
+      "sha256": "5cfdb5b2ac7ad44594a0a958cb558f094801de73a19c102be36c943ac6974137",
+      "pair": 8,
+      "morphyColor": "w",
+      "seed": 539426954
+    },
+    {
+      "line": 319,
+      "source": "strong/strong-0009-b.json",
+      "sha256": "770f5ac66b17c21e906df4f6a6418beb6c9f5e1c750342dfa81cdd2cfa384c7b",
+      "pair": 9,
+      "morphyColor": "b",
+      "seed": 539434873
+    },
+    {
+      "line": 320,
+      "source": "strong/strong-0009-w.json",
+      "sha256": "1017eb467ece5c96a4132b4de650b76fcf24f82c0c5c93c2dc052aecb727f695",
+      "pair": 9,
+      "morphyColor": "w",
+      "seed": 539434873
+    },
+    {
+      "line": 321,
+      "source": "strong/strong-0010-b.json",
+      "sha256": "7b81f05b36bb25d089453f29ed5924e0b9d22870361c4ff8f62ea259568a7e27",
+      "pair": 10,
+      "morphyColor": "b",
+      "seed": 539442792
+    },
+    {
+      "line": 322,
+      "source": "strong/strong-0010-w.json",
+      "sha256": "942086bcfd198d4a2e0069896bd63081044d6c325221911f51fe8cdd22cc095b",
+      "pair": 10,
+      "morphyColor": "w",
+      "seed": 539442792
+    },
+    {
+      "line": 323,
+      "source": "strong/strong-0011-b.json",
+      "sha256": "603290178127e6d3a7412a668ae54eaa5e44e6d31d07668684b6d0723c5f7a8a",
+      "pair": 11,
+      "morphyColor": "b",
+      "seed": 539450711
+    },
+    {
+      "line": 324,
+      "source": "strong/strong-0011-w.json",
+      "sha256": "c7d22d6d01b93ba9c5b8413784a193804591f9a4f718b2ecb1f8d119137be65a",
+      "pair": 11,
+      "morphyColor": "w",
+      "seed": 539450711
+    },
+    {
+      "line": 325,
+      "source": "strong/strong-0012-b.json",
+      "sha256": "9705863e898e2bae9276347046456b77fbb0098303ca51a11aa52fe3d436015a",
+      "pair": 12,
+      "morphyColor": "b",
+      "seed": 539458630
+    },
+    {
+      "line": 326,
+      "source": "strong/strong-0012-w.json",
+      "sha256": "e430cbb8014de82fcfca3eacff212b12d089ca3f5d537b58719bd8381966db8f",
+      "pair": 12,
+      "morphyColor": "w",
+      "seed": 539458630
+    },
+    {
+      "line": 327,
+      "source": "strong/strong-0013-b.json",
+      "sha256": "d8503f3c76339abcfe9721c1492f2c8c1ede5a3a71bb86f2a1b7ead0be94d6fb",
+      "pair": 13,
+      "morphyColor": "b",
+      "seed": 539466549
+    },
+    {
+      "line": 328,
+      "source": "strong/strong-0013-w.json",
+      "sha256": "0342af34bdcdaa3d77f01f904e52ac37e278f1cff3cb9bce012c4f0876ec79fd",
+      "pair": 13,
+      "morphyColor": "w",
+      "seed": 539466549
+    },
+    {
+      "line": 329,
+      "source": "strong/strong-0014-b.json",
+      "sha256": "9fb1a37b8147fa0b081083281d8c635df0bd5532eb3533d8e443277efd0d0498",
+      "pair": 14,
+      "morphyColor": "b",
+      "seed": 539474468
+    },
+    {
+      "line": 330,
+      "source": "strong/strong-0014-w.json",
+      "sha256": "b3b02b429de39a9e5ba46ab3af707d398a055894e0787f4cce74ee8cc790d4e4",
+      "pair": 14,
+      "morphyColor": "w",
+      "seed": 539474468
+    },
+    {
+      "line": 331,
+      "source": "strong/strong-0015-b.json",
+      "sha256": "d4f99f0e989f2ba2f8312b3026820188a1fe37d0d13960a6f829ec7353ff0b6d",
+      "pair": 15,
+      "morphyColor": "b",
+      "seed": 539482387
+    },
+    {
+      "line": 332,
+      "source": "strong/strong-0015-w.json",
+      "sha256": "ca687b314dc26ac896fda554d5b6c76ea8747331a33f7664fbcca711370e2d3e",
+      "pair": 15,
+      "morphyColor": "w",
+      "seed": 539482387
+    },
+    {
+      "line": 333,
+      "source": "strong/strong-0016-b.json",
+      "sha256": "1aefcce6940a6853b707ea01b63bedab20563a7be4e1d0d35a3e3e3aa471b624",
+      "pair": 16,
+      "morphyColor": "b",
+      "seed": 539490306
+    },
+    {
+      "line": 334,
+      "source": "strong/strong-0016-w.json",
+      "sha256": "5a5f0a6a91fe62843b736a139426ac6c1303a4e6380112c79c454067d5b88678",
+      "pair": 16,
+      "morphyColor": "w",
+      "seed": 539490306
+    },
+    {
+      "line": 335,
+      "source": "strong/strong-0017-b.json",
+      "sha256": "a22441562303ef1a94fe93cf95ae3b96737232a8a4fe537b1d5669fe01075af9",
+      "pair": 17,
+      "morphyColor": "b",
+      "seed": 539498225
+    },
+    {
+      "line": 336,
+      "source": "strong/strong-0017-w.json",
+      "sha256": "675fffbb8c1261d39964da717209eef6694f4b71a1857b927644db1cdd5811d4",
+      "pair": 17,
+      "morphyColor": "w",
+      "seed": 539498225
+    },
+    {
+      "line": 337,
+      "source": "strong/strong-0018-b.json",
+      "sha256": "5635a0aaab14fcee6334b01bc0a983b6994526faff212698f62cabd86b6c1392",
+      "pair": 18,
+      "morphyColor": "b",
+      "seed": 539506144
+    },
+    {
+      "line": 338,
+      "source": "strong/strong-0018-w.json",
+      "sha256": "6194d91c39ee07b8e44f6e61c79e40bfc9b040195d71a18bbc003adfd6f72684",
+      "pair": 18,
+      "morphyColor": "w",
+      "seed": 539506144
+    },
+    {
+      "line": 339,
+      "source": "strong/strong-0019-b.json",
+      "sha256": "e14386548cfd8a5b4a39c86c802fa526de3ef8c28eddd48f53bc4fd4a0b01e19",
+      "pair": 19,
+      "morphyColor": "b",
+      "seed": 539514063
+    },
+    {
+      "line": 340,
+      "source": "strong/strong-0019-w.json",
+      "sha256": "3d25617774132840b69b356fae5625901e2c03c7c1a3609cf7c79b5ec27751a6",
+      "pair": 19,
+      "morphyColor": "w",
+      "seed": 539514063
+    },
+    {
+      "line": 341,
+      "source": "strong/strong-0020-b.json",
+      "sha256": "528895b795580256364a2f1b77b1daba7b59780e07ee5389c2e344ef33df7b59",
+      "pair": 20,
+      "morphyColor": "b",
+      "seed": 539521982
+    },
+    {
+      "line": 342,
+      "source": "strong/strong-0020-w.json",
+      "sha256": "e068404c5fb6897a194a78453d16658239cd358253a7608042b5a23b6820bea6",
+      "pair": 20,
+      "morphyColor": "w",
+      "seed": 539521982
+    },
+    {
+      "line": 343,
+      "source": "strong/strong-0021-b.json",
+      "sha256": "8b22f2fd403faf8f0d97776f531b5e5ae2effa2a3dea04ef145a66deb99b1059",
+      "pair": 21,
+      "morphyColor": "b",
+      "seed": 539529901
+    },
+    {
+      "line": 344,
+      "source": "strong/strong-0021-w.json",
+      "sha256": "e115b632c287abc8b84ef4ccdd6c10b6d423346cbe13c82236c3653f3446d240",
+      "pair": 21,
+      "morphyColor": "w",
+      "seed": 539529901
+    },
+    {
+      "line": 345,
+      "source": "strong/strong-0022-b.json",
+      "sha256": "55e951dfdf45541de2693e27f846d91443e1956f574e97aaaf1d3ea0c5c5638e",
+      "pair": 22,
+      "morphyColor": "b",
+      "seed": 539537820
+    },
+    {
+      "line": 346,
+      "source": "strong/strong-0022-w.json",
+      "sha256": "817cc5f403e78989443134c8338449ee1897e51963b0b2d76e963af30a7838d6",
+      "pair": 22,
+      "morphyColor": "w",
+      "seed": 539537820
+    },
+    {
+      "line": 347,
+      "source": "strong/strong-0023-b.json",
+      "sha256": "9102716b4c95c247f9d8554a98c1b222a3563cfe80d45c1e49a12e6428f09636",
+      "pair": 23,
+      "morphyColor": "b",
+      "seed": 539545739
+    },
+    {
+      "line": 348,
+      "source": "strong/strong-0023-w.json",
+      "sha256": "8db6c045fa1e4f9a3bc3d12a88fb56323960759adc9b36751bccbe6b510ccb0b",
+      "pair": 23,
+      "morphyColor": "w",
+      "seed": 539545739
+    },
+    {
+      "line": 349,
+      "source": "strong/strong-0024-b.json",
+      "sha256": "6ce96895f4cd69f59671ddb155c5b042919511a505435bad0c101d44c169c281",
+      "pair": 24,
+      "morphyColor": "b",
+      "seed": 539553658
+    },
+    {
+      "line": 350,
+      "source": "strong/strong-0024-w.json",
+      "sha256": "5a10e223d6026a673ef5d6721df915ea0b12de22bebde9ff8a8733e394b06479",
+      "pair": 24,
+      "morphyColor": "w",
+      "seed": 539553658
+    },
+    {
+      "line": 351,
+      "source": "strong/strong-0025-b.json",
+      "sha256": "726411834322a1ae1bd4d18f2450983bc7a4d008860c75e2c434fdb6840a347b",
+      "pair": 25,
+      "morphyColor": "b",
+      "seed": 539561577
+    },
+    {
+      "line": 352,
+      "source": "strong/strong-0025-w.json",
+      "sha256": "56f6f5f1e5608947e5af24c035e0a498aee328d21d47798da85b07d6bd4560b4",
+      "pair": 25,
+      "morphyColor": "w",
+      "seed": 539561577
+    },
+    {
+      "line": 353,
+      "source": "strong/strong-0026-b.json",
+      "sha256": "f0e42deeb77edd80fb78fb260bc01b9a44b72f41cc0583d916f716364c6035bd",
+      "pair": 26,
+      "morphyColor": "b",
+      "seed": 539569496
+    },
+    {
+      "line": 354,
+      "source": "strong/strong-0026-w.json",
+      "sha256": "dbd3cbc0a5fda5e4b8a16a963093ce255627063ffe86aec5f651f99b19096768",
+      "pair": 26,
+      "morphyColor": "w",
+      "seed": 539569496
+    },
+    {
+      "line": 355,
+      "source": "strong/strong-0027-b.json",
+      "sha256": "77044e0bf6500d1e9b29e86711abf32c4f2bc41b743b07ec19bf5e126ed5237a",
+      "pair": 27,
+      "morphyColor": "b",
+      "seed": 539577415
+    },
+    {
+      "line": 356,
+      "source": "strong/strong-0027-w.json",
+      "sha256": "be40f26bc4d793902a929bae08d896e0757b89f214b0a87c707e815d6d626ee9",
+      "pair": 27,
+      "morphyColor": "w",
+      "seed": 539577415
+    },
+    {
+      "line": 357,
+      "source": "strong/strong-0028-b.json",
+      "sha256": "f687fa8144efac4e6a688092752c70941ce1f3c780e6f911cf3e71ba1020234e",
+      "pair": 28,
+      "morphyColor": "b",
+      "seed": 539585334
+    },
+    {
+      "line": 358,
+      "source": "strong/strong-0028-w.json",
+      "sha256": "bce5a70eb99ed07fd05e97bb109d2cb4addf3ad0b0228c6750cd336a1580ab92",
+      "pair": 28,
+      "morphyColor": "w",
+      "seed": 539585334
+    },
+    {
+      "line": 359,
+      "source": "strong/strong-0029-b.json",
+      "sha256": "b1be813a44157e36f4fd98fc2c8fa3228c8fe278031e61961075f3334e6826df",
+      "pair": 29,
+      "morphyColor": "b",
+      "seed": 539593253
+    },
+    {
+      "line": 360,
+      "source": "strong/strong-0029-w.json",
+      "sha256": "6ff8688702650db1666e05592814b621f51aa1e66980c7c5ef9e9eaa22b4da13",
+      "pair": 29,
+      "morphyColor": "w",
+      "seed": 539593253
+    },
+    {
+      "line": 361,
+      "source": "strong/strong-0030-b.json",
+      "sha256": "e8ec9ebf20d4d641e569731353d7876550c039b70b78f14b2633a592b8e705fa",
+      "pair": 30,
+      "morphyColor": "b",
+      "seed": 539601172
+    },
+    {
+      "line": 362,
+      "source": "strong/strong-0030-w.json",
+      "sha256": "3a447e0151b798c55bd4fff9c820f478211beec21b62dd083add0f36deb9c22d",
+      "pair": 30,
+      "morphyColor": "w",
+      "seed": 539601172
+    },
+    {
+      "line": 363,
+      "source": "strong/strong-0031-b.json",
+      "sha256": "cdf2bca6a7fd5968afbc8dba6512c03fbef6f969d0aabaaef521ee51813387d1",
+      "pair": 31,
+      "morphyColor": "b",
+      "seed": 539609091
+    },
+    {
+      "line": 364,
+      "source": "strong/strong-0031-w.json",
+      "sha256": "94a52cabbf1c7c4d36159d4d41819b7bf897fa7097a3b2d0537421092f519de5",
+      "pair": 31,
+      "morphyColor": "w",
+      "seed": 539609091
+    },
+    {
+      "line": 365,
+      "source": "strong/strong-0032-b.json",
+      "sha256": "1ded99fa584237424d36f17158fc76911af6091df7391405aa049d51864888dd",
+      "pair": 32,
+      "morphyColor": "b",
+      "seed": 539617010
+    },
+    {
+      "line": 366,
+      "source": "strong/strong-0032-w.json",
+      "sha256": "889314d688b303979b134746e198fba011b5c129688335fcc1513f6622e7c64a",
+      "pair": 32,
+      "morphyColor": "w",
+      "seed": 539617010
+    },
+    {
+      "line": 367,
+      "source": "strong/strong-0033-b.json",
+      "sha256": "ed0623a70c6cc9e67eded716ec4b5fa0d8c9cf2a594d6532bb664e0285d90c2c",
+      "pair": 33,
+      "morphyColor": "b",
+      "seed": 539624929
+    },
+    {
+      "line": 368,
+      "source": "strong/strong-0033-w.json",
+      "sha256": "641a2409ad2501ade959f5619260f092a9d53734d8c1c47e6e36e4e7874e0f24",
+      "pair": 33,
+      "morphyColor": "w",
+      "seed": 539624929
+    },
+    {
+      "line": 369,
+      "source": "strong/strong-0034-b.json",
+      "sha256": "426e17c861c03a5912954450f05688b932830a5876f3a5006a5f852a8d61bc18",
+      "pair": 34,
+      "morphyColor": "b",
+      "seed": 539632848
+    },
+    {
+      "line": 370,
+      "source": "strong/strong-0034-w.json",
+      "sha256": "c510d7db08902f6e0ed8b6e68cc5d94f9b69f4cfd748788daab60659eec27b2d",
+      "pair": 34,
+      "morphyColor": "w",
+      "seed": 539632848
+    },
+    {
+      "line": 371,
+      "source": "strong/strong-0035-b.json",
+      "sha256": "b14bc21e3916a4342135027fa7dea951addbbf073141205435d737998a6b9888",
+      "pair": 35,
+      "morphyColor": "b",
+      "seed": 539640767
+    },
+    {
+      "line": 372,
+      "source": "strong/strong-0035-w.json",
+      "sha256": "cdb0be66b292d1b9b8f25c5ae778fa386948f037c7dddb6601f4510536055cfd",
+      "pair": 35,
+      "morphyColor": "w",
+      "seed": 539640767
+    },
+    {
+      "line": 373,
+      "source": "strong/strong-0036-b.json",
+      "sha256": "5fec401adc2ead1ec5e4a7b796d7cea49106de6e088995b3249fe835af2091de",
+      "pair": 36,
+      "morphyColor": "b",
+      "seed": 539648686
+    },
+    {
+      "line": 374,
+      "source": "strong/strong-0036-w.json",
+      "sha256": "f0013b9894b7ddeea0440aa8cec80ae18dbd02e9e350977bd4b0229e0a997c8b",
+      "pair": 36,
+      "morphyColor": "w",
+      "seed": 539648686
+    },
+    {
+      "line": 375,
+      "source": "strong/strong-0037-b.json",
+      "sha256": "6a62913378f6ff2b2105fba5b9ff0f0969064c5cd8231a6c99f6f344949982ed",
+      "pair": 37,
+      "morphyColor": "b",
+      "seed": 539656605
+    },
+    {
+      "line": 376,
+      "source": "strong/strong-0037-w.json",
+      "sha256": "0843a9ffce80501ecb1bc197b2745dbe61cb125e90cea87172ffaaf82dc8c709",
+      "pair": 37,
+      "morphyColor": "w",
+      "seed": 539656605
+    },
+    {
+      "line": 377,
+      "source": "strong/strong-0038-b.json",
+      "sha256": "cf3beaa96eb363199ac968f8c5c57a226b45aa1535a38cb8c55ff28aef7655f7",
+      "pair": 38,
+      "morphyColor": "b",
+      "seed": 539664524
+    },
+    {
+      "line": 378,
+      "source": "strong/strong-0038-w.json",
+      "sha256": "637fdcb33a7c1f8718ae5b98bba728e572352ee747495f7fb18c3e25eb1c4a42",
+      "pair": 38,
+      "morphyColor": "w",
+      "seed": 539664524
+    },
+    {
+      "line": 379,
+      "source": "strong/strong-0039-b.json",
+      "sha256": "ce1353ede694dd5b979154168d2e0c7f06f6b338f24d15657a07029ae65f3d3a",
+      "pair": 39,
+      "morphyColor": "b",
+      "seed": 539672443
+    },
+    {
+      "line": 380,
+      "source": "strong/strong-0039-w.json",
+      "sha256": "ade26edcf7fae0b03c57d0d58a869987d45444ef4890ba53ea09401e4529660e",
+      "pair": 39,
+      "morphyColor": "w",
+      "seed": 539672443
+    },
+    {
+      "line": 381,
+      "source": "strong/strong-0040-b.json",
+      "sha256": "e5c34ea989b7c47559bc16c0b04539f92b6fdf48f117bcf791bf042b6e7b9b4d",
+      "pair": 40,
+      "morphyColor": "b",
+      "seed": 539680362
+    },
+    {
+      "line": 382,
+      "source": "strong/strong-0040-w.json",
+      "sha256": "fcc47a7cf87394ada3eb9a5b9a67fcbebbc68c4fe7ce0d39747ddb05bceae56a",
+      "pair": 40,
+      "morphyColor": "w",
+      "seed": 539680362
+    },
+    {
+      "line": 383,
+      "source": "strong/strong-0041-b.json",
+      "sha256": "6968856d47ab7993d253c8b2eef810a376b190c1d9d956a12df7e272592446ca",
+      "pair": 41,
+      "morphyColor": "b",
+      "seed": 539688281
+    },
+    {
+      "line": 384,
+      "source": "strong/strong-0041-w.json",
+      "sha256": "1b20ccea0ff97b10aa4b61f80dd6a1f24804206a7b196d4a0894883845dab283",
+      "pair": 41,
+      "morphyColor": "w",
+      "seed": 539688281
+    },
+    {
+      "line": 385,
+      "source": "strong/strong-0042-b.json",
+      "sha256": "ca7f0d6f6794bbe5143b1b2da1ed4eaccceb360fc4a70a5ea51eeaaed76f839b",
+      "pair": 42,
+      "morphyColor": "b",
+      "seed": 539696200
+    },
+    {
+      "line": 386,
+      "source": "strong/strong-0042-w.json",
+      "sha256": "5bef1688a2c9d6d316d3febb2377031ebee41c29adccf1737aae57830d65ebc2",
+      "pair": 42,
+      "morphyColor": "w",
+      "seed": 539696200
+    },
+    {
+      "line": 387,
+      "source": "strong/strong-0043-b.json",
+      "sha256": "0f0c83d6c0079dcf37a8a2399e650efa1ed6ba31e487e08b836cf5425e4c1b5f",
+      "pair": 43,
+      "morphyColor": "b",
+      "seed": 539704119
+    },
+    {
+      "line": 388,
+      "source": "strong/strong-0043-w.json",
+      "sha256": "79134c575b009cce4621a392d52969bb71cc436c25d20390b701aa7a88e7bc3d",
+      "pair": 43,
+      "morphyColor": "w",
+      "seed": 539704119
+    },
+    {
+      "line": 389,
+      "source": "strong/strong-0044-b.json",
+      "sha256": "fc86492c163fd9e7f51c751d89aa63e2161977b1a80a17dc866d7a8081260b99",
+      "pair": 44,
+      "morphyColor": "b",
+      "seed": 539712038
+    },
+    {
+      "line": 390,
+      "source": "strong/strong-0044-w.json",
+      "sha256": "1a03f63d19792db739c41217a24e03580a7c1e0e3dd4ae475772c3099ccebf7d",
+      "pair": 44,
+      "morphyColor": "w",
+      "seed": 539712038
+    },
+    {
+      "line": 391,
+      "source": "strong/strong-0045-b.json",
+      "sha256": "9e8c1810b1c5d0f1447da0a2e76ffe2e9e7b7787f4c7c7e0af089690177cc2c5",
+      "pair": 45,
+      "morphyColor": "b",
+      "seed": 539719957
+    },
+    {
+      "line": 392,
+      "source": "strong/strong-0045-w.json",
+      "sha256": "9318d5499bf137c6de15cdb00277bb5f9bf76ed565ffff1da834b8afa04ccc24",
+      "pair": 45,
+      "morphyColor": "w",
+      "seed": 539719957
+    },
+    {
+      "line": 393,
+      "source": "strong/strong-0046-b.json",
+      "sha256": "bb178e0acda3e10884f3bafab648f000649ab0066df530fa8e6f1dfed7b6aff3",
+      "pair": 46,
+      "morphyColor": "b",
+      "seed": 539727876
+    },
+    {
+      "line": 394,
+      "source": "strong/strong-0046-w.json",
+      "sha256": "b36dfd7545500b0c1ee8e5026c32d8b8a801015066d0af76d657cfc7138c14ff",
+      "pair": 46,
+      "morphyColor": "w",
+      "seed": 539727876
+    },
+    {
+      "line": 395,
+      "source": "strong/strong-0047-b.json",
+      "sha256": "883379ba249c42fc3d7cbb3f51aff9378da09b07760d736357f930cef896a551",
+      "pair": 47,
+      "morphyColor": "b",
+      "seed": 539735795
+    },
+    {
+      "line": 396,
+      "source": "strong/strong-0047-w.json",
+      "sha256": "e13d210dc232b139d1159aa968471e8c5fd585a8da80ce3f0ffc8a66ed71c93b",
+      "pair": 47,
+      "morphyColor": "w",
+      "seed": 539735795
+    },
+    {
+      "line": 397,
+      "source": "strong/strong-0048-b.json",
+      "sha256": "6b16c3e45af20043c04a1ab2633e98aeb616b0cb01c6ab411c50b19f7fc79d85",
+      "pair": 48,
+      "morphyColor": "b",
+      "seed": 539743714
+    },
+    {
+      "line": 398,
+      "source": "strong/strong-0048-w.json",
+      "sha256": "653407a35e45e6b84c3e393c24be25e95cebd5c012a395b0e7f285af4ad9af15",
+      "pair": 48,
+      "morphyColor": "w",
+      "seed": 539743714
+    },
+    {
+      "line": 399,
+      "source": "strong/strong-0049-b.json",
+      "sha256": "a5fdfe73031adab876d3902aa62e91a1dc50cd9ea6fcd8aea5f26ae83260b157",
+      "pair": 49,
+      "morphyColor": "b",
+      "seed": 539751633
+    },
+    {
+      "line": 400,
+      "source": "strong/strong-0049-w.json",
+      "sha256": "a6bebe64b8c24e4263eaeef9e9fdabd158ceff048454890aafd84523551817dd",
+      "pair": 49,
+      "morphyColor": "w",
+      "seed": 539751633
+    }
+  ]
+}

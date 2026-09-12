@@ -1,0 +1,15 @@
+{
+  "rating": 1188.0637213623827,
+  "lower": 1032.4841334887471,
+  "upper": 1343.6433092360182,
+  "games": 100,
+  "unresolved": 0,
+  "eligible": false,
+  "protocol": "morphy-plans-paired-v1",
+  "opponentVersion": 4,
+  "level": "casual",
+  "pairs": 50,
+  "wins": 78,
+  "draws": 12,
+  "losses": 10
+}

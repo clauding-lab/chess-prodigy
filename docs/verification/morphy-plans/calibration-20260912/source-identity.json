@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "reviewedCommit": "d8c376dd7613fa53e72e6850462f68e7b60cc877",
+  "protocol": "morphy-plans-paired-v1",
+  "opponent": {
+    "id": "attack-development",
+    "version": 4,
+    "engine": "plans-v1",
+    "randomPolicy": "seeded-per-ply-v1"
+  },
+  "nodeBinary": "/Users/adnanrashid/.nvm/versions/node/v22.23.0/bin/node",
+  "node": "v22.23.0",
+  "npm": "10.9.8",
+  "machine": {
+    "modelIdentifier": "Mac17,9",
+    "cpu": "Apple M5 Pro",
+    "arch": "arm64",
+    "platform": "darwin",
+    "macOS": "26.6.2 (25G83)",
+    "logicalCpuCount": 15
+  },
+  "configuredPairConcurrency": 8,
+  "levelsRunSequentially": true,
+  "maximumPlies": 1000,
+  "adjudication": "none",
+  "procedureStartedBdt": "2026-09-12 21:24:22 +06",
+  "auditCompletedBdt": "2026-09-12 21:50:11 +06",
+  "evidencePackagedBdt": "2026-09-12 21:52:12 +06",
+  "frozenSourceFileCount": 279,
+  "frozenArchive": "frozen-source-d8c376dd7613fa53e72e6850462f68e7b60cc877.tar.gz",
+  "frozenArchiveSha256": "2c9ebc486e53bce67369b259fe83db7f95025cb991acd3881e43b11bfa72c909",
+  "rawEvidenceArchive": "evidence-raw-d8c376d.tar.gz",
+  "rawEvidenceArchiveSha256": "a63cf14baabbb2d9037a42ed0e20bb3df756a31ef27d72990026ca56bc213121",
+  "uncompressedGamesSha256": "9bbcc97a01cf95e2dd28979abb264c2dfaafc0503fd2648eb68f7b9994270082",
+  "compressedGamesSha256": "20cd968c578bc78f5c4d3901dfe90410b2644a3ad33291aa6e80460fcc1d64af"
+}
