@@ -3,7 +3,7 @@ import type { Rating } from "../rating/fide";
 import { LEVEL_LABEL } from "../rating/fide";
 import { opponentName, isSupportedOpponent } from "../engine/opponents";
 import { GLYPH } from "./Board";
-import { MORPHY_RATINGS } from "../rating/opponents";
+import { HISTORICAL_MORPHY_RATINGS } from "../rating/opponents";
 import "./home.css";
 
 const clock = (ms: number) => {
@@ -52,6 +52,13 @@ export function Home({
                   {opponentName(game.opponent)} · {LEVEL_LABEL[game.setup.level]} · You play{" "}
                   {game.setup.playerColor === "w" ? "White" : "Black"}
                 </p>
+                {game.opponent.id === "attack-development" &&
+                  [1, 2].includes(game.opponent.version) && (
+                    <p className="home-caption">
+                      This saved game keeps the earlier opponent. New Morphy games use his
+                      documented repertoire.
+                    </p>
+                  )}
                 {game.clocks ? (
                   <>
                     <div className="home-clocks" aria-label="Game clocks">
@@ -178,23 +185,24 @@ export function Home({
                 </div>
               </div>
               <p>
-                Inspired by Paul Morphy, an American chess master of the 1800s. This opponent
-                favours getting pieces into play quickly, opening lines and putting pressure on your
-                king.
+                Paul Morphy was an American chess master of the 1800s. This historical simulation
+                uses his recorded moves in matching positions and learned preferences elsewhere,
+                drawn from 247 validated games.
               </p>
               <details>
                 <summary>Who was Paul Morphy?</summary>
                 <p>
                   An American chess master of the 1800s, Morphy became famous for his brilliant
-                  attacking games. This computer opponent is inspired by those ideas; it is a
-                  simulation of a playing style.
+                  attacking games. His documented games guide this simulation; it is not a perfect
+                  recreation of the person or a measure of his human playing strength.
                 </p>
                 <a
-                  href="https://www.chess.com/article/view/america-world-chess"
+                  href="https://timkr.home.xs4all.nl/ChessTutor/morphy.htm"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Read about Morphy’s chess <span className="sr-only">(opens in a new tab)</span>
+                  Explore the Morphy game collection{" "}
+                  <span className="sr-only">(opens in a new tab)</span>
                 </a>
               </details>
               <button
@@ -210,7 +218,7 @@ export function Home({
         <p className="home-rating-note">
           {betaEnabled ? "Both opponents offer" : "Classic offers"} Casual, Club and Strong.{" "}
           {betaEnabled &&
-            `Morphy’s measured strengths are ${MORPHY_RATINGS.casual}, ${MORPHY_RATINGS.club} and ${MORPHY_RATINGS.strong}. `}
+            `Morphy’s measured strengths are ${HISTORICAL_MORPHY_RATINGS.casual}, ${HISTORICAL_MORPHY_RATINGS.club} and ${HISTORICAL_MORPHY_RATINGS.strong}. `}
           Practice Ratings measure progress within this app. Hints and takebacks make a game
           unrated.
         </p>

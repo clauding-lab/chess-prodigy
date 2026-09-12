@@ -5,7 +5,8 @@ import { ARCHIVE_LIMIT, updateArchive } from "../game/archive";
 import { parseSavedState } from "./schema";
 import { saveState, type StorageLike } from "./store";
 
-export const GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v2";
+export const GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v3";
+export const MEASURED_GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v2";
 export const PREVIOUS_GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v1";
 export interface HistoryResult {
   games: GameRecord[];
@@ -31,7 +32,10 @@ export function loadGuestHistory(storage: StorageLike | null): HistoryResult {
   let raw: string | null;
   try {
     if (!storage) return { games: [], status: "unavailable" };
-    raw = storage.getItem(GUEST_HISTORY_KEY) ?? storage.getItem(PREVIOUS_GUEST_HISTORY_KEY);
+    raw =
+      storage.getItem(GUEST_HISTORY_KEY) ??
+      storage.getItem(MEASURED_GUEST_HISTORY_KEY) ??
+      storage.getItem(PREVIOUS_GUEST_HISTORY_KEY);
   } catch {
     return { games: [], status: "unavailable" };
   }

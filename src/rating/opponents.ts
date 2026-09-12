@@ -7,10 +7,18 @@ export const MORPHY_RATINGS: Readonly<Record<Level, number>> = Object.freeze({
   club: 1375,
   strong: 1825,
 });
+// Immutable calibration for attack-development/version 3, historical-v1.
+export const HISTORICAL_MORPHY_RATINGS: Readonly<Record<Level, number>> = Object.freeze({
+  casual: 1275,
+  club: 1375,
+  strong: 1775,
+});
 export function opponentPracticeRating(opponent: OpponentConfig, level: Level): number | null {
   if (!isSupportedOpponent(opponent)) return null;
   if (opponent.id === "classic") return ENGINE_ELO[level];
-  return opponent.version === 2 ? MORPHY_RATINGS[level] : null;
+  if (opponent.version === 2) return MORPHY_RATINGS[level];
+  if (opponent.version === 3) return HISTORICAL_MORPHY_RATINGS[level];
+  return null;
 }
 export function opponentRatingLabel(
   opponent: OpponentConfig,

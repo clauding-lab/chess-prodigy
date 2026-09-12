@@ -62,7 +62,7 @@ it.each(["White", "Black"])(
     fireEvent.click(screen.getByRole("button", { name: "Paul Morphy", exact: true }));
     expect(within(screen.getByRole("dialog")).getByText("Attack & development")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: color, exact: true }));
-    fireEvent.click(screen.getByRole("button", { name: "Casual 1200", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Casual 1275", exact: true }));
     fireEvent.click(screen.getByRole("button", { name: "Start", exact: true }));
     if (color === "White") {
       fireEvent.click(screen.getByRole("button", { name: "e2, white pawn" }));
@@ -76,7 +76,7 @@ it.each(["White", "Black"])(
       rated: true,
       ratingApplied: null,
       unratedReason: null,
-      opponent: { id: "attack-development", version: 2 },
+      opponent: { id: "attack-development", version: 3 },
     });
     expect(before.rating.games).toBe(0);
     expect(screen.getByText("Paul Morphy · Casual")).toBeTruthy();

@@ -60,7 +60,7 @@ it("opens on an explanatory home, then chooses a measured opponent without an au
     within(setup).getByRole("button", { name: "Paul Morphy" }).getAttribute("aria-pressed"),
   ).toBe("true");
   fireEvent.click(within(setup).getByRole("button", { name: "Start", exact: true }));
-  expect(saved().game.opponent.version).toBe(2);
+  expect(saved().game.opponent.version).toBe(3);
   expect(screen.getByRole("button", { name: "e2, white pawn" })).toBeTruthy();
 });
 it("requires resume or explicit forfeit before replacing a started game and records one loss", () => {

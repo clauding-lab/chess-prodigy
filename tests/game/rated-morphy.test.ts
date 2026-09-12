@@ -1,7 +1,12 @@
 import { expect, it } from "vitest";
 import { freshSession, reduceSession, settleRating, settlePriorGame } from "../../src/game/state";
 import { legalMoves, sanFor, applyMove } from "../../src/engine/board";
-import { morphyConfig, ratedMorphyConfig } from "../../src/engine/opponents";
+import {
+  morphyConfig,
+  ratedMorphyConfig,
+  historicalMorphyConfig,
+  isRatedOpponent,
+} from "../../src/engine/opponents";
 import { parseSavedState } from "../../src/storage/schema";
 import { parseGameRecord } from "../../src/account/records";
 import { archiveGame } from "../../src/game/archive";
@@ -103,4 +108,53 @@ it("does not accept a measured opponent labelled as a legacy beta or an inconsis
   const record = archiveGame(win())!;
   expect(parseGameRecord({ ...record, rated: false })).toBeNull();
   expect(parseGameRecord({ ...record, rated: false, unratedReason: "beta" })).toBeNull();
+});
+
+it.each([
+  [2, "casual", 1200],
+  [2, "club", 1375],
+  [2, "strong", 1825],
+  [3, "casual", 1275],
+  [3, "club", 1375],
+  [3, "strong", 1775],
+] as const)(
+  "keeps version %s %s receipts fixed at %s through forfeit, reload and undo",
+  (version, level, rating) => {
+    let s = reduceSession(freshSession(0, "prior"), {
+      type: "new",
+      id: "fixed-receipt",
+      now: 0,
+      setup: {
+        playerColor: "w",
+        level,
+        time: "none",
+        opponent: version === 2 ? ratedMorphyConfig(4) : historicalMorphyConfig(4),
+      },
+    });
+    s = move(s, "e4");
+    const hinted = reduceSession(s, { type: "hint" });
+    expect(settlePriorGame(hinted, 3).rating.games).toBe(0);
+    const ended = settlePriorGame(s, 3);
+    expect(ended.rating.history.at(-1)).toMatchObject({ oppRating: rating, score: 0 });
+    const reloaded = parseSavedState(ended)!;
+    expect(reloaded).toEqual(ended);
+    expect(settlePriorGame(reloaded, 4).rating).toEqual(ended.rating);
+    expect(settleRating(reloaded, 4).rating.games).toBe(1);
+    expect(parseGameRecord(archiveGame(reloaded))).toMatchObject({
+      rated: true,
+      opponent: { version },
+    });
+    expect(reduceSession(reloaded, { type: "undo", now: 5 }).rating).toEqual(s.rating);
+  },
+);
+it("rates only exact measured historical configurations", () => {
+  const config = historicalMorphyConfig(7);
+  expect(isRatedOpponent(config)).toBe(true);
+  for (const change of [
+    { version: 4 },
+    { engine: "style-v1" },
+    { randomPolicy: "ambient-v1" },
+    { seed: null },
+  ])
+    expect(isRatedOpponent({ ...config, ...change })).toBe(false);
 });

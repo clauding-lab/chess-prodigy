@@ -7,7 +7,13 @@ import { MOTIFS } from "../coach/motifs";
 import type { Color, Level, Move } from "../engine/types";
 import type { Game, Setup, TimeControl } from "../game/types";
 import type { ReactNode } from "react";
-import { CLASSIC, morphyConfig, ratedMorphyConfig, opponentName } from "../engine/opponents";
+import {
+  CLASSIC,
+  morphyConfig,
+  ratedMorphyConfig,
+  historicalMorphyConfig,
+  opponentName,
+} from "../engine/opponents";
 import { opponentPracticeRating } from "../rating/opponents";
 import { unratedDescription } from "../game/eligibility";
 import type { HistoryResult } from "../storage/history";
@@ -73,7 +79,9 @@ export function SetupModal({
   const selectedOpponent = morphy
     ? legacyMorphy
       ? morphyConfig(0)
-      : ratedMorphyConfig(0)
+      : draft.opponentVersion === 2
+        ? ratedMorphyConfig(0)
+        : historicalMorphyConfig(0)
     : CLASSIC;
   return (
     <Modal closeOnBackdrop={false} closeOnEscape={!!onCancel} onClose={onCancel} title="New game">
@@ -117,7 +125,7 @@ export function SetupModal({
               className={`btn${morphy ? " on" : ""}`}
               aria-pressed={morphy}
               onClick={() =>
-                setDraft({ ...draft, opponentId: "attack-development", opponentVersion: 2 })
+                setDraft({ ...draft, opponentId: "attack-development", opponentVersion: 3 })
               }
               type="button"
             >
@@ -129,7 +137,11 @@ export function SetupModal({
       {morphy && (
         <div className="note" role="status">
           <strong>Attack &amp; development</strong>
-          <p>A style-inspired simulation that favours active pieces and open lines.</p>
+          <p>
+            {draft.opponentVersion === 1 || draft.opponentVersion === 2
+              ? "A style-inspired simulation that favours active pieces and open lines."
+              : "A historical simulation using recorded moves in matching positions and learned preferences elsewhere, drawn from 247 validated games."}
+          </p>
           {legacyMorphy
             ? "This rematch uses the original unrated beta. Select Paul Morphy above to start a rated game."
             : "Rated practice — strength measured against Classic within this app. Hints and takebacks make the game unrated."}
@@ -411,7 +423,7 @@ export function setupFromDraft(draft: SetupDraft, betaEnabled = false): Setup {
   if (
     draft.opponentId === "attack-development" &&
     draft.opponentVersion !== undefined &&
-    ![1, 2].includes(draft.opponentVersion)
+    ![1, 2, 3].includes(draft.opponentVersion)
   )
     throw new Error("Opponent version is unavailable.");
   return {
@@ -420,9 +432,11 @@ export function setupFromDraft(draft: SetupDraft, betaEnabled = false): Setup {
     time: draft.time,
     ...(draft.opponentId === "attack-development"
       ? {
-          opponent: (draft.opponentVersion === 1 ? morphyConfig : ratedMorphyConfig)(
-            crypto.getRandomValues(new Uint32Array(1))[0],
-          ),
+          opponent: (draft.opponentVersion === 1
+            ? morphyConfig
+            : draft.opponentVersion === 2
+              ? ratedMorphyConfig
+              : historicalMorphyConfig)(crypto.getRandomValues(new Uint32Array(1))[0]),
         }
       : {}),
   };

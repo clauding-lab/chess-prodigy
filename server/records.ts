@@ -59,7 +59,8 @@ function initialize(database: Database.Database): void {
     CREATE INDEX IF NOT EXISTS game_records_owner_completed
       ON game_records(user_id, completed_at DESC);
     CREATE TABLE IF NOT EXISTS record_client_policy (
-      user_id TEXT PRIMARY KEY REFERENCES user(id) ON DELETE CASCADE
+      user_id TEXT PRIMARY KEY REFERENCES user(id) ON DELETE CASCADE,
+      minimum_policy INTEGER NOT NULL DEFAULT 1 CHECK(minimum_policy >= 1)
     );
     CREATE TABLE IF NOT EXISTS record_rate_limits (
       user_id TEXT NOT NULL REFERENCES user(id) ON DELETE CASCADE,
@@ -69,6 +70,13 @@ function initialize(database: Database.Database): void {
       PRIMARY KEY (user_id, route)
     );
   `);
+  const policyColumns = database.prepare("PRAGMA table_info(record_client_policy)").all() as Array<{
+    name: string;
+  }>;
+  if (!policyColumns.some((column) => column.name === "minimum_policy"))
+    database.exec(
+      "ALTER TABLE record_client_policy ADD COLUMN minimum_policy INTEGER NOT NULL DEFAULT 1 CHECK(minimum_policy >= 1)",
+    );
 }
 
 function consumeRateLimit(
@@ -233,15 +241,26 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
       const measured =
         snapshot.game.opponent.id === "attack-development" &&
         isRatedOpponent(snapshot.game.opponent);
-      const protectedAccount = database
-        .prepare("SELECT user_id FROM record_client_policy WHERE user_id = ?")
-        .get(userId);
-      if ((measured || protectedAccount) && request.get("X-Chess-Rating-Policy") !== "1")
+      const policyRow = database
+        .prepare("SELECT minimum_policy FROM record_client_policy WHERE user_id = ?")
+        .get(userId) as { minimum_policy: number } | undefined;
+      const requiredPolicy = Math.max(
+        policyRow?.minimum_policy ?? 0,
+        measured ? (snapshot.game.opponent.version === 3 ? 2 : 1) : 0,
+      );
+      const capability = request.get("X-Chess-Rating-Policy");
+      if (
+        requiredPolicy > 0 &&
+        !((capability === "1" || capability === "2") && Number(capability) >= requiredPolicy)
+      )
         return "upgrade";
       if (measured)
         database
-          .prepare("INSERT OR IGNORE INTO record_client_policy(user_id) VALUES (?)")
-          .run(userId);
+          .prepare(
+            `INSERT INTO record_client_policy(user_id, minimum_policy) VALUES (?, ?)
+            ON CONFLICT(user_id) DO UPDATE SET minimum_policy = MAX(record_client_policy.minimum_policy, excluded.minimum_policy)`,
+          )
+          .run(userId, requiredPolicy);
       const updatedAt = new Date().toISOString();
       database
         .prepare(

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import * as opponents from "../../src/engine/opponents";
 
 describe("historical Morphy configuration", () => {
-  it("supports version 3 separately from the rated legacy policy", () => {
+  it("supports measured version 3 separately from the rated legacy policy", () => {
     const config = {
       id: "attack-development",
       version: 3,
@@ -11,7 +11,7 @@ describe("historical Morphy configuration", () => {
       seed: 9,
     };
     expect(opponents.isSupportedOpponent(config)).toBe(true);
-    expect(opponents.isRatedOpponent(config)).toBe(false);
+    expect(opponents.isRatedOpponent(config)).toBe(true);
     expect(opponents.isSupportedOpponent({ ...config, engine: "style-v1" })).toBe(false);
   });
 });

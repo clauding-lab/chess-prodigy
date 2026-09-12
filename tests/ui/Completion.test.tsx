@@ -5,7 +5,11 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import App from "../../src/App";
 import { freshSession, reduceSession } from "../../src/game/state";
 import { archiveGame } from "../../src/game/archive";
-import { morphyConfig } from "../../src/engine/opponents";
+import {
+  morphyConfig,
+  ratedMorphyConfig,
+  historicalMorphyConfig,
+} from "../../src/engine/opponents";
 import { legalMoves } from "../../src/engine/board";
 import { GUEST_HISTORY_KEY } from "../../src/storage/history";
 import { SAVE_KEY } from "../../src/storage/store";
@@ -111,7 +115,9 @@ it("opens a historical rematch with an honest missing clock default", async () =
   fireEvent.click(screen.getByRole("button", { name: "Games" }));
   await act(async () => {});
   fireEvent.click(screen.getByRole("button", { name: "Rematch recorded game 2" }));
-  expect(screen.getByText(/Original clock setting was not recorded/)).toBeTruthy();
+  expect(screen.getByText(/Original clock setting was not recorded/).textContent).toContain(
+    "earlier opponent",
+  );
   expect(screen.getByRole("button", { name: "No clock" }).getAttribute("aria-pressed")).toBe(
     "true",
   );
@@ -128,3 +134,49 @@ it("shows terminal preservation failure inside setup and preserves recovery stat
   expect(saved().game.id).toBe(prior.game.id);
   expect(localStorage.getItem(GUEST_HISTORY_KEY)).toBe("broken archive");
 });
+
+it.each([1, 2, 3])(
+  "rematches version %s with its original rating and explicitly selects current Morphy",
+  (version) => {
+    let s = terminal();
+    s = reduceSession(s, {
+      type: "new",
+      id: "versioned",
+      now: Date.now(),
+      setup: {
+        playerColor: "w",
+        level: "strong",
+        time: "none",
+        opponent: (version === 1
+          ? morphyConfig
+          : version === 2
+            ? ratedMorphyConfig
+            : historicalMorphyConfig)(8),
+      },
+    });
+    s = reduceSession(s, {
+      type: "move",
+      move: legalMoves(s.game.st)[0],
+      book: false,
+      now: Date.now(),
+    });
+    s = reduceSession(s, { type: "resign", now: Date.now() });
+    localStorage.setItem(SAVE_KEY, JSON.stringify(s));
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "Rematch", exact: true }));
+    const setup = screen.getByRole("dialog", { name: "New game" });
+    const strong = within(setup).getByRole("button", {
+      name: version === 1 ? "Strong" : version === 2 ? "Strong 1825" : "Strong 1775",
+      exact: true,
+    });
+    expect(strong.getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(within(setup).getByRole("button", { name: "Start", exact: true }));
+    expect(saved().game.opponent.version).toBe(version);
+    expect(saved().game.rated).toBe(version !== 1);
+    expect(saved().rating).toEqual(s.rating);
+    fireEvent.click(screen.getByRole("button", { name: "New game", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Paul Morphy", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Start", exact: true }));
+    expect(saved().game.opponent.version).toBe(3);
+  },
+);

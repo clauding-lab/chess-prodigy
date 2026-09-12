@@ -137,3 +137,15 @@ it("copies even unchanged legacy history once so an old tab cannot replace the n
   storage.setItem("chess-prodigy-guest-history-v1", "stale-corruption");
   expect(loadGuestHistory(storage)).toMatchObject({ status: "ready", games: [] });
 });
+
+it("migrates measured history into v3 once and preserves corrupt current authority", () => {
+  const storage = new Memory(),
+    old = JSON.stringify({ version: 1, games: [] });
+  storage.setItem("chess-prodigy-guest-history-v2", old);
+  expect(saveGuestProgress(storage, completed("historical"))).toBe(true);
+  expect(storage.getItem("chess-prodigy-guest-history-v2")).toBe(old);
+  storage.setItem("chess-prodigy-guest-history-v2", "stale-corruption");
+  expect(loadGuestHistory(storage).games.map((g) => g.id)).toEqual(["historical"]);
+  storage.setItem("chess-prodigy-guest-history-v3", "current-corruption");
+  expect(loadGuestHistory(storage)).toMatchObject({ status: "corrupt", raw: "current-corruption" });
+});

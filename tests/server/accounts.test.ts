@@ -9,7 +9,7 @@ import request, { type SuperAgentTest } from "supertest";
 import { afterEach, describe, expect, it } from "vitest";
 import { freshSession, reduceSession } from "../../src/game/state";
 import { legalMoves, sqIndex } from "../../src/engine/board";
-import { morphyConfig } from "../../src/engine/opponents";
+import { morphyConfig, historicalMorphyConfig } from "../../src/engine/opponents";
 import { createTestApplication as createApplication } from "./http-fixture";
 
 const BASE_URL = "http://127.0.0.1:4317";
@@ -670,6 +670,138 @@ it("permanently fences old clients after measured Morphy, including after Classi
       .set("Origin", BASE_URL)
       .set("X-Chess-Account", login.body.user.id)
       .send({ expectedVersion: 2, snapshot: freshSession(2, "old-after-restart") })
+      .expect(426);
+  } finally {
+    await application.close();
+  }
+});
+
+it("migrates legacy policy rows additively and raises policy atomically for assisted historical games", async () => {
+  const database = await temporaryDatabase();
+  let application = await createApplication({
+    databasePath: database.path,
+    baseURL: BASE_URL,
+    secret: SECRET,
+  });
+  try {
+    await signedUpAgent(application.app, "policy-migration@example.com");
+    await application.close();
+    const db = new Database(database.path);
+    const { id } = db
+      .prepare("SELECT id FROM user WHERE email = ?")
+      .get("policy-migration@example.com") as { id: string };
+    // Recreate the actual pre-upgrade table shape in this disposable database.
+    db.exec(
+      "DROP TABLE record_client_policy; CREATE TABLE record_client_policy (user_id TEXT PRIMARY KEY REFERENCES user(id) ON DELETE CASCADE)",
+    );
+    db.prepare("INSERT INTO record_client_policy(user_id) VALUES (?)").run(id);
+    db.close();
+    application = await createApplication({
+      databasePath: database.path,
+      baseURL: BASE_URL,
+      secret: SECRET,
+    });
+    const agent = request.agent(application.app);
+    await agent
+      .post("/api/auth/sign-in/email")
+      .set("Origin", BASE_URL)
+      .send({ email: "policy-migration@example.com", password: "correct horse battery staple" })
+      .expect(200);
+    agent.set("X-Chess-Account", id);
+    const put = (
+      expectedVersion: number,
+      snapshot: ReturnType<typeof freshSession>,
+      policy?: string,
+    ) => {
+      const r = agent.put("/api/records").set("Origin", BASE_URL);
+      if (policy !== undefined) r.set("X-Chess-Rating-Policy", policy);
+      return r.send({ expectedVersion, snapshot });
+    };
+    await put(0, freshSession(0, "legacy"), "1").expect(200);
+    await put(1, freshSession(0, "modern"), "2").expect(200);
+    let historical = reduceSession(freshSession(0, "initial"), {
+      type: "new",
+      id: "historical",
+      now: 0,
+      setup: {
+        playerColor: "w",
+        level: "strong",
+        time: "none",
+        opponent: historicalMorphyConfig(2),
+      },
+    });
+    historical = reduceSession(historical, { type: "hint" });
+    historical = reduceSession(historical, {
+      type: "move",
+      move: legalMoves(historical.game.st)[0],
+      book: false,
+      now: 1,
+    });
+    historical = reduceSession(historical, { type: "resign", now: 2 });
+    for (const policy of [undefined, "1", "3", "02"]) await put(2, historical, policy).expect(426);
+    await put(1, historical, "2").expect(409);
+    // A conflicting or rejected attempt must not raise protection or archive anything.
+    await put(2, freshSession(0, "still-legacy-policy"), "1").expect(200);
+    expect((await agent.get("/api/records")).body.games).toEqual([]);
+    const accepted = await put(3, historical, "2").expect(200);
+    expect(accepted.body.snapshot).toEqual(historical);
+    expect(accepted.body.games).toMatchObject([
+      { rated: false, assisted: true, opponent: { version: 3 } },
+    ]);
+    const reset = reduceSession(
+      reduceSession(historical, {
+        type: "new",
+        id: "classic-reset",
+        now: 3,
+        setup: { playerColor: "w", level: "club", time: "none" },
+      }),
+      { type: "resetRating" },
+    );
+    await put(4, reset, "2").expect(200);
+    for (const policy of [undefined, "1", "3"])
+      await put(5, freshSession(4, "old-device"), policy).expect(426);
+    expect((await agent.get("/api/records")).body).toMatchObject({ version: 5, snapshot: reset });
+    const inspect = new Database(database.path);
+    expect(
+      inspect.prepare("SELECT minimum_policy FROM record_client_policy WHERE user_id = ?").get(id),
+    ).toEqual({ minimum_policy: 2 });
+    inspect.close();
+    await application.close();
+    application = await createApplication({
+      databasePath: database.path,
+      baseURL: BASE_URL,
+      secret: SECRET,
+    });
+    const reopened = request.agent(application.app);
+    await reopened
+      .post("/api/auth/sign-in/email")
+      .set("Origin", BASE_URL)
+      .send({ email: "policy-migration@example.com", password: "correct horse battery staple" })
+      .expect(200);
+    await reopened
+      .put("/api/records")
+      .set("Origin", BASE_URL)
+      .set("X-Chess-Account", id)
+      .set("X-Chess-Rating-Policy", "1")
+      .send({ expectedVersion: 5, snapshot: reset })
+      .expect(426);
+    const other = await signedUpAgent(application.app, "fresh-policy@example.com");
+    await other
+      .put("/api/records")
+      .set("Origin", BASE_URL)
+      .send({ expectedVersion: 0, snapshot: historical })
+      .expect(426);
+    await other
+      .put("/api/records")
+      .set("Origin", BASE_URL)
+      .set("X-Chess-Rating-Policy", "2")
+      .send({ expectedVersion: 0, snapshot: historical })
+      .expect(200);
+    await other
+      .put("/api/records")
+      .set("Origin", BASE_URL)
+      .set("X-Chess-Rating-Policy", "1")
+      .send({ expectedVersion: 1, snapshot: reset })
       .expect(426);
   } finally {
     await application.close();

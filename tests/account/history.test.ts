@@ -15,39 +15,48 @@ const remote = (version = 1) => ({
   games: [archiveGame(finished("remote"))!],
   updatedAt: null,
 });
-it("persists server history outside snapshots, overlays pending terminal/undo, and survives offline restart", async () => {
-  localStorage.clear();
-  const sync = new AccountSync("alice", localStorage, async () => {
-    throw Error("offline");
-  });
-  sync.initialize(remote());
-  const terminal = finished("pending");
-  sync.save(terminal, { terminal: true });
-  sync.save(freshSession(200, "next"));
-  expect(
-    sync
-      .history()
-      .games.map((g) => g.id)
-      .sort(),
-  ).toEqual(["pending", "remote"]);
-  expect(sync.history().pending).toBe(true);
-  const reloaded = new AccountSync("alice", localStorage);
-  reloaded.initialize(remote(0), false);
-  expect(
-    reloaded
-      .history()
-      .games.map((g) => g.id)
-      .sort(),
-  ).toEqual(["pending", "remote"]);
-  const wire = JSON.parse(localStorage.getItem(accountStorageKey("alice"))!);
-  expect(wire.snapshot).not.toHaveProperty("history");
-  expect(
-    wire.pending.every((p: { snapshot: unknown }) => !("history" in (p.snapshot as object))),
-  ).toBe(true);
-  reloaded.save(reduceSession(terminal, { type: "undo", now: 103 }));
-  expect(reloaded.history().games.map((g) => g.id)).toEqual(["remote"]);
-  expect(new AccountSync("bob", localStorage).initialize(remote()).game.id).toBe("active");
-});
+it.each([false, true])(
+  "persists server history and pending overlays across restart (migrate v3: %s)",
+  async (migrate) => {
+    localStorage.clear();
+    const sync = new AccountSync("alice", localStorage, async () => {
+      throw Error("offline");
+    });
+    sync.initialize(remote());
+    const terminal = finished("pending");
+    sync.save(terminal, { terminal: true });
+    sync.save(freshSession(200, "next"));
+    expect(
+      sync
+        .history()
+        .games.map((g) => g.id)
+        .sort(),
+    ).toEqual(["pending", "remote"]);
+    expect(sync.history().pending).toBe(true);
+    const priorBytes = localStorage.getItem(accountStorageKey("alice"))!;
+    if (migrate) {
+      localStorage.setItem("chess-prodigy-account-v3:alice", priorBytes);
+      localStorage.removeItem(accountStorageKey("alice"));
+    }
+    const reloaded = new AccountSync("alice", localStorage);
+    reloaded.initialize(remote(0), false);
+    expect(
+      reloaded
+        .history()
+        .games.map((g) => g.id)
+        .sort(),
+    ).toEqual(["pending", "remote"]);
+    const wire = JSON.parse(localStorage.getItem(accountStorageKey("alice"))!);
+    expect(wire.snapshot).not.toHaveProperty("history");
+    expect(
+      wire.pending.every((p: { snapshot: unknown }) => !("history" in (p.snapshot as object))),
+    ).toBe(true);
+    reloaded.save(reduceSession(terminal, { type: "undo", now: 103 }));
+    expect(reloaded.history().games.map((g) => g.id)).toEqual(["remote"]);
+    if (migrate) expect(localStorage.getItem("chess-prodigy-account-v3:alice")).toBe(priorBytes);
+    expect(new AccountSync("bob", localStorage).initialize(remote()).game.id).toBe("active");
+  },
+);
 it("does not trim authoritative history through a transient pending terminal then undo", () => {
   localStorage.clear();
   const base = remote();
