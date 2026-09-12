@@ -1,5 +1,11 @@
 # Chess Prodigy release verification
 
+## 12 September 2026 BDT — About v2.4.1
+
+The [About delivery record](2026-09-12-about.md) documents the new account-adjacent About panel,
+automatic package version, developer credit and GitHub link. Version 2.4.1 is live from `b7cb6cf`,
+with passing source, browser and accessibility checks, a successful backup and live verification.
+
 ## 12 September 2026 BDT — direct Morphy plans v2.4.0
 
 The [v2.4 delivery record](2026-09-12-morphy-plans-release.md) documents the independently audited
