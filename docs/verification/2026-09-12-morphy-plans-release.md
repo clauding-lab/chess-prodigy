@@ -96,7 +96,7 @@ target. A clean locked install, typecheck and literal-`true` enabled build passe
 Node 22.22.2 under `/opt/chess-prodigy/releases/2.4.0-20260912-48d21aa-plans`.
 
 Candidate source remains exactly `48d21aa`; later pushed commits contain verification documents only.
-Before activation, the controller verified that exact diff and that public assets match the locally
+Before activation, the controller verified that exact diff and that candidate assets match the locally
 rebuilt enabled bundle. Any runtime, build-configuration or package change would have required a new
 candidate archive and build. This record identifies candidate source and the later evidence commit
 separately rather than claim the whole Git trees are byte-identical.

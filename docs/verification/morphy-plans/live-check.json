@@ -1,0 +1,35 @@
+{
+  "origin": "https://chess.clauding-lab.com",
+  "source": "48d21aa",
+  "publicAssetHashesMatched": 13,
+  "health": 200,
+  "healthNoStore": true,
+  "theme": "dark",
+  "ratings": {
+    "casual": 1225,
+    "club": 1400,
+    "strong": 1625
+  },
+  "opponent": {
+    "id": "attack-development",
+    "version": 4,
+    "engine": "plans-v1",
+    "randomPolicy": "seeded-per-ply-v1",
+    "seed": 1992747742
+  },
+  "rated": true,
+  "moves": [
+    {
+      "san": "h3",
+      "book": false
+    },
+    {
+      "san": "Nc6",
+      "book": false
+    }
+  ],
+  "reloadPreservedGame": true,
+  "pageErrors": [],
+  "profile": "isolated synthetic guest; Chrome mobile layout, not physical-device evidence",
+  "checkedAtBDT": "12/09/2026, 22:47:10 BDT"
+}
