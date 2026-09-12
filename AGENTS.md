@@ -151,3 +151,20 @@ reuse Morphy's strength measurements, or repeat rejected prototypes as if they s
 Read docs/verification/morphy-plans/decision-record.md and measurement-report.md before planning.
 The user listed Chigorin first; implementation order and each player's detailed design remain to
 be settled when this work resumes. Dark remains the permanent default.
+
+## Chigorin build — approved 12 September 2026 BDT
+
+The owner requested “build chigorin” and approved documented moves plus designed knight activity,
+central counterplay and coordinated attacks. See docs/superpowers/specs/2026-09-12-chigorin-design.md.
+Identity chigorin/version1/chigorin-plans-v1; preserve every Classic/Morphy policy and receipt.
+The PGN Mentor collection has688 legally replayed games,26,262 distinct positions and30,101 recorded
+Chigorin turns; preserve source fingerprints and exact frequencies. Runtime imports compact book only.
+Designed priorities are not claims of learned historical thought or proof of perceived personality.
+Fresh frozen complete-game measurement and independent review precede rated normal setup.
+
+Authority advances to state-v6/account-v6/history-v5, preserving prior recovery and pending versions.
+Wire schema remains2; accepting Chigorin including assisted games permanently raises account policy4,
+which survives reset. Old clients must not overwrite it. The compact engine requires an explicit3MiB
+Workbox file cache ceiling; keep offline worker coverage. Owner also requested the Saved to account
+status on a centered separate line below header navigation. Dark remains default. This pass prepares
+and verifies a local2.5.0 candidate; do not claim publication/deployment from local evidence.

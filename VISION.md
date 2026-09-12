@@ -91,3 +91,13 @@ only to version 4; earlier ratings remain unchanged. The v2.4 update preserves o
 all older games and the permanent dark default. Retain account minimum policy 3 and every recovery
 generation after acceptance of version 4; an incompatible v2.3 rollback is outside the safe release
 path. Automatic checks demonstrate specified playing behavior, not a guarantee of perceived style.
+
+## Chigorin design approval — 12 September 2026 BDT
+
+The owner selected Chigorin first and approved historically documented moves plus designed active
+knight, central-counterplay and coordinated-attack preferences, using the completed Morphy process.
+Implement in the actual app, independently review behavior/tactical reliability, and freshly measure
+frozen complete games before rated setup. Preserve older opponents, receipts, private records and
+compatibility protections. Chigorin's detailed contract is in the dated Chigorin design spec.
+The local candidate also moves Saved to account below the header links as explicitly requested.
+Publication/deployment status must remain separate from local build/verification evidence.
