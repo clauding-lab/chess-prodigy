@@ -235,7 +235,7 @@ body:has(.app[data-theme="dark"]) [data-modal-root] {
 }
 .cloud-status {
   flex-basis: 100%;
-  text-align: right;
+  text-align: center;
   align-self: center;
   font-size: 11px;
   opacity: 0.7;
