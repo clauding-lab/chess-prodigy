@@ -1,5 +1,6 @@
+import { renderPlayingApp as render } from "./enter-playing-app";
 import React, { StrictMode } from "react";
-import { act, render, screen, fireEvent } from "@testing-library/react";
+import { act, screen, fireEvent } from "@testing-library/react";
 import { afterEach, beforeEach, it, expect, vi } from "vitest";
 import App from "../../src/App";
 import { legalMoves } from "../../src/engine/board";
@@ -145,28 +146,27 @@ it.each([1400, 1500.25])(
     localStorage.setItem("chess-prodigy-state-v3", JSON.stringify(session));
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: "New game", exact: true }));
-    expect(
-      screen.getByText("Starting another game counts this unfinished game as a loss."),
-    ).toBeTruthy();
+    expect(screen.getByRole("dialog", { name: "Finish your current game?" })).toBeTruthy();
     expect(
       screen.getByText(
         value === 1400
-          ? "Your rating stays at 1400 (the minimum), but this still counts as a rated loss."
-          : "You will lose 28 displayed rating points: 1500 → 1472.",
+          ? "Your rating stays at 1400 (the minimum), but this counts as a rated loss."
+          : "This counts as a rated loss. Practice Rating: 1500 → 1472 (28 points lost).",
       ),
     ).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Keep playing", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Resume game", exact: true }));
     expect(JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!).rating.rating).toBe(value);
     fireEvent.click(screen.getByRole("button", { name: "New game", exact: true }));
-    fireEvent.click(screen.getByRole("button", { name: /Strong/ }));
     expect(
       screen.getByText(
         value === 1400
-          ? "Your rating stays at 1400 (the minimum), but this still counts as a rated loss."
-          : "You will lose 28 displayed rating points: 1500 → 1472.",
+          ? "Your rating stays at 1400 (the minimum), but this counts as a rated loss."
+          : "This counts as a rated loss. Practice Rating: 1500 → 1472 (28 points lost).",
       ),
     ).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Abandon and start", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Forfeit and continue", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: /Strong/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Start", exact: true }));
     const saved = JSON.parse(localStorage.getItem("chess-prodigy-state-v3")!);
     expect(Math.round(saved.rating.rating)).toBe(value === 1400 ? 1400 : 1472);
     expect(saved.rating.games).toBe(1);

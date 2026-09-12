@@ -1,3 +1,4 @@
+import { enterPlay } from "./enter-play";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
@@ -99,15 +100,18 @@ for (const profile of ["Classic", "Morphy"] as const)
         // Seed once on an empty same-origin document before the app mounts.
         // Reload/reopen must preserve storage themselves; no init script can restore it.
         await page.goto(`${origin.url}/api/seed-fixture`);
+        await enterPlay(page);
         await page.evaluate((value) => {
           localStorage.setItem("chess-prodigy-state-v3", JSON.stringify(value));
         }, seed);
         await page.goto(origin.url);
+        await enterPlay(page);
         await expect(page.locator(".status")).toContainText("Your move");
         await page.evaluate(async () => {
           await navigator.serviceWorker.ready;
         });
         await page.reload();
+        await enterPlay(page);
         await expect
           .poll(() => page.evaluate(() => !!navigator.serviceWorker.controller))
           .toBe(true);
@@ -131,10 +135,12 @@ for (const profile of ["Classic", "Morphy"] as const)
           }),
         ).toBe(true);
         await page.reload();
+        await enterPlay(page);
         await expect(page.locator(".status")).toContainText("Your move");
         const reopened = await context.newPage();
         await page.close();
         await reopened.goto(origin.url);
+        await enterPlay(reopened);
         await expect(reopened.locator(".status")).toContainText("Your move");
         const resumed = await saved(reopened);
         expect(resumed.game.id).toBe(before.game.id);
@@ -177,6 +183,7 @@ for (const profile of ["Classic", "Morphy"] as const)
         await reopened.getByRole("button", { name: "View board", exact: true }).click();
         const completed = await saved(reopened);
         await reopened.reload();
+        await enterPlay(reopened);
         await reopened.getByRole("button", { name: "View board", exact: true }).click();
         await reopened.getByRole("button", { name: "Games", exact: true }).click();
         const records = reopened.getByRole("dialog", { name: "Recorded games" });
@@ -202,6 +209,7 @@ test("without a service worker, the stopped origin cannot reopen from HTTP cache
     context = await browser.newContext({ serviceWorkers: "block" });
     const page = await context.newPage();
     await page.goto(origin.url);
+    await enterPlay(page);
     await expect(page.getByRole("button", { name: "Start", exact: true })).toBeVisible();
     expect(await page.evaluate(() => !!navigator.serviceWorker.controller)).toBe(false);
     await origin.stop();

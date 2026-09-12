@@ -234,11 +234,12 @@ export function useGame(
     [dispatch],
   );
   const game = session.game;
+  // Timed work keeps the same request/deadline when only the screen changes.
+  const workPaused = paused || (background && !game.clocks);
   useEffect(() => {
     if (
-      paused ||
+      workPaused ||
       !isSupportedOpponent(current.current.game.opponent) ||
-      (background && !current.current.game.clocks) ||
       !client.current ||
       errorRef.current ||
       busy.current === "hint" ||
@@ -321,8 +322,7 @@ export function useGame(
     game.id,
     game.revision,
     session.preferences.coach,
-    paused,
-    background,
+    workPaused,
     retry,
     analyse,
     dispatch,
@@ -432,6 +432,8 @@ export function useGame(
     },
     undo: () => dispatch({ type: "undo", now: Date.now() }),
     resign: () => dispatch({ type: "resign", now: Date.now() }),
+    forfeit: () => dispatch({ type: "forfeit", now: Date.now() }),
+    refreshClock: () => dispatch({ type: "tick", now: Date.now() }),
     askHint,
     review,
     cancelReview,

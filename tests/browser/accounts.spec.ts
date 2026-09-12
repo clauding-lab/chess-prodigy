@@ -1,3 +1,4 @@
+import { enterPlay } from "./enter-play";
 import { expect, test } from "@playwright/test";
 import { createHash } from "node:crypto";
 
@@ -22,6 +23,8 @@ async function createAccount(page: import("@playwright/test").Page, name: string
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Create account", exact: true }).click();
+  await expect(page.getByRole("button", { name, exact: true })).toBeVisible();
+  await enterPlay(page);
   await expect(
     page.getByRole("dialog", { name: "New game" }).getByRole("button", { name }),
   ).toBeVisible();
@@ -38,6 +41,8 @@ async function signInAccount(page: import("@playwright/test").Page, email: strin
     .getByRole("dialog", { name: "Sign in" })
     .getByRole("button", { name: "Sign in" })
     .click();
+  await expect(page.getByRole("dialog", { name: "Sign in", exact: true })).toHaveCount(0);
+  await enterPlay(page);
 }
 
 test("account records restore on another session while guest play stays isolated", async ({
@@ -48,6 +53,7 @@ test("account records restore on another session while guest play stays isolated
   const name = `Player ${suffix}`;
   const email = `${suffix}@example.com`;
   await page.goto("/");
+  await enterPlay(page);
   await createAccount(page, name, email);
   await page.getByRole("button", { name: "Start", exact: true }).click();
   await page.getByRole("button", { name: "e2, white pawn" }).click();
@@ -69,6 +75,7 @@ test("account records restore on another session while guest play stays isolated
   });
   const second = await other.newPage();
   await second.goto("/");
+  await enterPlay(second);
   await expect(second.getByRole("dialog", { name: "New game" })).toBeVisible();
   await expect
     .poll(() => second.evaluate(() => localStorage.getItem("chess-prodigy-state-v3")))
@@ -84,6 +91,8 @@ test("account records restore on another session while guest play stays isolated
     .getByRole("dialog", { name: "Sign in" })
     .getByRole("button", { name: "Sign in" })
     .click();
+  await expect(second.getByRole("dialog", { name: "Sign in", exact: true })).toHaveCount(0);
+  await enterPlay(second);
   await expect(second.getByRole("dialog", { name: "Resignation" })).toBeVisible();
   await second.getByRole("button", { name: "View board" }).click();
   await second.getByRole("button", { name }).click();
@@ -104,6 +113,7 @@ test("account records restore on another session while guest play stays isolated
 
 test("registration explains public fields and rejects a short password", async ({ page }, info) => {
   await page.goto("/");
+  await enterPlay(page);
   await page
     .getByRole("dialog", { name: "New game" })
     .getByRole("button", { name: "Sign in" })
@@ -126,15 +136,18 @@ test("a tab mounted for one account cannot sync after the shared browser session
   test.skip(info.project.name === "mobile", "Account switch race is covered once in desktop.");
   const suffix = `switch-${info.project.name}-${Date.now()}`;
   await page.goto("/");
+  await enterPlay(page);
   await createAccount(page, `Old ${suffix}`, `old-${suffix}@example.com`);
 
   const replacement = await context.newPage();
   await replacement.goto("/");
+  await enterPlay(replacement);
   await replacement
     .getByRole("dialog", { name: "New game" })
     .getByRole("button", { name: `Old ${suffix}` })
     .click();
   await replacement.getByRole("button", { name: "Sign out" }).click();
+  await enterPlay(replacement);
   await createAccount(replacement, `New ${suffix}`, `new-${suffix}@example.com`);
   await replacement.waitForTimeout(1200);
 
@@ -166,6 +179,7 @@ test("a cloud conflict stays actionable above an open setup dialog", async ({
   const suffix = `conflict-${info.project.name}-${Date.now()}`;
   const email = `${suffix}@example.com`;
   await page.goto("/");
+  await enterPlay(page);
   await createAccount(page, `Conflict ${suffix}`, email);
   await page.getByRole("button", { name: "Start", exact: true }).click();
   await page.getByRole("button", { name: "e2, white pawn" }).click();
@@ -176,6 +190,7 @@ test("a cloud conflict stays actionable above an open setup dialog", async ({
   const otherContext = await browser.newContext();
   const other = await otherContext.newPage();
   await other.goto("/");
+  await enterPlay(other);
   await signInAccount(other, email);
 
   await page.getByRole("button", { name: "Wooden board" }).click();
@@ -184,7 +199,7 @@ test("a cloud conflict stays actionable above an open setup dialog", async ({
   await other.getByRole("button", { name: "New game", exact: true }).click();
   const conflict = other.getByRole("dialog", { name: "Progress changed on another device" });
   await expect(conflict).toBeVisible({ timeout: 5000 });
-  await expect(other.getByRole("dialog", { name: "New game" })).toBeVisible();
+  await expect(other.getByRole("dialog", { name: "Finish your current game?" })).toBeVisible();
   await conflict.getByRole("button", { name: "Use cloud copy" }).click();
   await expect(conflict).toHaveCount(0);
   await otherContext.close();
@@ -199,6 +214,7 @@ test("returning preferences to their initial value still syncs the final choice"
   );
   const suffix = `preference-${Date.now()}`;
   await page.goto("/");
+  await enterPlay(page);
   await createAccount(page, `Preference ${suffix}`, `${suffix}@example.com`);
   await page.getByRole("button", { name: "Start", exact: true }).click();
   await page.getByRole("button", { name: "e2, white pawn" }).click();
@@ -207,6 +223,7 @@ test("returning preferences to their initial value still syncs the final choice"
   await expect(page.getByText("Pending changes")).toBeVisible();
   await expect(page.getByText("Saved to account")).toBeVisible({ timeout: 5000 });
   await page.reload();
+  await enterPlay(page);
   await page.getByRole("button", { name: "Wooden board" }).click();
   await expect(page.getByText("Pending changes")).toBeVisible();
   await expect(page.getByText("Saved to account")).toBeVisible({ timeout: 5000 });
@@ -214,5 +231,6 @@ test("returning preferences to their initial value still syncs the final choice"
   await expect(page.getByText("Pending changes")).toBeVisible();
   await expect(page.getByText("Saved to account")).toBeVisible({ timeout: 5000 });
   await page.reload();
+  await enterPlay(page);
   await expect(page.getByRole("button", { name: "Wooden board" })).toBeVisible();
 });

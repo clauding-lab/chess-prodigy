@@ -6,7 +6,13 @@ A chess coach you can play in your browser. Practise against three engine streng
 
 [![Chess Prodigy — dark board, three engine strengths, 185 opening lines, 27 coaching cards, hints and game review, accounts and saved progress, practice leaderboard, and offline guest play](docs/verification/hero-banner.png)](https://chess.clauding-lab.com)
 
-## New in 2.1
+## New in 2.2
+
+The app opens on a home screen with an explanation of each opponent and a prominent **Resume game** button beside your saved position. **Classic** is the standard computer opponent; **Paul Morphy** is an attack-and-development simulation inspired by the nineteenth-century American master. Opponent style and difficulty are separate choices.
+
+Starting another game requires **Resume game** or **Forfeit and continue** while a started game is unfinished. The warning shows the exact Practice Rating effect; assisted games remain unrated. Timed games keep counting on Home and while the app is closed. Reopening applies elapsed time and any timeout result once before you can resume. Human matches remain untimed.
+
+## Included from 2.1
 
 **Paul Morphy now supports rated practice:** Casual **1200**, Club **1375**, Strong **1825**, measured across 400 games against Classic. These are relative strengths on this app's Practice Rating scale, not FIDE estimates. New Morphy games count; earlier beta games and their rematches remain unrated. Hints and takebacks still make games unrated. See the [measurement, uncertainty and evidence](docs/verification/2026-09-12-morphy-calibration.md).
 
@@ -71,9 +77,9 @@ The rating is a **personal practice rating**, not an official FIDE rating. Hints
 
 ## Play
 
-Choose a colour, strength and time control, then **Start**. Click a piece and its destination, or use the keyboard: Tab enters the board, arrow keys navigate, Enter/Space selects and moves, Escape deselects.
+From Home, choose **New game** or an opponent's play button, then choose a colour, strength and time control and press **Start**. Use **Resume game** to return to a saved game. Click a piece and its destination, or use the keyboard: Tab enters the board, arrow keys navigate, Enter/Space selects and moves, Escape deselects.
 
-The clock starts after the first move and keeps running while the page is hidden or closed. Starting another game abandons an unfinished rated game as a loss. The New game warning shows the rating before and after; choose **Keep playing** to return or **Abandon and start** to accept the loss. Ratings are displayed as whole numbers and cannot fall below 1400. **Copy FEN** copies the current board position; it is not a full game backup.
+The clock starts after the first move and keeps running on Home and while the page is hidden or closed. Starting another game forfeits an unfinished rated game as a loss. The New game warning shows the rating before and after; choose **Resume game** to return or **Forfeit and continue** to accept the loss. Ratings are displayed as whole numbers and cannot fall below 1400. **Copy FEN** copies the current board position; it is not a full game backup.
 
 Expand a move under **Moves & ideas** to read its story without closing the opening explanation. The stories illustrate recognized chess ideas; they do not claim every move is sound or reproduce a famous game. Story text works offline; external reading links need a connection. See the [editorial scope and sources](docs/verification/coaching-sources.md).
 

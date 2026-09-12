@@ -1,3 +1,4 @@
+import { enterPlay } from "./enter-play";
 import { expect, test } from "@playwright/test";
 import { freshSession, reduceSession } from "../../src/game/state";
 import { applyMove, legalMoves, sanFor } from "../../src/engine/board";
@@ -21,6 +22,7 @@ test("opening and earlier move stories stay readable through play and a saved-ga
       localStorage.setItem("chess-prodigy-state-v3", JSON.stringify(session));
   }, savedGame());
   await page.goto("/");
+  await enterPlay(page);
   const opening = page.getByRole("button", { name: /About this opening/ });
   const fianchetto = page.getByRole("button", { name: /2\. Bb2 · Fianchetto/ });
   await expect(opening).toHaveAttribute("aria-expanded", "true");
@@ -41,6 +43,7 @@ test("opening and earlier move stories stay readable through play and a saved-ga
     .toBe(6);
   await expect(fianchetto).toHaveAttribute("aria-expanded", "true");
   await page.reload();
+  await enterPlay(page);
   await expect(fianchetto).toBeVisible();
   await fianchetto.click();
   await expect(page.getByRole("link", { name: /hypermodern school/ })).toBeVisible();
@@ -51,7 +54,8 @@ test("opening and earlier move stories stay readable through play and a saved-ga
   );
   await reading.screenshot({ path: `docs/verification/${info.project.name}-coaching.png` });
   await page.getByRole("button", { name: "New game", exact: true }).click();
-  await page.getByRole("button", { name: "Abandon and start", exact: true }).click();
+  await page.getByRole("button", { name: "Forfeit and continue", exact: true }).click();
+  await page.getByRole("button", { name: "Start", exact: true }).click();
   await expect(fianchetto).toHaveCount(0);
 });
 
@@ -59,6 +63,7 @@ test("a legal move slides before the engine replies, with reduced-motion support
   page,
 }) => {
   await page.goto("/");
+  await enterPlay(page);
   await page.getByRole("button", { name: "Start", exact: true }).click();
   const motion = await page.evaluate(async () => {
     const square = (name: string) =>

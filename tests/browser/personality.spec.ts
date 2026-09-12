@@ -1,3 +1,4 @@
+import { enterPlay } from "./enter-play";
 import { expect, test, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFile } from "node:fs/promises";
@@ -34,6 +35,7 @@ test("new personality selection follows the build flag and keeps keyboard/focus 
   page,
 }, info) => {
   await page.goto("/");
+  await enterPlay(page);
   const dialog = page.getByRole("dialog", { name: "New game" });
   await expect(dialog.getByRole("button", { name: "Classic", exact: true })).toHaveAttribute(
     "aria-pressed",
@@ -76,6 +78,7 @@ for (const color of ["w", "b"] as const)
   }, info) => {
     await seed(page, beta(color));
     await page.goto("/");
+    await enterPlay(page);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     if (color === "w") await move(page, "e2", "e4");
     else {
@@ -95,6 +98,7 @@ for (const color of ["w", "b"] as const)
     // Its active worker controls the next navigation, without forcing a game reload.
     await context.setOffline(true);
     await page.reload();
+    await enterPlay(page);
     await expect(page.getByText("Paul Morphy · Casual", { exact: true })).toBeVisible();
     await expect.poll(() => page.evaluate(() => !!navigator.serviceWorker.controller)).toBe(true);
     expect((await saved(page)).game.opponent).toEqual(before.game.opponent);
@@ -131,6 +135,7 @@ test("unavailable configuration exports a usable recovery copy without replacing
   s.game.opponent.version = 99;
   await seed(page, s);
   await page.goto("/");
+  await enterPlay(page);
   await expect(page.getByText(/saved opponent version is unavailable/)).toBeVisible();
   await expect(page.getByRole("button", { name: "New game", exact: true })).toBeDisabled();
   const original = await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v3"));
@@ -168,6 +173,7 @@ test("account Morphy resume and terminal archive retain identity without rating 
   });
   expect(stored.ok()).toBe(true);
   await page.goto(base);
+  await enterPlay(page);
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(page.getByText("Paul Morphy · Casual", { exact: true })).toBeVisible();
   await move(page, "e2", "e4");
@@ -193,6 +199,7 @@ test("account Morphy resume and terminal archive retain identity without rating 
   expect(records.snapshot.rating).toEqual(s.rating);
   expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v3"))).toBeNull();
   await page.reload();
+  await enterPlay(page);
   await expect(page.getByRole("dialog")).toContainText("Unrated beta");
   expect((await get()).games).toHaveLength(1);
 });

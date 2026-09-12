@@ -427,3 +427,46 @@ export function setupFromDraft(draft: SetupDraft, betaEnabled = false): Setup {
       : {}),
   };
 }
+
+export function ForfeitModal({
+  game,
+  rating,
+  onResume,
+  onForfeit,
+}: {
+  game: Game;
+  rating: Rating;
+  onResume(): void;
+  onForfeit(): void;
+}) {
+  const opponent = opponentPracticeRating(game.opponent, game.setup.level);
+  const before = Math.round(rating.rating);
+  const after =
+    game.rated && opponent !== null
+      ? Math.round(ratingUpdate(rating, opponent, 0, { opp: "" }, game.clockAt).next.rating)
+      : before;
+  return (
+    <Modal title="Finish your current game?" onClose={onResume} closeOnBackdrop={false}>
+      <p>
+        You have an unfinished game against {opponentName(game.opponent)}. Resume it, or forfeit
+        before choosing another game.
+      </p>
+      <p role="status">
+        {!game.rated
+          ? "No rating change. This game is already unrated."
+          : before === FIDE_FLOOR
+            ? `Your rating stays at ${FIDE_FLOOR} (the minimum), but this counts as a rated loss.`
+            : `This counts as a rated loss. Practice Rating: ${before} → ${after} (${before - after} points lost).`}
+      </p>
+      {game.clocks && <p>Your clock keeps running while you decide.</p>}
+      <div className="optrow">
+        <button className="btn primary" onClick={onResume}>
+          Resume game
+        </button>
+        <button className="btn" onClick={onForfeit}>
+          Forfeit and continue
+        </button>
+      </div>
+    </Modal>
+  );
+}

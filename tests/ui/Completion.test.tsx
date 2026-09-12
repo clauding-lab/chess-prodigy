@@ -1,5 +1,6 @@
+import { renderPlayingApp as render } from "./enter-playing-app";
 import React from "react";
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import App from "../../src/App";
 import { freshSession, reduceSession } from "../../src/game/state";

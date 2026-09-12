@@ -1,5 +1,9 @@
 # Chess Prodigy release verification
 
+## 12 September 2026 BDT — rated Morphy and home screen
+
+See the [400-game calibration and v2.1 deployment](2026-09-12-morphy-calibration.md), followed by the [v2.2 home-screen and resume checks](2026-09-12-home-and-resume.md). Earlier dated evidence below is retained as history.
+
 ## 11 September 2026 BDT — version 2.0.0 source release
 
 The [2.0 release record](2026-09-11-v2-release.md) tracks fresh release checks and publication.

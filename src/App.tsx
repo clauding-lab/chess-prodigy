@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Home } from "./ui/Home";
 import { Brand } from "./ui/Brand";
 import { inCheck, kingSq, legalMoves, toFEN } from "./engine/board";
 import type { Color, Move } from "./engine/types";
@@ -9,6 +10,7 @@ import { Board, GLYPH } from "./ui/Board";
 import { CoachPanel } from "./ui/CoachPanel";
 import {
   ConfirmModal,
+  ForfeitModal,
   PromotionModal,
   ResultModal,
   ReviewModal,
@@ -43,8 +45,11 @@ export default function App({
   accountNotice?: ReactNode;
   suspended?: boolean;
 } = {}) {
-  const [showSetup, setShowSetup] = useState<boolean | null>(null);
-  const gameApi = useGame(!suspended && showSetup === true, storage, suspended);
+  const [home, setHome] = useState(true);
+  const [hasChosenGame, setHasChosenGame] = useState(false);
+  const [showSetup, setShowSetup] = useState(false);
+  const [forfeitPending, setForfeitPending] = useState(false);
+  const gameApi = useGame(!suspended && showSetup, storage, suspended || home);
   const { game, rating, preferences } = gameApi;
   const available = isSupportedOpponent(game.opponent);
   const betaEnabled = personalityBetaEnabled(import.meta.env.VITE_PERSONALITY_BETA);
@@ -76,10 +81,10 @@ export default function App({
   const [toast, setToast] = useState<string | null>(null);
   const [fenFallback, setFenFallback] = useState<string | null>(null);
   const [recoveryExported, setRecoveryExported] = useState(false);
-  const [setupCompleted, setSetupCompleted] = useState(gameApi.hasSavedGame);
-  useEffect(() => setShowSetup(!gameApi.hasSavedGame), [gameApi.hasSavedGame]);
+
   useEffect(() => {
     if (game.over) {
+      setForfeitPending(false);
       setPromotion(null);
       setSelected(null);
       setConfirm(null);
@@ -119,16 +124,25 @@ export default function App({
     }
     setSelected(game.st.board[square]?.[0] === playerColor ? square : null);
   }
-  function openSetup() {
+  function requestSetup() {
+    if (game.started && !game.over) setForfeitPending(true);
+    else setShowSetup(true);
+  }
+  function resume() {
+    gameApi.refreshClock();
+    setForfeitPending(false);
+    setHome(false);
+  }
+  function openSetup(opponentId?: "classic" | "attack-development") {
     setStartError(null);
     setRematchNote(null);
     setDraft({
       color: playerColor,
       level: game.setup.level,
       time: game.setup.time,
-      opponentId: draftOpponent,
+      opponentId: opponentId ?? draftOpponent,
     });
-    setShowSetup(true);
+    requestSetup();
   }
   function start() {
     if (!gameApi.startGame(setupFromDraft(draft, betaEnabled))) {
@@ -138,7 +152,8 @@ export default function App({
       return;
     }
     setStartError(null);
-    setSetupCompleted(true);
+    setHome(false);
+    setHasChosenGame(true);
     setSelected(null);
     setPromotion(null);
     setShowSetup(false);
@@ -160,7 +175,7 @@ export default function App({
     );
     setStartError(null);
     setShowGames(false);
-    setShowSetup(true);
+    requestSetup();
   }
   function askHint() {
     if (game.rated && game.started)
@@ -315,7 +330,7 @@ export default function App({
     ) : null;
   return (
     <div
-      className="app"
+      className={`app${home ? " app-home" : ""}`}
       data-theme={preferences.theme}
       onClickCapture={() => {
         if (preferences.sound) void activateSound();
@@ -326,7 +341,42 @@ export default function App({
     >
       <Brand />
       {accountControls}
-      <main className="stage">
+      {home && (
+        <Home
+          game={game}
+          rating={rating}
+          canResume={gameApi.hasSavedGame || hasChosenGame || game.started}
+          preferences={preferences}
+          betaEnabled={betaEnabled}
+          onPlay={openSetup}
+          onResume={resume}
+          onResult={() => {
+            setDismissedResult(null);
+            resume();
+          }}
+          onGames={() => {
+            setShowGames(true);
+            void gameApi.refreshHistory();
+          }}
+          onTheme={() =>
+            gameApi.setPreferences({ theme: preferences.theme === "wood" ? "dark" : "wood" })
+          }
+        />
+      )}
+      <main className="stage" hidden={home}>
+        <button
+          className="linkbtn"
+          onClick={() => {
+            gameApi.refreshClock();
+            gameApi.saveNow();
+            setHome(true);
+            setSelected(null);
+            setPromotion(null);
+          }}
+          type="button"
+        >
+          Home
+        </button>
         <PlayerBar color={top} />
         <div className="boardwrap">
           <Board
@@ -349,7 +399,12 @@ export default function App({
           {pairs.length ? pairs : <span className="mv placeholder">Moves appear here</span>}
         </div>
         <div className="controls">
-          <button className="btn primary" onClick={openSetup} type="button" disabled={!available}>
+          <button
+            className="btn primary"
+            onClick={() => openSetup()}
+            type="button"
+            disabled={!available}
+          >
             New game
           </button>
           <button
@@ -433,6 +488,25 @@ export default function App({
           {status}
           {!game.rated && <span className="quiet"> · {unratedDescription(game)}</span>}
         </div>
+        <CoachPanel
+          enabled={preferences.coach}
+          game={game}
+          hint={gameApi.hint}
+          onHint={askHint}
+          onReview={review}
+          onToggle={() => gameApi.setPreferences({ coach: !preferences.coach })}
+          playerColor={playerColor}
+          reviewing={gameApi.reviewing}
+          thinking={gameApi.thinking}
+        />
+        <RatingPanel
+          onReset={resetRating}
+          rating={rating}
+          saved={gameApi.storageStatus === "saved"}
+          resetDisabled={!available}
+        />
+      </main>
+      <div className="shared-notices">
         {!available && (
           <div className="notice" role="alert">
             This saved opponent version is unavailable. The game is read-only and your progress is
@@ -481,28 +555,19 @@ export default function App({
             </button>
           </div>
         )}
-        <CoachPanel
-          enabled={preferences.coach}
-          game={game}
-          hint={gameApi.hint}
-          onHint={askHint}
-          onReview={review}
-          onToggle={() => gameApi.setPreferences({ coach: !preferences.coach })}
-          playerColor={playerColor}
-          reviewing={gameApi.reviewing}
-          thinking={gameApi.thinking}
-        />
-        <RatingPanel
-          onReset={resetRating}
-          rating={rating}
-          saved={gameApi.storageStatus === "saved"}
-          resetDisabled={!available}
-        />
+        {home && startError && (
+          <p className="notice" role="alert">
+            {startError}{" "}
+            <button className="linkbtn" onClick={downloadRecovery}>
+              Download recovery save
+            </button>
+          </p>
+        )}
         <UpdatePrompt
           active={available && game.started && !game.over}
           save={available ? gameApi.saveNow : () => recoveryExported}
         />
-      </main>
+      </div>
       {promotion && (
         <PromotionModal
           color={playerColor}
@@ -514,7 +579,8 @@ export default function App({
           }}
         />
       )}
-      {available &&
+      {!home &&
+        available &&
         game.over &&
         showSetup === false &&
         !showReview &&
@@ -533,7 +599,7 @@ export default function App({
               })
             }
             onDismiss={() => setDismissedResult(resultKey)}
-            onNew={openSetup}
+            onNew={() => openSetup()}
             onReview={review}
             onUndo={gameApi.undo}
           />
@@ -566,13 +632,30 @@ export default function App({
           draft={draft}
           game={game}
           rating={rating}
-          onCancel={
-            setupCompleted || game.started || !!game.over ? () => setShowSetup(false) : undefined
-          }
+          onCancel={() => setShowSetup(false)}
           onStart={start}
           setDraft={setDraft}
         />
       )}{" "}
+      {forfeitPending && !game.over && (
+        <ForfeitModal
+          game={game}
+          rating={rating}
+          onResume={resume}
+          onForfeit={() => {
+            gameApi.forfeit();
+            setForfeitPending(false);
+            if (!gameApi.saveNow()) {
+              setHome(true);
+              setStartError(
+                "Your result could not be saved. Keep this game and download a recovery copy before starting another.",
+              );
+              return;
+            }
+            setShowSetup(true);
+          }}
+        />
+      )}
       {confirm && <ConfirmModal onCancel={() => setConfirm(null)} value={confirm} />}{" "}
       {toast && (
         <div aria-live="polite" className="toast">

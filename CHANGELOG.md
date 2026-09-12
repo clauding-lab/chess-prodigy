@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.2.0] — 2026-09-12 (BDT)
+
+- Home replaces the automatic setup dialog, with a saved-board preview, prominent Resume game, result access, opponent introductions and links to games, accounts and friend play.
+- Every started unfinished computer game must be resumed or explicitly forfeited before replacement. The warning shows the current opponent's exact rating effect, including unrated games and the rating floor.
+- Timed games continue on Home and across app closure; elapsed time settles before resuming, with once-only results. Home navigation preserves pending timed computer replies. Untimed computer work can pause on Home.
+- A failed result save preserves the completed active game and exposes recovery before another game can replace it. Existing accounts, recorded games, offline updates and measured Morphy versions are preserved.
+
+See the [home-screen verification record](docs/verification/2026-09-12-home-and-resume.md).
+
 ## [2.1.0] — 2026-09-12 (BDT)
 
 - Measured Paul Morphy against Classic across 400 synthetic games: Casual 1200, Club 1375, Strong 1825 on the existing app scale. Full games, estimates, uncertainty and source fingerprints are retained.

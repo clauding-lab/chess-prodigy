@@ -1,5 +1,6 @@
+import { renderPlayingApp as render } from "./enter-playing-app";
 import React from "react";
-import { act, render, screen, fireEvent, waitFor, within } from "@testing-library/react";
+import { act, screen, fireEvent, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import App from "../../src/App";
 import { freshSession, reduceSession } from "../../src/game/state";
@@ -59,7 +60,7 @@ it.each(["White", "Black"])(
     vi.stubEnv("VITE_PERSONALITY_BETA", "true");
     const view = render(<App />);
     fireEvent.click(screen.getByRole("button", { name: "Paul Morphy", exact: true }));
-    expect(screen.getByText("Attack & development")).toBeTruthy();
+    expect(within(screen.getByRole("dialog")).getByText("Attack & development")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: color, exact: true }));
     fireEvent.click(screen.getByRole("button", { name: "Casual 1200", exact: true }));
     fireEvent.click(screen.getByRole("button", { name: "Start", exact: true }));

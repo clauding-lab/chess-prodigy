@@ -1,3 +1,4 @@
+import { enterPlay } from "./enter-play";
 import { expect, test } from "@playwright/test";
 import { freshSession, reduceSession } from "../../src/game/state";
 import { ratedMorphyConfig } from "../../src/engine/opponents";
@@ -33,6 +34,7 @@ test("account Morphy completion syncs its measured receipt once and restores its
     ).status(),
   ).toBe(200);
   await page.goto(origin);
+  await enterPlay(page);
   await expect(page.getByText("Paul Morphy · Club", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "e2, white pawn", exact: true }).click();
   await page.getByRole("button", { name: "e4, empty", exact: true }).click();
@@ -63,6 +65,7 @@ test("account Morphy completion syncs its measured receipt once and restores its
     unratedReason: null,
   });
   await page.reload();
+  await enterPlay(page);
   await expect(page.getByRole("dialog", { name: "Resignation" })).toBeVisible();
   const restored = await read();
   expect(restored.snapshot.rating).toEqual(before.snapshot.rating);

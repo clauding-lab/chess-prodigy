@@ -1,3 +1,4 @@
+import { enterPlay } from "./enter-play";
 import { test, expect } from "@playwright/test";
 import { freshSession, reduceSession } from "../../src/game/state";
 import { morphyConfig } from "../../src/engine/opponents";
@@ -41,6 +42,7 @@ for (const opponent of ["Classic", "Morphy"] as const)
       };
     });
     await page.goto("/");
+    await enterPlay(page);
     if (opponent === "Classic")
       await page.getByRole("button", { name: "Start", exact: true }).click();
     await page.getByRole("button", { name: "a2, white pawn", exact: true }).click();
@@ -81,6 +83,7 @@ for (const opponent of ["Classic", "Morphy"] as const)
       legacy,
     );
     await page.reload();
+    await enterPlay(page);
     await expect(page.getByRole("button", { name: "Off", exact: true })).toBeVisible();
     const migrated = await saved(page);
     expect(migrated.game.opponent).toEqual(before.game.opponent);

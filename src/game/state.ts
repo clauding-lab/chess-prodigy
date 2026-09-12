@@ -238,6 +238,7 @@ export function reduceSession(s: Session, action: SessionAction): Session {
     return { ...s, preferences: { ...s.preferences, ...action.value } };
   // Unknown saved versions are recoverable, never silently replaced or settled.
   if (!isSupportedOpponent(s.game.opponent)) return s;
+  if (action.type === "forfeit") return settlePriorGame(s, action.now);
   if (action.type === "resetRating")
     return {
       ...s,

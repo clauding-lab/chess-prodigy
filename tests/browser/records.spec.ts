@@ -1,3 +1,4 @@
+import { enterPlay } from "./enter-play";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { createHash } from "node:crypto";
@@ -54,6 +55,7 @@ async function seed(
     { times: 1 },
   );
   await page.goto(setupUrl);
+  await enterPlay(page);
   // Write once before the app mounts. No reload hook may repair missing storage.
   await page.evaluate(
     ({ session, games, stateKey, historyKey }) => {
@@ -76,6 +78,7 @@ test("guest completion remains replayable after starting a new game without chan
 }) => {
   await seed(page, fixture("synthetic-guest-live"));
   await page.goto("/");
+  await enterPlay(page);
   await page.getByRole("button", { name: "g1, white knight", exact: true }).click();
   await page.getByRole("button", { name: "f3, empty", exact: true }).click();
   await expect.poll(async () => (await saved(page)).game.hist.length).toBe(4);
@@ -126,6 +129,7 @@ for (const color of ["w", "b"] as const)
     );
     await seed(page, previous);
     await page.goto("/");
+    await enterPlay(page);
     await page
       .getByRole("dialog", { name: "Resignation" })
       .getByRole("button", { name: "Rematch", exact: true })
@@ -162,6 +166,7 @@ test("archived Morphy replay remains available and rematch obeys the beta build 
   const active = fixture("synthetic-active-morphy", { opponent: morphyConfig(9) });
   await seed(page, active, [archiveGame(previous)!]);
   await page.goto("/");
+  await enterPlay(page);
   const records = await openRecords(page);
   await records
     .getByRole("combobox", { name: "Opponent and difficulty" })
@@ -182,6 +187,7 @@ test("archived Morphy replay remains available and rematch obeys the beta build 
     return;
   }
   await rematch.click();
+  await page.getByRole("button", { name: "Forfeit and continue", exact: true }).click();
   const setup = page.getByRole("dialog", { name: "New game" });
   for (const name of ["Paul Morphy", "Black", "Casual", "10 min"])
     await expect(setup.getByRole("button", { name, exact: true })).toHaveAttribute(
@@ -205,6 +211,7 @@ test("recorded games and keyboard replay fit a 320px screen in dark and wooden t
   const archived = archiveGame(fixture("synthetic-narrow-record", {}, true))!;
   await seed(page, fixture("synthetic-narrow-active"), [archived]);
   await page.goto("/");
+  await enterPlay(page);
   for (const theme of ["dark", "wood"] as const) {
     if (theme === "wood")
       await page.getByRole("button", { name: "Wooden board", exact: true }).click();
@@ -250,6 +257,7 @@ test("Chrome offline reload preserves the archive and replays without touching t
   const active = fixture("synthetic-offline-active");
   await seed(page, active, [archiveGame(fixture("synthetic-offline-record", {}, true))!]);
   await page.goto("/");
+  await enterPlay(page);
   const records = await openRecords(page);
   await expect(records.getByRole("listitem")).toHaveCount(1);
   await page.evaluate(async () => {
@@ -258,6 +266,7 @@ test("Chrome offline reload preserves the archive and replays without touching t
   await context.setOffline(true);
   try {
     await page.reload();
+    await enterPlay(page);
     const offlineRecords = await openRecords(page);
     await offlineRecords.getByRole("button", { name: "Replay recorded game 1" }).click();
     await offlineRecords.getByRole("slider", { name: "Replay position" }).press("End");
@@ -309,6 +318,7 @@ test("private account records are visible only to that account and never import 
     expect(response.ok()).toBe(true);
   }
   await page.goto(accountBase);
+  await enterPlay(page);
   let records = await openRecords(page);
   await expect(records).toContainText("Private records — this account only");
   await expect(records.getByRole("listitem")).toHaveCount(0);
@@ -336,6 +346,7 @@ test("private account records are visible only to that account and never import 
   });
   expect(response.ok()).toBe(true);
   await page.reload();
+  await enterPlay(page);
   records = await openRecords(page);
   await expect(records).toContainText("Private records — this account only");
   await expect(records.getByRole("listitem")).toHaveCount(0);

@@ -69,6 +69,7 @@ export type Action =
   | { type: "evaluation"; gameId: string; revision: number; ply: number; value: PositionEval };
 export type SessionAction =
   | Action
+  | { type: "forfeit"; now: number }
   | { type: "new"; setup: Setup; now: number; id: string }
   | { type: "preferences"; value: Partial<Preferences> }
   | { type: "resetRating" };
