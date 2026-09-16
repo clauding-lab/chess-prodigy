@@ -47,7 +47,7 @@ Every manually installed release directory under `/opt/chess-prodigy/releases` i
 
 Defaults: keep the newest **3** release directories (`CHESS_PRODIGY_KEEP`), plus whatever `current` and `current-next` point at even if older; remove `/tmp/chess-*-stage.*` directories (`CHESS_PRODIGY_STAGE_GLOB`) once they are more than **24 hours** old (`CHESS_PRODIGY_STAGE_MAX_AGE_HOURS`). The script never deletes the release `current` resolves to, refuses to run if `releases/` is missing or `current` does not resolve inside it, and refuses if asked to keep fewer than 1 release.
 
-The unit runs the script from `/usr/local/sbin/chess-prodigy-prune`, not from `current/deploy/`, so the timer keeps working across every future rollback instead of silently no-op'ing whenever `current` points at a release built before this file existed. Install the script and both units together, **in this order**:
+The unit runs the script from `/usr/local/sbin/chess-prodigy-prune`, not from `current/deploy/`, so the timer keeps working across every future rollback instead of silently no-op'ing whenever `current` points at a release built before this file existed. Install the script and both units together, **in this order**, run from the checked-out repository root or `/opt/chess-prodigy/current` (both have `deploy/` at this same relative path, so the paths below resolve either way):
 
 ```
 sudo install -m 0755 deploy/prune-releases.sh /usr/local/sbin/chess-prodigy-prune

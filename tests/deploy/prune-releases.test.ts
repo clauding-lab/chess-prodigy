@@ -3,11 +3,14 @@ import { spawnSync } from "node:child_process";
 import {
   mkdtempSync,
   mkdirSync,
+  writeFileSync,
+  chmodSync,
   symlinkSync,
   utimesSync,
   lutimesSync,
   existsSync,
   lstatSync,
+  realpathSync,
   rmSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -90,6 +93,14 @@ function makeStandardRoot() {
   return { root, releasesDir, a, b, c, d, e, f };
 }
 
+// Probed once, at collection time, so the pre-bash-4 regression test below
+// can be declared with it.skipIf and show up as an honest "skipped" in the
+// report — rather than silently returning early inside the test body and
+// reading as a pass on any machine (e.g. an Ubuntu CI image) where
+// /bin/bash is already bash 4+.
+const bashProbe = spawnSync("/bin/bash", ["-c", "echo ${BASH_VERSINFO[0]}"], { encoding: "utf8" });
+const hasPreBash4AtSlashBinBash = bashProbe.status === 0 && Number(bashProbe.stdout.trim()) < 4;
+
 describe("deploy/prune-releases.sh", () => {
   it("keeps the 3 newest releases plus current (even though older than the newest 3) and current-next, removes only what's left", () => {
     const { root, a, b, c, d, e, f } = makeStandardRoot();
@@ -158,6 +169,50 @@ describe("deploy/prune-releases.sh", () => {
     expect(existsSync(a)).toBe(false);
     expect(existsSync(c)).toBe(false);
     expect(result.stdout).toMatch(/kept 4 releases, removed 2/);
+  });
+
+  it("never dangles current when it points through a symlink alias INSIDE releases/ (e.g. releases/latest)", () => {
+    // Regression test: current -> releases/latest -> releases/<real release>.
+    // "latest" is itself just another entry directly under releases/, with
+    // its own mtime — nothing before this fix stopped the pruner from
+    // treating it as an ordinary release directory and removing it once it
+    // fell outside the newest-KEEP window, even though the real release it
+    // points to was protected. That leaves $ROOT/current dangling: current
+    // still resolves through "latest", but "latest" no longer exists.
+    const root = tempDir("chess-prune-alias-");
+    const releasesDir = join(root, "releases");
+    mkdirSync(releasesDir, { recursive: true });
+    const a = makeRelease(releasesDir, "a-oldest", 6);
+    const b = makeRelease(releasesDir, "2.4.2-current", 5);
+    const c = makeRelease(releasesDir, "c", 4);
+    const d = makeRelease(releasesDir, "d", 3);
+    const e = makeRelease(releasesDir, "e", 2);
+    const f = makeRelease(releasesDir, "f-newest", 1);
+    const latest = join(releasesDir, "latest");
+    symlinkSync(b, latest);
+    // Give the alias its own mtime, outside the newest-KEEP=3 window (d/e/f)
+    // and distinct from b, so its survival depends entirely on the alias-
+    // chain protection rather than an accident of the newest-KEEP-by-mtime
+    // sort.
+    lutimesSync(latest, new Date(Date.now() - 5 * HOUR_MS), new Date(Date.now() - 5 * HOUR_MS));
+    symlinkSync(latest, join(root, "current"));
+
+    const result = runPrune([], { CHESS_PRODIGY_ROOT: root });
+
+    expect(result.status).toBe(0);
+    // existsSync follows symlinks, so this is false if "current" is left
+    // dangling through a deleted "latest" — the core assertion for this
+    // residual.
+    expect(existsSync(join(root, "current"))).toBe(true);
+    expect(lstatSync(latest).isSymbolicLink()).toBe(true);
+    expect(existsSync(latest)).toBe(true);
+    expect(existsSync(b)).toBe(true);
+    expect(existsSync(d)).toBe(true);
+    expect(existsSync(e)).toBe(true);
+    expect(existsSync(f)).toBe(true);
+    expect(existsSync(a)).toBe(false);
+    expect(existsSync(c)).toBe(false);
+    expect(result.stdout).toMatch(/kept 5 releases, removed 2/);
   });
 
   it("--dry-run removes nothing and exits 0", () => {
@@ -240,24 +295,91 @@ describe("deploy/prune-releases.sh", () => {
     expect(result.stdout).toMatch(/stage dirs removed 1/);
   });
 
-  it("exits 3 (not the policy-refusal code 2) under a pre-bash-4 interpreter, distinguishing an environment issue from a refusal", () => {
-    // /bin/bash is stock bash 3.2 on macOS (pre-installed, distinct from a
-    // Homebrew bash 5+ that may be first on PATH) — a real, already-present
-    // interpreter to prove the version guard fires, not a synthetic stub.
-    const probe = spawnSync("/bin/bash", ["-c", "echo ${BASH_VERSINFO[0]}"], { encoding: "utf8" });
-    if (probe.status !== 0 || Number(probe.stdout.trim()) >= 4) {
-      return; // environment has no pre-bash-4 interpreter at this path; nothing to prove here
-    }
-    const { root } = makeStandardRoot();
+  it("tolerates a release or stage dir vanishing between the glob and the mtime stat, and still prints the summary", () => {
+    // A genuine glob-then-vanish race is not reproducible deterministically,
+    // so this forces the same failure mode with a fake `stat` ahead of the
+    // real one on PATH: it fails (both the GNU -c and BSD -f forms
+    // mtime_of tries) for exactly the two "vanished" paths below, and
+    // delegates to the real stat for everything else. Before this fix, a
+    // failed mtime_of fed straight into `age=$((... $(mtime_of ...)))`
+    // produced a bash arithmetic syntax error, which aborted the whole
+    // script under set -e with no summary line.
+    const { root, a, b, c, d, e, f } = makeStandardRoot();
+    const stageBase = tempDir("chess-prune-stat-race-stage-");
+    const staleStageDir = join(stageBase, "chess-foo-stage.1");
+    const raceStageDir = join(stageBase, "chess-bar-stage.2");
+    mkdirSync(staleStageDir, { recursive: true });
+    setMtime(staleStageDir, 30);
+    mkdirSync(raceStageDir, { recursive: true });
+    setMtime(raceStageDir, 30);
 
-    const result = spawnSync("/bin/bash", [SCRIPT], {
-      encoding: "utf8",
-      timeout: 15000,
-      env: { ...process.env, CHESS_PRODIGY_ROOT: root },
+    const fakeBinDir = tempDir("chess-prune-fake-bin-");
+    const fakeStatPath = join(fakeBinDir, "stat");
+    writeFileSync(
+      fakeStatPath,
+      [
+        "#!/usr/bin/env bash",
+        'for arg in "$@"; do',
+        '  if [[ "$arg" == "$FAKE_STAT_FAIL_PATH_1" || "$arg" == "$FAKE_STAT_FAIL_PATH_2" ]]; then',
+        "    exit 1",
+        "  fi",
+        "done",
+        'exec /usr/bin/stat "$@"',
+        "",
+      ].join("\n"),
+    );
+    chmodSync(fakeStatPath, 0o755);
+
+    const result = runPrune([], {
+      CHESS_PRODIGY_ROOT: root,
+      CHESS_PRODIGY_STAGE_GLOB: join(stageBase, "chess-*-stage.*"),
+      PATH: `${fakeBinDir}:${process.env.PATH ?? ""}`,
+      // The script canonicalizes CHESS_PRODIGY_ROOT (and so releases/) with
+      // `cd && pwd -P` before building release paths — on macOS os.tmpdir()
+      // sits under /var/folders, itself a symlink to /private/var/folders,
+      // so the release-dir victim must be passed in its resolved form to
+      // match what the script actually hands to `stat`. The stage-dir glob
+      // is never canonicalized by the script, so that victim stays as-is.
+      FAKE_STAT_FAIL_PATH_1: realpathSync(c),
+      FAKE_STAT_FAIL_PATH_2: raceStageDir,
     });
 
-    expect(result.status).toBe(3);
-    expect(result.stderr).toMatch(/bash/i);
-    expect(result.stderr).not.toMatch(/refus/i);
+    expect(result.status).toBe(0);
+    // c's mtime could not be read this run, so it was skipped (never even
+    // considered for removal) instead of aborting the script — the script
+    // reaches its summary line rather than dying mid-loop.
+    expect(existsSync(c)).toBe(true);
+    expect(existsSync(a)).toBe(true);
+    expect(existsSync(b)).toBe(true);
+    expect(existsSync(d)).toBe(true);
+    expect(existsSync(e)).toBe(true);
+    expect(existsSync(f)).toBe(true);
+    // The stage dir whose stat failed is likewise skipped and survives...
+    expect(existsSync(raceStageDir)).toBe(true);
+    // ...while the genuinely stale one (real stat succeeds for it) is still
+    // removed as normal.
+    expect(existsSync(staleStageDir)).toBe(false);
+    expect(result.stdout).toMatch(/prune: kept 5 releases, removed 0/);
+    expect(result.stdout).toMatch(/stage dirs removed 1/);
   });
+
+  it.skipIf(!hasPreBash4AtSlashBinBash)(
+    "exits 3 (not the policy-refusal code 2) under a pre-bash-4 interpreter, distinguishing an environment issue from a refusal [skipped when /bin/bash is already >= 4, e.g. on CI images that ship a modern bash at that path — nothing to prove there]",
+    () => {
+      // /bin/bash is stock bash 3.2 on macOS (pre-installed, distinct from a
+      // Homebrew bash 5+ that may be first on PATH) — a real, already-present
+      // interpreter to prove the version guard fires, not a synthetic stub.
+      const { root } = makeStandardRoot();
+
+      const result = spawnSync("/bin/bash", [SCRIPT], {
+        encoding: "utf8",
+        timeout: 15000,
+        env: { ...process.env, CHESS_PRODIGY_ROOT: root },
+      });
+
+      expect(result.status).toBe(3);
+      expect(result.stderr).toMatch(/bash/i);
+      expect(result.stderr).not.toMatch(/refus/i);
+    },
+  );
 });

@@ -45,6 +45,27 @@ size_kb_of() {
   du -sk "$1" 2>/dev/null | cut -f1
 }
 
+# Resolve one symlink hop of $1 to an absolute path, canonicalizing only the
+# directory part — the final path component is left as-is even if it is
+# itself a symlink, so callers can walk a symlink chain one hop at a time.
+# Prints nothing and returns non-zero if the hop cannot be resolved (e.g. the
+# link or its directory vanished).
+resolve_one_hop() {
+  local link="$1" target linkdir tdir tbase
+  target="$(readlink "$link")" || return 1
+  case "$target" in
+    /*) : ;;
+    *)
+      linkdir="$(cd "$(dirname "$link")" 2>/dev/null && pwd -P)" || return 1
+      target="$linkdir/$target"
+      ;;
+  esac
+  tdir="$(dirname "$target")"
+  tbase="$(basename "$target")"
+  tdir="$(cd "$tdir" 2>/dev/null && pwd -P)" || return 1
+  printf '%s/%s' "$tdir" "$tbase"
+}
+
 # Canonicalize ROOT up front so every path built from it below (globbed
 # release dirs, current/current-next resolution) agrees on the same form —
 # on macOS /tmp (and mktemp's /var/folders paths) resolve through a symlink
@@ -99,13 +120,39 @@ done < <(
   for d in "$RELEASES_DIR"/*/; do
     [[ -d "$d" ]] || continue
     d="${d%/}"
-    printf '%s\t%s\n' "$(mtime_of "$d")" "$d"
+    # Tolerate a release dir vanishing between the glob above and this stat
+    # (a concurrent manual cleanup or deploy): skip it rather than letting a
+    # failed mtime_of abort the whole prune under set -e with no summary.
+    m="$(mtime_of "$d" 2>/dev/null || true)"
+    [[ -n "$m" ]] || continue
+    printf '%s\t%s\n' "$m" "$d"
   done | sort -t $'\t' -k1,1nr | cut -f2-
 )
 
 declare -A protected
 protected["$current_real"]=1
 [[ -n "$current_next_real" ]] && protected["$current_next_real"]=1
+
+# Protect every hop of a symlink chain that lands directly under releases/,
+# e.g. current -> releases/latest -> releases/2.4.2-...: without this, the
+# "latest" alias is just another releases/ entry to the pruner (its mtime
+# sorts like any other), so it can be removed even though the real release
+# it points to is protected — leaving $ROOT/current dangling. See
+# deploy/README.md, "Release retention".
+protect_alias_chain() {
+  local cur="$1" depth=0 resolved
+  while [[ -L "$cur" ]] && (( depth < 40 )); do
+    resolved="$(resolve_one_hop "$cur")" || break
+    [[ -n "$resolved" ]] || break
+    if [[ "$(dirname "$resolved")" == "$RELEASES_DIR" ]]; then
+      protected["$resolved"]=1
+    fi
+    cur="$resolved"
+    depth=$((depth + 1))
+  done
+}
+protect_alias_chain "$CURRENT_LINK"
+protect_alias_chain "$CURRENT_NEXT_LINK"
 
 keep_count=0
 for d in "${all_dirs[@]}"; do
@@ -152,7 +199,13 @@ max_age_seconds=$((STAGE_MAX_AGE_HOURS * 3600))
 for path in $STAGE_GLOB; do
   [[ -L "$path" ]] && continue
   [[ -d "$path" ]] || continue
-  age=$((now_epoch - $(mtime_of "$path")))
+  # Same tolerance as the release listing above: a stage dir can vanish
+  # between the glob and this stat (another prune run, a manual cleanup);
+  # skip it instead of letting a failed mtime_of blow up the arithmetic
+  # below under set -e mid-loop.
+  path_mtime="$(mtime_of "$path" 2>/dev/null || true)"
+  [[ -n "$path_mtime" ]] || continue
+  age=$((now_epoch - path_mtime))
   [[ "$age" -ge "$max_age_seconds" ]] || continue
   age_hours=$((age / 3600))
   if [[ "$DRY_RUN" -eq 1 ]]; then
