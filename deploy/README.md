@@ -39,7 +39,23 @@ Preserve all existing hostname routes. Validate the tunnel configuration, create
 
 Check `/api/health`, an actual guest game, registration/login/logout, account restore and `/api/leaderboard` over HTTPS. API responses must have `Cache-Control: no-store`; private paths must not be service-worker-cached. Check `systemctl status chess-prodigy` and recent journal errors without printing user records or secrets.
 
-Build and test each release before switching `current`. Back up the database first, install the new directory, switch the symlink, restart only `chess-prodigy`, then verify HTTPS. Keep the previous release for rollback. Better Auth's schema migrations run during startup. Do not roll back across an incompatible schema migration without a reviewed database recovery plan.
+Build and test each release before switching `current`. Back up the database first, install the new directory, switch the symlink, restart only `chess-prodigy`, then verify HTTPS. Keep the previous release for rollback — the retention timer below only ever removes releases beyond the newest few, never the active one. Better Auth's schema migrations run during startup. Do not roll back across an incompatible schema migration without a reviewed database recovery plan.
+
+## Release retention
+
+Every manually installed release directory under `/opt/chess-prodigy/releases` is ~480 MB (`npm ci` with dev dependencies), and sessions occasionally leave `/tmp/chess-*-stage.*` staging directories behind after extraction. Left unchecked, these fill the root disk. `chess-prodigy-prune.timer` runs `deploy/prune-releases.sh` nightly at **04:45 BDT** (after the 04:15 database backup) to remove old releases and stale staging directories.
+
+Defaults: keep the newest **3** release directories (`CHESS_PRODIGY_KEEP`), plus whatever `current` and `current-next` point at even if older; remove `/tmp/chess-*-stage.*` directories (`CHESS_PRODIGY_STAGE_GLOB`) once they are more than **24 hours** old (`CHESS_PRODIGY_STAGE_MAX_AGE_HOURS`). The script never deletes the release `current` resolves to, refuses to run if `releases/` is missing or `current` does not resolve inside it, and refuses if asked to keep fewer than 1 release.
+
+Install both units alongside the existing ones:
+
+```
+sudo cp deploy/chess-prodigy-prune.service deploy/chess-prodigy-prune.timer /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now chess-prodigy-prune.timer
+```
+
+Run it by hand with `sudo systemctl start chess-prodigy-prune`, or preview without deleting anything with `sudo /opt/chess-prodigy/current/deploy/prune-releases.sh --dry-run`. A deploy or rollback procedure must never assume more than the 3 newest releases (plus the active one) still exist on disk.
 
 ## Backups and recovery
 

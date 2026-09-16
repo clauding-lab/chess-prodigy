@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+- Add `deploy/prune-releases.sh` and a nightly `chess-prodigy-prune.timer` (04:45 BDT) that remove release directories beyond the newest 3 (plus whatever `current`/`current-next` point at) and stale `/tmp/chess-*-stage.*` staging directories older than 24 hours, so manual releases no longer fill the root disk. See `deploy/README.md`, "Release retention".
+
 ## [2.4.2] — 2026-09-13 (BDT)
 
 - Place account saving status on its own centered line beneath the navigation controls, including on narrow screens.
