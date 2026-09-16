@@ -30,10 +30,32 @@ for arg in "$@"; do
   esac
 done
 
-if ! [[ "$KEEP" =~ ^[0-9]+$ ]] || [[ "$KEEP" -lt 1 ]]; then
+if ! [[ "$KEEP" =~ ^[0-9]+$ ]]; then
   echo "prune: refusing — CHESS_PRODIGY_KEEP must be a positive integer (got '$KEEP')" >&2
   exit 2
 fi
+# Normalise to base-10 before the -lt test (and any later arithmetic use of
+# KEEP): bash arithmetic contexts (`[[ -lt ]]`, `$(( ))`) read a leading-zero
+# value like "08" as octal, and "08"/"09" aren't valid octal digits — that
+# fails the -lt check silently (a `[[ ]]` arithmetic error inside an `if` is
+# non-fatal under set -e) rather than refusing, and later disables the
+# newest-KEEP protection loop the same way. See deploy/README.md, "Release
+# retention".
+KEEP="$((10#$KEEP))"
+if [[ "$KEEP" -lt 1 ]]; then
+  echo "prune: refusing — CHESS_PRODIGY_KEEP must be a positive integer (got '$KEEP')" >&2
+  exit 2
+fi
+
+if ! [[ "$STAGE_MAX_AGE_HOURS" =~ ^[0-9]+$ ]]; then
+  echo "prune: refusing — CHESS_PRODIGY_STAGE_MAX_AGE_HOURS must be a plain integer (got '$STAGE_MAX_AGE_HOURS')" >&2
+  exit 2
+fi
+# Same base-10 normalisation as KEEP above, done up front before any release
+# or stage-dir deletion runs — validating STAGE_MAX_AGE_HOURS only when it's
+# first used (in the stage-dir loop, after releases are already pruned) means
+# a bad value aborts mid-run with releases already deleted.
+STAGE_MAX_AGE_HOURS="$((10#$STAGE_MAX_AGE_HOURS))"
 
 # Portable mtime (epoch seconds): GNU stat first, BSD stat as fallback.
 mtime_of() {
