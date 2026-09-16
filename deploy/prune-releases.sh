@@ -4,6 +4,14 @@
 set -euo pipefail
 shopt -s nullglob
 
+# declare -A below requires bash 4+. Guard explicitly with a dedicated exit
+# code (3) so a stock-macOS /bin/bash 3.2 failure is never mistaken for the
+# script's own policy refusals, which use exit 2.
+if (( BASH_VERSINFO[0] < 4 )); then
+  echo "prune: requires bash >= 4 (found ${BASH_VERSION:-unknown}); this is an interpreter mismatch, not a decision to decline pruning" >&2
+  exit 3
+fi
+
 ROOT="${CHESS_PRODIGY_ROOT:-/opt/chess-prodigy}"
 KEEP="${CHESS_PRODIGY_KEEP:-3}"
 STAGE_GLOB="${CHESS_PRODIGY_STAGE_GLOB:-/tmp/chess-*-stage.*}"
@@ -51,6 +59,12 @@ if [[ ! -d "$RELEASES_DIR" ]]; then
   exit 2
 fi
 RELEASES_REAL="$(cd "$RELEASES_DIR" && pwd -P)"
+# Canonicalize RELEASES_DIR itself: if "releases" is a symlink (e.g. an
+# operator relocated it onto a larger volume after a full-disk incident),
+# the glob below must walk the same canonical form that current_real was
+# resolved to, or protected-set lookups never match and the live release
+# gets deleted. See deploy/README.md, "Release retention".
+RELEASES_DIR="$RELEASES_REAL"
 
 CURRENT_LINK="$ROOT/current"
 CURRENT_NEXT_LINK="$ROOT/current-next"
@@ -113,7 +127,12 @@ for d in "${all_dirs[@]}"; do
     kept=$((kept + 1))
     continue
   fi
-  size_kb="$(size_kb_of "$d")"
+  # `|| true` keeps a du failure (e.g. a concurrent manual cleanup racing
+  # this loop) from tripping `set -e` mid-deletion via the command
+  # substitution — the ${size_kb:-0} fallback already handles the empty
+  # result, so a failed du only degrades the reported size, never aborts
+  # the prune with releases half-deleted.
+  size_kb="$(size_kb_of "$d" || true)"
   size_kb="${size_kb:-0}"
   size_mb=$((size_kb / 1024))
   if [[ "$DRY_RUN" -eq 1 ]]; then

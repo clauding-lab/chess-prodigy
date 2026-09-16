@@ -47,15 +47,26 @@ Every manually installed release directory under `/opt/chess-prodigy/releases` i
 
 Defaults: keep the newest **3** release directories (`CHESS_PRODIGY_KEEP`), plus whatever `current` and `current-next` point at even if older; remove `/tmp/chess-*-stage.*` directories (`CHESS_PRODIGY_STAGE_GLOB`) once they are more than **24 hours** old (`CHESS_PRODIGY_STAGE_MAX_AGE_HOURS`). The script never deletes the release `current` resolves to, refuses to run if `releases/` is missing or `current` does not resolve inside it, and refuses if asked to keep fewer than 1 release.
 
-Install both units alongside the existing ones:
+The unit runs the script from `/usr/local/sbin/chess-prodigy-prune`, not from `current/deploy/`, so the timer keeps working across every future rollback instead of silently no-op'ing whenever `current` points at a release built before this file existed. Install the script and both units together, **in this order**:
 
 ```
+sudo install -m 0755 deploy/prune-releases.sh /usr/local/sbin/chess-prodigy-prune
 sudo cp deploy/chess-prodigy-prune.service deploy/chess-prodigy-prune.timer /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable --now chess-prodigy-prune.timer
 ```
 
-Run it by hand with `sudo systemctl start chess-prodigy-prune`, or preview without deleting anything with `sudo /opt/chess-prodigy/current/deploy/prune-releases.sh --dry-run`. A deploy or rollback procedure must never assume more than the 3 newest releases (plus the active one) still exist on disk.
+Re-run the `install` line whenever `deploy/prune-releases.sh` changes in a future release — copying the units alone leaves the old script in place.
+
+`enable --now` only starts the *timer*; it does not prove the script runs. After installing, verify once by hand:
+
+```
+sudo systemctl start chess-prodigy-prune && systemctl status chess-prodigy-prune
+```
+
+A non-zero exit or `status=203/EXEC` here means the install order above was not followed — fix that before relying on the nightly timer. There is currently no automated alert if a later nightly run fails silently (no `OnFailure=` unit exists for this timer, unlike `brief-alert@.service` on the-brief); until one is added, periodically check `systemctl list-timers chess-prodigy-prune`, `systemctl is-failed chess-prodigy-prune` and `journalctl -u chess-prodigy-prune -n 20` for drift.
+
+Run it by hand with `sudo systemctl start chess-prodigy-prune`, or preview without deleting anything with `sudo /usr/local/sbin/chess-prodigy-prune --dry-run` (or, before the first install, `sudo /opt/chess-prodigy/current/deploy/prune-releases.sh --dry-run`). A deploy or rollback procedure must never assume more than the 3 newest releases (plus the active one) still exist on disk.
 
 ## Backups and recovery
 
