@@ -1,0 +1,20 @@
+[Unit]
+Description=Prune old Chess Prodigy releases and stale deploy staging directories
+After=chess-prodigy-backup.service
+
+[Service]
+Type=oneshot
+User=root
+# Installed release-independent (see deploy/README.md, "Release retention")
+# so the timer keeps working across every rollback and does not depend on
+# a release built from this branch being current before it can fire.
+ExecStart=/usr/local/sbin/chess-prodigy-prune
+# The first run after install clears the full backlog (~20 releases at
+# ~480 MB each on a near-full disk); du+rm per release can exceed systemd's
+# 90s default oneshot timeout, which would SIGTERM mid-delete.
+TimeoutStartSec=1800
+UMask=0022
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/chess-prodigy/releases /tmp
