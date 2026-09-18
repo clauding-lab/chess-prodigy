@@ -1,6 +1,12 @@
 [Unit]
 Description=Prune old Chess Prodigy releases and stale deploy staging directories
 After=chess-prodigy-backup.service
+# Unpruned releases filled the shared box's disk on 12 Sep 2026 (this prune did not
+# exist yet); a prune that fails silently would repeat it. This reuses the-brief's
+# alert template unit (same box, separate repo). It needs
+# /etc/systemd/system/brief-alert@.service, /home/adnan/the-brief/deploy/brief_alert.sh
+# and /etc/brief.env to stay where they are - if any of them moves, this alarm dies quietly.
+OnFailure=brief-alert@%n.service
 
 [Service]
 Type=oneshot

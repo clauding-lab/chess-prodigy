@@ -4,6 +4,7 @@
 
 - Add `deploy/prune-releases.sh` and a nightly `chess-prodigy-prune.timer` (04:45 BDT) that remove release directories beyond the newest 3 (plus whatever `current`/`current-next` point at) and stale `/tmp/chess-*-stage.*` staging directories older than 24 hours, so manual releases no longer fill the root disk. See `deploy/README.md`, "Release retention".
 - Fix `prune-releases.sh` to correctly protect the live release even when `/opt/chess-prodigy/releases` is itself a symlink (e.g. relocated onto a larger volume after a full-disk incident); install it release-independently at `/usr/local/sbin/chess-prodigy-prune` so the timer keeps working across every rollback instead of resolving through `current`; and raise the prune service's start timeout so the first backlog-clearing run cannot be killed mid-delete.
+- Add `OnFailure=brief-alert@%n.service` to `chess-prodigy-prune.service`, reusing the-brief's shared Discord alert template unit on the same box so a failed nightly prune is no longer silent. See `deploy/README.md`, "Release retention", for the cross-repo dependency and update/test steps.
 
 ## [2.4.2] — 2026-09-13 (BDT)
 
