@@ -56,7 +56,7 @@ required before rated integration.
 
 ## Verification
 
-Focused suite:10 behavior tests and4 corpus tests, including full-source rebuild in an asynchronous
+Focused coverage:14 behavior tests and4 corpus tests, including full-source rebuild in an asynchronous
 child process. Tests cover actual both-color multi-turn choices, compensation/unsound analogues,
 mate/free queen, pins, favorable/harmful captures, terminal-before-book, weighted occurrences,
 illegal book entries, deterministic identities, incomplete depth and expired partial ranking.
@@ -68,3 +68,17 @@ lint/format commands. Canonical `npm run lint`, `npm run typecheck`, `npm run fo
 the reviewer’s whole-repository ESLint invocation now pass. Source, tests, scripts and books
 are checked with the repository formatter. Books are reproducibly formatted by the importer and
 fingerprinted as exact written bytes; their eventual combined worker/cache size needs Task2 testing.
+
+
+## Independent-review conversion correction
+
+The initial favorable-position gate covered only Fischer's trade term; king, passer and file
+rewards could still activate with an unfavorable neutral score or abandoned attack. Four new
+both-color regressions failed before the fix (negative-score king bonus140; blocked-attack passer
+bonus28). All conversion-specific rewards now share score>=80, retained material and retained
+legal attackers. Ordinary development remains separately scored. Guard50 and cap240 are unchanged.
+
+The14 behavior tests pass after the fix, retaining the actual positive conversion sequences.
+Both evidence JSON files were regenerated; canonical lint, typecheck and format check pass.
+The unchanged4 corpus tests/full replay remain covered by the prior verified checkpoint and were
+not unnecessarily rerun for this policy-only correction. No ratings or integration were changed.

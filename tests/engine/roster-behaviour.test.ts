@@ -218,3 +218,42 @@ test("Fischer takes a favorable rook exchange while refusing the losing queen ca
   expect(d.plan).toBe("favorable-conversion");
   expect(d.bonus).toBeGreaterThan(0);
 });
+
+for (const reflected of [false, true]) {
+  test(`Fischer conversion rewards require a favorable neutral score (${reflected})`, () => {
+    const fixtures = [
+      { fen: "6k1/5ppp/3P4/8/4K3/8/5PPP/8 w - - 0 31", sans: ["Kd5", "d7"] },
+      { fen: "6k1/5ppp/3P4/8/4K3/8/5PPP/7R w - - 0 31", sans: ["Ra1"] },
+    ];
+    for (const fixture of fixtures) {
+      const original = fromFEN(fixture.fen),
+        p = reflected ? mirror(original) : original;
+      const preference = fischerPolicy.prepare(p);
+      expect(preference.plan).toBe("favorable-conversion");
+      for (const name of fixture.sans) {
+        const originalMove = move(original, name);
+        const candidate = reflected
+          ? legalMoves(p).find(
+              (m) => m.from === (originalMove.from ^ 56) && m.to === (originalMove.to ^ 56),
+            )!
+          : originalMove;
+        expect(preference.bonus(candidate, 500)).toBeGreaterThan(0);
+        expect(preference.bonus(candidate, -500)).toBe(0);
+        expect(preference.bonus(candidate, 79)).toBe(0);
+      }
+    }
+  });
+  test(`Fischer conversion does not reward abandoning immediate attack (${reflected})`, () => {
+    const original = fromFEN("6k1/R4ppp/3P4/8/4K3/8/5PPP/8 w - - 0 31"),
+      p = reflected ? mirror(original) : original;
+    const candidate = move(p, reflected ? "d2" : "d7"),
+      after = features(applyMove(p, candidate), p.turn),
+      before = features(p, p.turn);
+    expect(after.passed).toBeGreaterThan(before.passed);
+    expect(after.attackers).toBeLessThan(before.attackers);
+    expect(after.material).toBe(before.material);
+    const preference = fischerPolicy.prepare(p);
+    expect(preference.plan).toBe("favorable-conversion");
+    expect(preference.bonus(candidate, 500)).toBe(0);
+  });
+}

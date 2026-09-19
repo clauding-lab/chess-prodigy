@@ -22,10 +22,10 @@ export const fischerPolicy: Policy = {
         if (convert) {
           const favorable =
             score >= 80 && after.material >= before.material && after.attackers >= before.attackers;
+          // Every conversion preference requires an advantage that survives this move.
+          if (!favorable) return development;
           const trade =
-            favorable && m.capture && kind !== "p" && value[kind] <= value[m.capture[1]] + 30
-              ? 100
-              : 0;
+            m.capture && kind !== "p" && value[kind] <= value[m.capture[1]] + 30 ? 100 : 0;
           return (
             development +
             trade +

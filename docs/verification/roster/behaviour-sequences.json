@@ -966,7 +966,7 @@
     {
       "side": "w",
       "level": "casual",
-      "elapsedMs": 9.950458999999682,
+      "elapsedMs": 9.54004200000054,
       "san": "Bxe2",
       "decision": {
         "plan": "forcing-initiative",
@@ -988,7 +988,7 @@
     {
       "side": "w",
       "level": "club",
-      "elapsedMs": 82.2752500000006,
+      "elapsedMs": 81.63558399999965,
       "san": "Rxf6",
       "decision": {
         "plan": "forcing-initiative",
@@ -1010,7 +1010,7 @@
     {
       "side": "w",
       "level": "strong",
-      "elapsedMs": 1970.2889169999999,
+      "elapsedMs": 1970.2216669999998,
       "san": "Bxe2",
       "decision": {
         "plan": "forcing-initiative",
@@ -1032,7 +1032,7 @@
     {
       "side": "b",
       "level": "casual",
-      "elapsedMs": 8.849249999999302,
+      "elapsedMs": 9.068584000000556,
       "san": "Bxe7",
       "decision": {
         "plan": "forcing-initiative",
@@ -1054,7 +1054,7 @@
     {
       "side": "b",
       "level": "club",
-      "elapsedMs": 82.14445799999885,
+      "elapsedMs": 80.8414589999993,
       "san": "Rxf3",
       "decision": {
         "plan": "forcing-initiative",
@@ -1076,7 +1076,7 @@
     {
       "side": "b",
       "level": "strong",
-      "elapsedMs": 1970.2690829999992,
+      "elapsedMs": 1970.2308749999993,
       "san": "Bxe7",
       "decision": {
         "plan": "forcing-initiative",

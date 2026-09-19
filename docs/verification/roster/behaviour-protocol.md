@@ -68,3 +68,11 @@ acceptance leaves at least two surviving legal attackers and increases enemy kin
 The assessment now examines accepted positions, so the sacrificed rook cannot count as a surviving
 attacker. Re-run all prior and new fixtures after this policy correction. The e2 positive sequence
 ends Qxh7#/Qxh2# if the opponent accepts; declining remains possible, hence its positive neutral loss.
+
+Independent-review correction: every Fischer conversion-specific reward (trade, passer, king and
+file) must share the declared favorable-score/material/attack-retention gate. Regressions use the
+post-d6 conversion position `6k1/5ppp/3P4/8/4K3/8/5PPP/8 w - - 0 31` with candidate Kd5/d7
+and a rook-h1 addition with Ra1: positive500 allows reward; negative500 and below-threshold79 do
+not. Attack-retention fixture `6k1/R4ppp/3P4/8/4K3/8/5PPP/8 w - - 0 31` makes d7 improve a
+passer while blocking the rook's legal king-zone line. Both-color versions must receive no
+conversion preference even at favorable500. Existing actual positive multi-turn choices remain.

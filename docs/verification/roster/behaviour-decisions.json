@@ -2286,7 +2286,7 @@
     {
       "id": "spassky",
       "level": "casual",
-      "elapsedMs": 16.2221669999999,
+      "elapsedMs": 15.589208000000326,
       "decision": {
         "plan": "decisive-attack",
         "depth": 1,
@@ -2307,7 +2307,7 @@
     {
       "id": "spassky",
       "level": "club",
-      "elapsedMs": 88.32508300000018,
+      "elapsedMs": 87.06004200000007,
       "decision": {
         "plan": "decisive-attack",
         "depth": 2,
@@ -2328,7 +2328,7 @@
     {
       "id": "spassky",
       "level": "strong",
-      "elapsedMs": 1970.376291,
+      "elapsedMs": 1970.3420419999998,
       "decision": {
         "plan": "decisive-attack",
         "depth": 3,
@@ -2349,7 +2349,7 @@
     {
       "id": "tal",
       "level": "casual",
-      "elapsedMs": 18.11566700000003,
+      "elapsedMs": 17.90783400000055,
       "decision": {
         "plan": "mobilize-attack",
         "depth": 1,
@@ -2370,7 +2370,7 @@
     {
       "id": "tal",
       "level": "club",
-      "elapsedMs": 101.1627499999995,
+      "elapsedMs": 102.9619589999993,
       "decision": {
         "plan": "mobilize-attack",
         "depth": 2,
@@ -2391,7 +2391,7 @@
     {
       "id": "tal",
       "level": "strong",
-      "elapsedMs": 1971.0130829999998,
+      "elapsedMs": 1971.0525829999997,
       "decision": {
         "plan": "mobilize-attack",
         "depth": 3,
@@ -2412,7 +2412,7 @@
     {
       "id": "fischer",
       "level": "casual",
-      "elapsedMs": 17.11212499999965,
+      "elapsedMs": 16.898791999999958,
       "decision": {
         "plan": "sustained-pressure",
         "depth": 1,
@@ -2433,7 +2433,7 @@
     {
       "id": "fischer",
       "level": "club",
-      "elapsedMs": 101.55745899999965,
+      "elapsedMs": 102.99379200000021,
       "decision": {
         "plan": "sustained-pressure",
         "depth": 2,
@@ -2454,7 +2454,7 @@
     {
       "id": "fischer",
       "level": "strong",
-      "elapsedMs": 1970.118042000001,
+      "elapsedMs": 1970.1453330000004,
       "decision": {
         "plan": "sustained-pressure",
         "depth": 3,
