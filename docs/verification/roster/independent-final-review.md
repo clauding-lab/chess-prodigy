@@ -61,3 +61,22 @@ Keep the accepted style/measurement limits: designed priorities are not reconstr
 | LOW | 1 | note |
 
 Verdict: APPROVE — one nonblocking beta-status wording correction recommended.
+
+## Scoped final re-review — 19 September 2026 BDT
+
+Independently reviewed `6df27c7..76337c56070fc877af9a7abb44203261ba463fb1` only. The sole LOW finding is resolved: `src/game/eligibility.ts:8` now describes the saved game's original unrated status without claiming measurement is pending. Exact legacy Morphy wording is unchanged. The only other source change removes the unused name import; no eligibility, receipt, engine, storage or account behavior changes.
+
+The added assertion runs for each of the three recovered beta identities, alongside their existing null-receipt and unchanged-progress checks. Retained red evidence shows precisely those three assertions failing, followed by 10/10 green tests with exit 0. Narrow lint/format success is recorded in the integration report. The durable original review remains intact with its original scope and historical finding. No broad tests, build or benchmark were rerun; earlier build artifacts correctly remain identified as preceding this copy-only fix.
+
+Task4 specification/quality, whole-branch specification/TypeScript/security, and measurement-audit implementation verdicts remain **APPROVE**. No open findings or new issues in the scoped diff. All previous measurement/device limitations and local-only publication boundaries remain in force.
+
+## Final Review Summary
+
+| Severity | Open count | Status |
+|----------|------------|--------|
+| CRITICAL | 0 | pass |
+| HIGH | 0 | pass |
+| MEDIUM | 0 | pass |
+| LOW | 0 | resolved |
+
+Verdict: APPROVE — sole finding resolved in `76337c5`; final local candidate review complete.

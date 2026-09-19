@@ -179,5 +179,5 @@ Test-first evidence: the three new copy assertions initially failed (7 passed / 
 unrelated progress, above-floor rated deltas and exact undo. Narrow ESLint and Prettier checks
 passed for the changed source/test; `git diff --check` passed. No broad suite, build or benchmark
 was repeated for this copy-only correction. The earlier build artifacts precede this wording fix.
-Scoped independent re-review of this final correction is pending; the approved whole-branch review
-is retained with its original reviewed hashes and finding, not rewritten as a new review.
+Scoped independent re-review accepted `76337c5` with no open findings; its verdict is appended to
+the retained whole-branch review, preserving the original reviewed hashes and historical finding.
