@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { spawn } from "node:child_process";
 import { expect, test } from "vitest";
 import {
   parseChigorinPgn,
@@ -25,12 +26,25 @@ test("exact named ordinary player games only; reject odds, consultation, ambiguo
   expect(parseChigorinPgn(record()).games).toHaveLength(1);
   expect(parseChigorinPgn(record() + "\n" + record()).excluded[0].reason).toMatch(/duplicate/);
 });
-test("source games reproduce the checked compact book with legal occurrence frequencies", () => {
-  const parsed = parseChigorinPgn(readFileSync("docs/verification/chigorin/Chigorin.pgn", "utf8"));
-  expect(parsed.games.length).toBeGreaterThan(600);
-  const book = buildChigorinBook(parsed.games);
-  expect(() => assertChigorinBookLegal(book, parsed.games)).not.toThrow();
-  expect(book).toEqual(JSON.parse(readFileSync("src/book/chigorin-book.json", "utf8")));
+test("source games reproduce the checked compact book with legal occurrence frequencies", async () => {
+  await new Promise<void>((resolve, reject) => {
+    const child = spawn(
+      process.execPath,
+      ["--import", "tsx", "tests/engine/chigorin-corpus-worker.ts"],
+      {
+        stdio: ["ignore", "ignore", "pipe"],
+      },
+    );
+    let stderr = "";
+    child.stderr.on("data", (chunk: Buffer) => {
+      stderr += chunk;
+    });
+    child.once("error", reject);
+    child.once("close", (code) => {
+      if (code === 0) resolve();
+      else reject(new Error(stderr || `Corpus worker exited with ${code}.`));
+    });
+  });
 }, 120000);
 
 test("rejects malformed headers, duplicate tags, result mismatches and moves after a result", () => {

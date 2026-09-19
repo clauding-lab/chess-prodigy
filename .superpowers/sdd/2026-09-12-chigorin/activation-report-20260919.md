@@ -72,3 +72,20 @@ Updated two stale post-activation assertions without changing engine or UI produ
 passed: 3 files / 18 tests. `prettier --check` for both changed tests and `git diff --check` passed.
 Browser Home verification is intentionally deferred to the parent run to avoid overlapping its active
 browser suite.
+
+## Corpus harness fix
+
+The full suite's `onTaskUpdate` timeout was traced to the 78-second synchronous compact-book replay in
+`tests/engine/chigorin-corpus.test.ts`. Vitest's own worker RPC timeout is 60 seconds, so its worker
+could not process the pending progress message despite this test's explicit 120-second test limit.
+
+The test now awaits a Node child process. `tests/engine/chigorin-corpus-worker.ts` performs the same
+complete source-PGN parse, more-than-600-games guard, book build, legal occurrence validation, and
+deep equality check against `src/book/chigorin-book.json`. The Vitest worker remains available for RPC
+while that CPU-bound replay runs. No parser, engine, source corpus, expected compact book, assertion
+coverage, or timeout policy changed.
+
+The changed test first failed as expected because its worker did not exist. With the worker added, the
+focused corpus process completed successfully; the child had exited after its full replay before the
+follow-up process check. Formatting and diff checks passed. The parent will run the concurrent full
+suite as the final harness verification.
