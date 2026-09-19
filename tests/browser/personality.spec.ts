@@ -8,7 +8,7 @@ import { legalMoves, sqName } from "../../src/engine/board";
 import type { Session } from "../../src/game/types";
 
 const saved = (page: Page): Promise<Session> =>
-  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v6")!));
+  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v7")!));
 function beta(color: "w" | "b" = "w") {
   const now = Date.now();
   const s = reduceSession(freshSession(now, "initial"), {
@@ -22,8 +22,8 @@ function beta(color: "w" | "b" = "w") {
 }
 async function seed(page: Page, s: Session) {
   await page.addInitScript((value) => {
-    if (!localStorage.getItem("chess-prodigy-state-v6"))
-      localStorage.setItem("chess-prodigy-state-v6", JSON.stringify(value));
+    if (!localStorage.getItem("chess-prodigy-state-v7"))
+      localStorage.setItem("chess-prodigy-state-v7", JSON.stringify(value));
   }, s);
 }
 async function move(page: Page, from: string, to: string) {
@@ -138,14 +138,14 @@ test("unavailable configuration exports a usable recovery copy without replacing
   await enterPlay(page);
   await expect(page.getByText(/saved opponent version is unavailable/)).toBeVisible();
   await expect(page.getByRole("button", { name: "New game", exact: true })).toBeDisabled();
-  const original = await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v6"));
+  const original = await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v7"));
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download recovery save" }).click();
   const artifact = await download;
   const copy = JSON.parse(await readFile((await artifact.path())!, "utf8"));
   expect(copy.game).toEqual(s.game);
   expect(copy.rating).toEqual(s.rating);
-  expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v6"))).toBe(original);
+  expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v7"))).toBe(original);
 });
 
 test("account Morphy resume and terminal archive retain identity without rating or guest writes", async ({
@@ -197,7 +197,7 @@ test("account Morphy resume and terminal archive retain identity without rating 
     assisted: false,
   });
   expect(records.snapshot.rating).toEqual(s.rating);
-  expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v6"))).toBeNull();
+  expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v7"))).toBeNull();
   await page.reload();
   await enterPlay(page);
   await expect(page.getByRole("dialog")).toContainText("Unrated beta");

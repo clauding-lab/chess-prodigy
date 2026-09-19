@@ -1,12 +1,29 @@
 import type { Game, Preferences } from "../game/types";
 import type { Rating } from "../rating/fide";
 import { LEVEL_LABEL } from "../rating/fide";
-import { opponentName, isSupportedOpponent } from "../engine/opponents";
+import { opponentName, isSupportedOpponent, ROSTER_IDS, ROSTER_NAMES } from "../engine/opponents";
 import { GLYPH } from "./Board";
-import { CHIGORIN_RATINGS, PLANNED_MORPHY_RATINGS } from "../rating/opponents";
+import { ROSTER_RATINGS, CHIGORIN_RATINGS, PLANNED_MORPHY_RATINGS } from "../rating/opponents";
 import type { SetupDraft } from "./Modals";
 import "./home.css";
 
+export const ROSTER_COPY = {
+  spassky: {
+    title: "Buildup & sudden attack",
+    copy: "Build up patiently, then strike. Recorded openings and designed plans favor flexible piece play, central breaks and sudden attacks, inspired by Spassky’s games.",
+    wiki: "Boris_Spassky",
+  },
+  tal: {
+    title: "Initiative & sacrifice",
+    copy: "Seek the initiative. Recorded openings and designed plans favor sharp attacks, open king lines and speculative sacrifices with attacking compensation.",
+    wiki: "Mikhail_Tal",
+  },
+  fischer: {
+    title: "Pressure & precision",
+    copy: "Keep the pressure on. Recorded openings and designed plans favor active bishops, pressure on weak pawns and turning small advantages into wins.",
+    wiki: "Bobby_Fischer",
+  },
+};
 const clock = (ms: number) => {
   const seconds = Math.max(0, Math.ceil(ms / 1000));
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
@@ -238,6 +255,43 @@ export function Home({
               </button>
             </article>
           )}
+          {betaEnabled &&
+            ROSTER_IDS.map((id) => (
+              <article className="home-opponent" key={id}>
+                <div className="home-opponent-title">
+                  <span aria-hidden="true" className="home-emblem">
+                    ♞
+                  </span>
+                  <div>
+                    <h3>{ROSTER_NAMES[id]}</h3>
+                    <p>{ROSTER_COPY[id].title}</p>
+                  </div>
+                </div>
+                <p>{ROSTER_COPY[id].copy}</p>
+                <p>
+                  <a
+                    href={`https://en.wikipedia.org/wiki/${ROSTER_COPY[id].wiki}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {ROSTER_NAMES[id]} on Wikipedia{" "}
+                    <span className="sr-only">(opens in a new tab)</span>
+                  </a>
+                </p>
+                {!ROSTER_RATINGS[id] && (
+                  <p className="home-caption">
+                    Strength measurement is pending. New games are not available yet.
+                  </p>
+                )}
+                <button
+                  className="btn"
+                  disabled={!available || !ROSTER_RATINGS[id]}
+                  onClick={() => onPlay(id)}
+                >
+                  Play {ROSTER_NAMES[id]}
+                </button>
+              </article>
+            ))}
         </div>
         <p className="home-rating-note">
           {betaEnabled ? "Choose from" : "Classic offers"} Casual, Club and Strong.{" "}

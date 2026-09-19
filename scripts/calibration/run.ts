@@ -9,6 +9,7 @@ import {
   HISTORICAL_PROTOCOL,
   PLANS_PROTOCOL,
   CHIGORIN_PROTOCOL,
+  rosterForProtocol,
   LEGACY_PROTOCOL,
   assertManifest,
   machineIdentity,
@@ -137,7 +138,8 @@ if (mode === "--init-only") {
           (protocol === LEGACY_PROTOCOL ||
             ((protocol === HISTORICAL_PROTOCOL ||
               protocol === PLANS_PROTOCOL ||
-              protocol === CHIGORIN_PROTOCOL) &&
+              protocol === CHIGORIN_PROTOCOL ||
+              rosterForProtocol(protocol) !== null) &&
               maxPlies === 1000)),
         protocol,
         opponentVersion: manifest.opponent.version,

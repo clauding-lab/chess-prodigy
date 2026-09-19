@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { GameRecord } from "../account/types";
-import { isSupportedOpponent, opponentName } from "../engine/opponents";
+import { isRosterId, isSupportedOpponent, opponentName } from "../engine/opponents";
 import {
   ARCHIVE_LIMIT,
   replayRecord,
@@ -10,7 +10,7 @@ import {
 } from "../game/archive";
 import { TIME_CONTROLS } from "../game/state";
 import { LEVEL_LABEL } from "../rating/fide";
-import { CHIGORIN_RATINGS } from "../rating/opponents";
+import { ROSTER_RATINGS, CHIGORIN_RATINGS } from "../rating/opponents";
 import type { HistoryResult } from "../storage/history";
 import { Board } from "./Board";
 import { Modal } from "./Modal";
@@ -33,7 +33,8 @@ export function canRematch(record: Pick<GameRecord, "opponent">, betaEnabled: bo
   return (
     isSupportedOpponent(record.opponent) &&
     (record.opponent.id === "classic" || betaEnabled) &&
-    (record.opponent.id !== "chigorin" || CHIGORIN_RATINGS !== null)
+    (record.opponent.id !== "chigorin" || CHIGORIN_RATINGS !== null) &&
+    (!isRosterId(record.opponent.id) || ROSTER_RATINGS[record.opponent.id] !== null)
   );
 }
 
@@ -400,9 +401,11 @@ export function RecordedGamesModal({
             {!canRematch(record, betaEnabled) && (
               <p className="recorded-caption">
                 {isSupportedOpponent(record.opponent)
-                  ? record.opponent.id === "chigorin" && !CHIGORIN_RATINGS
-                    ? "Rematch unavailable: Chigorin strength measurement is not yet accepted."
-                    : `Rematch unavailable: ${opponentName(record.opponent)} beta is disabled in this build.`
+                  ? isRosterId(record.opponent.id) && !ROSTER_RATINGS[record.opponent.id]
+                    ? `Rematch unavailable: ${opponentName(record.opponent)} strength measurement is not yet accepted.`
+                    : record.opponent.id === "chigorin" && !CHIGORIN_RATINGS
+                      ? "Rematch unavailable: Chigorin strength measurement is not yet accepted."
+                      : `Rematch unavailable: ${opponentName(record.opponent)} beta is disabled in this build.`
                   : "Rematch unavailable: this recorded opponent configuration is not supported."}{" "}
                 Recorded moves remain available for replay.
               </p>

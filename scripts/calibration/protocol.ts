@@ -1,3 +1,4 @@
+import type { RosterId } from "../../src/engine/roster/types";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { arch, cpus, platform } from "node:os";
@@ -10,7 +11,19 @@ export const LEGACY_PROTOCOL = "morphy-paired-v1";
 export const HISTORICAL_PROTOCOL = "morphy-historical-paired-v1";
 export const PLANS_PROTOCOL = "morphy-plans-paired-v1";
 export const CHIGORIN_PROTOCOL = "chigorin-plans-paired-v1";
+export const ROSTER_PROTOCOLS = {
+  spassky: "spassky-plans-paired-v1",
+  tal: "tal-plans-paired-v1",
+  fischer: "fischer-plans-paired-v1",
+} as const;
+export function rosterForProtocol(protocol: string | undefined): RosterId | null {
+  return (
+    (Object.keys(ROSTER_PROTOCOLS) as RosterId[]).find((id) => ROSTER_PROTOCOLS[id] === protocol) ??
+    null
+  );
+}
 export type CalibrationProtocol =
+  | (typeof ROSTER_PROTOCOLS)[RosterId]
   | typeof LEGACY_PROTOCOL
   | typeof HISTORICAL_PROTOCOL
   | typeof PLANS_PROTOCOL
@@ -50,9 +63,9 @@ export const EXPECTED_SOURCE_FILES = Object.freeze([
 ]);
 
 export interface CalibrationOpponentIdentity {
-  id: "attack-development" | "chigorin";
+  id: "attack-development" | "chigorin" | RosterId;
   version: 1 | 3 | 4;
-  engine: "style-v1" | "historical-v1" | "plans-v1" | "chigorin-plans-v1";
+  engine: "style-v1" | "historical-v1" | "plans-v1" | "chigorin-plans-v1" | `${RosterId}-plans-v1`;
   randomPolicy: "seeded-per-ply-v1";
 }
 
@@ -90,6 +103,8 @@ export interface CalibrationManifest {
 
 export function parseProtocol(value: string | undefined): CalibrationProtocol {
   if (value === undefined) return LEGACY_PROTOCOL;
+  const roster = rosterForProtocol(value);
+  if (roster) return ROSTER_PROTOCOLS[roster];
   if (
     value === LEGACY_PROTOCOL ||
     value === HISTORICAL_PROTOCOL ||
@@ -101,6 +116,14 @@ export function parseProtocol(value: string | undefined): CalibrationProtocol {
 }
 
 export function opponentIdentity(protocol: CalibrationProtocol): CalibrationOpponentIdentity {
+  const roster = rosterForProtocol(protocol);
+  if (roster)
+    return {
+      id: roster,
+      version: 1,
+      engine: `${roster}-plans-v1`,
+      randomPolicy: "seeded-per-ply-v1",
+    };
   if (protocol === CHIGORIN_PROTOCOL)
     return {
       id: "chigorin",
@@ -135,6 +158,33 @@ export function openingForProtocol(protocol: CalibrationProtocol, seed: number):
 }
 
 function sourceFiles(protocol: CalibrationProtocol): readonly string[] {
+  const roster = rosterForProtocol(protocol);
+  if (roster)
+    return [
+      ...EXPECTED_SOURCE_FILES,
+      "src/engine/chigorin.ts",
+      "src/engine/chigorin-book.ts",
+      "src/book/chigorin-book.json",
+      "src/rating/opponents.ts",
+      "src/engine/roster/types.ts",
+      "src/engine/roster/features.ts",
+      "src/engine/roster/policy.ts",
+      "src/engine/roster/book.ts",
+      "src/engine/roster/dispatch.ts",
+      "src/engine/roster/worker.ts",
+      "src/worker/protocol.ts",
+      "src/worker/client.ts",
+      "vite.config.ts",
+      ...(["spassky", "tal", "fischer"] as const).flatMap((id) => [
+        `src/engine/roster/${id}.ts`,
+        `src/book/${id}-book.json`,
+        `src/engine/${id}.worker.ts`,
+      ]),
+      "scripts/roster-history/corpus.ts",
+      "scripts/roster-history/import.ts",
+      "scripts/roster-history/source-pins.ts",
+      "docs/verification/roster/behaviour-protocol.md",
+    ];
   return protocol === CHIGORIN_PROTOCOL
     ? [
         ...EXPECTED_SOURCE_FILES,

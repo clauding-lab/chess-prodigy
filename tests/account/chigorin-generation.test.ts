@@ -25,7 +25,7 @@ test("v6 account authority preserves v5 ordered pending writes and advertises po
   const sent: string[] = [];
   const sync = new AccountSync("owner", storage, async (_url, init) => {
     const headers = new Headers(init?.headers);
-    expect(headers.get("X-Chess-Rating-Policy")).toBe("4");
+    expect(headers.get("X-Chess-Rating-Policy")).toBe("5");
     const body = JSON.parse(String(init?.body));
     expect(body.expectedVersion).toBe(7 + sent.length);
     expect(JSON.parse(storage.getItem(accountStorageKey("owner"))!).pending[0].snapshot).toEqual(
@@ -41,7 +41,7 @@ test("v6 account authority preserves v5 ordered pending writes and advertises po
       }),
     );
   });
-  expect(accountStorageKey("owner")).toBe("chess-prodigy-account-v6:owner");
+  expect(accountStorageKey("owner")).toBe("chess-prodigy-account-v7:owner");
   expect(
     sync.initialize({
       version: 99,

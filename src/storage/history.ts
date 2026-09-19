@@ -5,7 +5,8 @@ import { ARCHIVE_LIMIT, updateArchive } from "../game/archive";
 import { parseSavedState } from "./schema";
 import { saveState, type StorageLike } from "./store";
 
-export const GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v5";
+export const GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v6";
+export const CHIGORIN_GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v5";
 export const PLANNED_GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v4";
 export const HISTORICAL_GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v3";
 export const MEASURED_GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v2";
@@ -36,6 +37,7 @@ export function loadGuestHistory(storage: StorageLike | null): HistoryResult {
     if (!storage) return { games: [], status: "unavailable" };
     raw =
       storage.getItem(GUEST_HISTORY_KEY) ??
+      storage.getItem(CHIGORIN_GUEST_HISTORY_KEY) ??
       storage.getItem(PLANNED_GUEST_HISTORY_KEY) ??
       storage.getItem(HISTORICAL_GUEST_HISTORY_KEY) ??
       storage.getItem(MEASURED_GUEST_HISTORY_KEY) ??

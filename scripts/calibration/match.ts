@@ -1,3 +1,5 @@
+import { chooseRosterOpponentMove } from "../../src/engine/roster/dispatch";
+import { rosterForProtocol } from "./protocol";
 import {
   START,
   applyMove,
@@ -10,6 +12,7 @@ import {
 import { chooseAiMove } from "../../src/engine/search";
 import { chooseOpponentMove } from "../../src/engine/morphy";
 import {
+  rosterConfig,
   chigorinConfig,
   historicalMorphyConfig,
   morphyConfig,
@@ -29,7 +32,9 @@ export interface MatchOptions {
   maxPlies: number;
 }
 function opponentForOptions(options: MatchOptions) {
+  const roster = rosterForProtocol(options.protocol);
   if (
+    !roster &&
     options.protocol !== undefined &&
     options.protocol !== "morphy-paired-v1" &&
     options.protocol !== "morphy-historical-paired-v1" &&
@@ -38,6 +43,7 @@ function opponentForOptions(options: MatchOptions) {
   )
     throw new Error(`Unsupported calibration protocol: ${String(options.protocol)}`);
   if (
+    (roster !== null && options.opponentVersion !== 1) ||
     (options.protocol === "chigorin-plans-paired-v1" && options.opponentVersion !== 1) ||
     (options.protocol === "morphy-plans-paired-v1" && options.opponentVersion !== 4) ||
     (options.protocol === "morphy-historical-paired-v1" && options.opponentVersion !== 3) ||
@@ -46,12 +52,14 @@ function opponentForOptions(options: MatchOptions) {
   )
     throw new Error("Calibration protocol and opponent version mismatch");
   if (
-    (options.protocol === "morphy-historical-paired-v1" ||
+    (roster !== null ||
+      options.protocol === "morphy-historical-paired-v1" ||
       options.protocol === "morphy-plans-paired-v1" ||
       options.protocol === "chigorin-plans-paired-v1") &&
     options.opening.length !== 0
   )
     throw new Error("Historical calibration must start from START with an empty opening");
+  if (roster) return rosterConfig(roster, options.seed);
   if (options.protocol === "chigorin-plans-paired-v1") return chigorinConfig(options.seed);
   if (options.protocol === "morphy-plans-paired-v1") return plannedMorphyConfig(options.seed);
   return options.protocol === "morphy-historical-paired-v1"
@@ -95,7 +103,7 @@ export function playMatch(options: MatchOptions) {
     const candidate = forced
       ? legal.find((m) => sanFor(position, m, applyMove(position, m)) === forced)
       : (isMorphy
-          ? chooseOpponentMove(
+          ? (rosterForProtocol(options.protocol) ? chooseRosterOpponentMove : chooseOpponentMove)(
               position,
               options.level,
               bookLookup(moves).replies,

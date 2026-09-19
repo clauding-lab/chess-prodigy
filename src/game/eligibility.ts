@@ -1,9 +1,12 @@
+import { isRosterId, opponentName } from "../engine/opponents";
 import type { Game } from "./types";
 
 export function unratedDescription(game: Game): string {
   switch (game.unratedReason) {
     case "beta":
-      return "Unrated beta — this opponent predates rated Morphy.";
+      return isRosterId(game.opponent.id)
+        ? `Unrated beta — ${opponentName(game.opponent)} strength measurement is not yet accepted.`
+        : "Unrated beta — this opponent predates rated Morphy.";
     case "hint":
       return "Unrated game (hint used).";
     case "takeback":

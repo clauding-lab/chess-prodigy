@@ -23,7 +23,12 @@ import { RatingPanel } from "./ui/RatingPanel";
 import { UpdatePrompt } from "./ui/UpdatePrompt";
 import { activateSound, playSound, silenceSound } from "./game/sound";
 import "./ui/theme.css";
-import { isSupportedOpponent, opponentName, personalityBetaEnabled } from "./engine/opponents";
+import {
+  isRosterId,
+  isSupportedOpponent,
+  opponentName,
+  personalityBetaEnabled,
+} from "./engine/opponents";
 import { unratedDescription } from "./game/eligibility";
 import type { GameRecord } from "./account/types";
 import { canRematch, RecordedGamesModal } from "./ui/RecordedGames";
@@ -54,7 +59,10 @@ export default function App({
   const available = isSupportedOpponent(game.opponent);
   const betaEnabled = personalityBetaEnabled(import.meta.env.VITE_PERSONALITY_BETA);
   const draftOpponent =
-    betaEnabled && (game.opponent.id === "attack-development" || game.opponent.id === "chigorin")
+    betaEnabled &&
+    (game.opponent.id === "attack-development" ||
+      game.opponent.id === "chigorin" ||
+      isRosterId(game.opponent.id))
       ? game.opponent.id
       : "classic";
   const soundReady = useRef(false);
@@ -168,7 +176,9 @@ export default function App({
       level: record.level,
       time: record.time ?? "none",
       opponentId:
-        record.opponent.id === "attack-development" || record.opponent.id === "chigorin"
+        record.opponent.id === "attack-development" ||
+        record.opponent.id === "chigorin" ||
+        isRosterId(record.opponent.id)
           ? record.opponent.id
           : "classic",
       opponentVersion: record.opponent.version,

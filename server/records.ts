@@ -8,7 +8,7 @@ import { archiveGame } from "../src/game/archive.js";
 import { parseGameRecord } from "../src/account/records.js";
 import type { ChessAuth } from "./auth.js";
 
-import { isRatedOpponent, isSupportedOpponent } from "../src/engine/opponents.js";
+import { isRatedOpponent, isRosterOpponent, isSupportedOpponent } from "../src/engine/opponents.js";
 
 const MAX_SNAPSHOT_BYTES = 256 * 1024;
 const MAX_HISTORY = 500;
@@ -214,7 +214,7 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
       return;
     }
     const snapshot = parseSavedState(body.snapshot, { preserveDerived: true });
-    if (!snapshot) {
+    if (!snapshot || !isSupportedOpponent(snapshot.game.opponent)) {
       response.status(400).json({ error: "Invalid record snapshot." });
       return;
     }
@@ -243,31 +243,38 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
         isRatedOpponent(snapshot.game.opponent);
       const chigorin =
         snapshot.game.opponent.id === "chigorin" && isSupportedOpponent(snapshot.game.opponent);
+      const roster = isRosterOpponent(snapshot.game.opponent);
       const policyRow = database
         .prepare("SELECT minimum_policy FROM record_client_policy WHERE user_id = ?")
         .get(userId) as { minimum_policy: number } | undefined;
       const requiredPolicy = Math.max(
         policyRow?.minimum_policy ?? 0,
-        chigorin
-          ? 4
-          : measured
-            ? snapshot.game.opponent.version === 4
-              ? 3
-              : snapshot.game.opponent.version === 3
-                ? 2
-                : 1
-            : 0,
+        roster
+          ? 5
+          : chigorin
+            ? 4
+            : measured
+              ? snapshot.game.opponent.version === 4
+                ? 3
+                : snapshot.game.opponent.version === 3
+                  ? 2
+                  : 1
+              : 0,
       );
       const capability = request.get("X-Chess-Rating-Policy");
       if (
         requiredPolicy > 0 &&
         !(
-          (capability === "1" || capability === "2" || capability === "3" || capability === "4") &&
+          (capability === "1" ||
+            capability === "2" ||
+            capability === "3" ||
+            capability === "4" ||
+            capability === "5") &&
           Number(capability) >= requiredPolicy
         )
       )
         return "upgrade";
-      if (measured || chigorin)
+      if (measured || chigorin || roster)
         database
           .prepare(
             `INSERT INTO record_client_policy(user_id, minimum_policy) VALUES (?, ?)

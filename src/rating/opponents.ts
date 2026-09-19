@@ -1,5 +1,11 @@
+import type { RosterId } from "../engine/roster/types";
 import type { Level } from "../engine/types";
-import { isSupportedOpponent, opponentName, type OpponentConfig } from "../engine/opponents";
+import {
+  isRosterId,
+  isSupportedOpponent,
+  opponentName,
+  type OpponentConfig,
+} from "../engine/opponents";
 import { ENGINE_ELO, LEVEL_LABEL } from "./fide";
 // Immutable calibration for attack-development/version 2, style-v1.
 export const MORPHY_RATINGS: Readonly<Record<Level, number>> = Object.freeze({
@@ -25,8 +31,11 @@ export const CHIGORIN_RATINGS: Readonly<Record<Level, number>> = Object.freeze({
   club: 1350,
   strong: 1625,
 });
+export const ROSTER_RATINGS: Readonly<Record<RosterId, Readonly<Record<Level, number>> | null>> =
+  Object.freeze({ spassky: null, tal: null, fischer: null });
 export function opponentPracticeRating(opponent: OpponentConfig, level: Level): number | null {
   if (!isSupportedOpponent(opponent)) return null;
+  if (isRosterId(opponent.id)) return ROSTER_RATINGS[opponent.id]?.[level] ?? null;
   if (opponent.id === "classic") return ENGINE_ELO[level];
   if (opponent.id === "chigorin") return CHIGORIN_RATINGS[level];
   if (opponent.id !== "attack-development") return null;

@@ -1,3 +1,5 @@
+import { ROSTER_RATINGS } from "../rating/opponents";
+import type { RosterId } from "./roster/types";
 /** Serializable game identity. Display names never select engine behaviour. */
 export interface OpponentConfig {
   id: string;
@@ -43,6 +45,7 @@ export function isOpponentConfig(value: unknown): value is OpponentConfig {
 
 export function isSupportedOpponent(c: OpponentConfig): boolean {
   return (
+    isRosterOpponent(c) ||
     (c.version === 1 &&
       c.id === "classic" &&
       c.engine === "classic-v1" &&
@@ -71,7 +74,8 @@ export function isSupportedOpponent(c: OpponentConfig): boolean {
 export function isRatedOpponent(c: OpponentConfig): boolean {
   return (
     isSupportedOpponent(c) &&
-    (c.id === "classic" ||
+    ((isRosterId(c.id) && ROSTER_RATINGS[c.id] !== null) ||
+      c.id === "classic" ||
       c.id === "chigorin" ||
       (c.id === "attack-development" && (c.version === 2 || c.version === 3 || c.version === 4)))
   );
@@ -85,7 +89,9 @@ export const opponentName = (c: OpponentConfig): string =>
       ? "Paul Morphy"
       : c.id === "chigorin"
         ? "Mikhail Chigorin"
-        : "Unavailable opponent";
+        : isRosterId(c.id)
+          ? ROSTER_NAMES[c.id]
+          : "Unavailable opponent";
 
 export function ratedMorphyConfig(seed: number): OpponentConfig {
   return { ...morphyConfig(seed), version: 2 };
@@ -109,4 +115,31 @@ export function chigorinConfig(seed: number): OpponentConfig {
     randomPolicy: "seeded-per-ply-v1",
     seed,
   };
+}
+
+export const ROSTER_IDS = ["spassky", "tal", "fischer"] as const;
+export const ROSTER_NAMES: Readonly<Record<RosterId, string>> = {
+  spassky: "Boris Spassky",
+  tal: "Mikhail Tal",
+  fischer: "Bobby Fischer",
+};
+export function isRosterId(id: unknown): id is RosterId {
+  return id === "spassky" || id === "tal" || id === "fischer";
+}
+export function isRosterOpponent(c: OpponentConfig): boolean {
+  return (
+    isRosterId(c.id) &&
+    c.version === 1 &&
+    c.engine === `${c.id}-plans-v1` &&
+    c.randomPolicy === "seeded-per-ply-v1" &&
+    c.seed !== null &&
+    Number.isInteger(c.seed) &&
+    c.seed >= 0 &&
+    c.seed <= 0xffffffff
+  );
+}
+export function rosterConfig(id: RosterId, seed: number): OpponentConfig {
+  if (!isRosterId(id) || !Number.isInteger(seed) || seed < 0 || seed > 0xffffffff)
+    throw new Error("Invalid roster opponent or seed.");
+  return { id, version: 1, engine: `${id}-plans-v1`, randomPolicy: "seeded-per-ply-v1", seed };
 }

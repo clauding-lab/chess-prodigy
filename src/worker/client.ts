@@ -1,3 +1,4 @@
+import { isRosterOpponent } from "../engine/opponents";
 import type { EngineRequest, EngineReply, EngineResult, RequestInput } from "./protocol";
 import { isNeutralEvaluation, REVIEW_POLICIES } from "../engine/reviewer";
 export interface WorkerPort {
@@ -20,10 +21,7 @@ export class EngineClient {
   private timer: ReturnType<typeof setTimeout> | null = null;
   private nextId = 0;
   private disposed = false;
-  constructor(
-    private factory: () => WorkerPort = () =>
-      new Worker(new URL("../engine/engine.worker.ts", import.meta.url), { type: "module" }),
-  ) {}
+  constructor(private factory: (request: EngineRequest) => WorkerPort = createEngineWorker) {}
   request(input: RequestInput): Promise<EngineResult> {
     if (this.disposed) return Promise.reject(new Error("Engine client has been disposed"));
     this.cancel();
@@ -50,7 +48,7 @@ export class EngineClient {
     const pending = this.pending;
     if (!pending) return;
     try {
-      const worker = this.worker ?? this.factory();
+      const worker = this.worker ?? this.factory(pending.request);
       this.worker = worker;
       worker.onmessage = (event) => {
         if (this.worker !== worker || this.pending !== pending) return;
@@ -136,4 +134,23 @@ export class EngineClient {
     this.disposed = true;
     this.cancel();
   }
+}
+
+/** Only exact new AI identities load a dedicated repertoire; reviews remain neutral. */
+export function createEngineWorker(request: EngineRequest): WorkerPort {
+  if (request.type === "ai" && isRosterOpponent(request.opponent)) {
+    switch (request.opponent.id) {
+      case "spassky":
+        return new Worker(new URL("../engine/spassky.worker.ts", import.meta.url), {
+          type: "module",
+        });
+      case "tal":
+        return new Worker(new URL("../engine/tal.worker.ts", import.meta.url), { type: "module" });
+      case "fischer":
+        return new Worker(new URL("../engine/fischer.worker.ts", import.meta.url), {
+          type: "module",
+        });
+    }
+  }
+  return new Worker(new URL("../engine/engine.worker.ts", import.meta.url), { type: "module" });
 }

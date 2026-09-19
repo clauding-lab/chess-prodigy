@@ -1,3 +1,5 @@
+import type { RosterId } from "../engine/roster/types";
+import { ROSTER_COPY } from "./Home";
 import { GLYPH } from "./Board";
 import { Modal } from "./Modal";
 import { FIDE_FLOOR, LEVEL_LABEL, ratingUpdate, type Rating } from "../rating/fide";
@@ -14,9 +16,13 @@ import {
   historicalMorphyConfig,
   plannedMorphyConfig,
   chigorinConfig,
+  rosterConfig,
+  isRosterId,
+  ROSTER_IDS,
+  ROSTER_NAMES,
   opponentName,
 } from "../engine/opponents";
-import { CHIGORIN_RATINGS, opponentPracticeRating } from "../rating/opponents";
+import { ROSTER_RATINGS, CHIGORIN_RATINGS, opponentPracticeRating } from "../rating/opponents";
 import { unratedDescription } from "../game/eligibility";
 import type { HistoryResult } from "../storage/history";
 import { RecordedRivalry } from "./RecordedGames";
@@ -25,7 +31,7 @@ export type SetupDraft = {
   color: Color | "rand";
   level: Level;
   time: TimeControl;
-  opponentId?: "classic" | "attack-development" | "chigorin";
+  opponentId?: "classic" | "attack-development" | "chigorin" | RosterId;
   opponentVersion?: number;
 };
 export interface Confirmation {
@@ -78,6 +84,12 @@ export function SetupModal({
   const loss = before - after;
   const morphy = betaEnabled && draft.opponentId === "attack-development";
   const chigorin = betaEnabled && draft.opponentId === "chigorin";
+  const roster = isRosterId(draft.opponentId) ? draft.opponentId : null;
+  const rosterUnavailable =
+    roster !== null &&
+    (!betaEnabled ||
+      !ROSTER_RATINGS[roster] ||
+      (draft.opponentVersion !== undefined && draft.opponentVersion !== 1));
   const legacyMorphy = morphy && draft.opponentVersion === 1;
   const selectedOpponent = morphy
     ? legacyMorphy
@@ -89,7 +101,9 @@ export function SetupModal({
           : plannedMorphyConfig(0)
     : chigorin
       ? chigorinConfig(0)
-      : CLASSIC;
+      : roster
+        ? rosterConfig(roster, 0)
+        : CLASSIC;
   return (
     <Modal closeOnBackdrop={false} closeOnEscape={!!onCancel} onClose={onCancel} title="New game">
       {rematchNote && <p className="note">{rematchNote}</p>}
@@ -129,8 +143,8 @@ export function SetupModal({
         <span className="opt-label">Opponent</span>
         <div className="seg">
           <button
-            className={`btn${!morphy && !chigorin ? " on" : ""}`}
-            aria-pressed={!morphy && !chigorin}
+            className={`btn${!morphy && !chigorin && !roster ? " on" : ""}`}
+            aria-pressed={!morphy && !chigorin && !roster}
             onClick={() => setDraft({ ...draft, opponentId: "classic" })}
             type="button"
           >
@@ -159,8 +173,30 @@ export function SetupModal({
               Mikhail Chigorin
             </button>
           )}
+          {betaEnabled &&
+            ROSTER_IDS.map((id) => (
+              <button
+                key={id}
+                className={`btn${roster === id ? " on" : ""}`}
+                aria-pressed={roster === id}
+                disabled={!ROSTER_RATINGS[id]}
+                onClick={() => setDraft({ ...draft, opponentId: id, opponentVersion: 1 })}
+                type="button"
+              >
+                {ROSTER_NAMES[id]}
+              </button>
+            ))}
         </div>
       </div>
+      {roster && (
+        <div className="note" role="status">
+          <strong>{ROSTER_COPY[roster].title}</strong>
+          <p>{ROSTER_COPY[roster].copy}</p>
+          {rosterUnavailable
+            ? "Strength measurement is pending. New games are not available yet."
+            : "Rated practice — strength measured against Classic within this app. Hints and takebacks make the game unrated."}
+        </div>
+      )}
       {morphy && (
         <div className="note" role="status">
           <strong>Attack &amp; development</strong>
@@ -252,7 +288,7 @@ export function SetupModal({
         className="btn primary full"
         onClick={onStart}
         type="button"
-        disabled={chigorin && !CHIGORIN_RATINGS}
+        disabled={rosterUnavailable || (chigorin && !CHIGORIN_RATINGS)}
       >
         {abandoning ? "Abandon and start" : "Start"}
       </button>
@@ -477,6 +513,14 @@ export function setupFromDraft(draft: SetupDraft, betaEnabled = false): Setup {
       throw new Error("Opponent version is unavailable.");
     if (!CHIGORIN_RATINGS) throw new Error("Chigorin strength measurement is not yet accepted.");
   }
+  if (isRosterId(draft.opponentId)) {
+    if (draft.opponentVersion !== undefined && draft.opponentVersion !== 1)
+      throw new Error("Opponent version is unavailable.");
+    if (!ROSTER_RATINGS[draft.opponentId])
+      throw new Error(
+        `${ROSTER_NAMES[draft.opponentId]} strength measurement is not yet accepted.`,
+      );
+  }
   return {
     playerColor: draft.color === "rand" ? (Math.random() < 0.5 ? "w" : "b") : draft.color,
     level: draft.level,
@@ -493,7 +537,14 @@ export function setupFromDraft(draft: SetupDraft, betaEnabled = false): Setup {
         }
       : draft.opponentId === "chigorin"
         ? { opponent: chigorinConfig(crypto.getRandomValues(new Uint32Array(1))[0]) }
-        : {}),
+        : isRosterId(draft.opponentId)
+          ? {
+              opponent: rosterConfig(
+                draft.opponentId,
+                crypto.getRandomValues(new Uint32Array(1))[0],
+              ),
+            }
+          : {}),
   };
 }
 
