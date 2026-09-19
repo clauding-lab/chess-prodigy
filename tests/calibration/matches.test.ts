@@ -1,3 +1,4 @@
+import { runProcess } from "./process";
 import { expect, test } from "vitest";
 import { fromFEN, START, posKey } from "../../src/engine/board";
 import { terminalScore, estimate, seededRandom } from "../../scripts/calibration/core";
@@ -134,16 +135,15 @@ test("runner persists an unresolved game without rating it and rejects changed r
   const { mkdtempSync, readFileSync, rmSync } = await import("node:fs");
   const { tmpdir } = await import("node:os");
   const { join } = await import("node:path");
-  const { spawnSync } = await import("node:child_process");
   const dir = mkdtempSync(join(tmpdir(), "morphy-runner-test-"));
-  const run = (limit: string) =>
-    spawnSync(
+  const run = async (limit: string) =>
+    await runProcess(
       process.execPath,
       ["--import", "tsx", "scripts/calibration/run.ts", "casual", dir, "1", limit],
       { encoding: "utf8" },
     );
   try {
-    const first = run("2");
+    const first = await run("2");
     expect(first.status, first.stderr).toBe(0);
     const summary = JSON.parse(readFileSync(join(dir, "casual-summary.json"), "utf8"));
     const game = JSON.parse(readFileSync(join(dir, "casual-0000-w.json"), "utf8"));
@@ -154,7 +154,7 @@ test("runner persists an unresolved game without rating it and rejects changed r
     expect(game.moves).toEqual(game.opening.slice(0, 2));
     expect(summary.unresolved).toBe(2);
     expect(summary.eligible).toBe(false);
-    expect(run("3").status).not.toBe(0);
+    expect((await run("3")).status).not.toBe(0);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -164,10 +164,9 @@ test("historical runner initializes an exact version-3 manifest without starting
   const { existsSync, mkdtempSync, readFileSync, rmSync } = await import("node:fs");
   const { tmpdir } = await import("node:os");
   const { join } = await import("node:path");
-  const { spawnSync } = await import("node:child_process");
   const dir = mkdtempSync(join(tmpdir(), "morphy-historical-init-test-"));
   try {
-    const initialized = spawnSync(
+    const initialized = await runProcess(
       process.execPath,
       [
         "--import",
@@ -252,7 +251,6 @@ test("verify-only refuses missing games and does not silently create them", asyn
   const { existsSync, mkdtempSync, rmSync } = await import("node:fs");
   const { tmpdir } = await import("node:os");
   const { join } = await import("node:path");
-  const { spawnSync } = await import("node:child_process");
   const dir = mkdtempSync(join(tmpdir(), "morphy-verify-missing-test-"));
   const args = [
     "--import",
@@ -265,10 +263,12 @@ test("verify-only refuses missing games and does not silently create them", asyn
     "morphy-historical-paired-v1",
   ];
   try {
-    expect(spawnSync(process.execPath, [...args, "--init-only"], { encoding: "utf8" }).status).toBe(
-      0,
-    );
-    const audit = spawnSync(process.execPath, [...args, "--verify-only"], { encoding: "utf8" });
+    expect(
+      (await runProcess(process.execPath, [...args, "--init-only"], { encoding: "utf8" })).status,
+    ).toBe(0);
+    const audit = await runProcess(process.execPath, [...args, "--verify-only"], {
+      encoding: "utf8",
+    });
     expect(audit.status).not.toBe(0);
     expect(audit.stderr).toContain("Verification requires saved match");
     expect(existsSync(join(dir, "casual-0000-w.json"))).toBe(false);
@@ -281,18 +281,19 @@ test("verify-only rejects an illegal saved game instead of qualifying its claime
   const { mkdtempSync, readFileSync, rmSync, writeFileSync } = await import("node:fs");
   const { tmpdir } = await import("node:os");
   const { join } = await import("node:path");
-  const { spawnSync } = await import("node:child_process");
   const dir = mkdtempSync(join(tmpdir(), "morphy-verify-illegal-test-"));
   const args = ["--import", "tsx", "scripts/calibration/run.ts", "casual", dir, "1", "7"];
   try {
-    const played = spawnSync(process.execPath, args, { encoding: "utf8" });
+    const played = await runProcess(process.execPath, args, { encoding: "utf8" });
     expect(played.status, played.stderr).toBe(0);
     const path = join(dir, "casual-0000-w.json"),
       game = JSON.parse(readFileSync(path, "utf8"));
     game.moves[6] = "Ke7";
     game.score = 1;
     writeFileSync(path, JSON.stringify(game));
-    const audit = spawnSync(process.execPath, [...args, "--verify-only"], { encoding: "utf8" });
+    const audit = await runProcess(process.execPath, [...args, "--verify-only"], {
+      encoding: "utf8",
+    });
     expect(audit.status).not.toBe(0);
     expect(audit.stderr).toContain("Illegal saved match");
   } finally {
@@ -304,12 +305,11 @@ test("historical worker plays the declared version-3 START policy", async () => 
   const { mkdtempSync, readFileSync, rmSync } = await import("node:fs");
   const { tmpdir } = await import("node:os");
   const { join } = await import("node:path");
-  const { spawnSync } = await import("node:child_process");
   const dir = mkdtempSync(join(tmpdir(), "morphy-historical-worker-test-"));
-  const spawn = (script: string, args: string[]) =>
-    spawnSync(process.execPath, ["--import", "tsx", script, ...args], { encoding: "utf8" });
+  const spawn = async (script: string, args: string[]) =>
+    await runProcess(process.execPath, ["--import", "tsx", script, ...args], { encoding: "utf8" });
   try {
-    const initialized = spawn("scripts/calibration/run.ts", [
+    const initialized = await spawn("scripts/calibration/run.ts", [
       "casual",
       dir,
       "1",
@@ -318,7 +318,7 @@ test("historical worker plays the declared version-3 START policy", async () => 
       "--init-only",
     ]);
     expect(initialized.status, initialized.stderr).toBe(0);
-    const worker = spawn("scripts/calibration/worker.ts", [
+    const worker = await spawn("scripts/calibration/worker.ts", [
       "casual",
       dir,
       "0",
@@ -341,12 +341,11 @@ test("workers reject unsupported identity and incomplete, empty, extra, or chang
   const { mkdtempSync, readFileSync, rmSync, writeFileSync } = await import("node:fs");
   const { tmpdir } = await import("node:os");
   const { join } = await import("node:path");
-  const { spawnSync } = await import("node:child_process");
   const dir = mkdtempSync(join(tmpdir(), "morphy-manifest-validation-test-"));
-  const spawn = (script: string, args: string[]) =>
-    spawnSync(process.execPath, ["--import", "tsx", script, ...args], { encoding: "utf8" });
+  const spawn = async (script: string, args: string[]) =>
+    await runProcess(process.execPath, ["--import", "tsx", script, ...args], { encoding: "utf8" });
   try {
-    const initialized = spawn("scripts/calibration/run.ts", [
+    const initialized = await spawn("scripts/calibration/run.ts", [
       "casual",
       dir,
       "1",
@@ -395,12 +394,12 @@ test("workers reject unsupported identity and incomplete, empty, extra, or chang
       const manifest = structuredClone(original) as MutableManifest;
       mutate(manifest);
       writeFileSync(path, JSON.stringify(manifest));
-      const worker = spawn("scripts/calibration/worker.ts", ["casual", dir, "0"]);
+      const worker = await spawn("scripts/calibration/worker.ts", ["casual", dir, "0"]);
       expect(worker.status, name).not.toBe(0);
       expect(worker.stderr, name).toContain(message);
     }
     writeFileSync(path, JSON.stringify(original));
-    const wrongProtocol = spawn("scripts/calibration/worker.ts", [
+    const wrongProtocol = await spawn("scripts/calibration/worker.ts", [
       "casual",
       dir,
       "0",
@@ -408,7 +407,12 @@ test("workers reject unsupported identity and incomplete, empty, extra, or chang
     ]);
     expect(wrongProtocol.status).not.toBe(0);
     expect(wrongProtocol.stderr).toContain("identity or machine mismatch");
-    const unsupported = spawn("scripts/calibration/worker.ts", ["casual", dir, "0", "future-v9"]);
+    const unsupported = await spawn("scripts/calibration/worker.ts", [
+      "casual",
+      dir,
+      "0",
+      "future-v9",
+    ]);
     expect(unsupported.status).not.toBe(0);
     expect(unsupported.stderr).toContain("Unsupported calibration protocol");
   } finally {
@@ -432,10 +436,9 @@ test("a calibration pair worker resumes the declared protocol and never overwrit
   const { mkdtempSync, readFileSync, writeFileSync, rmSync, unlinkSync } = await import("node:fs");
   const { tmpdir } = await import("node:os");
   const { join } = await import("node:path");
-  const { spawnSync } = await import("node:child_process");
   const dir = mkdtempSync(join(tmpdir(), "morphy-worker-test-"));
   try {
-    const run = spawnSync(
+    const run = await runProcess(
       process.execPath,
       ["--import", "tsx", "scripts/calibration/run.ts", "casual", dir, "1", "2"],
       { encoding: "utf8" },
@@ -444,7 +447,7 @@ test("a calibration pair worker resumes the declared protocol and never overwrit
     const path = join(dir, "casual-0000-w.json"),
       before = readFileSync(path, "utf8");
     unlinkSync(join(dir, "casual-0000-b.json"));
-    const worker = spawnSync(
+    const worker = await runProcess(
       process.execPath,
       ["--import", "tsx", "scripts/calibration/worker.ts", "casual", dir, "0"],
       { encoding: "utf8" },
@@ -456,7 +459,7 @@ test("a calibration pair worker resumes the declared protocol and never overwrit
     const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
     manifest.cpu = "different machine";
     writeFileSync(manifestPath, JSON.stringify(manifest));
-    const mismatch = spawnSync(
+    const mismatch = await runProcess(
       process.execPath,
       ["--import", "tsx", "scripts/calibration/worker.ts", "casual", dir, "0"],
       { encoding: "utf8" },
@@ -505,12 +508,11 @@ test("plans worker resumes exact v4 without overwrites and rejects policy-source
   const { mkdtempSync, readFileSync, writeFileSync, rmSync } = await import("node:fs");
   const { tmpdir } = await import("node:os");
   const { join } = await import("node:path");
-  const { spawnSync } = await import("node:child_process");
   const dir = mkdtempSync(join(tmpdir(), "morphy-plans-worker-test-"));
-  const spawn = (script: string, args: string[]) =>
-    spawnSync(process.execPath, ["--import", "tsx", script, ...args], { encoding: "utf8" });
+  const spawn = async (script: string, args: string[]) =>
+    await runProcess(process.execPath, ["--import", "tsx", script, ...args], { encoding: "utf8" });
   try {
-    const init = spawn("scripts/calibration/run.ts", [
+    const init = await spawn("scripts/calibration/run.ts", [
       "casual",
       dir,
       "1",
@@ -526,16 +528,16 @@ test("plans worker resumes exact v4 without overwrites and rejects policy-source
     expect(manifest.source["src/engine/morphy-plans.ts"]).toMatch(/^[a-f0-9]{64}$/);
     const worker = () =>
       spawn("scripts/calibration/worker.ts", ["casual", dir, "0", "morphy-plans-paired-v1"]);
-    const first = worker();
+    const first = await worker();
     expect(first.status, first.stderr).toBe(0);
     const file = join(dir, "casual-0000-w.json"),
       before = readFileSync(file, "utf8");
     expect(JSON.parse(before).opponent.engine).toBe("plans-v1");
-    expect(worker().status).toBe(0);
+    expect((await worker()).status).toBe(0);
     expect(readFileSync(file, "utf8")).toBe(before);
     manifest.source["src/engine/morphy-plans.ts"] = "a".repeat(64);
     writeFileSync(manifestPath, JSON.stringify(manifest));
-    const bad = worker();
+    const bad = await worker();
     expect(bad.status).not.toBe(0);
     expect(bad.stderr).toContain("source fingerprint mismatch");
   } finally {
