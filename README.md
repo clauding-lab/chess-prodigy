@@ -8,7 +8,13 @@ A chess coach you can play in your browser. Practise against three engine streng
 
 [![Chess Prodigy — dark board, three engine strengths, 185 opening lines, 27 coaching cards, hints and game review, accounts and saved progress, practice leaderboard, and offline guest play](docs/verification/hero-banner.png)](https://chess.clauding-lab.com)
 
-## New in 2.5 — local candidate
+## Historical roster activation — local 2.6 candidate
+
+**Boris Spassky, Mikhail Tal and Bobby Fischer are now rated practice opponents** when the personality build setting is enabled. Their independently audited fixed Practice Ratings are Spassky: Casual **1150**, Club **1325**, Strong **1700**; Tal: **1200**, **1325**, **1700**; Fischer: **1250**, **1350**, **1675**. These values come from 1,100 complete frozen-source games across the roster, and measure performance against this app’s Classic anchors rather than human or FIDE strength. See the separate [Spassky](docs/verification/roster/spassky/independent-calibration-review.md), [Tal](docs/verification/roster/tal/independent-calibration-review.md), and [Fischer](docs/verification/roster/fischer/independent-calibration-review.md) audit records.
+
+New games settle one normal Practice Rating receipt using their recorded identity and level. Hints and takebacks still make a game unrated, and beta saves made before this activation remain unrated. Saved games, replays and rematches retain their original opponent identity; policy 5 protects an account that has accepted any of these new identities from an older client overwrite. This is a local candidate: no deployment, release tag or live-player data change is claimed here.
+
+## Included from 2.5
 
 **Mikhail Chigorin joins the opponent roster.** His documented repertoire comes from 688 legally replayed games, covering 26,262 distinct positions. Matching positions use his recorded moves by occurrence count. Elsewhere, designed priorities favor active knights, central counterplay and coordinated attacks, with the same neutral tactical guard used to bound stylistic choices. These are Chigorin-inspired choices, not a reconstruction of his thinking. See the [historical source record](docs/verification/chigorin/corpus.md), [playing checks](docs/verification/chigorin/behaviour-report.md) and [independent engine review](docs/verification/chigorin/independent-engine-review.md).
 

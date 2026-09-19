@@ -1,0 +1,129 @@
+
+> chess-prodigy@2.6.0 test
+> vitest run
+
+
+ RUN  v3.2.7 /Users/adnanrashid/Projects/chess-prodigy/.worktrees/historical-roster
+
+ ✓ tests/game/sound.test.ts (4 tests) 1576ms
+   ✓ a fresh user gesture can activate audio while an earlier resume is still blocked  1505ms
+ ✓ tests/ui/Home.test.tsx (8 tests) 1170ms
+ ✓ tests/deploy/prune-releases.test.ts (16 tests) 2009ms
+   ✓ deploy/prune-releases.sh > tolerates a release or stage dir vanishing between the glob and the mtime stat, and still prints the summary  1018ms
+ ✓ tests/ui/App.test.tsx (8 tests) 1281ms
+   ✓ starts, plays a legal move, receives an engine reply and preserves theme across reload  412ms
+ ✓ tests/ui/Completion.test.tsx (8 tests) 1289ms
+ ✓ tests/engine/morphy-plans.test.ts (14 tests) 1652ms
+   ✓ follows a central break through an exchange and adds a second attacking piece  550ms
+   ✓ deadline during ranking discards all progress and retains completed neutral choice  390ms
+ ✓ tests/coach/annotate.test.ts (5 tests) 300ms
+stdout | tests/engine/morphy.test.ts > Morphy style-v1 > finishes a bounded complete legal game from the initial board, seed 4
+Morphy smoke seed=4: draw, 109 legal plies
+
+ ✓ tests/ui/RecordedGames.test.tsx (12 tests) 460ms
+stdout | tests/engine/morphy.test.ts > Morphy style-v1 > finishes a bounded complete legal game from the initial board, seed 5
+Morphy smoke seed=5: draw, 30 legal plies
+
+ ✓ tests/engine.test.js (17 tests) 428ms
+stdout | tests/engine/morphy.test.ts > Morphy style-v1 > finishes a bounded complete legal game from the initial board, seed 6
+Morphy smoke seed=6: checkmate, 68 legal plies
+
+ ✓ tests/engine/morphy.test.ts (16 tests) 739ms
+ ✓ tests/game/useGame.test.tsx (21 tests) 737ms
+   ✓ does not schedule work, settle clocks or overwrite a saved unavailable opponent  312ms
+ ✓ tests/interface.test.jsx (9 tests) 1267ms
+   ✓ cancels review when undo changes its history  379ms
+ ✓ tests/account/h2h.test.tsx (2 tests) 276ms
+ ✓ tests/ui/Board.test.tsx (4 tests) 175ms
+ ✓ tests/coach/book.test.ts (5 tests) 266ms
+ ✓ tests/engine/chigorin.test.ts (11 tests) 3220ms
+   ✓ declared behavior fixtures are off-book and actual moves honor tactical safety  683ms
+   ✓ develops successive home minors, challenges the centre and occupies a supported knight square  513ms
+   ✓ central contact survives exchange, and coordinated attack adds another piece on the next turn  981ms
+   ✓ deadline during ranking discards partial style and preserves complete neutral roots  380ms
+ ✓ tests/storage/history.test.ts (8 tests) 203ms
+ ✓ tests/ui/Roster.test.tsx (4 tests) 147ms
+ ✓ tests/engine/reviewer.test.ts (5 tests) 172ms
+ ✓ tests/storage/store.test.ts (17 tests) 134ms
+ ✓ tests/ui/chat.test.tsx (3 tests) 113ms
+ ✓ tests/engine/search.test.ts (6 tests) 53ms
+ ✓ tests/ui/Personality.test.tsx (6 tests) 3403ms
+   ✓ plays and resumes Morphy as White with independent difficulty and correct flipped labels  1500ms
+   ✓ plays and resumes Morphy as Black with independent difficulty and correct flipped labels  1346ms
+ ✓ tests/engine/historical-morphy.test.ts (11 tests) 155ms
+ ✓ tests/ui/rematch.test.tsx (3 tests) 102ms
+ ✓ tests/calibration/roster.test.ts (6 tests) 98ms
+ ✓ tests/ui/Chigorin.test.tsx (3 tests) 112ms
+ ✓ tests/ui/Modal.test.tsx (3 tests) 90ms
+ ✓ tests/ui/CoachPanel.test.tsx (1 test) 168ms
+ ✓ tests/engine/board.test.ts (18 tests) 59ms
+ ✓ tests/account/history.test.ts (8 tests) 37ms
+ ✓ tests/ui/UpdatePrompt.test.tsx (2 tests) 50ms
+ ✓ tests/coach/motifs.test.ts (47 tests) 43ms
+ ✓ tests/ui/ResultModal.test.tsx (1 test) 63ms
+ ✓ tests/account/sync.test.ts (18 tests) 37ms
+ ✓ tests/engine/root-candidates.test.ts (5 tests) 37ms
+ ✓ tests/game/rated-morphy.test.ts (16 tests) 26ms
+ ✓ tests/game/archive.test.ts (4 tests) 25ms
+ ✓ tests/game/roster.test.ts (10 tests) 20ms
+ ✓ tests/game/rated-chigorin.test.ts (4 tests) 28ms
+ ✓ tests/storage/migration.test.ts (7 tests) 11ms
+ ✓ tests/game/state.test.ts (10 tests) 15ms
+ ✓ tests/worker/client.test.ts (5 tests) 7ms
+ ✓ tests/game/opponents.test.ts (4 tests) 8ms
+ ✓ tests/account/roster-generation.test.ts (8 tests) 9ms
+ ✓ tests/storage/roster-generation.test.ts (11 tests) 5ms
+ ✓ tests/account/chigorin-generation.test.ts (1 test) 6ms
+ ✓ tests/storage/chigorin-generation.test.ts (2 tests) 3ms
+ ✓ tests/worker/roster.test.ts (3 tests) 6ms
+ ✓ tests/account/records.test.ts (2 tests) 2ms
+ ✓ tests/account/push.test.ts (6 tests) 6ms
+ ✓ tests/server/chat.test.ts (4 tests) 4ms
+ ✓ tests/server/http-fixture.test.ts (1 test) 15ms
+ ✓ tests/server/notifications.test.ts (7 tests) 39ms
+ ✓ tests/calibration/chigorin.test.ts (3 tests) 6016ms
+   ✓ Chigorin matches reject Morphy identities and forced openings  861ms
+   ✓ Chigorin worker binds book and policy fingerprints and preserves completed games  5154ms
+ ✓ tests/engine/roster-behaviour.test.ts (14 tests) 5414ms
+   ✓ both-color actual multi-turn priorities (false)  735ms
+   ✓ Tal genuinely speculative exchange and forcing continuation (false)  527ms
+   ✓ tactical safety, terminal-before-book and pins (false)  1421ms
+   ✓ both-color actual multi-turn priorities (true)  855ms
+   ✓ Tal genuinely speculative exchange and forcing continuation (true)  655ms
+   ✓ tactical safety, terminal-before-book and pins (true)  945ms
+stderr | tests/server/accounts.test.ts > private account records > registers, signs out, signs in, and stores only a password hash
+2026-09-19T15:24:47.842Z WARN [Better Auth]: Invalid password
+
+stderr | tests/server/accounts.test.ts > private account records > enforces account field bounds and production secure cookies
+2026-09-19T15:24:47.961Z WARN [Better Auth]: Password is too short
+
+stderr | tests/server/accounts.test.ts > private account records > enforces account field bounds and production secure cookies
+2026-09-19T15:24:47.971Z WARN [Better Auth]: Password is too long
+
+ ✓ tests/engine/historical-corpus.test.ts (15 tests) 7231ms
+   ✓ historical Morphy repertoire > legally replays the committed corpus, repertoire and serious-game holdout  7187ms
+ ✓ tests/server/multiplayer.test.ts (12 tests) 2101ms
+ ✓ tests/server/accounts.test.ts (25 tests) 3233ms
+   ✓ private account records > persists a bounded records request rate  355ms
+   ✓ migrates legacy policy rows additively and raises policy atomically for assisted historical games  315ms
+ ✓ tests/calibration/matches.test.ts (19 tests) 24788ms
+   ✓ plays opening SAN legally and records a forced mate without an invented result  910ms
+   ✓ runner persists an unresolved game without rating it and rejects changed resume settings  2519ms
+   ✓ historical runner initializes an exact version-3 manifest without starting games  1372ms
+   ✓ verify-only refuses missing games and does not silently create them  2200ms
+   ✓ verify-only rejects an illegal saved game instead of qualifying its claimed score  1834ms
+   ✓ historical worker plays the declared version-3 START policy  1710ms
+   ✓ workers reject unsupported identity and incomplete, empty, extra, or changed fingerprints  8299ms
+   ✓ a calibration pair worker resumes the declared protocol and never overwrites completed games  2540ms
+   ✓ plans worker resumes exact v4 without overwrites and rejects policy-source changes  3388ms
+ ✓ tests/engine/roster-corpus.test.ts (4 tests) 40604ms
+   ✓ full exact source rebuild validates all legal moves, collisions and occurrences in child process  40592ms
+ ✓ tests/engine/chigorin-corpus.test.ts (3 tests) 49372ms
+   ✓ source games reproduce the checked compact book with legal occurrence frequencies  49357ms
+
+ Test Files  62 passed (62)
+      Tests  535 passed (535)
+   Start at  21:24:40
+   Duration  50.14s (transform 3.28s, setup 4.07s, collect 10.17s, tests 161.11s, environment 13.22s, prepare 2.37s)
+
+EXIT=0

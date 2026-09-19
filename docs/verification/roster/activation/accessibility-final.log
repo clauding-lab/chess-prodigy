@@ -1,0 +1,7 @@
+
+> chess-prodigy@2.6.0 test:accessibility
+> node scripts/check-accessibility.mjs
+
+wood: 100
+dark: 100
+EXIT=0

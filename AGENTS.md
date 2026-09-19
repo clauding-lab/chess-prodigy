@@ -178,3 +178,14 @@ No playing-policy/book changes are authorized by rating activation. Preserve pol
 older recovery generations/receipts. The owner requested building Spassky, Tal and Fischer next;
 their detailed designs and fresh measurements remain separate. Opponent cards use concise visible
 introductions and Wikipedia links, without biography dropdowns, following the owner's Home correction.
+
+## Historical roster rating activation — 19 September 2026 BDT
+
+Independent audits accepted frozen source `9a7ab6c4eaba629d87cec8f77a163660ecdd240c` for all roster
+levels: Spassky/version1/spassky-plans-v1 is Casual 1150 / Club 1325 / Strong 1700; Tal/version1/
+tal-plans-v1 is 1200 / 1325 / 1700; Fischer/version1/fischer-plans-v1 is 1250 / 1350 / 1675. These
+are fixed internal Practice Ratings, not human/FIDE ratings or proof of perceived historical style.
+Activation changes eligibility and values only: preserve the frozen playing source, old beta saves and
+receipts, policy5, guest state-v7/account-v7/history-v6 and every older recovery generation. Normal
+new games settle exactly one receipt; hints/takebacks remain unrated and undo reverses only its own
+receipt. Local candidate verification is authorized; no push, deployment, tag or live player data.

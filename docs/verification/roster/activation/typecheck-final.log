@@ -1,0 +1,5 @@
+
+> chess-prodigy@2.6.0 typecheck
+> tsc --noEmit && tsc -p tsconfig.server.json
+
+EXIT=0

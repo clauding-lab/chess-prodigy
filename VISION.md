@@ -111,3 +111,13 @@ accepted1250/1350/1625; acceptance is not a claim that app verification or deplo
 Preserve all existing identities, receipts and compatibility protections. No Steinitz implementation
 is included in this request. Home cards should follow the owner's simplified Morphy presentation:
 concise introduction, no expandable biography, Wikipedia link and Play button.
+
+## Historical roster rating activation — 19 September 2026 BDT
+
+Independent audits accepted all nine frozen roster levels from source `9a7ab6c`: Spassky 1150 / 1325 /
+1700, Tal 1200 / 1325 / 1700 and Fischer 1250 / 1350 / 1675 for Casual / Club / Strong. Enable rated
+normal setup and rematches only for these exact version1 identities. Keep old beta games and receipts
+unrated; hints, takebacks and undo retain their existing rating protections. Preserve policy5,
+state-v7/account-v7/history-v6, all recovery keys, raw acknowledgements, private account ownership,
+the dark default, Home/resume clocks and offline play. This authorization is local verification only:
+do not push, deploy, tag or touch live-player data.

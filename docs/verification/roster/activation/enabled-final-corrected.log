@@ -1,0 +1,344 @@
+[WebServer] (node:71888) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:71890) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 54 tests using 1 worker
+
+(node:71891) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 9:28:38 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓   1 [desktop] › tests/browser/about.spec.ts:8:1 › About is accessible from Home, nested setup and offline play (646ms)
+[WebServer] 9:28:39 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:28:41 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓   2 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Paul Morphy Club White preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:28:41 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:28:43 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓   3 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Paul Morphy Club Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:28:44 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:28:46 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓   4 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Paul Morphy Strong White preserves identity and settles its measured receipt (2.5s)
+[WebServer] 9:28:46 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:28:48 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓   5 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Paul Morphy Strong Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:28:48 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:28:51 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓   6 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Boris Spassky Casual White preserves identity and settles its measured receipt (2.6s)
+[WebServer] 9:28:51 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:28:53 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓   7 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Boris Spassky Casual Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:28:53 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:28:56 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓   8 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Boris Spassky Club White preserves identity and settles its measured receipt (2.5s)
+[WebServer] 9:28:56 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:28:58 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓   9 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Boris Spassky Club Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:28:58 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:01 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  10 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Boris Spassky Strong White preserves identity and settles its measured receipt (2.5s)
+[WebServer] 9:29:01 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:03 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  11 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Boris Spassky Strong Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:29:03 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:06 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  12 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Mikhail Tal Casual White preserves identity and settles its measured receipt (2.5s)
+[WebServer] 9:29:06 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:08 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  13 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Mikhail Tal Casual Black preserves identity and settles its measured receipt (2.3s)
+[WebServer] 9:29:08 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:10 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  14 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Mikhail Tal Club White preserves identity and settles its measured receipt (2.5s)
+[WebServer] 9:29:11 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:13 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  15 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Mikhail Tal Club Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:29:13 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:15 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  16 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Mikhail Tal Strong White preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:29:15 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:18 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  17 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Mikhail Tal Strong Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:29:18 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:20 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  18 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Bobby Fischer Casual White preserves identity and settles its measured receipt (2.6s)
+[WebServer] 9:29:20 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:22 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  19 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Bobby Fischer Casual Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:29:23 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:25 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  20 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Bobby Fischer Club White preserves identity and settles its measured receipt (2.5s)
+[WebServer] 9:29:25 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:27 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  21 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Bobby Fischer Club Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:29:28 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:30 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  22 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Bobby Fischer Strong White preserves identity and settles its measured receipt (2.5s)
+[WebServer] 9:29:30 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:32 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  23 [desktop] › tests/browser/roster-starts.spec.ts:41:7 › normal start Bobby Fischer Strong Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:29:32 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  24 [desktop] › tests/browser/roster.spec.ts:16:1 › roster cards honor the build flag and expose measured starts (719ms)
+  ✓  25 [desktop] › tests/browser/roster.spec.ts:174:3 › account spassky preserves an assisted unrated archive and policy5 after reset (2.6s)
+  ✓  26 [desktop] › tests/browser/roster.spec.ts:174:3 › account tal preserves an assisted unrated archive and policy5 after reset (2.5s)
+  ✓  27 [desktop] › tests/browser/roster.spec.ts:174:3 › account fischer preserves an assisted unrated archive and policy5 after reset (2.5s)
+(node:73087) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 9:29:41 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  28 [mobile] › tests/browser/about.spec.ts:8:1 › About is accessible from Home, nested setup and offline play (684ms)
+[WebServer] 9:29:42 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:44 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  29 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Paul Morphy Club White preserves identity and settles its measured receipt (2.5s)
+[WebServer] 9:29:45 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:47 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  30 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Paul Morphy Club Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:29:47 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:49 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  31 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Paul Morphy Strong White preserves identity and settles its measured receipt (2.5s)
+[WebServer] 9:29:50 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:52 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  32 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Paul Morphy Strong Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:29:52 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:54 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  33 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Boris Spassky Casual White preserves identity and settles its measured receipt (2.7s)
+[WebServer] 9:29:55 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:57 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  34 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Boris Spassky Casual Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:29:57 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:29:59 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  35 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Boris Spassky Club White preserves identity and settles its measured receipt (2.6s)
+[WebServer] 9:30:00 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:30:02 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  36 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Boris Spassky Club Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:30:02 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:30:04 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  37 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Boris Spassky Strong White preserves identity and settles its measured receipt (2.5s)
+[WebServer] 9:30:05 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:30:07 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  38 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Boris Spassky Strong Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:30:07 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:30:09 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  39 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Mikhail Tal Casual White preserves identity and settles its measured receipt (2.7s)
+[WebServer] 9:30:10 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:30:12 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  40 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Mikhail Tal Casual Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:30:12 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:30:14 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  41 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Mikhail Tal Club White preserves identity and settles its measured receipt (2.5s)
+[WebServer] 9:30:15 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:30:17 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  42 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Mikhail Tal Club Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:30:17 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:30:19 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  43 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Mikhail Tal Strong White preserves identity and settles its measured receipt (2.5s)
+[WebServer] 9:30:19 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:30:22 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  44 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Mikhail Tal Strong Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:30:22 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:30:24 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  45 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Bobby Fischer Casual White preserves identity and settles its measured receipt (2.7s)
+[WebServer] 9:30:25 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:30:27 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  46 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Bobby Fischer Casual Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:30:27 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:30:29 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  47 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Bobby Fischer Club White preserves identity and settles its measured receipt (2.5s)
+[WebServer] 9:30:29 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:30:32 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  48 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Bobby Fischer Club Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:30:32 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:30:34 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  49 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Bobby Fischer Strong White preserves identity and settles its measured receipt (2.5s)
+[WebServer] 9:30:34 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+[WebServer] 9:30:37 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  50 [mobile] › tests/browser/roster-starts.spec.ts:41:7 › normal start Bobby Fischer Strong Black preserves identity and settles its measured receipt (2.4s)
+[WebServer] 9:30:37 PM [vite] http proxy error: /api/auth/get-session
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:4317
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+  ✓  51 [mobile] › tests/browser/roster.spec.ts:16:1 › roster cards honor the build flag and expose measured starts (834ms)
+  ✓  52 [mobile] › tests/browser/roster.spec.ts:174:3 › account spassky preserves an assisted unrated archive and policy5 after reset (2.6s)
+  ✓  53 [mobile] › tests/browser/roster.spec.ts:174:3 › account tal preserves an assisted unrated archive and policy5 after reset (2.5s)
+  ✓  54 [mobile] › tests/browser/roster.spec.ts:174:3 › account fischer preserves an assisted unrated archive and policy5 after reset (2.5s)
+
+  54 passed (2.1m)
+EXIT=0

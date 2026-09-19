@@ -1,0 +1,7 @@
+
+> chess-prodigy@2.6.0 format:check
+> prettier --check src tests/engine tests/coach tests/game tests/storage tests/worker tests/ui vite.config.ts tsconfig.json server tests/server tests/account scripts/test-account-server.ts deploy/backup.mjs tsconfig.server.json scripts/calibration scripts/morphy-history scripts/chigorin-history scripts/roster-history tests/calibration tests/deploy
+
+Checking formatting...
+All matched files use Prettier code style!
+EXIT=0

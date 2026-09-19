@@ -1,0 +1,36 @@
+{
+  "enabled-full-browser": {
+    "total": 188,
+    "expected": 183,
+    "unexpected": 1,
+    "flaky": 0,
+    "skipped": 4,
+    "ok": false
+  },
+  "enabled-final-corrected": {
+    "total": 54,
+    "expected": 54,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "ok": true
+  },
+  "default-account-corrected": {
+    "total": 6,
+    "expected": 6,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "ok": true
+  },
+  "lighthouse-wood": {
+    "score": 1,
+    "url": "http://127.0.0.1:4173/",
+    "version": "13.4.1"
+  },
+  "lighthouse-dark": {
+    "score": 1,
+    "url": "http://127.0.0.1:4173/",
+    "version": "13.4.1"
+  }
+}

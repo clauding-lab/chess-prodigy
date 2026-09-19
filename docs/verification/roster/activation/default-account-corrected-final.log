@@ -1,0 +1,20 @@
+[WebServer] (node:68549) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:68551) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:68564) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › tests/browser/roster.spec.ts:174:3 › account spassky preserves an assisted unrated archive and policy5 after reset (2.7s)
+  ✓  2 [desktop] › tests/browser/roster.spec.ts:174:3 › account tal preserves an assisted unrated archive and policy5 after reset (2.5s)
+  ✓  3 [desktop] › tests/browser/roster.spec.ts:174:3 › account fischer preserves an assisted unrated archive and policy5 after reset (2.5s)
+(node:68667) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [mobile] › tests/browser/roster.spec.ts:174:3 › account spassky preserves an assisted unrated archive and policy5 after reset (2.7s)
+  ✓  5 [mobile] › tests/browser/roster.spec.ts:174:3 › account tal preserves an assisted unrated archive and policy5 after reset (2.5s)
+  ✓  6 [mobile] › tests/browser/roster.spec.ts:174:3 › account fischer preserves an assisted unrated archive and policy5 after reset (2.5s)
+
+  6 passed (17.4s)
+EXIT=0

@@ -1,0 +1,11 @@
+
+ RUN  v3.2.7 /Users/adnanrashid/Projects/chess-prodigy/.worktrees/historical-roster
+
+ ✓ tests/game/roster.test.ts (10 tests) 13ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  21:30:56
+   Duration  494ms (transform 66ms, setup 60ms, collect 75ms, tests 13ms, environment 205ms, prepare 28ms)
+
+EXIT=0

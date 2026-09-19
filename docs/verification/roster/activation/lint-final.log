@@ -1,0 +1,5 @@
+
+> chess-prodigy@2.6.0 lint
+> eslint src server scripts/test-account-server.ts scripts/calibration scripts/morphy-history scripts/chigorin-history scripts/roster-history deploy/backup.mjs --max-warnings=0
+
+EXIT=0
