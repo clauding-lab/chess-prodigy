@@ -61,8 +61,10 @@ child process. Tests cover actual both-color multi-turn choices, compensation/un
 mate/free queen, pins, favorable/harmful captures, terminal-before-book, weighted occurrences,
 illegal book entries, deterministic identities, incomplete depth and expired partial ranking.
 Full corpora rebuild every legal history and every exact compact-key/continuation occurrence.
-Frontend/server typecheck and scoped source/script lint pass. The existing lint configuration
-omits the new script directory, so the same rules were applied programmatically to that directory;
-no shared configuration was changed in this Task1-only scope. Source, tests, scripts and books
+Frontend/server typecheck and scoped source/script lint pass. Independent review identified that
+the initial shared checks omitted the roster scripts. The controller extended Task1 ownership to
+add them permanently to ESLint TypeScript patterns, the tooling TypeScript project, and canonical
+lint/format commands. Canonical `npm run lint`, `npm run typecheck`, `npm run format:check` and
+the reviewer’s whole-repository ESLint invocation now pass. Source, tests, scripts and books
 are checked with the repository formatter. Books are reproducibly formatted by the importer and
 fingerprinted as exact written bytes; their eventual combined worker/cache size needs Task2 testing.

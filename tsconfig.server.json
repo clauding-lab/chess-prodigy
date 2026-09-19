@@ -12,6 +12,7 @@
     "scripts/calibration",
     "scripts/morphy-history",
     "scripts/chigorin-history",
+    "scripts/roster-history",
     "tests/calibration"
   ]
 }
