@@ -8,7 +8,13 @@ A chess coach you can play in your browser. Practise against three engine streng
 
 [![Chess Prodigy — dark board, three engine strengths, 185 opening lines, 27 coaching cards, hints and game review, accounts and saved progress, practice leaderboard, and offline guest play](docs/verification/hero-banner.png)](https://chess.clauding-lab.com)
 
-## New in 2.4
+## New in 2.5 — local candidate
+
+**Mikhail Chigorin joins the opponent roster.** His documented repertoire comes from 688 legally replayed games, covering 26,262 distinct positions. Matching positions use his recorded moves by occurrence count. Elsewhere, designed priorities favor active knights, central counterplay and coordinated attacks, with the same neutral tactical guard used to bound stylistic choices. These are Chigorin-inspired choices, not a reconstruction of his thinking. See the [historical source record](docs/verification/chigorin/corpus.md), [playing checks](docs/verification/chigorin/behaviour-report.md) and [independent engine review](docs/verification/chigorin/independent-engine-review.md).
+
+Fresh measurement across **400 complete games**, independently audited on 19 September 2026 BDT, gives Chigorin Casual **1250**, Club **1350** and Strong **1625**. These are internal Practice Ratings, not human or FIDE ratings. See the [measurement and complete game evidence](docs/verification/chigorin/measurement-report.md). Final app verification is in progress; this section describes the local candidate, not a live deployment. Classic and every earlier Morphy game, rematch and fixed rating keep their existing behavior. The local candidate includes the separate 2.4.2 account-status layout update and simpler opponent cards with Wikipedia links.
+
+## Included from 2.4
 
 **Paul Morphy now follows designed development and attacking plans.** Outside documented positions, he prioritizes bringing new pieces into play, opening the centre when developed and safe, and coordinating more pieces around the enemy king. Endgames use neutral search. A tactical score limit bounds stylistic choices, though it cannot guarantee sound play. These are Morphy-inspired design choices, not a reconstruction of his thought or a claim that he played every move.
 
@@ -50,9 +56,9 @@ Guest history stays in this browser; account records stay with their owner. Open
 
 Damaged history is preserved and offers a download of the original data. If a completed game cannot be saved, starting another game stops with a recovery download. Retain these files for assisted recovery; there is no recovery-file import screen. Signing in does not automatically import guest games.
 
-Version 2.4 uses a new generation of guest/account save locations and preserves older copies for recovery. A damaged current save never silently falls back to an older copy. Pending account changes survive migration. After an account first saves the new Morphy, an enduring minimum client policy blocks incompatible older clients from overwriting its progress, including after assisted games or a practice reset. Rollback requires keeping the new save locations and policy table and using compatible code. Old beta games are never retroactively rated.
+Version 2.5 uses a new generation of guest/account save locations and preserves older copies for recovery. A damaged current save never silently falls back to an older copy. Pending account changes survive migration. After an account first saves Chigorin, an enduring minimum client policy blocks incompatible older clients from overwriting its progress, including after assisted games or a practice reset. Earlier Morphy protections remain in place. Rollback requires keeping the new save locations and policy table and using compatible code. Old beta games are never retroactively rated.
 
-Supported saved Morphy games can resume and replay with the beta disabled, but starting a new Morphy game or rematch requires the beta setting. Unknown opponent versions remain read-only with **Download recovery save**; the app never silently substitutes Classic. Older records without a clock setting default to **No clock** for rematches.
+Supported saved historical opponents can resume and replay with the beta disabled, but starting a new historical-opponent game or rematch requires the beta setting. Unknown opponent versions remain read-only with **Download recovery save**; the app never silently substitutes Classic. Older records without a clock setting default to **No clock** for rematches.
 
 ## Play a friend
 

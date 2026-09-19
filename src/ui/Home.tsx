@@ -190,22 +190,15 @@ export function Home({
                 openings plus designed development, central-break and king-attack plans inspired by
                 his games.
               </p>
-              <details>
-                <summary>Who was Paul Morphy?</summary>
-                <p>
-                  An American chess master of the 1800s, Morphy became famous for brilliant
-                  attacking games. His documented games inspire these designed priorities; this is
-                  not a perfect recreation of the person or a measure of his human playing strength.
-                </p>
+              <p>
                 <a
-                  href="https://timkr.home.xs4all.nl/ChessTutor/morphy.htm"
+                  href="https://en.wikipedia.org/wiki/Paul_Morphy"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Explore the Morphy game collection{" "}
-                  <span className="sr-only">(opens in a new tab)</span>
+                  Paul Morphy on Wikipedia <span className="sr-only">(opens in a new tab)</span>
                 </a>
-              </details>
+              </p>
               <button
                 className="btn"
                 disabled={!available}

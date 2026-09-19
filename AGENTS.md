@@ -168,3 +168,13 @@ which survives reset. Old clients must not overwrite it. The compact engine requ
 Workbox file cache ceiling; keep offline worker coverage. Owner also requested the Saved to account
 status on a centered separate line below header navigation. Dark remains default. This pass prepares
 and verifies a local2.5.0 candidate; do not claim publication/deployment from local evidence.
+
+## Chigorin measurement acceptance — 19 September 2026 BDT
+
+Independent audit accepted frozen adfc006 Chigorin/version1/chigorin-plans-v1 ratings:
+Casual1250 / Club1350 / Strong1625, from400 complete games. See
+`docs/verification/chigorin/measurement-report.md` and independent-calibration-review.md.
+No playing-policy/book changes are authorized by rating activation. Preserve policy4 and all
+older recovery generations/receipts. The owner requested building Spassky, Tal and Fischer next;
+their detailed designs and fresh measurements remain separate. Opponent cards use concise visible
+introductions and Wikipedia links, without biography dropdowns, following the owner's Home correction.

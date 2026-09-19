@@ -1,0 +1,15 @@
+{
+  "rating": 1208.239244997279,
+  "lower": 1046.668976704552,
+  "upper": 1369.8095132900062,
+  "games": 100,
+  "unresolved": 0,
+  "eligible": false,
+  "protocol": "chigorin-plans-paired-v1",
+  "opponentVersion": 1,
+  "level": "casual",
+  "pairs": 50,
+  "wins": 76,
+  "draws": 19,
+  "losses": 5
+}

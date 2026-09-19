@@ -101,3 +101,13 @@ frozen complete games before rated setup. Preserve older opponents, receipts, pr
 compatibility protections. Chigorin's detailed contract is in the dated Chigorin design spec.
 The local candidate also moves Saved to account below the header links as explicitly requested.
 Publication/deployment status must remain separate from local build/verification evidence.
+
+## Historical roster continuation — 19 September 2026 BDT
+
+The owner requested “now lets build chigorin, spassky, tal, fischer”. Resume the approved
+Chigorin build and design the next three distinct opponents using the established sourced-game,
+reviewed-playing-priority and fresh-strength-measurement process. Chigorin's independent audit
+accepted1250/1350/1625; acceptance is not a claim that app verification or deployment is complete.
+Preserve all existing identities, receipts and compatibility protections. No Steinitz implementation
+is included in this request. Home cards should follow the owner's simplified Morphy presentation:
+concise introduction, no expandable biography, Wikipedia link and Play button.
