@@ -1,0 +1,1099 @@
+{
+  "dateBDT": "2026-09-19",
+  "sequences": [
+    {
+      "id": "spassky",
+      "fen": "r1bqkbnr/pppp1pp1/2n4p/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 3",
+      "first": {
+        "plan": "buildup",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 164,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 57,
+            "to": 42
+          },
+          "score": -50,
+          "book": false
+        }
+      },
+      "firstSan": "Nc3",
+      "offered": 0,
+      "reply": "a6",
+      "second": {
+        "plan": "buildup",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 152,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 62,
+            "to": 45
+          },
+          "score": 0,
+          "book": false
+        }
+      },
+      "secondSan": "Nf3",
+      "alternatives": {
+        "spassky": {
+          "san": "Nc3",
+          "decision": {
+            "plan": "buildup",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 164,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 57,
+                "to": 42
+              },
+              "score": -50,
+              "book": false
+            }
+          }
+        },
+        "tal": {
+          "san": "Nc3",
+          "decision": {
+            "plan": "mobilize-attack",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 90,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 57,
+                "to": 42
+              },
+              "score": -50,
+              "book": false
+            }
+          }
+        },
+        "fischer": {
+          "san": "Bc4",
+          "decision": {
+            "plan": "sustained-pressure",
+            "depth": 2,
+            "neutralLoss": 30,
+            "bonus": 240,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 61,
+                "to": 34
+              },
+              "score": -80,
+              "book": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spassky",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/2N4P/PPPP1PP1/R1BQKBNR b KQkq - 0 3",
+      "first": {
+        "plan": "buildup",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 164,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 1,
+            "to": 18
+          },
+          "score": 50,
+          "book": false
+        }
+      },
+      "firstSan": "Nc6",
+      "offered": 0,
+      "reply": "a3",
+      "second": {
+        "plan": "buildup",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 152,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 6,
+            "to": 21
+          },
+          "score": 0,
+          "book": false
+        }
+      },
+      "secondSan": "Nf6",
+      "alternatives": {
+        "spassky": {
+          "san": "Nc6",
+          "decision": {
+            "plan": "buildup",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 164,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 1,
+                "to": 18
+              },
+              "score": 50,
+              "book": false
+            }
+          }
+        },
+        "tal": {
+          "san": "Nc6",
+          "decision": {
+            "plan": "mobilize-attack",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 90,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 1,
+                "to": 18
+              },
+              "score": 50,
+              "book": false
+            }
+          }
+        },
+        "fischer": {
+          "san": "Bc5",
+          "decision": {
+            "plan": "sustained-pressure",
+            "depth": 2,
+            "neutralLoss": 30,
+            "bonus": 240,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 5,
+                "to": 26
+              },
+              "score": 80,
+              "book": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spassky",
+      "fen": "r1bqkb1r/ppp2ppp/2np1n2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w kq - 0 9",
+      "first": {
+        "plan": "open-centre",
+        "depth": 2,
+        "neutralLoss": 90,
+        "bonus": 231,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 43,
+            "to": 35
+          },
+          "score": -30,
+          "book": false
+        }
+      },
+      "firstSan": "d4",
+      "offered": 0,
+      "reply": "exd4",
+      "second": {
+        "plan": "open-centre",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 45,
+            "to": 35,
+            "capture": "bp"
+          },
+          "score": 85,
+          "book": false
+        }
+      },
+      "secondSan": "Nxd4",
+      "alternatives": {
+        "spassky": {
+          "san": "d4",
+          "decision": {
+            "plan": "open-centre",
+            "depth": 2,
+            "neutralLoss": 90,
+            "bonus": 231,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 43,
+                "to": 35
+              },
+              "score": -30,
+              "book": false
+            }
+          }
+        },
+        "tal": {
+          "san": "Ng5",
+          "decision": {
+            "plan": "forcing-initiative",
+            "depth": 2,
+            "neutralLoss": 15,
+            "bonus": 175,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 45,
+                "to": 30
+              },
+              "score": 45,
+              "book": false
+            }
+          }
+        },
+        "fischer": {
+          "san": "Ng5",
+          "decision": {
+            "plan": "sustained-pressure",
+            "depth": 2,
+            "neutralLoss": 15,
+            "bonus": 66,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 45,
+                "to": 30
+              },
+              "score": 45,
+              "book": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spassky",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NP1N2/PPP2PPP/R1BQKB1R b KQ - 0 9",
+      "first": {
+        "plan": "open-centre",
+        "depth": 2,
+        "neutralLoss": 90,
+        "bonus": 231,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 19,
+            "to": 27
+          },
+          "score": 30,
+          "book": false
+        }
+      },
+      "firstSan": "d5",
+      "offered": 0,
+      "reply": "exd5",
+      "second": {
+        "plan": "open-centre",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 21,
+            "to": 27,
+            "capture": "wp"
+          },
+          "score": -85,
+          "book": false
+        }
+      },
+      "secondSan": "Nxd5",
+      "alternatives": {
+        "spassky": {
+          "san": "d5",
+          "decision": {
+            "plan": "open-centre",
+            "depth": 2,
+            "neutralLoss": 90,
+            "bonus": 231,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 19,
+                "to": 27
+              },
+              "score": 30,
+              "book": false
+            }
+          }
+        },
+        "tal": {
+          "san": "Ng4",
+          "decision": {
+            "plan": "forcing-initiative",
+            "depth": 2,
+            "neutralLoss": 15,
+            "bonus": 175,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 21,
+                "to": 38
+              },
+              "score": -45,
+              "book": false
+            }
+          }
+        },
+        "fischer": {
+          "san": "Ng4",
+          "decision": {
+            "plan": "sustained-pressure",
+            "depth": 2,
+            "neutralLoss": 15,
+            "bonus": 66,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 21,
+                "to": 38
+              },
+              "score": -45,
+              "book": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "tal",
+      "fen": "3q1rk1/pp3ppp/5n2/3p4/7Q/3B4/PPP1p1PP/5RK1 w - - 0 20",
+      "first": {
+        "plan": "forcing-initiative",
+        "depth": 2,
+        "neutralLoss": 60,
+        "bonus": 344,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 61,
+            "to": 21,
+            "capture": "bn"
+          },
+          "score": -290,
+          "book": false
+        }
+      },
+      "firstSan": "Rxf6",
+      "offered": 80,
+      "reply": "gxf6",
+      "second": {
+        "plan": "none",
+        "depth": 1,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "mate",
+        "result": {
+          "move": {
+            "from": 39,
+            "to": 15,
+            "capture": "bp"
+          },
+          "score": 99999,
+          "book": false
+        }
+      },
+      "secondSan": "Qxh7#",
+      "alternatives": {
+        "spassky": {
+          "san": "Rxf6",
+          "decision": {
+            "plan": "decisive-attack",
+            "depth": 2,
+            "neutralLoss": 60,
+            "bonus": 160,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 61,
+                "to": 21,
+                "capture": "bn"
+              },
+              "score": -290,
+              "book": false
+            }
+          }
+        },
+        "tal": {
+          "san": "Rxf6",
+          "decision": {
+            "plan": "forcing-initiative",
+            "depth": 2,
+            "neutralLoss": 60,
+            "bonus": 344,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 61,
+                "to": 21,
+                "capture": "bn"
+              },
+              "score": -290,
+              "book": false
+            }
+          }
+        },
+        "fischer": {
+          "san": "Bxe2",
+          "decision": {
+            "plan": "sustained-pressure",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 0,
+            "reason": "neutral",
+            "result": {
+              "move": {
+                "from": 43,
+                "to": 52,
+                "capture": "bp"
+              },
+              "score": -230,
+              "book": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "tal",
+      "fen": "5rk1/ppp1P1pp/3b4/7q/3P4/5N2/PP3PPP/3Q1RK1 b - - 0 20",
+      "first": {
+        "plan": "forcing-initiative",
+        "depth": 2,
+        "neutralLoss": 60,
+        "bonus": 344,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 5,
+            "to": 45,
+            "capture": "wn"
+          },
+          "score": 290,
+          "book": false
+        }
+      },
+      "firstSan": "Rxf3",
+      "offered": 80,
+      "reply": "gxf3",
+      "second": {
+        "plan": "none",
+        "depth": 1,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "mate",
+        "result": {
+          "move": {
+            "from": 31,
+            "to": 55,
+            "capture": "wp"
+          },
+          "score": -99999,
+          "book": false
+        }
+      },
+      "secondSan": "Qxh2#",
+      "alternatives": {
+        "spassky": {
+          "san": "Rxf3",
+          "decision": {
+            "plan": "decisive-attack",
+            "depth": 2,
+            "neutralLoss": 60,
+            "bonus": 160,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 5,
+                "to": 45,
+                "capture": "wn"
+              },
+              "score": 290,
+              "book": false
+            }
+          }
+        },
+        "tal": {
+          "san": "Rxf3",
+          "decision": {
+            "plan": "forcing-initiative",
+            "depth": 2,
+            "neutralLoss": 60,
+            "bonus": 344,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 5,
+                "to": 45,
+                "capture": "wn"
+              },
+              "score": 290,
+              "book": false
+            }
+          }
+        },
+        "fischer": {
+          "san": "Bxe7",
+          "decision": {
+            "plan": "sustained-pressure",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 0,
+            "reason": "neutral",
+            "result": {
+              "move": {
+                "from": 19,
+                "to": 12,
+                "capture": "wp"
+              },
+              "score": 230,
+              "book": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "fischer",
+      "fen": "r2q1rk1/pp3ppp/2n1bn2/2p1p3/2P1P3/2N1BN2/PP2BPPP/R2Q1RK1 w - - 0 12",
+      "first": {
+        "plan": "sustained-pressure",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 54,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 44,
+            "to": 26,
+            "capture": "bp"
+          },
+          "score": 420,
+          "book": false
+        }
+      },
+      "firstSan": "Bxc5",
+      "offered": 0,
+      "reply": "Re8",
+      "second": {
+        "plan": "sustained-pressure",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 186,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 45,
+            "to": 30
+          },
+          "score": 420,
+          "book": false
+        }
+      },
+      "secondSan": "Ng5",
+      "alternatives": {
+        "spassky": {
+          "san": "Qxd8",
+          "decision": {
+            "plan": "decisive-attack",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 209,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 59,
+                "to": 3,
+                "capture": "bq"
+              },
+              "score": 420,
+              "book": false
+            }
+          }
+        },
+        "tal": {
+          "san": "Qxd8",
+          "decision": {
+            "plan": "mobilize-attack",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 30,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 59,
+                "to": 3,
+                "capture": "bq"
+              },
+              "score": 420,
+              "book": false
+            }
+          }
+        },
+        "fischer": {
+          "san": "Bxc5",
+          "decision": {
+            "plan": "sustained-pressure",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 54,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 44,
+                "to": 26,
+                "capture": "bp"
+              },
+              "score": 420,
+              "book": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "fischer",
+      "fen": "r2q1rk1/pp2bppp/2n1bn2/2p1p3/2P1P3/2N1BN2/PP3PPP/R2Q1RK1 b - - 0 12",
+      "first": {
+        "plan": "sustained-pressure",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 54,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 20,
+            "to": 34,
+            "capture": "wp"
+          },
+          "score": -420,
+          "book": false
+        }
+      },
+      "firstSan": "Bxc4",
+      "offered": 0,
+      "reply": "Re1",
+      "second": {
+        "plan": "sustained-pressure",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 186,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 21,
+            "to": 38
+          },
+          "score": -420,
+          "book": false
+        }
+      },
+      "secondSan": "Ng4",
+      "alternatives": {
+        "spassky": {
+          "san": "Qxd1",
+          "decision": {
+            "plan": "decisive-attack",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 209,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 3,
+                "to": 59,
+                "capture": "wq"
+              },
+              "score": -420,
+              "book": false
+            }
+          }
+        },
+        "tal": {
+          "san": "Qxd1",
+          "decision": {
+            "plan": "mobilize-attack",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 30,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 3,
+                "to": 59,
+                "capture": "wq"
+              },
+              "score": -420,
+              "book": false
+            }
+          }
+        },
+        "fischer": {
+          "san": "Bxc4",
+          "decision": {
+            "plan": "sustained-pressure",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 54,
+            "reason": "plan",
+            "result": {
+              "move": {
+                "from": 20,
+                "to": 34,
+                "capture": "wp"
+              },
+              "score": -420,
+              "book": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "fischer",
+      "fen": "6k1/5ppp/8/3P4/4K3/8/5PPP/8 w - - 0 30",
+      "first": {
+        "plan": "favorable-conversion",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 27,
+            "to": 19
+          },
+          "score": 200,
+          "book": false
+        }
+      },
+      "firstSan": "d6",
+      "offered": 0,
+      "reply": "Kf8",
+      "second": {
+        "plan": "favorable-conversion",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 140,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 36,
+            "to": 27
+          },
+          "score": 200,
+          "book": false
+        }
+      },
+      "secondSan": "Kd5",
+      "alternatives": {
+        "spassky": {
+          "san": "d6",
+          "decision": {
+            "plan": "central-activation",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 0,
+            "reason": "neutral",
+            "result": {
+              "move": {
+                "from": 27,
+                "to": 19
+              },
+              "score": 200,
+              "book": false
+            }
+          }
+        },
+        "tal": {
+          "san": "d6",
+          "decision": {
+            "plan": "mobilize-attack",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 0,
+            "reason": "neutral",
+            "result": {
+              "move": {
+                "from": 27,
+                "to": 19
+              },
+              "score": 200,
+              "book": false
+            }
+          }
+        },
+        "fischer": {
+          "san": "d6",
+          "decision": {
+            "plan": "favorable-conversion",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 0,
+            "reason": "neutral",
+            "result": {
+              "move": {
+                "from": 27,
+                "to": 19
+              },
+              "score": 200,
+              "book": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "fischer",
+      "fen": "8/5ppp/8/4k3/3p4/8/5PPP/6K1 b - - 0 30",
+      "first": {
+        "plan": "favorable-conversion",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 35,
+            "to": 43
+          },
+          "score": -200,
+          "book": false
+        }
+      },
+      "firstSan": "d3",
+      "offered": 0,
+      "reply": "Kf1",
+      "second": {
+        "plan": "favorable-conversion",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 140,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 28,
+            "to": 36
+          },
+          "score": -200,
+          "book": false
+        }
+      },
+      "secondSan": "Ke4",
+      "alternatives": {
+        "spassky": {
+          "san": "d3",
+          "decision": {
+            "plan": "central-activation",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 0,
+            "reason": "neutral",
+            "result": {
+              "move": {
+                "from": 35,
+                "to": 43
+              },
+              "score": -200,
+              "book": false
+            }
+          }
+        },
+        "tal": {
+          "san": "d3",
+          "decision": {
+            "plan": "mobilize-attack",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 0,
+            "reason": "neutral",
+            "result": {
+              "move": {
+                "from": 35,
+                "to": 43
+              },
+              "score": -200,
+              "book": false
+            }
+          }
+        },
+        "fischer": {
+          "san": "d3",
+          "decision": {
+            "plan": "favorable-conversion",
+            "depth": 2,
+            "neutralLoss": 0,
+            "bonus": 0,
+            "reason": "neutral",
+            "result": {
+              "move": {
+                "from": 35,
+                "to": 43
+              },
+              "score": -200,
+              "book": false
+            }
+          }
+        }
+      }
+    }
+  ],
+  "speculativeProduction": [
+    {
+      "side": "w",
+      "level": "casual",
+      "elapsedMs": 9.950458999999682,
+      "san": "Bxe2",
+      "decision": {
+        "plan": "forcing-initiative",
+        "depth": 1,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 43,
+            "to": 52,
+            "capture": "bp"
+          },
+          "score": -120,
+          "book": false
+        }
+      }
+    },
+    {
+      "side": "w",
+      "level": "club",
+      "elapsedMs": 82.2752500000006,
+      "san": "Rxf6",
+      "decision": {
+        "plan": "forcing-initiative",
+        "depth": 2,
+        "neutralLoss": 60,
+        "bonus": 344,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 61,
+            "to": 21,
+            "capture": "bn"
+          },
+          "score": -290,
+          "book": false
+        }
+      }
+    },
+    {
+      "side": "w",
+      "level": "strong",
+      "elapsedMs": 1970.2889169999999,
+      "san": "Bxe2",
+      "decision": {
+        "plan": "forcing-initiative",
+        "depth": 3,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 43,
+            "to": 52,
+            "capture": "bp"
+          },
+          "score": -135,
+          "book": false
+        }
+      }
+    },
+    {
+      "side": "b",
+      "level": "casual",
+      "elapsedMs": 8.849249999999302,
+      "san": "Bxe7",
+      "decision": {
+        "plan": "forcing-initiative",
+        "depth": 1,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 19,
+            "to": 12,
+            "capture": "wp"
+          },
+          "score": 120,
+          "book": false
+        }
+      }
+    },
+    {
+      "side": "b",
+      "level": "club",
+      "elapsedMs": 82.14445799999885,
+      "san": "Rxf3",
+      "decision": {
+        "plan": "forcing-initiative",
+        "depth": 2,
+        "neutralLoss": 60,
+        "bonus": 344,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 5,
+            "to": 45,
+            "capture": "wn"
+          },
+          "score": 290,
+          "book": false
+        }
+      }
+    },
+    {
+      "side": "b",
+      "level": "strong",
+      "elapsedMs": 1970.2690829999992,
+      "san": "Bxe7",
+      "decision": {
+        "plan": "forcing-initiative",
+        "depth": 3,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 19,
+            "to": 12,
+            "capture": "wp"
+          },
+          "score": 135,
+          "book": false
+        }
+      }
+    }
+  ]
+}

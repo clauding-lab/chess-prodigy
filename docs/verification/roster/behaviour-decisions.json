@@ -1,0 +1,2476 @@
+{
+  "dateBDT": "2026-09-19",
+  "fixed": [
+    {
+      "name": "buildup",
+      "id": "spassky",
+      "fen": "r1bqkbnr/pppp1pp1/2n4p/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 3",
+      "san": "Nc3",
+      "offered": 0,
+      "decision": {
+        "plan": "buildup",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 164,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 57,
+            "to": 42
+          },
+          "score": -50,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 4,
+        "lines": 9,
+        "bishops": 5,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 1,
+        "safeKing": false,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 0,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 3,
+        "lines": 10,
+        "bishops": 5,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 1,
+        "safeKing": false,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 0,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "buildup",
+      "id": "tal",
+      "fen": "r1bqkbnr/pppp1pp1/2n4p/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 3",
+      "san": "Nc3",
+      "offered": 0,
+      "decision": {
+        "plan": "mobilize-attack",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 90,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 57,
+            "to": 42
+          },
+          "score": -50,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 4,
+        "lines": 9,
+        "bishops": 5,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 1,
+        "safeKing": false,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 0,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 3,
+        "lines": 10,
+        "bishops": 5,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 1,
+        "safeKing": false,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 0,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "buildup",
+      "id": "fischer",
+      "fen": "r1bqkbnr/pppp1pp1/2n4p/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 3",
+      "san": "Bc4",
+      "offered": 0,
+      "decision": {
+        "plan": "sustained-pressure",
+        "depth": 2,
+        "neutralLoss": 30,
+        "bonus": 240,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 61,
+            "to": 34
+          },
+          "score": -80,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 4,
+        "lines": 9,
+        "bishops": 5,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 1,
+        "safeKing": false,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 0,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 3,
+        "lines": 13,
+        "bishops": 9,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 1,
+        "safeKing": false,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "buildup",
+      "id": "spassky",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/2N4P/PPPP1PP1/R1BQKBNR b KQkq - 0 3",
+      "san": "Nc6",
+      "offered": 0,
+      "decision": {
+        "plan": "buildup",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 164,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 1,
+            "to": 18
+          },
+          "score": 50,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 4,
+        "lines": 9,
+        "bishops": 5,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 1,
+        "safeKing": false,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 0,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 3,
+        "lines": 10,
+        "bishops": 5,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 1,
+        "safeKing": false,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 0,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "buildup",
+      "id": "tal",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/2N4P/PPPP1PP1/R1BQKBNR b KQkq - 0 3",
+      "san": "Nc6",
+      "offered": 0,
+      "decision": {
+        "plan": "mobilize-attack",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 90,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 1,
+            "to": 18
+          },
+          "score": 50,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 4,
+        "lines": 9,
+        "bishops": 5,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 1,
+        "safeKing": false,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 0,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 3,
+        "lines": 10,
+        "bishops": 5,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 1,
+        "safeKing": false,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 0,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "buildup",
+      "id": "fischer",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/2N4P/PPPP1PP1/R1BQKBNR b KQkq - 0 3",
+      "san": "Bc5",
+      "offered": 0,
+      "decision": {
+        "plan": "sustained-pressure",
+        "depth": 2,
+        "neutralLoss": 30,
+        "bonus": 240,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 5,
+            "to": 26
+          },
+          "score": 80,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 4,
+        "lines": 9,
+        "bishops": 5,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 1,
+        "safeKing": false,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 0,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 3,
+        "lines": 13,
+        "bishops": 9,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 1,
+        "safeKing": false,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "centre",
+      "id": "spassky",
+      "fen": "r1bqkb1r/ppp2ppp/2np1n2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w kq - 0 9",
+      "san": "d4",
+      "offered": 0,
+      "decision": {
+        "plan": "open-centre",
+        "depth": 2,
+        "neutralLoss": 90,
+        "bonus": 231,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 43,
+            "to": 35
+          },
+          "score": -30,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 23,
+        "bishops": 15,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 2,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 22,
+        "bishops": 13,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 2,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "centre",
+      "id": "tal",
+      "fen": "r1bqkb1r/ppp2ppp/2np1n2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w kq - 0 9",
+      "san": "Ng5",
+      "offered": 0,
+      "decision": {
+        "plan": "forcing-initiative",
+        "depth": 2,
+        "neutralLoss": 15,
+        "bonus": 175,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 45,
+            "to": 30
+          },
+          "score": 45,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 23,
+        "bishops": 15,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 2,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 24,
+        "bishops": 13,
+        "attackers": 2,
+        "area": 1,
+        "exposure": 2,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 3,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "centre",
+      "id": "fischer",
+      "fen": "r1bqkb1r/ppp2ppp/2np1n2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w kq - 0 9",
+      "san": "Ng5",
+      "offered": 0,
+      "decision": {
+        "plan": "sustained-pressure",
+        "depth": 2,
+        "neutralLoss": 15,
+        "bonus": 66,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 45,
+            "to": 30
+          },
+          "score": 45,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 23,
+        "bishops": 15,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 2,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 24,
+        "bishops": 13,
+        "attackers": 2,
+        "area": 1,
+        "exposure": 2,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 3,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "centre",
+      "id": "spassky",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NP1N2/PPP2PPP/R1BQKB1R b KQ - 0 9",
+      "san": "d5",
+      "offered": 0,
+      "decision": {
+        "plan": "open-centre",
+        "depth": 2,
+        "neutralLoss": 90,
+        "bonus": 231,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 19,
+            "to": 27
+          },
+          "score": 30,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 23,
+        "bishops": 15,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 2,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 22,
+        "bishops": 13,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 2,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "centre",
+      "id": "tal",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NP1N2/PPP2PPP/R1BQKB1R b KQ - 0 9",
+      "san": "Ng4",
+      "offered": 0,
+      "decision": {
+        "plan": "forcing-initiative",
+        "depth": 2,
+        "neutralLoss": 15,
+        "bonus": 175,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 21,
+            "to": 38
+          },
+          "score": -45,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 23,
+        "bishops": 15,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 2,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 24,
+        "bishops": 13,
+        "attackers": 2,
+        "area": 1,
+        "exposure": 2,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 3,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "centre",
+      "id": "fischer",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NP1N2/PPP2PPP/R1BQKB1R b KQ - 0 9",
+      "san": "Ng4",
+      "offered": 0,
+      "decision": {
+        "plan": "sustained-pressure",
+        "depth": 2,
+        "neutralLoss": 15,
+        "bonus": 66,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 21,
+            "to": 38
+          },
+          "score": -45,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 23,
+        "bishops": 15,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 2,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 24,
+        "bishops": 13,
+        "attackers": 2,
+        "area": 1,
+        "exposure": 2,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 3,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "attack",
+      "id": "spassky",
+      "fen": "r4rk1/ppp2ppp/2npbn2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w - - 0 16",
+      "san": "Bxe6",
+      "offered": 0,
+      "decision": {
+        "plan": "decisive-attack",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 216,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 34,
+            "to": 20,
+            "capture": "bb"
+          },
+          "score": 1245,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 22,
+        "bishops": 14,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 1230,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 26,
+        "bishops": 18,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 1560,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "attack",
+      "id": "tal",
+      "fen": "r4rk1/ppp2ppp/2npbn2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w - - 0 16",
+      "san": "Bxe6",
+      "offered": 0,
+      "decision": {
+        "plan": "mobilize-attack",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 20,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 34,
+            "to": 20,
+            "capture": "bb"
+          },
+          "score": 1245,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 22,
+        "bishops": 14,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 1230,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 26,
+        "bishops": 18,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 1560,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "attack",
+      "id": "fischer",
+      "fen": "r4rk1/ppp2ppp/2npbn2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w - - 0 16",
+      "san": "Bxe6",
+      "offered": 0,
+      "decision": {
+        "plan": "sustained-pressure",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 213,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 34,
+            "to": 20,
+            "capture": "bb"
+          },
+          "score": 1245,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 22,
+        "bishops": 14,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 1230,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 26,
+        "bishops": 18,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 1560,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "attack",
+      "id": "spassky",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NPBN2/PPP2PPP/R4RK1 b - - 0 16",
+      "san": "Bxe3",
+      "offered": 0,
+      "decision": {
+        "plan": "decisive-attack",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 216,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 26,
+            "to": 44,
+            "capture": "wb"
+          },
+          "score": -1245,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 22,
+        "bishops": 14,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 1230,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 26,
+        "bishops": 18,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 1560,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "attack",
+      "id": "tal",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NPBN2/PPP2PPP/R4RK1 b - - 0 16",
+      "san": "Bxe3",
+      "offered": 0,
+      "decision": {
+        "plan": "mobilize-attack",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 20,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 26,
+            "to": 44,
+            "capture": "wb"
+          },
+          "score": -1245,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 22,
+        "bishops": 14,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 1230,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 26,
+        "bishops": 18,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 1560,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "attack",
+      "id": "fischer",
+      "fen": "r2q1rk1/ppp2ppp/2npbn2/2b1p3/4P3/2NPBN2/PPP2PPP/R4RK1 b - - 0 16",
+      "san": "Bxe3",
+      "offered": 0,
+      "decision": {
+        "plan": "sustained-pressure",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 213,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 26,
+            "to": 44,
+            "capture": "wb"
+          },
+          "score": -1245,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 22,
+        "bishops": 14,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 1230,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 26,
+        "bishops": 18,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 1560,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "sacrifice",
+      "id": "spassky",
+      "fen": "r1bq1rk1/ppp2ppp/2np1n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQ1RK1 w - - 0 8",
+      "san": "Be3",
+      "offered": 0,
+      "decision": {
+        "plan": "buildup",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 180,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 58,
+            "to": 44
+          },
+          "score": 0,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 1,
+        "lines": 16,
+        "bishops": 11,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 21,
+        "bishops": 13,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "sacrifice",
+      "id": "tal",
+      "fen": "r1bq1rk1/ppp2ppp/2np1n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQ1RK1 w - - 0 8",
+      "san": "Ng5",
+      "offered": 0,
+      "decision": {
+        "plan": "forcing-initiative",
+        "depth": 2,
+        "neutralLoss": 25,
+        "bonus": 189,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 45,
+            "to": 30
+          },
+          "score": -25,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 1,
+        "lines": 16,
+        "bishops": 11,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 1,
+        "lines": 17,
+        "bishops": 9,
+        "attackers": 2,
+        "area": 2,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "sacrifice",
+      "id": "fischer",
+      "fen": "r1bq1rk1/ppp2ppp/2np1n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQ1RK1 w - - 0 8",
+      "san": "Be3",
+      "offered": 0,
+      "decision": {
+        "plan": "sustained-pressure",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 179,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 58,
+            "to": 44
+          },
+          "score": 0,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 1,
+        "lines": 16,
+        "bishops": 11,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 21,
+        "bishops": 13,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "sacrifice",
+      "id": "spassky",
+      "fen": "r1bq1rk1/ppp2ppp/2np1n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQ1RK1 b - - 0 8",
+      "san": "Be6",
+      "offered": 0,
+      "decision": {
+        "plan": "buildup",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 180,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 2,
+            "to": 20
+          },
+          "score": 0,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 1,
+        "lines": 16,
+        "bishops": 11,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 21,
+        "bishops": 13,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "sacrifice",
+      "id": "tal",
+      "fen": "r1bq1rk1/ppp2ppp/2np1n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQ1RK1 b - - 0 8",
+      "san": "Ng4",
+      "offered": 0,
+      "decision": {
+        "plan": "forcing-initiative",
+        "depth": 2,
+        "neutralLoss": 25,
+        "bonus": 189,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 21,
+            "to": 38
+          },
+          "score": 25,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 1,
+        "lines": 16,
+        "bishops": 11,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 1,
+        "lines": 17,
+        "bishops": 9,
+        "attackers": 2,
+        "area": 2,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "sacrifice",
+      "id": "fischer",
+      "fen": "r1bq1rk1/ppp2ppp/2np1n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQ1RK1 b - - 0 8",
+      "san": "Be6",
+      "offered": 0,
+      "decision": {
+        "plan": "sustained-pressure",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 179,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 2,
+            "to": 20
+          },
+          "score": 0,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 1,
+        "lines": 16,
+        "bishops": 11,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 21,
+        "bishops": 13,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 0,
+        "nonPawn": 3200,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "trap",
+      "id": "spassky",
+      "fen": "3rk3/8/8/3p4/8/8/8/3Q2K1 w - - 0 20",
+      "san": "Kf2",
+      "offered": 0,
+      "decision": {
+        "plan": "central-activation",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 62,
+            "to": 53
+          },
+          "score": 270,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 10,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 3,
+        "safeKing": false,
+        "material": 300,
+        "nonPawn": 900,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 10,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 3,
+        "safeKing": false,
+        "material": 300,
+        "nonPawn": 900,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 4.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "trap",
+      "id": "tal",
+      "fen": "3rk3/8/8/3p4/8/8/8/3Q2K1 w - - 0 20",
+      "san": "Kf2",
+      "offered": 0,
+      "decision": {
+        "plan": "mobilize-attack",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 62,
+            "to": 53
+          },
+          "score": 270,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 10,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 3,
+        "safeKing": false,
+        "material": 300,
+        "nonPawn": 900,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 10,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 3,
+        "safeKing": false,
+        "material": 300,
+        "nonPawn": 900,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 4.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "trap",
+      "id": "fischer",
+      "fen": "3rk3/8/8/3p4/8/8/8/3Q2K1 w - - 0 20",
+      "san": "Kf2",
+      "offered": 0,
+      "decision": {
+        "plan": "favorable-conversion",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 75,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 62,
+            "to": 53
+          },
+          "score": 270,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 10,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 3,
+        "safeKing": false,
+        "material": 300,
+        "nonPawn": 900,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 10,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 3,
+        "safeKing": false,
+        "material": 300,
+        "nonPawn": 900,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 4.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "trap",
+      "id": "spassky",
+      "fen": "3q2k1/8/8/8/3P4/8/8/3RK3 b - - 0 20",
+      "san": "Kf7",
+      "offered": 0,
+      "decision": {
+        "plan": "central-activation",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 6,
+            "to": 13
+          },
+          "score": -270,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 10,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 3,
+        "safeKing": false,
+        "material": 300,
+        "nonPawn": 900,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 10,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 3,
+        "safeKing": false,
+        "material": 300,
+        "nonPawn": 900,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 4.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "trap",
+      "id": "tal",
+      "fen": "3q2k1/8/8/8/3P4/8/8/3RK3 b - - 0 20",
+      "san": "Kf7",
+      "offered": 0,
+      "decision": {
+        "plan": "mobilize-attack",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 6,
+            "to": 13
+          },
+          "score": -270,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 10,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 3,
+        "safeKing": false,
+        "material": 300,
+        "nonPawn": 900,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 10,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 3,
+        "safeKing": false,
+        "material": 300,
+        "nonPawn": 900,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 4.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "trap",
+      "id": "fischer",
+      "fen": "3q2k1/8/8/8/3P4/8/8/3RK3 b - - 0 20",
+      "san": "Kf7",
+      "offered": 0,
+      "decision": {
+        "plan": "favorable-conversion",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 75,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 6,
+            "to": 13
+          },
+          "score": -270,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 10,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 3,
+        "safeKing": false,
+        "material": 300,
+        "nonPawn": 900,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 10,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 3,
+        "safeKing": false,
+        "material": 300,
+        "nonPawn": 900,
+        "pressure": 1,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 4.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "pressure",
+      "id": "spassky",
+      "fen": "r2q1rk1/pp3ppp/2n1bn2/2p1p3/2P1P3/2N1BN2/PP2BPPP/R2Q1RK1 w - - 0 12",
+      "san": "Qxd8",
+      "offered": 0,
+      "decision": {
+        "plan": "decisive-attack",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 209,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 59,
+            "to": 3,
+            "capture": "bq"
+          },
+          "score": 420,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 21,
+        "bishops": 8,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 330,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 27,
+        "bishops": 9,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 1230,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "pressure",
+      "id": "tal",
+      "fen": "r2q1rk1/pp3ppp/2n1bn2/2p1p3/2P1P3/2N1BN2/PP2BPPP/R2Q1RK1 w - - 0 12",
+      "san": "Qxd8",
+      "offered": 0,
+      "decision": {
+        "plan": "mobilize-attack",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 30,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 59,
+            "to": 3,
+            "capture": "bq"
+          },
+          "score": 420,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 21,
+        "bishops": 8,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 330,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 27,
+        "bishops": 9,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 1230,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "pressure",
+      "id": "fischer",
+      "fen": "r2q1rk1/pp3ppp/2n1bn2/2p1p3/2P1P3/2N1BN2/PP2BPPP/R2Q1RK1 w - - 0 12",
+      "san": "Bxc5",
+      "offered": 0,
+      "decision": {
+        "plan": "sustained-pressure",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 54,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 44,
+            "to": 26,
+            "capture": "bp"
+          },
+          "score": 420,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 21,
+        "bishops": 8,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 330,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 23,
+        "bishops": 10,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 430,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "pressure",
+      "id": "spassky",
+      "fen": "r2q1rk1/pp2bppp/2n1bn2/2p1p3/2P1P3/2N1BN2/PP3PPP/R2Q1RK1 b - - 0 12",
+      "san": "Qxd1",
+      "offered": 0,
+      "decision": {
+        "plan": "decisive-attack",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 209,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 3,
+            "to": 59,
+            "capture": "wq"
+          },
+          "score": -420,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 21,
+        "bishops": 8,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 330,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 27,
+        "bishops": 9,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 1230,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "pressure",
+      "id": "tal",
+      "fen": "r2q1rk1/pp2bppp/2n1bn2/2p1p3/2P1P3/2N1BN2/PP3PPP/R2Q1RK1 b - - 0 12",
+      "san": "Qxd1",
+      "offered": 0,
+      "decision": {
+        "plan": "mobilize-attack",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 30,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 3,
+            "to": 59,
+            "capture": "wq"
+          },
+          "score": -420,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 21,
+        "bishops": 8,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 330,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 27,
+        "bishops": 9,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 1230,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "pressure",
+      "id": "fischer",
+      "fen": "r2q1rk1/pp2bppp/2n1bn2/2p1p3/2P1P3/2N1BN2/PP3PPP/R2Q1RK1 b - - 0 12",
+      "san": "Bxc4",
+      "offered": 0,
+      "decision": {
+        "plan": "sustained-pressure",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 54,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 20,
+            "to": 34,
+            "capture": "wp"
+          },
+          "score": -420,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 21,
+        "bishops": 8,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 330,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 23,
+        "bishops": 10,
+        "attackers": 1,
+        "area": 1,
+        "exposure": 0,
+        "safeKing": true,
+        "material": 430,
+        "nonPawn": 3200,
+        "pressure": 2,
+        "files": 0,
+        "passed": 0,
+        "kingActivity": 3.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "conversion",
+      "id": "spassky",
+      "fen": "6k1/5ppp/8/3P4/4K3/8/5PPP/8 w - - 0 30",
+      "san": "d6",
+      "offered": 0,
+      "decision": {
+        "plan": "central-activation",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 27,
+            "to": 19
+          },
+          "score": 200,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 0,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": false,
+        "material": 100,
+        "nonPawn": 0,
+        "pressure": 0,
+        "files": 0,
+        "passed": 8,
+        "kingActivity": 6.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 0,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": false,
+        "material": 100,
+        "nonPawn": 0,
+        "pressure": 0,
+        "files": 0,
+        "passed": 5,
+        "kingActivity": 6.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "conversion",
+      "id": "tal",
+      "fen": "6k1/5ppp/8/3P4/4K3/8/5PPP/8 w - - 0 30",
+      "san": "d6",
+      "offered": 0,
+      "decision": {
+        "plan": "mobilize-attack",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 27,
+            "to": 19
+          },
+          "score": 200,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 0,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": false,
+        "material": 100,
+        "nonPawn": 0,
+        "pressure": 0,
+        "files": 0,
+        "passed": 8,
+        "kingActivity": 6.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 0,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": false,
+        "material": 100,
+        "nonPawn": 0,
+        "pressure": 0,
+        "files": 0,
+        "passed": 5,
+        "kingActivity": 6.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "conversion",
+      "id": "fischer",
+      "fen": "6k1/5ppp/8/3P4/4K3/8/5PPP/8 w - - 0 30",
+      "san": "d6",
+      "offered": 0,
+      "decision": {
+        "plan": "favorable-conversion",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 27,
+            "to": 19
+          },
+          "score": 200,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 0,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": false,
+        "material": 100,
+        "nonPawn": 0,
+        "pressure": 0,
+        "files": 0,
+        "passed": 8,
+        "kingActivity": 6.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 0,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": false,
+        "material": 100,
+        "nonPawn": 0,
+        "pressure": 0,
+        "files": 0,
+        "passed": 5,
+        "kingActivity": 6.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "conversion",
+      "id": "spassky",
+      "fen": "8/5ppp/8/4k3/3p4/8/5PPP/6K1 b - - 0 30",
+      "san": "d3",
+      "offered": 0,
+      "decision": {
+        "plan": "central-activation",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 35,
+            "to": 43
+          },
+          "score": -200,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 0,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": false,
+        "material": 100,
+        "nonPawn": 0,
+        "pressure": 0,
+        "files": 0,
+        "passed": 8,
+        "kingActivity": 6.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 0,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": false,
+        "material": 100,
+        "nonPawn": 0,
+        "pressure": 0,
+        "files": 0,
+        "passed": 5,
+        "kingActivity": 6.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "conversion",
+      "id": "tal",
+      "fen": "8/5ppp/8/4k3/3p4/8/5PPP/6K1 b - - 0 30",
+      "san": "d3",
+      "offered": 0,
+      "decision": {
+        "plan": "mobilize-attack",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 35,
+            "to": 43
+          },
+          "score": -200,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 0,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": false,
+        "material": 100,
+        "nonPawn": 0,
+        "pressure": 0,
+        "files": 0,
+        "passed": 8,
+        "kingActivity": 6.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 0,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": false,
+        "material": 100,
+        "nonPawn": 0,
+        "pressure": 0,
+        "files": 0,
+        "passed": 5,
+        "kingActivity": 6.5,
+        "mobility": {}
+      }
+    },
+    {
+      "name": "conversion",
+      "id": "fischer",
+      "fen": "8/5ppp/8/4k3/3p4/8/5PPP/6K1 b - - 0 30",
+      "san": "d3",
+      "offered": 0,
+      "decision": {
+        "plan": "favorable-conversion",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 0,
+        "reason": "neutral",
+        "result": {
+          "move": {
+            "from": 35,
+            "to": 43
+          },
+          "score": -200,
+          "book": false
+        }
+      },
+      "before": {
+        "homeMinors": 0,
+        "lines": 0,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": false,
+        "material": 100,
+        "nonPawn": 0,
+        "pressure": 0,
+        "files": 0,
+        "passed": 8,
+        "kingActivity": 6.5,
+        "mobility": {}
+      },
+      "after": {
+        "homeMinors": 0,
+        "lines": 0,
+        "bishops": 0,
+        "attackers": 0,
+        "area": 0,
+        "exposure": 0,
+        "safeKing": false,
+        "material": 100,
+        "nonPawn": 0,
+        "pressure": 0,
+        "files": 0,
+        "passed": 5,
+        "kingActivity": 6.5,
+        "mobility": {}
+      }
+    }
+  ],
+  "production": [
+    {
+      "id": "spassky",
+      "level": "casual",
+      "elapsedMs": 16.2221669999999,
+      "decision": {
+        "plan": "decisive-attack",
+        "depth": 1,
+        "neutralLoss": 5,
+        "bonus": 209,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 59,
+            "to": 3,
+            "capture": "bq"
+          },
+          "score": 420,
+          "book": false
+        }
+      }
+    },
+    {
+      "id": "spassky",
+      "level": "club",
+      "elapsedMs": 88.32508300000018,
+      "decision": {
+        "plan": "decisive-attack",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 209,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 59,
+            "to": 3,
+            "capture": "bq"
+          },
+          "score": 420,
+          "book": false
+        }
+      }
+    },
+    {
+      "id": "spassky",
+      "level": "strong",
+      "elapsedMs": 1970.376291,
+      "decision": {
+        "plan": "decisive-attack",
+        "depth": 3,
+        "neutralLoss": 10,
+        "bonus": 209,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 59,
+            "to": 3,
+            "capture": "bq"
+          },
+          "score": 420,
+          "book": false
+        }
+      }
+    },
+    {
+      "id": "tal",
+      "level": "casual",
+      "elapsedMs": 18.11566700000003,
+      "decision": {
+        "plan": "mobilize-attack",
+        "depth": 1,
+        "neutralLoss": 5,
+        "bonus": 30,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 59,
+            "to": 3,
+            "capture": "bq"
+          },
+          "score": 420,
+          "book": false
+        }
+      }
+    },
+    {
+      "id": "tal",
+      "level": "club",
+      "elapsedMs": 101.1627499999995,
+      "decision": {
+        "plan": "mobilize-attack",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 30,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 59,
+            "to": 3,
+            "capture": "bq"
+          },
+          "score": 420,
+          "book": false
+        }
+      }
+    },
+    {
+      "id": "tal",
+      "level": "strong",
+      "elapsedMs": 1971.0130829999998,
+      "decision": {
+        "plan": "mobilize-attack",
+        "depth": 3,
+        "neutralLoss": 10,
+        "bonus": 30,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 59,
+            "to": 3,
+            "capture": "bq"
+          },
+          "score": 420,
+          "book": false
+        }
+      }
+    },
+    {
+      "id": "fischer",
+      "level": "casual",
+      "elapsedMs": 17.11212499999965,
+      "decision": {
+        "plan": "sustained-pressure",
+        "depth": 1,
+        "neutralLoss": 0,
+        "bonus": 54,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 44,
+            "to": 26,
+            "capture": "bp"
+          },
+          "score": 425,
+          "book": false
+        }
+      }
+    },
+    {
+      "id": "fischer",
+      "level": "club",
+      "elapsedMs": 101.55745899999965,
+      "decision": {
+        "plan": "sustained-pressure",
+        "depth": 2,
+        "neutralLoss": 0,
+        "bonus": 54,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 44,
+            "to": 26,
+            "capture": "bp"
+          },
+          "score": 420,
+          "book": false
+        }
+      }
+    },
+    {
+      "id": "fischer",
+      "level": "strong",
+      "elapsedMs": 1970.118042000001,
+      "decision": {
+        "plan": "sustained-pressure",
+        "depth": 3,
+        "neutralLoss": 0,
+        "bonus": 54,
+        "reason": "plan",
+        "result": {
+          "move": {
+            "from": 44,
+            "to": 26,
+            "capture": "bp"
+          },
+          "score": 430,
+          "book": false
+        }
+      }
+    }
+  ]
+}

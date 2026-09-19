@@ -1,0 +1,7 @@
+{"fen":"3q1rk1/pp3ppp/5nn1/3p4/7Q/3B4/PPP3PP/5RK1 w - - 0 20","san":"Bxg6","offer":10,"loss":10,"bonus":179}
+{"fen":"3q1rk1/pp3ppp/5n2/2np4/7Q/3B4/PPP3PP/5RK1 w - - 0 20","san":"Rxf6","offer":80,"loss":10,"bonus":189}
+{"fen":"3q1rk1/pp3ppp/5n2/3pn3/7Q/3B4/PPP3PP/5RK1 w - - 0 20","san":"Rxf6","offer":80,"loss":15,"bonus":189}
+{"fen":"3q1rk1/pp3ppp/5n2/3p2P1/7Q/3B4/PPP3PP/5RK1 w - - 0 20","san":"Rxf6","offer":80,"loss":5,"bonus":189}
+{"fen":"3q1rk1/pp3ppp/5n2/3p4/3n3Q/3B4/PPP3PP/5RK1 w - - 0 20","san":"Rxf6","offer":80,"loss":15,"bonus":189}
+{"fen":"3q1rk1/pp3ppp/5n2/3p4/4p2Q/3B4/PPP3PP/5RK1 w - - 0 20","san":"Rxf6","offer":80,"loss":30,"bonus":189}
+{"fen":"3q1rk1/pp3ppp/5n2/3p4/7Q/3B4/PPP1p1PP/5RK1 w - - 0 20","san":"Rxf6","offer":80,"loss":60,"bonus":184}
