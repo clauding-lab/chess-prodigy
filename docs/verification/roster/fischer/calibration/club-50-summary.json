@@ -1,0 +1,15 @@
+{
+  "rating": 1356.949638427769,
+  "lower": 1241.1579765640865,
+  "upper": 1472.7413002914518,
+  "games": 100,
+  "unresolved": 0,
+  "eligible": true,
+  "protocol": "fischer-plans-paired-v1",
+  "opponentVersion": 1,
+  "level": "club",
+  "pairs": 50,
+  "wins": 21,
+  "draws": 60,
+  "losses": 19
+}

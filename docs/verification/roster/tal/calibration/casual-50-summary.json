@@ -1,0 +1,15 @@
+{
+  "rating": 1215.348166226132,
+  "lower": 1051.5578086159776,
+  "upper": 1379.138523836286,
+  "games": 100,
+  "unresolved": 0,
+  "eligible": false,
+  "protocol": "tal-plans-paired-v1",
+  "opponentVersion": 1,
+  "level": "casual",
+  "pairs": 50,
+  "wins": 78,
+  "draws": 16,
+  "losses": 6
+}

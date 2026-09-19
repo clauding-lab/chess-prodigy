@@ -1,0 +1,15 @@
+{
+  "rating": 1703.8076556657995,
+  "lower": 1583.7397507867768,
+  "upper": 1823.8755605448223,
+  "games": 100,
+  "unresolved": 0,
+  "eligible": true,
+  "protocol": "spassky-plans-paired-v1",
+  "opponentVersion": 1,
+  "level": "strong",
+  "pairs": 50,
+  "wins": 6,
+  "draws": 61,
+  "losses": 33
+}
