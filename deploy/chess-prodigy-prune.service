@@ -1,0 +1,26 @@
+[Unit]
+Description=Prune old Chess Prodigy releases and stale deploy staging directories
+After=chess-prodigy-backup.service
+# Unpruned releases filled the shared box's disk on 12 Sep 2026 (this prune did not
+# exist yet); a prune that fails silently would repeat it. This reuses the-brief's
+# alert template unit (same box, separate repo). It needs
+# /etc/systemd/system/brief-alert@.service, /home/adnan/the-brief/deploy/brief_alert.sh
+# and /etc/brief.env to stay where they are - if any of them moves, this alarm dies quietly.
+OnFailure=brief-alert@%n.service
+
+[Service]
+Type=oneshot
+User=root
+# Installed release-independent (see deploy/README.md, "Release retention")
+# so the timer keeps working across every rollback and does not depend on
+# a release built from this branch being current before it can fire.
+ExecStart=/usr/local/sbin/chess-prodigy-prune
+# The first run after install clears the full backlog (~20 releases at
+# ~480 MB each on a near-full disk); du+rm per release can exceed systemd's
+# 90s default oneshot timeout, which would SIGTERM mid-delete.
+TimeoutStartSec=1800
+UMask=0022
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/chess-prodigy/releases /tmp

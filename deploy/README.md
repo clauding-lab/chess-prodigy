@@ -39,7 +39,36 @@ Preserve all existing hostname routes. Validate the tunnel configuration, create
 
 Check `/api/health`, an actual guest game, registration/login/logout, account restore and `/api/leaderboard` over HTTPS. API responses must have `Cache-Control: no-store`; private paths must not be service-worker-cached. Check `systemctl status chess-prodigy` and recent journal errors without printing user records or secrets.
 
-Build and test each release before switching `current`. Back up the database first, install the new directory, switch the symlink, restart only `chess-prodigy`, then verify HTTPS. Keep the previous release for rollback. Better Auth's schema migrations run during startup. Do not roll back across an incompatible schema migration without a reviewed database recovery plan.
+Build and test each release before switching `current`. Back up the database first, install the new directory, switch the symlink, restart only `chess-prodigy`, then verify HTTPS. Keep the previous release for rollback — the retention timer below only ever removes releases beyond the newest few, never the active one. Better Auth's schema migrations run during startup. Do not roll back across an incompatible schema migration without a reviewed database recovery plan.
+
+## Release retention
+
+Every manually installed release directory under `/opt/chess-prodigy/releases` is ~480 MB (`npm ci` with dev dependencies), and sessions occasionally leave `/tmp/chess-*-stage.*` staging directories behind after extraction. Left unchecked, these fill the root disk. `chess-prodigy-prune.timer` runs `deploy/prune-releases.sh` nightly at **04:45 BDT** (after the 04:15 database backup) to remove old releases and stale staging directories.
+
+Defaults: keep the newest **3** release directories (`CHESS_PRODIGY_KEEP`), plus whatever `current` and `current-next` point at even if older; remove `/tmp/chess-*-stage.*` directories (`CHESS_PRODIGY_STAGE_GLOB`) once they are more than **24 hours** old (`CHESS_PRODIGY_STAGE_MAX_AGE_HOURS`). The script never deletes the release `current` resolves to, refuses to run if `releases/` is missing or `current` does not resolve inside it, and refuses if asked to keep fewer than 1 release.
+
+The unit runs the script from `/usr/local/sbin/chess-prodigy-prune`, not from `current/deploy/`, so the timer keeps working across every future rollback instead of silently no-op'ing whenever `current` points at a release built before this file existed. Install the script and both units together, **in this order**, run from the checked-out repository root. (`/opt/chess-prodigy/current` has `deploy/` at the same relative path, but it is a release-built copy that may predate a unit change such as the `OnFailure=` line below — install units from a git checkout.)
+
+```
+sudo install -m 0755 deploy/prune-releases.sh /usr/local/sbin/chess-prodigy-prune
+sudo cp deploy/chess-prodigy-prune.service deploy/chess-prodigy-prune.timer /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now chess-prodigy-prune.timer
+```
+
+Re-run the `install` line whenever `deploy/prune-releases.sh` changes in a future release — copying the units alone leaves the old script in place.
+
+`enable --now` only starts the *timer*; it does not prove the script runs. After installing, verify once by hand:
+
+```
+sudo systemctl start chess-prodigy-prune && systemctl status chess-prodigy-prune
+```
+
+A non-zero exit or `status=203/EXEC` here means the install order above was not followed — fix that before relying on the nightly timer. A failure here now also posts a Discord alert, which is expected during an install. The service carries `OnFailure=brief-alert@%n.service`, which starts the-brief's alert template unit and posts the failed unit's name to the owner's Discord alert channel (or the preview channel, if only that webhook is configured) whenever a run fails. This is a cross-repo coupling: it depends on `/etc/systemd/system/brief-alert@.service`, `/home/adnan/the-brief/deploy/brief_alert.sh` and `/etc/brief.env` staying where they are on the shared box — if any of them moves, this alarm dies quietly. It only fires when the job actually runs and fails; a disabled, masked or never-scheduled timer produces no failure and therefore no alert, so still periodically check `systemctl list-timers chess-prodigy-prune`, `systemctl is-failed chess-prodigy-prune` and `journalctl -u chess-prodigy-prune -n 20` for drift.
+
+To add this to an already-installed box, copy only the `.service` file from a git checkout of this repo (never from `/opt/chess-prodigy/current/deploy`, which is a release-built copy that may predate this line), then `sudo systemctl daemon-reload` — no `enable`, no `--now`, and do not re-copy or restart the timer. Verify with `systemctl show chess-prodigy-prune -p LoadState -p OnFailure`, which must print `LoadState=loaded` and `OnFailure=brief-alert@chess-prodigy-prune.service.service` (the doubled `.service` is correct: `%n` carries the unit's own suffix and the template adds its own). Test the alert path without running the destructive prune with `sudo systemctl start "brief-alert@prune-alert-DRILL.service"`, which posts a clearly fake-named alert.
+
+Run it by hand with `sudo systemctl start chess-prodigy-prune`, or preview without deleting anything with `sudo /usr/local/sbin/chess-prodigy-prune --dry-run` (or, before the first install, `sudo /opt/chess-prodigy/current/deploy/prune-releases.sh --dry-run`). A deploy or rollback procedure must never assume more than the 3 newest releases (plus the active one) still exist on disk.
 
 ## Backups and recovery
 

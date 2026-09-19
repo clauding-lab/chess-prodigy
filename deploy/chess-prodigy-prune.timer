@@ -1,0 +1,10 @@
+[Unit]
+Description=Nightly Chess Prodigy release and staging directory prune at 04:45 BDT
+
+[Timer]
+OnCalendar=*-*-* 04:45:00 Asia/Dhaka
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target
