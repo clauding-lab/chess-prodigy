@@ -1,0 +1,5 @@
+# Exact false positives: SHA-256 source-file fingerprints in the audited Chigorin
+# calibration manifest, not credentials. Keep detection enabled everywhere else.
+5ed918fe19ead5390340250c991661e3569eb16f:docs/verification/chigorin/calibration-20260913/frozen-source.json:generic-api-key:177
+5ed918fe19ead5390340250c991661e3569eb16f:docs/verification/chigorin/calibration-20260913/frozen-source.json:generic-api-key:188
+5ed918fe19ead5390340250c991661e3569eb16f:docs/verification/chigorin/calibration-20260913/frozen-source.json:generic-api-key:228
