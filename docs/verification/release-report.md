@@ -1,5 +1,15 @@
 # Chess Prodigy release verification
 
+## 19 September 2026 BDT — Chigorin local candidate
+
+Chigorin's [400-game measurement](chigorin/measurement-report.md) is independently accepted at
+1250 / 1350 / 1625. Rated activation and simplified Wikipedia-linked Home cards are implemented
+locally. The full unit/integration suite passed 471 tests, enabled browser coverage and corrected
+Home checks passed, and accessibility scored 100 in both themes. The default browser matrix passed
+122 checks with 22 intentional skips. See [integration evidence](chigorin/integration-report.md).
+This is local evidence, not a Chigorin deployment. The most recent retained live update is
+the [v2.4.2 header delivery](2026-09-13-header-status.md).
+
 ## 12 September 2026 BDT — About v2.4.1
 
 The [About delivery record](2026-09-12-about.md) documents the new account-adjacent About panel,
