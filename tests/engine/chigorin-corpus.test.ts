@@ -1,11 +1,6 @@
-import { readFileSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { expect, test } from "vitest";
-import {
-  parseChigorinPgn,
-  buildChigorinBook,
-  assertChigorinBookLegal,
-} from "../../scripts/chigorin-history/corpus";
+import { parseChigorinPgn } from "../../scripts/chigorin-history/corpus";
 const record = (white = "Chigorin, Mikhail", extra = "", moves = "1.e4 e5 2.Nf3 Nc6 1-0") =>
   `[Event "test"]\n[White "${white}"]\n[Black "Opponent"]\n[Result "1-0"]\n${extra}\n${moves}\n`;
 test("exact named ordinary player games only; reject odds, consultation, ambiguous names, setups, variants and broken notation", () => {
@@ -35,12 +30,20 @@ test("source games reproduce the checked compact book with legal occurrence freq
         stdio: ["ignore", "ignore", "pipe"],
       },
     );
+    const deadline = setTimeout(() => {
+      child.kill("SIGTERM");
+      reject(new Error("Corpus worker exceeded its 110-second deadline."));
+    }, 110000);
     let stderr = "";
     child.stderr.on("data", (chunk: Buffer) => {
       stderr += chunk;
     });
-    child.once("error", reject);
+    child.once("error", (error) => {
+      clearTimeout(deadline);
+      reject(error);
+    });
     child.once("close", (code) => {
+      clearTimeout(deadline);
       if (code === 0) resolve();
       else reject(new Error(stderr || `Corpus worker exited with ${code}.`));
     });

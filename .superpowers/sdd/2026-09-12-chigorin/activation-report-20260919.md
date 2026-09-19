@@ -89,3 +89,11 @@ The changed test first failed as expected because its worker did not exist. With
 focused corpus process completed successfully; the child had exited after its full replay before the
 follow-up process check. Formatting and diff checks passed. The parent will run the concurrent full
 suite as the final harness verification.
+
+### Cleanup follow-up
+
+The corpus test now also gives its child an explicit 110-second deadline, sends `SIGTERM` if that
+deadline is reached, and clears the deadline on both child error and close. This remains inside the
+test's existing 120-second limit, preventing a timed-out Vitest test from leaving a replay process
+behind. Unused in-process corpus imports were removed. A focused corpus replay completed after this
+cleanup; the child exited normally before the 110-second deadline. Formatting and diff checks passed.
