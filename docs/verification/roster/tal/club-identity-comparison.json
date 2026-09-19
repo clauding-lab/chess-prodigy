@@ -1,0 +1,909 @@
+{
+  "scope": "Tal versus Spassky Club matching seed/color; no gameplay rerun",
+  "games": 100,
+  "sameHistories": [],
+  "sameResultCount": 52,
+  "crossHistoryMatches": 0,
+  "gamesCompared": [
+    {
+      "file": "club-0000-b.json",
+      "talSha256": "4ba6efcb1757dcb0bb6ea910ae0f64da07628ebc52dc608a236cd8cd101064eb",
+      "spasskySha256": "2098615385e516fa1f3aa8aadf245d9a8da1aed2cb55e232d748a9fbd3b2de72",
+      "sameMoves": false,
+      "firstDifferentPly": 7,
+      "talScore": 0,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0000-w.json",
+      "talSha256": "b3138204c2e726d2c8371a5cc440273de92d7ff2f5e35b604eea89c1014dbfaa",
+      "spasskySha256": "3b7d4a40bece5166c8152ec19d303426c3fc4abd24c3fbc2bb6bdb5b798337cf",
+      "sameMoves": false,
+      "firstDifferentPly": 0,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0001-b.json",
+      "talSha256": "e02bf5990d9a832d1766806ce98b38d562af01edca4ce27d5cd9a7e5e5ba9a04",
+      "spasskySha256": "9f194304b58e591b04e3f0515d28f7a35fcc28ca104b92d08ca2e05ded9aec3f",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0001-w.json",
+      "talSha256": "25d6bcf1382f365a46c2b17df8da43a4fc5046dc9a1face596712ea5a21816c4",
+      "spasskySha256": "6d66310b8ad432521951d327434abd5874f15957b6fbd1dd0ffa72f518f14ac3",
+      "sameMoves": false,
+      "firstDifferentPly": 6,
+      "talScore": 0,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0002-b.json",
+      "talSha256": "410ef0faa8e0cc612ac68cb4ae7d78c2ba48bded48cb2e560ed144b427e17dcf",
+      "spasskySha256": "173ce6ba2e721db25b411e4cf697472d33d133b5be5f1a7cce0270166e71ce78",
+      "sameMoves": false,
+      "firstDifferentPly": 7,
+      "talScore": 0.5,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0002-w.json",
+      "talSha256": "24f3cb79d389e796b5a5757a9bd6c1c1dc8818cb99d8ac4b0212dfe48f7fc484",
+      "spasskySha256": "75d084110547123e08fa363c967e9769b6f3c7b031a50d5a79eb3328e1a74cff",
+      "sameMoves": false,
+      "firstDifferentPly": 6,
+      "talScore": 0,
+      "spasskyScore": 1
+    },
+    {
+      "file": "club-0003-b.json",
+      "talSha256": "8409cb8a68c815f07767e28f33f4a9f9f2942f06fe91c3b52a8fa07e0d1f8e4e",
+      "spasskySha256": "961ff3680da9ae70e492337b736980d44a267b29c2e8eb17db9be73976912379",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0003-w.json",
+      "talSha256": "553577bb79af5417eef5b1c283287650e24abe8f9e2e479a272898c0d174894b",
+      "spasskySha256": "ea633204e1234dcec250b4e6e2c976621313ad014f1eef0c1e5d13b1cdad7dca",
+      "sameMoves": false,
+      "firstDifferentPly": 8,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0004-b.json",
+      "talSha256": "19b881e8e428fc626db0e58092f8a8fe77e1350c3421c16ee826ce3c186a5bab",
+      "spasskySha256": "b80ea9b9dad0b0a6ba92538614510a1582e50a342d29ccfba06bee16a6a96cb7",
+      "sameMoves": false,
+      "firstDifferentPly": 7,
+      "talScore": 0.5,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0004-w.json",
+      "talSha256": "45ec0e6622307e76c41a6e5eaac1dad2fa4fd58e38f6831bef1775b10fc9823f",
+      "spasskySha256": "ccc5102aec0a93924792b6293251ca441035d6dc52834633b39c7940aa67e1fe",
+      "sameMoves": false,
+      "firstDifferentPly": 0,
+      "talScore": 0,
+      "spasskyScore": 1
+    },
+    {
+      "file": "club-0005-b.json",
+      "talSha256": "7ad799c8f717259de209cd42be83a79f5a716af1b3dd6ac777b7fff7b71f32cb",
+      "spasskySha256": "1cd9dfee14e902e980a6ba5dc7212acb297da4aab381b21e281e1e4cce84dfab",
+      "sameMoves": false,
+      "firstDifferentPly": 7,
+      "talScore": 0.5,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0005-w.json",
+      "talSha256": "9f264fcd3a99ea98aed42cf0f022b6f0028218e5db5ceed58f1f0d988c9c694b",
+      "spasskySha256": "0a2e8f05735b8564daeb486cdfa13d646338d70c822a61dcc249cb66d1f99042",
+      "sameMoves": false,
+      "firstDifferentPly": 4,
+      "talScore": 0.5,
+      "spasskyScore": 1
+    },
+    {
+      "file": "club-0006-b.json",
+      "talSha256": "7ad2375f6dc5217d3207f533029f78fbedb44e2e173f7955d831f4dda25f25cd",
+      "spasskySha256": "ac79cd685029cdf70d37902df236b80c197e39e9a30ce72bc3ee0dcb175f305e",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0006-w.json",
+      "talSha256": "d01f51234d53607cf4ca5b14e8d2189b523773aef71b8bc7e8e22f48b9925530",
+      "spasskySha256": "474c861785f1ee0c54ca401e281f20652f6c38ff0153be33efe32b64a0dafb36",
+      "sameMoves": false,
+      "firstDifferentPly": 0,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0007-b.json",
+      "talSha256": "43d9e718604551027f4e61c102bec4d3787883c5984ce216a47c7697725bedaf",
+      "spasskySha256": "785cc96fa080251ebf6a9565b37be3d64a7c80049fa8330ba423c42d43f80a13",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 1,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0007-w.json",
+      "talSha256": "45f63ef396093e711ec0adfb16d97e8fb483a0151157da856a0c68bed0edc2c6",
+      "spasskySha256": "dc54ca35bcec98e6f8f1cc4f8d860a1d166c2d420a096d97e88208229775b58a",
+      "sameMoves": false,
+      "firstDifferentPly": 4,
+      "talScore": 1,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0008-b.json",
+      "talSha256": "3ecdc81a2ef49b81247262353e23e3bf000b5291a9ee9d9d36559c91f850f227",
+      "spasskySha256": "96b4086271ff4b6dbf475bc89b2aa2bec883b8976b66946b5a94aea406f24272",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0008-w.json",
+      "talSha256": "6e543d47ccc9b618158a3cb60337903af9a4d9678bb1da9e6ed441a800c52b4c",
+      "spasskySha256": "8d6e814a7f33dbae7b315f4df4742f3cbff6f149adcdfe079a5bd9df2e67000c",
+      "sameMoves": false,
+      "firstDifferentPly": 12,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0009-b.json",
+      "talSha256": "9e5e961cae03c467f68be7ee70a57f66d2a0c81d1a984a9e257373f5e472a886",
+      "spasskySha256": "fc1daa2f16eeb304d6e2d0a28a52968d1dd874e6f0c66f2e09f3a7295aa6f5f7",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0009-w.json",
+      "talSha256": "bfe28c9a25edd82222d693ebe1b6a5b07311b1964a8caa7b2a403daada11bee3",
+      "spasskySha256": "edca89b87be000b919c5def146c5ea0a3bf07d104a4647c2f45bf895252135ab",
+      "sameMoves": false,
+      "firstDifferentPly": 4,
+      "talScore": 0,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0010-b.json",
+      "talSha256": "34a66c433fb8c060e971d96f4b28d8743ab892a6ee4b9d72618eade0af60dc86",
+      "spasskySha256": "f493a3b60e65be3a7ffde575070d4b0b599e66eafc876018864be570b7c2c059",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0010-w.json",
+      "talSha256": "db68036eb1ed1d6170180c29f5c082c10e3d6f94f7cef1f7b4e798b9e5d20271",
+      "spasskySha256": "a4263af3f7f3c2d113ec8a03e0ff0ea08829da5442794058d0e013f0b6fb79cc",
+      "sameMoves": false,
+      "firstDifferentPly": 2,
+      "talScore": 0,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0011-b.json",
+      "talSha256": "045aa022be3565d3f118ba1d3f1d40143d65834973421164087af9a5069e485d",
+      "spasskySha256": "fec844aef4a873d283f3bccc60943ef5be40fb13517b775236e94d5ad98b0ef7",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 1,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0011-w.json",
+      "talSha256": "3edee257ea5bd0220f2a391ba0545550b5b3c435a96fb4c47f892ff3bb77b7d0",
+      "spasskySha256": "128e2cd5c1c8655244adfbf32025071cdf6eadb18bfdaa20d00a9177a02a356f",
+      "sameMoves": false,
+      "firstDifferentPly": 2,
+      "talScore": 0,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0012-b.json",
+      "talSha256": "6356e32ac099051eedfcfab9aae3cc0255b7a7c03c88c56c8ef3894eabaebc93",
+      "spasskySha256": "8582484d30c6a2e168fbd5176afd61e3d75669ad964c88a70b2900b54c1a5bc1",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 1,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0012-w.json",
+      "talSha256": "ca5abf63d409d8aa276c191471080cccb69a6fa740db7411fbafbe393bdf94a9",
+      "spasskySha256": "426577128fff3d17f7efe8b1f1e785d61f3d79ba4473de7a0bce09f8909e130f",
+      "sameMoves": false,
+      "firstDifferentPly": 6,
+      "talScore": 0.5,
+      "spasskyScore": 1
+    },
+    {
+      "file": "club-0013-b.json",
+      "talSha256": "fca61c1bebc8c15fd6f396bf0c4dc18159469a9c876b0a467bf38d5269116f99",
+      "spasskySha256": "00a7bdca58036b9905201319f18e6294d7b23a88b11d55a43cd4d5a2120e9f46",
+      "sameMoves": false,
+      "firstDifferentPly": 3,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0013-w.json",
+      "talSha256": "a9b683d6750db0f4d10c68da19b5dd17ec37604ec39a1c27c653d4cfb4f6d4fa",
+      "spasskySha256": "a4b139e5d7e162166e7b0de9c38c116669f1eba26f4f8e60fcdfb299b171439b",
+      "sameMoves": false,
+      "firstDifferentPly": 0,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0014-b.json",
+      "talSha256": "8b25a53149d8cfeb9ce4fc86c5bdb7fb1948956870810a089d7ecd83acae9aee",
+      "spasskySha256": "ee924f8c2acc0a3b5143f1744ab54889064254b586923ebfcfcd9896d5f82f0b",
+      "sameMoves": false,
+      "firstDifferentPly": 3,
+      "talScore": 1,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0014-w.json",
+      "talSha256": "4060e056a475484b1f32260d2a09bd0b46cea826a7127d9d25f7a9276115e2fc",
+      "spasskySha256": "9970fac5abfcc46ded37214ca84bd4b1b321e1c7025d036e50a45d96c3b37b6b",
+      "sameMoves": false,
+      "firstDifferentPly": 14,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0015-b.json",
+      "talSha256": "399dc02d5e08792dcaf067d05d648485b87907d824abf5e37a42ef1fd31ee3a2",
+      "spasskySha256": "4f407cf317bfcc5f81e8cb92cbb9f2b83f5e1a28d4aec7bcbd3657cf6a9d286e",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0015-w.json",
+      "talSha256": "aa5b2b48656e08e35680f42750a5d56fb38647e3a08446022f1660781044acd9",
+      "spasskySha256": "08a28490361800c1d2ac68f0f133ed0856eaef638440deace3f2652c5b7ac5d2",
+      "sameMoves": false,
+      "firstDifferentPly": 6,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0016-b.json",
+      "talSha256": "f08dbab0416234726df5fa69627c31a2e820f090f7f38d955a5c4ccbe2964322",
+      "spasskySha256": "b601eb3d6fd18d31484b0ac4b5c2ef9c11db593255b6a2747f54341e5ad53277",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0016-w.json",
+      "talSha256": "9106fafe5d8e368e98d3ef7efef218230d8c0c2abe9b6bc8e3e96fe7fb82ce9a",
+      "spasskySha256": "102b2a9d7ce1d590525031795a953e1adcba57b4e96cf51469eb5058d93e7e9e",
+      "sameMoves": false,
+      "firstDifferentPly": 4,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0017-b.json",
+      "talSha256": "999d8293349a0a12bd354dc88c6d7f40302c853e167d1a06669e23ecbdf6e72d",
+      "spasskySha256": "dd46a0c28ecc39a81ebd7e06d853c383b679a753e4eed49f3423b7efeff52fcb",
+      "sameMoves": false,
+      "firstDifferentPly": 7,
+      "talScore": 0.5,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0017-w.json",
+      "talSha256": "abf9a4cb3822bf4ed34bf69503c858e7dca7452c91905c08dc9ea4f988616e7e",
+      "spasskySha256": "8d90a79de5dac38a17da0eaf2a7a42685f23d0cf4cb9709475355418f3f17fcb",
+      "sameMoves": false,
+      "firstDifferentPly": 12,
+      "talScore": 0.5,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0018-b.json",
+      "talSha256": "05efb981ef51f4d3dc87a850888b978d9aeff4677cbb81b7c8053c0d5ca34d66",
+      "spasskySha256": "816cab95e876965fab478ef649db31acf7f2a398d4382a6027ff140db7098bd3",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0018-w.json",
+      "talSha256": "5603a27b90ab7f305c52df8dd116475f52275d242259a1cf09c47aa3d43eee53",
+      "spasskySha256": "645758382fb53536082c4626ca8271b3743f6450250b2dca43cba5061a9dfa75",
+      "sameMoves": false,
+      "firstDifferentPly": 2,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0019-b.json",
+      "talSha256": "804bc531174a17cdb4c7d27bd271aca1e2e6ebc5ea5d1ab76a3875f300fc4bc3",
+      "spasskySha256": "6fabc6c6dcf357a33e00c9d5399be71843263ca75c9d1d90b327fe3560fde163",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0019-w.json",
+      "talSha256": "ca1d07f027e7832c0c80e8e30c0b6b1f29b97ccb53f508a2ee37efdbe068f64c",
+      "spasskySha256": "ca33ae2a703ca672f51ed0b16c2978a9b6a7eaf5d3a81cad3436a6cf6385d130",
+      "sameMoves": false,
+      "firstDifferentPly": 0,
+      "talScore": 0,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0020-b.json",
+      "talSha256": "6b363c0ae92f6c5bea4fce1ecdf6589665981831f6555fb13dd5cbc06bb0dc1d",
+      "spasskySha256": "4b69b04ca9460b2e734638427d3e239361afc1a4a264e335676dff860e097878",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0020-w.json",
+      "talSha256": "3cacb38ebb6ddd9c1eb854a879ebdff35d34624b036d895d2ee24366b8c1f986",
+      "spasskySha256": "6aecb8364708705bc94b3de6e4ce79eacbbbbff07bb5bcd1250d74bbdf56dffc",
+      "sameMoves": false,
+      "firstDifferentPly": 4,
+      "talScore": 0.5,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0021-b.json",
+      "talSha256": "23af645563d5fc871efe57ab506cf92514e0fe732ff0aa70a8628a2012d65c88",
+      "spasskySha256": "0b28fc909f1055eebdeb296b710ac538f71e0acd2895c2fc65e9fb2e7c2d1ee6",
+      "sameMoves": false,
+      "firstDifferentPly": 3,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0021-w.json",
+      "talSha256": "698c873e9527a53621be546002de0db90b891d73a53db325377de6bbfac94009",
+      "spasskySha256": "949bf7ebd48f49a3c3832a21bc73d0d2f303c23d0820be741341393bf317da2c",
+      "sameMoves": false,
+      "firstDifferentPly": 20,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0022-b.json",
+      "talSha256": "f44a6701de9ff0520a1371a777d361000da9ef633f70b2ab17cb140d4aed11ef",
+      "spasskySha256": "2d4e3e3d8358ddd1ddb0a246a84b3d67e29d129030eb1fedc0d3f7fa0a97132c",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 1,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0022-w.json",
+      "talSha256": "97ebc6402d456a4ac26797e22d2d8bf1df1970f262bb04d6f756c3dbda283ca2",
+      "spasskySha256": "4e6c2b5dcc51ef6c9c65f25065b124382363271a3245737f849578ff071faff1",
+      "sameMoves": false,
+      "firstDifferentPly": 4,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0023-b.json",
+      "talSha256": "2eb01bddd7b396d89b2c0ee98f20563e70c14495b2062005b085e5156f581003",
+      "spasskySha256": "8a4d5de3c270b6b879223dec85fd8c80f75c8f1c161e3c66973b3af7c4feb168",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0023-w.json",
+      "talSha256": "04ccb7dd4de734b5ce656f62d86bc953dc504656083f19c2ada73c6caf9417a3",
+      "spasskySha256": "26c87d25851e7240abbb0fe6edb99ec7688634168f775b8c6c121107ce970b23",
+      "sameMoves": false,
+      "firstDifferentPly": 2,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0024-b.json",
+      "talSha256": "7874ada48f5c2a6e50b7eb0ac373711ddb7a45340c6a416da7397109b77ea190",
+      "spasskySha256": "87096b3d0c44cf1fd4469e626068afa46c4da8d495953f4f86d88fa8b7be6cac",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0024-w.json",
+      "talSha256": "7f9628ad5930f7a095e17afe5bb1372aef8de7516a9b3e66c4622454367107f0",
+      "spasskySha256": "a59237e8026f7bf77f1fd156f1cfb3b1017a651cd7d4b19bc6f826d043fe37e1",
+      "sameMoves": false,
+      "firstDifferentPly": 8,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0025-b.json",
+      "talSha256": "c9eff24ac1e00d9ea7c7cb45592ae50dba9a92fbec3a97a78a75c34639c62490",
+      "spasskySha256": "481e3b430acb689dbf4cfebc08c989a39b8470cc5f79023fa0216cd86908b465",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0025-w.json",
+      "talSha256": "af2eddca15ff08e5aaf00eca81f81961e64a7e949e51403b75b0b3a472d17af1",
+      "spasskySha256": "19675e0d91ce662a50184d02ddac50bae156e8b642683fc5b1e354c3652dce65",
+      "sameMoves": false,
+      "firstDifferentPly": 4,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0026-b.json",
+      "talSha256": "49c34ff1084fca88cfa1538c34a542b758f5bfcb11253dcfc604a1db8fb86a72",
+      "spasskySha256": "10fab19db256838ef56c926afe452e80757bcb6b30900943c21b858891ffa2f1",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0026-w.json",
+      "talSha256": "a0ab8324cc1be54aaab024a9ccd759574cfc1851e9060ff12c1bcad3fb4e17cb",
+      "spasskySha256": "6c99d0802326c99dd526eb4504f4ba4e17ee8eab5ed870d58dc5fbd866341430",
+      "sameMoves": false,
+      "firstDifferentPly": 12,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0027-b.json",
+      "talSha256": "45a25bcf54978cce605ce455e9105a27cfb86d95b1bd055296925e1dc3586b05",
+      "spasskySha256": "fd7fddbd9c393b68920d53c6b784dd6ad1714e78c3f5ec085e2d255fd77405f1",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0027-w.json",
+      "talSha256": "9a205d4e47e6af8c84e3ba26125847b5cd10d748c4f8fd707021976d497093aa",
+      "spasskySha256": "d1dd305193200498390f04971d92a067de6b9086679f077a2d2b1fcfb76896df",
+      "sameMoves": false,
+      "firstDifferentPly": 0,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0028-b.json",
+      "talSha256": "528f2f9ab48dcee683e23a364ca7286b748b52790e92b171480e7850319b4e82",
+      "spasskySha256": "a840c09653b17ec6dbe51e8e0b338f83ce24268af7d2457ccfb62997c3a24d69",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0028-w.json",
+      "talSha256": "9f50e506291d481c646da358dfdd27c08e6bb1f6bcb1d134842e87c981b9a21d",
+      "spasskySha256": "0316b3181c718bfc9c83b62b9af5a8b7ecdd7ce8b2b3baac4150b52adf40e794",
+      "sameMoves": false,
+      "firstDifferentPly": 6,
+      "talScore": 0,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0029-b.json",
+      "talSha256": "853a72ac9e76106c795535e3485f4851cbebfddbed8795242fa1309b22cbc1b7",
+      "spasskySha256": "63ac752ffbca174d3da033be8b3779521ce2d259c6e9a6079a1c2f35e1aac42f",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 1,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0029-w.json",
+      "talSha256": "e3f93f580b62764f1fed9aa7199a909c3c7ca150a1246be0b2b8ef68b3e83802",
+      "spasskySha256": "f643b9efcea1e684e877afdd3decfc506daa96107013b687d50cda69da05802b",
+      "sameMoves": false,
+      "firstDifferentPly": 10,
+      "talScore": 0.5,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0030-b.json",
+      "talSha256": "d74028bb8b82e4eabd2954a7f7ad040bc01dc1a295aabb97e5f8e13047c9adb7",
+      "spasskySha256": "52bb0e6dece25d861b361a58c06a006bb22c4d3853b55f550df09ac59eff1572",
+      "sameMoves": false,
+      "firstDifferentPly": 7,
+      "talScore": 0,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0030-w.json",
+      "talSha256": "27b74e4873580eac9d9ba4646529b61cfcd400939340998b3a35bb3dfec5ff88",
+      "spasskySha256": "9cf24a2ae325df0676b3017a6a45e55920b64b079893738c66df882a3f10b4a6",
+      "sameMoves": false,
+      "firstDifferentPly": 6,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0031-b.json",
+      "talSha256": "2416632dc7e02792f70654b11f6f4b943e852e5f10e518aeb43e7bb2b5c742ad",
+      "spasskySha256": "338a07960ee90bf026fb2344cf4cc74adec1d718faa4713248e60e7fbd881280",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0031-w.json",
+      "talSha256": "707fdd4abbcb95569d0d57b4026342bbf991280f57ee4a10fdf1e556b527bfb2",
+      "spasskySha256": "38dee3974004398d875a2ca1e253c6ca1dabfc750f8ae945326c2e6d90a8acf3",
+      "sameMoves": false,
+      "firstDifferentPly": 0,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0032-b.json",
+      "talSha256": "310e6be20aa631aaac1b0ed254e80c2dd0854aa7f881abdece1a8bb0cf7003e4",
+      "spasskySha256": "fdec0dbe812e28d13e47646cb597d41589d3640b48fb7b5632c26689f17010f7",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0032-w.json",
+      "talSha256": "b049afcb7a02a5d21424485b7a2ffb0008dca145e45b6fcd20fed81ccdd1f8c1",
+      "spasskySha256": "5b789f74c25170d26f37413ebb32d31d8b042f7075f4be61fca42c2991150d53",
+      "sameMoves": false,
+      "firstDifferentPly": 8,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0033-b.json",
+      "talSha256": "ed2cfed117cbbd56575496bb5bc5606cf86491a18fbf76d4f4a266f56d83f7f1",
+      "spasskySha256": "b9d8b382636497bcae50c99c8fb9bfc7f84939b2faaa420bfba5571c811a10a0",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0033-w.json",
+      "talSha256": "964108f3956710d5cd25bb8106e905d5952a4c653e5a86e36d1dd3ae6054597e",
+      "spasskySha256": "b15885b2a619d6300c476ea1f8d12c6e56e43ab642b41f4a47fb5c0f1050a00b",
+      "sameMoves": false,
+      "firstDifferentPly": 6,
+      "talScore": 0,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0034-b.json",
+      "talSha256": "a35b1b50d354e822bd50e1ee4294efbece063875e929eb9b92120d9484a255c6",
+      "spasskySha256": "50542d65bb560be78a8f757220e50930455e6532dcd0baa0c0a750d130f831df",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0034-w.json",
+      "talSha256": "2838e99559caa94ea3bc421a0710a91d08e5823503b0a36181f061d8e8a020f3",
+      "spasskySha256": "d25707f631df1f43a179eb426ee3f4a38b069cb60ebaf61c1d399d3001446795",
+      "sameMoves": false,
+      "firstDifferentPly": 12,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0035-b.json",
+      "talSha256": "c794f00117bc2e68ca6efe017595e0979faa78dd724eb58507ab7bedb46063d5",
+      "spasskySha256": "bc47a2ffd4953d62f8de405a785ceb1022293a686b5666f82868f19a3f9c1849",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0035-w.json",
+      "talSha256": "b2ac38a56a6c6c7a17e703e6bd6e8c7dc5bdbff9839d31f141894d0167ae9ef6",
+      "spasskySha256": "47a19dca2b8738c4e2fb5b494456c48a4aca7d20c2bdee13b893a7130b4abd84",
+      "sameMoves": false,
+      "firstDifferentPly": 4,
+      "talScore": 1,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0036-b.json",
+      "talSha256": "a6267e3393ac9cdb0a2f1b551a6ed1e008b64582aad88e71910b829a5dcbc5a1",
+      "spasskySha256": "7046bbe21051ffac4580a4e729153b493ed123db9cb9693d4ed66fb703bce0b7",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 1,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0036-w.json",
+      "talSha256": "ca4dda289a7398357f6f1d81069cb0a29902694560e37450aadf30d94a1839e2",
+      "spasskySha256": "9adbfb8de98cc40999337acb2f3820e45c6fc7f21276ccceb52d18d11cd1b0f7",
+      "sameMoves": false,
+      "firstDifferentPly": 4,
+      "talScore": 0.5,
+      "spasskyScore": 1
+    },
+    {
+      "file": "club-0037-b.json",
+      "talSha256": "b3e2e730c75b8beef766c51e0c84e69f4ec22c416dc940ad838af91c56da8111",
+      "spasskySha256": "a51911530cc6c7595a19f9b05daa9f8fb8174d7fecc6a4c0560098392f8f9bc1",
+      "sameMoves": false,
+      "firstDifferentPly": 3,
+      "talScore": 0.5,
+      "spasskyScore": 1
+    },
+    {
+      "file": "club-0037-w.json",
+      "talSha256": "a9d0a9b1ebf71c2493b9949119006fcb6ebeb4e6bf13a09c15263d06e32c4f0a",
+      "spasskySha256": "cf2945fd42af0a2785e9026c35c1021f8b3d04a9de22640a1e62cadb2f448c53",
+      "sameMoves": false,
+      "firstDifferentPly": 6,
+      "talScore": 0,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0038-b.json",
+      "talSha256": "aa3539d6740facd632aa3c1e660df4552be8790ce91288e2cc38ddbd1e8937e5",
+      "spasskySha256": "64064ffc5023a7b38f53f97676c69d07951b313dd250a3e22347723080ceb094",
+      "sameMoves": false,
+      "firstDifferentPly": 3,
+      "talScore": 0,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0038-w.json",
+      "talSha256": "f59059387e7c764e76502c8bcb71111bdb42600068662357b295a8966b9b3112",
+      "spasskySha256": "7a8ca06a9e88c2d2a66872cc79dd265806c1c8bd3a990b979852e971481242d1",
+      "sameMoves": false,
+      "firstDifferentPly": 0,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0039-b.json",
+      "talSha256": "66badf02eb42595dd1f81449d6d1a3ef82fc47c33039b28aee98f3d9fb338395",
+      "spasskySha256": "a659108b0c521a7e9a70fe223cc79be44752eb0fd4d00e828330a7283a61d068",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0039-w.json",
+      "talSha256": "e64a3568ebfaf6bcd104779b093c4a00a925268ce04c3b38ae8fb269d72b6451",
+      "spasskySha256": "4bf9991b91ff5cadc47668fac3d5ea4944f04e06d5aa8701be010e9ea61e42cb",
+      "sameMoves": false,
+      "firstDifferentPly": 8,
+      "talScore": 0.5,
+      "spasskyScore": 1
+    },
+    {
+      "file": "club-0040-b.json",
+      "talSha256": "56182be45e94a00a50efaa20faba4d465733668158a68b394364fb4cfd57dd8f",
+      "spasskySha256": "1bc9ed5d15442520e14a4b92edcac14e3b4417c2256467d0fae04f522ea7a32b",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0040-w.json",
+      "talSha256": "6e8431f6af03e85b0ff78e8489d0e882b8f52fd7d1193d079ab1d2db826ad396",
+      "spasskySha256": "1931a4f11ae9b1d9f4e0341371188c64ac83d976c18f781dc8c8627f3960b480",
+      "sameMoves": false,
+      "firstDifferentPly": 0,
+      "talScore": 1,
+      "spasskyScore": 1
+    },
+    {
+      "file": "club-0041-b.json",
+      "talSha256": "fa761c163b12b267f24bc6976b71f513d37c8b4c38a614eeee78cdc9f30274ba",
+      "spasskySha256": "83088dfe74836ca00c0de9d60cde9561f6c7ac843829dd4b9dade5eb2283d0be",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0041-w.json",
+      "talSha256": "ea8532e8dc34b56db254e2995c9fee35974dd83c7c0d76ab50eac42c2d56a26a",
+      "spasskySha256": "19475c50dcd680d60892fa2e701309446b4805b083c0967a191b905bb92aca98",
+      "sameMoves": false,
+      "firstDifferentPly": 0,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0042-b.json",
+      "talSha256": "26b96303423aefe94303204af0b23ac300805aceba6845c0ef32796c8bd6f1e3",
+      "spasskySha256": "aaf1c7e8839e8b8c42154a6dc703c8b94529a93f95c45169718f597f2d9b6819",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 1
+    },
+    {
+      "file": "club-0042-w.json",
+      "talSha256": "18cc8394b2fc44814c1f32f6e8c9d5b0332e04e9d582e9913322db5653a68813",
+      "spasskySha256": "34c66d816d2df43a879d2fdac0a029b412a09848d55368de57b7552d0b77987c",
+      "sameMoves": false,
+      "firstDifferentPly": 22,
+      "talScore": 0.5,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0043-b.json",
+      "talSha256": "3b18f11c37cb785f5c47598a193e2f627aa266254b66507ff2dcfd6ca4676874",
+      "spasskySha256": "7463be50f397218110b6e8ca63d910fc6df90a0e5ac0120511f3cae92603cbf3",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0043-w.json",
+      "talSha256": "9886e7d1a85c42823c5e417969e2182ccdfa4841e7f1e3bedb80ff781369d8cb",
+      "spasskySha256": "e5be1a7782af3f42ff159fd49e4aa9b8b1f093ae83596167061c4e6e51259ef2",
+      "sameMoves": false,
+      "firstDifferentPly": 4,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0044-b.json",
+      "talSha256": "c72bfa8693bccd9ff13318ca7e8a2ec47a9eb41c7d0e0c3c56f8e49e9cce6dd8",
+      "spasskySha256": "e4009de4884b5b3e21996f1fe41ff35cafa7fadfc77ab967c4e8ad7f95a598e8",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0044-w.json",
+      "talSha256": "6fae8d00a76644fc26d53c54f93bef49f90158008b75d009b33b52bd90e3f164",
+      "spasskySha256": "e36ce04dbb24585d55ce652e8188fa4398b74172739a61dddf7d5b29ea77c73c",
+      "sameMoves": false,
+      "firstDifferentPly": 4,
+      "talScore": 0.5,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0045-b.json",
+      "talSha256": "7e2d6b215803344dce88ec474f20446fe5ae11c8908494a2d06b68ae22ff8b64",
+      "spasskySha256": "dfb2686e530f4e4ed61d88e4276aa09cb68a884b7443d6f8c9bcb4f9c1b7bbbb",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0
+    },
+    {
+      "file": "club-0045-w.json",
+      "talSha256": "f96ec7c1960504d5b8eca6c8587f0cf562d40ead11b5d48ce4fd0214ef607da3",
+      "spasskySha256": "abc20cb87f9c3ca5aed472195ee4fb073908e8f55b38bcd8d678fb09e615893e",
+      "sameMoves": false,
+      "firstDifferentPly": 0,
+      "talScore": 0.5,
+      "spasskyScore": 1
+    },
+    {
+      "file": "club-0046-b.json",
+      "talSha256": "c32d604609bf206fcbf91bf9638082f1fff16b69d4cda992a2e0c34a8d6ede4a",
+      "spasskySha256": "ec3b97384b2887b21cff919b27333bb40917b73b73050c50008ee8fbfdd009c9",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0046-w.json",
+      "talSha256": "04fcd803788aca0bef05e086315d5bb9689f50172ba41c4d7672bb95031665cc",
+      "spasskySha256": "44325be75ced43cbb73ef457754ca57ed2abbcd8c67ff8dbdb88e64666ce1e9a",
+      "sameMoves": false,
+      "firstDifferentPly": 0,
+      "talScore": 0,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0047-b.json",
+      "talSha256": "bc8a62b2939c6fee96c087cf7544f5d77d266e01b5c86628490a30b348addfbc",
+      "spasskySha256": "5c87ab7959396d2e42bdfb1ddcd4130b0b9ad97c2ac054e5a52a29a181cf9bf7",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 1,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0047-w.json",
+      "talSha256": "2b2df8be603c6aa6c956754262e45e4ed07276d329ad20e1a4a8b5e018ab5851",
+      "spasskySha256": "90679fa00021ce1f3b96299a1728e83220da4dd39a654653b81225c469278de6",
+      "sameMoves": false,
+      "firstDifferentPly": 4,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0048-b.json",
+      "talSha256": "ca49d9b5bf2c9d1b8973d8320be3ccf506615373b1ae66cbfdcc0975c48e54c0",
+      "spasskySha256": "18e96985064df61c38a77553efb24198410889ce6dae0fdab78abec4ae5cc3be",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 1,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0048-w.json",
+      "talSha256": "f82f2b6b044f48478fd43a3672c9d21512b40e1d5a64c6d626d9cc4e610f101e",
+      "spasskySha256": "45e68311ad32f2622b4d4522248bf4112b0cb66cfdabcafb7d819295eb05919e",
+      "sameMoves": false,
+      "firstDifferentPly": 12,
+      "talScore": 0.5,
+      "spasskyScore": 0.5
+    },
+    {
+      "file": "club-0049-b.json",
+      "talSha256": "24500d2ec4ccac66c1885f4e7e434e22982a02d974c3a07108232e37df38c7bf",
+      "spasskySha256": "cb5ad6cf6f76850b6370c2c047e601b3bce6ffbadfc7967b2a3278ca83f8b5a9",
+      "sameMoves": false,
+      "firstDifferentPly": 1,
+      "talScore": 0.5,
+      "spasskyScore": 1
+    },
+    {
+      "file": "club-0049-w.json",
+      "talSha256": "1fa2335d8892a479e35d218a11bc1a18291fb7d3d7b27fd9401e65828b939d83",
+      "spasskySha256": "03d69e986cb85f6b795ec4c68146af80b82a1c0379f25882ac220b1205849bc9",
+      "sameMoves": false,
+      "firstDifferentPly": 6,
+      "talScore": 0.5,
+      "spasskyScore": 1
+    }
+  ]
+}
