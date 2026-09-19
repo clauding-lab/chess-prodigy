@@ -129,3 +129,10 @@ merging and pushing the completed v2.6.0 candidate and deploying it to the exist
 with historical opponents enabled. Preserve the private database, all older games and recovery
 keys, fixed receipts and permanent account policy 5. Use compatible forward fixes after new
 roster acceptance; do not roll back to policy-3/4 code. No new release tag is requested.
+
+## Historical roster GitHub release — 19 September 2026 BDT
+
+The owner subsequently requested the missing latest GitHub release. Publish v2.6.0 on GitHub
+and mark it latest, covering the deployed roster and intervening updates since v2.0.0.
+This supersedes the previous no-new-tag boundary for this release only. Keep the existing
+live runtime and database unchanged; release preparation changes documentation only.

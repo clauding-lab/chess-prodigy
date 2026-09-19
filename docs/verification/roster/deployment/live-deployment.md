@@ -57,3 +57,8 @@ source checks, production build and secret scan. Its sequential 232-case desktop
 browser stage reached case 207 without a reported failure before the existing 15-minute
 whole-job limit cancelled it. The workflow limit is being increased to 30 minutes; individual
 test timeouts and assertions are unchanged. A cancelled run is not a passing full browser run.
+
+The owner subsequently requested the missing GitHub release. The v2.6.0 publication records
+this same deployed runtime plus the reviewed test-infrastructure corrections and release docs.
+This later request supersedes the deployment-time decision not to create a tag. GitHub rerun
+35455038418 remains in progress at release preparation; no clean full browser result is claimed.

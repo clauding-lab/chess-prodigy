@@ -2,10 +2,12 @@
 
 ## [Unreleased]
 
+## [2.6.0] — 2026-09-19 (BDT)
+
 - Activate independently accepted, fixed Practice Ratings for the historical roster: Boris Spassky 1150 / 1325 / 1700, Mikhail Tal 1200 / 1325 / 1700, and Bobby Fischer 1250 / 1350 / 1675 for Casual / Club / Strong. Normal new games and rematches now settle their own receipts; existing beta saves remain unrated and retain their recorded identity.
 - Preserve policy 5 after any roster save, including an assisted game or rating reset, so older clients cannot overwrite compatible account state. No engine, book, repertoire or measurement source changed after the frozen `9a7ab6c` benchmark.
 
-- Prepare Chigorin in the local 2.5 candidate: recorded moves from 688 legally replayed games and designed priorities for active knights, central counterplay and coordinated attacks.
+- Ship Chigorin from the previously unpublished 2.5 candidate: recorded moves from 688 legally replayed games and designed priorities for active knights, central counterplay and coordinated attacks.
 - Accept independently audited Chigorin Practice Ratings of Casual 1250 / Club 1350 / Strong 1625 from 400 complete games. Preserve Classic and every earlier Morphy identity and rating.
 - Simplify opponent cards by removing biography dropdowns and linking directly to Wikipedia.
 
