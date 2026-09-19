@@ -414,7 +414,8 @@ test("workers reject unsupported identity and incomplete, empty, extra, or chang
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
-}, 20000);
+  // This test starts ten separate Node/tsx processes, including every rejection case.
+}, 60000);
 
 test("only the three predefined statistical checkpoints can qualify", () => {
   const pairs = Array.from({ length: 51 }, () => [1, 0] as const);

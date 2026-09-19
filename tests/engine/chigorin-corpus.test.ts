@@ -22,6 +22,7 @@ test("exact named ordinary player games only; reject odds, consultation, ambiguo
   expect(parseChigorinPgn(record() + "\n" + record()).excluded[0].reason).toMatch(/duplicate/);
 });
 test("source games reproduce the checked compact book with legal occurrence frequencies", async () => {
+  // Full corpus replay is CPU-bound; use the same bounded CI budget as the roster rebuild.
   await new Promise<void>((resolve, reject) => {
     const child = spawn(
       process.execPath,
@@ -32,8 +33,8 @@ test("source games reproduce the checked compact book with legal occurrence freq
     );
     const deadline = setTimeout(() => {
       child.kill("SIGTERM");
-      reject(new Error("Corpus worker exceeded its 110-second deadline."));
-    }, 110000);
+      reject(new Error("Corpus worker exceeded its 600-second deadline."));
+    }, 600000);
     let stderr = "";
     child.stderr.on("data", (chunk: Buffer) => {
       stderr += chunk;
@@ -48,7 +49,7 @@ test("source games reproduce the checked compact book with legal occurrence freq
       else reject(new Error(stderr || `Corpus worker exited with ${code}.`));
     });
   });
-}, 120000);
+}, 620000);
 
 test("rejects malformed headers, duplicate tags, result mismatches and moves after a result", () => {
   for (const pgn of [
