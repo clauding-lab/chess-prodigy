@@ -58,3 +58,17 @@ the suite.
 
 This report records local implementation verification only. It makes no publication, deployment, or
 live-player-data claim.
+
+## Review fix round 1
+
+Updated two stale post-activation assertions without changing engine or UI production code:
+
+- `tests/engine/chigorin.test.ts` now verifies that only the exact supported version-1 identity is
+  rated; altered version, engine, and seed configurations remain unsupported and unrated.
+- `tests/browser/home.spec.ts` now verifies Morphy's concise visible copy, absence of the removed
+  dropdown, and the direct Wikipedia link.
+
+`npm test -- tests/engine/chigorin.test.ts tests/game/rated-chigorin.test.ts tests/ui/Chigorin.test.tsx`
+passed: 3 files / 18 tests. `prettier --check` for both changed tests and `git diff --check` passed.
+Browser Home verification is intentionally deferred to the parent run to avoid overlapping its active
+browser suite.

@@ -13,8 +13,12 @@ test("Home explains the opponents, fits both themes and opens setup only after a
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(home.getByRole("heading", { name: "Classic", exact: true })).toBeVisible();
   if (process.env.VITE_PERSONALITY_BETA === "true") {
-    await home.getByText("Who was Paul Morphy?", { exact: true }).click();
-    await expect(home.getByText(/An American chess master/)).toBeVisible();
+    await expect(home.getByText(/recorded openings plus designed development/)).toBeVisible();
+    await expect(home.getByText("Who was Paul Morphy?", { exact: true })).toHaveCount(0);
+    await expect(home.getByRole("link", { name: /Paul Morphy on Wikipedia/i })).toHaveAttribute(
+      "href",
+      "https://en.wikipedia.org/wiki/Paul_Morphy",
+    );
   }
   for (const theme of ["dark", "wood"]) {
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);

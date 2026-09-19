@@ -32,15 +32,17 @@ const development = "r1bqkbnr/pppp1pp1/2n4p/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq -
 const knight = "r4rk1/pp3ppp/2p1b3/4p3/2PP4/2N1PN2/PP3PPP/R2Q1RK1 w - - 0 16";
 const centre = "r1bqkb1r/ppp2ppp/2np1n2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w kq - 0 9";
 const attack = "r4rk1/ppp2ppp/2npbn2/4p3/2B1P3/2NPBN2/PPP2PPP/R2Q1RK1 w - - 0 16";
-test("supports exact Chigorin identity but remains unrated before measurement", () => {
+test("supports and rates only the exact accepted Chigorin identity", () => {
   expect(isSupportedOpponent(chigorinConfig(7))).toBe(true);
-  expect(isRatedOpponent(chigorinConfig(7))).toBe(false);
+  expect(isRatedOpponent(chigorinConfig(7))).toBe(true);
   for (const c of [
     { ...chigorinConfig(7), version: 2 },
     { ...chigorinConfig(7), engine: "plans-v1" },
     { ...chigorinConfig(7), seed: null },
-  ])
+  ]) {
     expect(isSupportedOpponent(c)).toBe(false);
+    expect(isRatedOpponent(c)).toBe(false);
+  }
   const p = fromFEN(development);
   expect(chooseOpponentMove(p, "club", ["Qh5"], chigorinConfig(7), 6, fixed)).toEqual(
     chigorin.chooseChigorinMove(p, "club", 7, 6, fixed),
