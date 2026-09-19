@@ -18,7 +18,7 @@ async function move(page: Page, from: string, to: string) {
   await page.getByRole("button", { name: new RegExp(`^${to},`) }).click();
 }
 
-test("Chigorin follows the build flag and waits for accepted measurements", async ({ page }) => {
+test("Chigorin follows the build flag and exposes its accepted measured setup", async ({ page }) => {
   await page.goto("/");
   const play = page.getByRole("button", { name: "Play Mikhail Chigorin", exact: true });
   if (process.env.VITE_PERSONALITY_BETA !== "true") {
@@ -27,14 +27,18 @@ test("Chigorin follows the build flag and waits for accepted measurements", asyn
     await expect(page.getByRole("button", { name: "Mikhail Chigorin", exact: true })).toHaveCount(
       0,
     );
-  } else if (CHIGORIN_RATINGS === null) {
-    await expect(play).toBeDisabled();
-    await expect(page.getByText("Strength measurement in progress.")).toBeVisible();
-    await enterPlay(page);
-    await expect(
-      page.getByRole("button", { name: "Mikhail Chigorin", exact: true }),
-    ).toBeDisabled();
-  } else await expect(play).toBeEnabled();
+  } else {
+    await expect(play).toBeEnabled();
+    await play.click();
+    const setup = page.getByRole("dialog", { name: "New game" });
+    for (const level of ["casual", "club", "strong"] as const)
+      await expect(
+        setup.getByRole("button", {
+          name: `${LEVEL_LABEL[level]} ${CHIGORIN_RATINGS![level]}`,
+          exact: true,
+        }),
+      ).toBeVisible();
+  }
 });
 
 for (const level of ["casual", "club", "strong"] as const)

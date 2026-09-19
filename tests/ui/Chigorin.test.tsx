@@ -8,15 +8,18 @@ import { chigorinConfig } from "../../src/engine/opponents";
 import { canRematch } from "../../src/ui/RecordedGames";
 
 const draft = { color: "w", level: "club", time: "none", opponentId: "chigorin" } as SetupDraft;
-it("withholds Chigorin setup and rematches before accepted strength measurements", () => {
-  expect(() => setupFromDraft(draft, true)).toThrow(/measurement/i);
-  expect(canRematch({ opponent: chigorinConfig(7) }, true)).toBe(false);
+it("enables measured Chigorin setup and exact-identity rematches", () => {
+  expect(setupFromDraft(draft, true).opponent).toMatchObject({
+    ...chigorinConfig(0),
+    seed: expect.any(Number),
+  });
+  expect(canRematch({ opponent: chigorinConfig(7) }, true)).toBe(true);
 });
 it("rejects Chigorin with the personality flag disabled and unknown rematch versions", () => {
   expect(() => setupFromDraft(draft, false)).toThrow(/disabled/);
   expect(() => setupFromDraft({ ...draft, opponentVersion: 2 }, true)).toThrow(/unavailable/);
 });
-it("explains Chigorin on Home without enabling unmeasured games", () => {
+it("shows Chigorin's concise card, Wikipedia link and enabled play button on Home", () => {
   const session = freshSession(0, "home");
   render(
     <Home
@@ -32,7 +35,11 @@ it("explains Chigorin on Home without enabling unmeasured games", () => {
   );
   expect(screen.getByRole("heading", { name: "Mikhail Chigorin" })).toBeTruthy();
   expect(screen.getByText(/active knights, central counterplay/)).toBeTruthy();
+  expect(screen.getByRole("link", { name: /Chigorin on Wikipedia/i }).getAttribute("href")).toBe(
+    "https://en.wikipedia.org/wiki/Mikhail_Chigorin",
+  );
   expect(
     screen.getByRole("button", { name: "Play Mikhail Chigorin" }).hasAttribute("disabled"),
-  ).toBe(true);
+  ).toBe(false);
+  expect(screen.queryByText("Strength measurement in progress.")).toBeNull();
 });

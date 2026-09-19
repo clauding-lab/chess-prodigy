@@ -72,6 +72,7 @@ export function isRatedOpponent(c: OpponentConfig): boolean {
   return (
     isSupportedOpponent(c) &&
     (c.id === "classic" ||
+      c.id === "chigorin" ||
       (c.id === "attack-development" && (c.version === 2 || c.version === 3 || c.version === 4)))
   );
 }

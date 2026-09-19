@@ -230,30 +230,17 @@ export function Home({
                 Play against recorded openings plus designed priorities for active knights, central
                 counterplay and coordinated attacks, inspired by Chigorin’s games.
               </p>
-              <details>
-                <summary>Who was Mikhail Chigorin?</summary>
-                <p>
-                  A leading Russian master of the late 1800s, Chigorin is remembered for inventive
-                  knight play and fighting attacks. These designed priorities are a simulation, not
-                  a perfect recreation of the person or a measure of his human playing strength.
-                </p>
+              <p>
                 <a
-                  href="https://www.chess.com/article/view/the-chigorin-queens-gambit-a-history-part-2"
+                  href="https://en.wikipedia.org/wiki/Mikhail_Chigorin"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Explore Chigorin’s playing ideas{" "}
+                  Mikhail Chigorin on Wikipedia{" "}
                   <span className="sr-only">(opens in a new tab)</span>
                 </a>
-              </details>
-              {!CHIGORIN_RATINGS && (
-                <p className="home-caption">Strength measurement in progress.</p>
-              )}
-              <button
-                className="btn"
-                disabled={!available || !CHIGORIN_RATINGS}
-                onClick={() => onPlay("chigorin")}
-              >
+              </p>
+              <button className="btn" disabled={!available} onClick={() => onPlay("chigorin")}>
                 Play Mikhail Chigorin
               </button>
             </article>

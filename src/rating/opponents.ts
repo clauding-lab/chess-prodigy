@@ -19,12 +19,16 @@ export const PLANNED_MORPHY_RATINGS: Readonly<Record<Level, number>> = Object.fr
   club: 1400,
   strong: 1625,
 });
-// Normal setup stays unavailable until the frozen Chigorin measurement is accepted.
-export const CHIGORIN_RATINGS: Readonly<Record<Level, number>> | null = null;
+// Immutable calibration for chigorin/version 1, chigorin-plans-v1.
+export const CHIGORIN_RATINGS: Readonly<Record<Level, number>> = Object.freeze({
+  casual: 1250,
+  club: 1350,
+  strong: 1625,
+});
 export function opponentPracticeRating(opponent: OpponentConfig, level: Level): number | null {
   if (!isSupportedOpponent(opponent)) return null;
   if (opponent.id === "classic") return ENGINE_ELO[level];
-  if (opponent.id === "chigorin") return CHIGORIN_RATINGS?.[level] ?? null;
+  if (opponent.id === "chigorin") return CHIGORIN_RATINGS[level];
   if (opponent.id !== "attack-development") return null;
   if (opponent.version === 2) return MORPHY_RATINGS[level];
   if (opponent.version === 3) return HISTORICAL_MORPHY_RATINGS[level];
