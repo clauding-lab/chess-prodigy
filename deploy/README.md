@@ -134,3 +134,12 @@ The [400-game measurement](../docs/verification/morphy-plans/measurement-report.
 frozen playing source, first eligible checkpoints and uncertainty. The app's rated registration and
 version metadata change after that freeze; playing code must remain byte-identical to the measured
 source. Later playing-policy changes need their own version and fresh measurement.
+
+## Historical roster — v2.6
+
+Hosted builds enable `VITE_PERSONALITY_BETA=true` for Morphy, Chigorin, Spassky, Tal and Fischer.
+Current authority is guest state-v7/account-v7/history-v6; retain all older recovery generations.
+Wire schema stays 2. New-roster acceptance permanently requires client policy 5, including
+assisted games and after reset. Do not roll back to code that lacks this protection or restore
+an older database to reverse deployment. Use compatible forward fixes. Measurement and final
+review evidence lives under `docs/verification/roster/`.

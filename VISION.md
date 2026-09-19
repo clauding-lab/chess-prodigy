@@ -121,3 +121,11 @@ unrated; hints, takebacks and undo retain their existing rating protections. Pre
 state-v7/account-v7/history-v6, all recovery keys, raw acknowledgements, private account ownership,
 the dark default, Home/resume clocks and offline play. This authorization is local verification only:
 do not push, deploy, tag or touch live-player data.
+
+## Historical roster deployment — 19 September 2026 BDT
+
+After independent final approval, the owner explicitly requested “make it live”. This authorizes
+merging and pushing the completed v2.6.0 candidate and deploying it to the existing hostname,
+with historical opponents enabled. Preserve the private database, all older games and recovery
+keys, fixed receipts and permanent account policy 5. Use compatible forward fixes after new
+roster acceptance; do not roll back to policy-3/4 code. No new release tag is requested.
