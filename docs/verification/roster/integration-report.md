@@ -79,7 +79,7 @@ Expected isolated-preview `/api/auth/get-session` proxy refusals at unused port 
 in browser logs. Private account tests instead use the disposable full-stack server at 4318.
 No live-player database or real notification delivery is used. Browser and preview jobs were closed
 after completion. Playing policies, helpers, books and repertoires remain byte-identical to the
-accepted frozen source; only fixed rating activation changed runtime source in this task.
+accepted frozen source; only fixed rating activation and the recovered-beta explanation changed runtime source in this task.
 
 ## Preserved pre-activation integration evidence
 
@@ -165,3 +165,19 @@ Home axe checks find zero violations; mobile has no horizontal overflow.
 
 All accepted new Task1 policy/helpers/books and old Classic/Morphy/Chigorin playing modules remain
 unchanged. These are integration checks, not proof of perceived style or accepted strength.
+
+## Final independent review and scoped wording correction
+
+The [independent whole-branch review](independent-final-review.md) approved specification,
+TypeScript, security, measurement-audit implementation and Task 4 verification through `6df27c7`.
+Its sole LOW note concerned recovered roster beta games incorrectly describing their already
+accepted measurement as pending. The scoped correction now says “Unrated beta — this game keeps
+its original unrated status.” Exact legacy Morphy wording and all rating behavior remain unchanged.
+
+Test-first evidence: the three new copy assertions initially failed (7 passed / 3 failed), then all
+10 roster tests passed after the wording change. Those tests also preserve null beta receipts,
+unrelated progress, above-floor rated deltas and exact undo. Narrow ESLint and Prettier checks
+passed for the changed source/test; `git diff --check` passed. No broad suite, build or benchmark
+was repeated for this copy-only correction. The earlier build artifacts precede this wording fix.
+Scoped independent re-review of this final correction is pending; the approved whole-branch review
+is retained with its original reviewed hashes and finding, not rewritten as a new review.

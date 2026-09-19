@@ -1,0 +1,75 @@
+
+ RUN  v3.2.7 /Users/adnanrashid/Projects/chess-prodigy/.worktrees/historical-roster
+
+ ❯ tests/game/roster.test.ts (10 tests | 3 failed) 15ms
+   ✓ spassky has an accepted exact rating and settles one reversible receipt 6ms
+   ✓ spassky rejects unknown versions, engines, policies and seeds without Classic substitution 0ms
+   ✓ tal has an accepted exact rating and settles one reversible receipt 3ms
+   ✓ tal rejects unknown versions, engines, policies and seeds without Classic substitution 0ms
+   ✓ fischer has an accepted exact rating and settles one reversible receipt 2ms
+   ✓ fischer rejects unknown versions, engines, policies and seeds without Classic substitution 0ms
+   ✓ legacy beta description stays exact 0ms
+   × stored spassky beta game remains recoverable and unrated after activation 3ms
+     → expected 'Unrated beta — Boris Spassky strength…' to be 'Unrated beta — this game keeps its or…' // Object.is equality
+   × stored tal beta game remains recoverable and unrated after activation 1ms
+     → expected 'Unrated beta — Mikhail Tal strength m…' to be 'Unrated beta — this game keeps its or…' // Object.is equality
+   × stored fischer beta game remains recoverable and unrated after activation 0ms
+     → expected 'Unrated beta — Bobby Fischer strength…' to be 'Unrated beta — this game keeps its or…' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/game/roster.test.ts > stored spassky beta game remains recoverable and unrated after activation
+AssertionError: expected 'Unrated beta — Boris Spassky strength…' to be 'Unrated beta — this game keeps its or…' // Object.is equality
+
+Expected: "Unrated beta — this game keeps its original unrated status."
+Received: "Unrated beta — Boris Spassky strength measurement is not yet accepted."
+
+ ❯ tests/game/roster.test.ts:130:49
+    128|     const recovered = parseSavedState(beta);
+    129|     expect(recovered).toEqual(beta);
+    130|     expect(unratedDescription(recovered!.game)).toBe(
+       |                                                 ^
+    131|       "Unrated beta — this game keeps its original unrated status.",
+    132|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/game/roster.test.ts > stored tal beta game remains recoverable and unrated after activation
+AssertionError: expected 'Unrated beta — Mikhail Tal strength m…' to be 'Unrated beta — this game keeps its or…' // Object.is equality
+
+Expected: "Unrated beta — this game keeps its original unrated status."
+Received: "Unrated beta — Mikhail Tal strength measurement is not yet accepted."
+
+ ❯ tests/game/roster.test.ts:130:49
+    128|     const recovered = parseSavedState(beta);
+    129|     expect(recovered).toEqual(beta);
+    130|     expect(unratedDescription(recovered!.game)).toBe(
+       |                                                 ^
+    131|       "Unrated beta — this game keeps its original unrated status.",
+    132|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/game/roster.test.ts > stored fischer beta game remains recoverable and unrated after activation
+AssertionError: expected 'Unrated beta — Bobby Fischer strength…' to be 'Unrated beta — this game keeps its or…' // Object.is equality
+
+Expected: "Unrated beta — this game keeps its original unrated status."
+Received: "Unrated beta — Bobby Fischer strength measurement is not yet accepted."
+
+ ❯ tests/game/roster.test.ts:130:49
+    128|     const recovered = parseSavedState(beta);
+    129|     expect(recovered).toEqual(beta);
+    130|     expect(unratedDescription(recovered!.game)).toBe(
+       |                                                 ^
+    131|       "Unrated beta — this game keeps its original unrated status.",
+    132|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 7 passed (10)
+   Start at  21:41:19
+   Duration  483ms (transform 64ms, setup 60ms, collect 71ms, tests 15ms, environment 191ms, prepare 28ms)
+
+EXIT=1

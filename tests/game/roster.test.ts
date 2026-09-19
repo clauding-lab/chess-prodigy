@@ -127,6 +127,9 @@ for (const id of ROSTER_IDS)
     };
     const recovered = parseSavedState(beta);
     expect(recovered).toEqual(beta);
+    expect(unratedDescription(recovered!.game)).toBe(
+      "Unrated beta — this game keeps its original unrated status.",
+    );
     const moved = reduceSession(recovered!, {
       type: "move",
       move: legalMoves(recovered!.game.st)[0],
