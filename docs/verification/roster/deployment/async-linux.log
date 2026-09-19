@@ -1,0 +1,21 @@
+
+ RUN  v3.2.7 /tmp/chess-roster-stage-c95dd12-complete
+
+ ✓ tests/calibration/matches.test.ts (19 tests) 109772ms
+   ✓ plays opening SAN legally and records a forced mate without an invented result  5444ms
+   ✓ runner persists an unresolved game without rating it and rejects changed resume settings  8428ms
+   ✓ historical runner initializes an exact version-3 manifest without starting games  3756ms
+   ✓ verify-only refuses missing games and does not silently create them  8255ms
+   ✓ verify-only rejects an illegal saved game instead of qualifying its claimed score  8367ms
+   ✓ historical worker plays the declared version-3 START policy  7990ms
+   ✓ workers reject unsupported identity and incomplete, empty, extra, or changed fingerprints  39765ms
+   ✓ a calibration pair worker resumes the declared protocol and never overwrites completed games  11897ms
+   ✓ plans worker resumes exact v4 without overwrites and rejects policy-source changes  15756ms
+ ✓ tests/calibration/process.test.ts (3 tests) 391ms
+
+ Test Files  2 passed (2)
+      Tests  22 passed (22)
+   Start at  16:10:33
+   Duration  113.59s (transform 4.54s, setup 481ms, collect 371ms, tests 110.16s, environment 1.73s, prepare 269ms)
+
+EXIT=0

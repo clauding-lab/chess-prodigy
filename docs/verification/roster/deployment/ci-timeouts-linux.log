@@ -1,0 +1,65 @@
+
+ RUN  v3.2.7 /tmp/chess-roster-stage-c95dd12-complete
+
+ ❯ tests/calibration/matches.test.ts (19 tests | 1 failed) 128512ms
+   ✓ scores mate from White's side and distinguishes unfinished games from draws 12ms
+   ✓ balanced pairs stay at the reference rating with nonzero uncertainty 2ms
+   ✓ does not claim calibration for domination, small samples or unfinished games 1ms
+   ✓ match randomness repeats within its seed without becoming constant 2ms
+   × plays opening SAN legally and records a forced mate without an invented result 5024ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ a safety cutoff preserves legal moves and reports unresolved, not a draw  415ms
+   ✓ historical protocol starts from START and selects the version-3 production policy 10ms
+   ✓ match identity rejects unsupported protocol and opponent-version combinations 1ms
+   ✓ runner persists an unresolved game without rating it and rejects changed resume settings  9816ms
+   ✓ historical runner initializes an exact version-3 manifest without starting games  5690ms
+   ✓ verify-only refuses missing games and does not silently create them  10332ms
+   ✓ verify-only rejects an illegal saved game instead of qualifying its claimed score  10215ms
+   ✓ historical worker plays the declared version-3 START policy  9600ms
+   ✓ workers reject unsupported identity and incomplete, empty, extra, or changed fingerprints  48981ms
+   ✓ only the three predefined statistical checkpoints can qualify 3ms
+   ✓ every sampled opening uses six legal plies regardless of short book entries 60ms
+   ✓ a calibration pair worker resumes the declared protocol and never overwrites completed games  11463ms
+   ✓ plans protocol uses exact unrated v4 from START and rejects mixed identities and openings 133ms
+   ✓ plans worker resumes exact v4 without overwrites and rejects policy-source changes  16746ms
+ ✓ tests/engine/chigorin-corpus.test.ts (3 tests) 274574ms
+   ✓ source games reproduce the checked compact book with legal occurrence frequencies  274480ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/calibration/matches.test.ts > plays opening SAN legally and records a forced mate without an invented result
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/calibration/matches.test.ts:42:1
+     40| });
+     41|
+     42| test("plays opening SAN legally and records a forced mate without an i…
+       | ^
+     43|   const { playMatch } = await import("../../scripts/calibration/match"…
+     44|   const game = playMatch({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯⎯⎯ Unhandled Error ⎯⎯⎯⎯⎯⎯⎯
+Error: [vitest-worker]: Timeout calling "onTaskUpdate"
+ ❯ Object.onTimeoutError node_modules/vitest/dist/chunks/rpc.-pEldfrD.js:53:10
+ ❯ Timeout._onTimeout node_modules/vitest/dist/chunks/index.B521nVV-.js:59:62
+ ❯ listOnTimeout node:internal/timers:585:17
+ ❯ processTimers node:internal/timers:521:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 21 passed (22)
+     Errors  1 error
+   Start at  16:02:51
+   Duration  407.20s (transform 4.74s, setup 537ms, collect 559ms, tests 403.09s, environment 1.87s, prepare 299ms)
+
+EXIT=1

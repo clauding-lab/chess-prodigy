@@ -1,0 +1,13 @@
+
+ RUN  v3.2.7 /tmp/chess-roster-stage-c95dd12-complete
+
+ ✓ tests/engine/roster-behaviour.test.ts (14 tests | 12 skipped) 7700ms
+   ✓ tactical safety, terminal-before-book and pins (false)  4686ms
+   ✓ tactical safety, terminal-before-book and pins (true)  3013ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 12 skipped (14)
+   Start at  16:12:59
+   Duration  13.65s (transform 3.61s, setup 232ms, collect 4.56s, tests 7.70s, environment 758ms, prepare 105ms)
+
+EXIT=0

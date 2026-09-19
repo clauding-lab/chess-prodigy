@@ -1,0 +1,21 @@
+
+ RUN  v3.2.7 /Users/adnanrashid/Projects/chess-prodigy
+
+ ✓ tests/calibration/process.test.ts (3 tests) 251ms
+ ✓ tests/calibration/matches.test.ts (19 tests) 20628ms
+   ✓ plays opening SAN legally and records a forced mate without an invented result  820ms
+   ✓ runner persists an unresolved game without rating it and rejects changed resume settings  1576ms
+   ✓ historical runner initializes an exact version-3 manifest without starting games  775ms
+   ✓ verify-only refuses missing games and does not silently create them  1537ms
+   ✓ verify-only rejects an illegal saved game instead of qualifying its claimed score  1573ms
+   ✓ historical worker plays the declared version-3 START policy  1501ms
+   ✓ workers reject unsupported identity and incomplete, empty, extra, or changed fingerprints  7420ms
+   ✓ a calibration pair worker resumes the declared protocol and never overwrites completed games  2267ms
+   ✓ plans worker resumes exact v4 without overwrites and rejects policy-source changes  3144ms
+
+ Test Files  2 passed (2)
+      Tests  22 passed (22)
+   Start at  22:08:19
+   Duration  20.98s (transform 692ms, setup 113ms, collect 73ms, tests 20.88s, environment 240ms, prepare 53ms)
+
+EXIT=0

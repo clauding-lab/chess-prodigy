@@ -1,0 +1,294 @@
+
+> chess-prodigy@2.6.0 test
+> vitest run
+
+
+ RUN  v3.2.7 /tmp/chess-roster-stage-c95dd12-complete
+
+stderr | tests/server/accounts.test.ts > private account records > registers, signs out, signs in, and stores only a password hash
+2026-09-19T15:50:26.657Z WARN [Better Auth]: Invalid password
+
+stderr | tests/server/accounts.test.ts > private account records > enforces account field bounds and production secure cookies
+2026-09-19T15:50:27.063Z WARN [Better Auth]: Password is too short
+
+stderr | tests/server/accounts.test.ts > private account records > enforces account field bounds and production secure cookies
+2026-09-19T15:50:27.074Z WARN [Better Auth]: Password is too long
+
+ ✓ tests/server/accounts.test.ts (25 tests) 10404ms
+   ✓ private account records > acknowledges legacy wire snapshots exactly but rejects a downgrade even at the current write version  484ms
+   ✓ private account records > rejects stale-tab owner identities without reading or overwriting the current account  411ms
+   ✓ private account records > registers, signs out, signs in, and stores only a password hash  635ms
+   ✓ private account records > enforces account field bounds and production secure cookies  451ms
+   ✓ private account records > isolates owners and restores records after reopening the database  576ms
+   ✓ private account records > publishes only eligible display names and practice ratings in ranked order  564ms
+   ✓ private account records > persists a bounded records request rate  568ms
+   ✓ permanently fences old clients after measured Morphy, including after Classic and rating reset  485ms
+   ✓ migrates legacy policy rows additively and raises policy atomically for assisted historical games  834ms
+   ✓ permanently requires policy 3 after accepting an assisted planned Morphy save  673ms
+   ✓ permanently requires policy4 after assisted Chigorin including reset and server restart  662ms
+   ✓ policy5 survives assisted spassky, reset, restart and isolates another account  637ms
+   ✓ policy5 survives assisted tal, reset, restart and isolates another account  676ms
+   ✓ policy5 survives assisted fischer, reset, restart and isolates another account  727ms
+ ✓ tests/server/multiplayer.test.ts (12 tests) 6769ms
+   ✓ authenticated human games > keeps chat participant-only, supports emoji and typing, and clears it when either player leaves  935ms
+   ✓ authenticated human games > requires authentication, protects tokens and participant data, validates turns and revisions  576ms
+   ✓ authenticated human games > completes once with atomic Elo and private lifetime head-to-head, using current names  545ms
+   ✓ authenticated human games > agrees draws only with an opponent offer and preserves the current reminder  571ms
+   ✓ authenticated human games > expires and cancels unused invitations without ratings and admits only one concurrent join  529ms
+   ✓ authenticated human games > detects checkmate using server rules and rejects subsequent moves  488ms
+   ✓ authenticated human games > keeps one reminder per turn through draw negotiations and invalidates it after a move  511ms
+   ✓ authenticated human games > serializes simultaneous completions using both current ratings and preserves total points  500ms
+   ✓ authenticated human games > rejects cross-origin and stale-account writes and bounds invitation creation  589ms
+   ✓ keeps the offerer's draw offer after their move until the opponent responds  521ms
+   ✓ does not let old expired invitations crowd a recent completed match out of the list  527ms
+   ✓ opens a creator's own invitation as waiting without consuming it  475ms
+ ✓ tests/server/notifications.test.ts (7 tests) 152ms
+ ✓ tests/server/chat.test.ts (4 tests) 15ms
+ ✓ tests/server/http-fixture.test.ts (1 test) 51ms
+ ✓ tests/deploy/prune-releases.test.ts (16 tests | 1 skipped) 1206ms
+ ❯ tests/calibration/matches.test.ts (19 tests | 2 failed) 115139ms
+   ✓ scores mate from White's side and distinguishes unfinished games from draws 6ms
+   ✓ balanced pairs stay at the reference rating with nonzero uncertainty 1ms
+   ✓ does not claim calibration for domination, small samples or unfinished games 1ms
+   ✓ match randomness repeats within its seed without becoming constant 2ms
+   × plays opening SAN legally and records a forced mate without an invented result 5023ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ a safety cutoff preserves legal moves and reports unresolved, not a draw  763ms
+   ✓ historical protocol starts from START and selects the version-3 production policy 63ms
+   ✓ match identity rejects unsupported protocol and opponent-version combinations 4ms
+   ✓ runner persists an unresolved game without rating it and rejects changed resume settings  14267ms
+   ✓ historical runner initializes an exact version-3 manifest without starting games  4738ms
+   ✓ verify-only refuses missing games and does not silently create them  7979ms
+   ✓ verify-only rejects an illegal saved game instead of qualifying its claimed score  8606ms
+   ✓ historical worker plays the declared version-3 START policy  8234ms
+   × workers reject unsupported identity and incomplete, empty, extra, or changed fingerprints 38591ms
+     → Test timed out in 20000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ only the three predefined statistical checkpoints can qualify 1ms
+   ✓ every sampled opening uses six legal plies regardless of short book entries 41ms
+   ✓ a calibration pair worker resumes the declared protocol and never overwrites completed games  11504ms
+   ✓ plans protocol uses exact unrated v4 from START and rejects mixed identities and openings 19ms
+   ✓ plans worker resumes exact v4 without overwrites and rejects policy-source changes  15290ms
+ ✓ tests/account/sync.test.ts (18 tests) 72ms
+ ✓ tests/game/useGame.test.tsx (21 tests) 2003ms
+   ✓ explicit reanalysis replaces a cached live verdict and persists its replacement  672ms
+ ✓ tests/ui/RecordedGames.test.tsx (12 tests) 1910ms
+   ✓ legally replays recorded moves with navigation without mutating the record  993ms
+   ✓ supports keyboard replay and starts with the recorded player's orientation  458ms
+ ✓ tests/engine/historical-morphy.test.ts (11 tests) 663ms
+ ✓ tests/storage/store.test.ts (17 tests) 433ms
+ ❯ tests/engine/roster-behaviour.test.ts (14 tests | 1 failed) 19604ms
+   ✓ both-color actual multi-turn priorities (false)  3001ms
+   ✓ Tal genuinely speculative exchange and forcing continuation (false)  1873ms
+   × tactical safety, terminal-before-book and pins (false) 5509ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ both-color actual multi-turn priorities (true)  2692ms
+   ✓ Tal genuinely speculative exchange and forcing continuation (true)  1919ms
+   ✓ tactical safety, terminal-before-book and pins (true)  3370ms
+   ✓ frequency weighting, deterministic identity, illegal book entry and invalid inputs 110ms
+   ✓ expired search and partial style ranking discard preference  980ms
+   ✓ an interrupted deeper search keeps only the previous complete ranking 120ms
+   ✓ Fischer takes a favorable rook exchange while refusing the losing queen capture 20ms
+   ✓ Fischer conversion rewards require a favorable neutral score (false) 2ms
+   ✓ Fischer conversion does not reward abandoning immediate attack (false) 2ms
+   ✓ Fischer conversion rewards require a favorable neutral score (true) 2ms
+   ✓ Fischer conversion does not reward abandoning immediate attack (true) 1ms
+ ✓ tests/engine/chigorin.test.ts (11 tests) 12196ms
+   ✓ supports and rates only the exact accepted Chigorin identity  417ms
+   ✓ declared behavior fixtures are off-book and actual moves honor tactical safety  2611ms
+   ✓ develops successive home minors, challenges the centre and occupies a supported knight square  2020ms
+   ✓ terminal moves, invalid identity, deterministic replay and deadline fallback  1139ms
+   ✓ central contact survives exchange, and coordinated attack adds another piece on the next turn  3402ms
+   ✓ deadline during ranking discards partial style and preserves complete neutral roots  1578ms
+   ✓ balanced off-book middlegame places a pawn-supported knight on d5 for both colors  841ms
+ ✓ tests/engine/historical-corpus.test.ts (15 tests) 28651ms
+   ✓ historical Morphy repertoire > legally replays the committed corpus, repertoire and serious-game holdout  28479ms
+stdout | tests/engine/morphy.test.ts > Morphy style-v1 > finishes a bounded complete legal game from the initial board, seed 4
+Morphy smoke seed=4: draw, 109 legal plies
+
+stdout | tests/engine/morphy.test.ts > Morphy style-v1 > finishes a bounded complete legal game from the initial board, seed 5
+Morphy smoke seed=5: draw, 30 legal plies
+
+stdout | tests/engine/morphy.test.ts > Morphy style-v1 > finishes a bounded complete legal game from the initial board, seed 6
+Morphy smoke seed=6: checkmate, 68 legal plies
+
+ ✓ tests/engine/morphy.test.ts (16 tests) 3024ms
+   ✓ Morphy style-v1 > develops the bishop to an active diagonal out of book without changing neutral review  365ms
+   ✓ Morphy style-v1 > finishes a bounded complete legal game from the initial board, seed 4  819ms
+   ✓ Morphy style-v1 > finishes a bounded complete legal game from the initial board, seed 5  568ms
+   ✓ Morphy style-v1 > finishes a bounded complete legal game from the initial board, seed 6  709ms
+ ✓ tests/engine/morphy-plans.test.ts (14 tests) 6465ms
+   ✓ dispatches measured version4 as supported, distinct and rated  477ms
+   ✓ develops successive home minor pieces and opens the centre with d4  784ms
+   ✓ terminal decisions, invalid identities and deterministic offbook replay  1080ms
+   ✓ central break never overrides the hanging bishop safety guard  493ms
+   ✓ follows a central break through an exchange and adds a second attacking piece  1751ms
+   ✓ deadline during ranking discards all progress and retains completed neutral choice  1473ms
+ ✓ tests/ui/App.test.tsx (8 tests) 5321ms
+   ✓ starts, plays a legal move, receives an engine reply and preserves theme across reload  1609ms
+   ✓ keeps new-game cancellation available even before the first move  625ms
+   ✓ marks setup choices as pressed and supports a keyboard board move  809ms
+   ✓ lets the player dismiss a result to inspect the final board  307ms
+   ✓ previews abandonment at rating 1400 and preserves it when the player keeps playing  907ms
+   ✓ previews abandonment at rating 1500.25 and preserves it when the player keeps playing  729ms
+ ✓ tests/ui/Home.test.tsx (8 tests) 4547ms
+   ✓ opens on an explanatory home, then chooses a measured opponent without an automatic dialog  835ms
+   ✓ requires resume or explicit forfeit before replacing a started game and records one loss  893ms
+   ✓ requires confirmation for an assisted unfinished game and honestly shows no rating change  307ms
+   ✓ settles a closed-app timeout on Home once and offers the result instead of resume  433ms
+   ✓ expires while the forfeit decision is open without forfeiting again or reopening the gate  523ms
+   ✓ preserves the timed engine reply deadline through repeated Home and Resume navigation  862ms
+   ✓ keeps the forfeited terminal game and explains a failed archive before any replacement  466ms
+ ✓ tests/ui/Personality.test.tsx (6 tests) 8271ms
+   ✓ hides new Morphy selection in an ordinary build and keeps Classic explicit  1051ms
+   ✓ plays and resumes Morphy as White with independent difficulty and correct flipped labels  3564ms
+   ✓ plays and resumes Morphy as Black with independent difficulty and correct flipped labels  2575ms
+   ✓ presents unavailable saved versions as read-only with a recovery download, preserving original bytes  375ms
+   ✓ allows an explicit compatible-app update for a read-only game only after recovery export  485ms
+ ✓ tests/ui/Completion.test.tsx (8 tests) 5188ms
+   ✓ rematches Morphy as w with retained settings, fresh identity and unchanged rating  753ms
+   ✓ rematches Morphy as b with retained settings, fresh identity and unchanged rating  477ms
+   ✓ keeps Classic rating receipts unchanged across rematch and allows colour adjustment  660ms
+   ✓ opens a historical rematch with an honest missing clock default  709ms
+   ✓ shows terminal preservation failure inside setup and preserves recovery state  568ms
+   ✓ rematches version 1 with its original rating and explicitly selects current Morphy  734ms
+   ✓ rematches version 2 with its original rating and explicitly selects current Morphy  634ms
+   ✓ rematches version 3 with its original rating and explicitly selects current Morphy  651ms
+ ✓ tests/interface.test.jsx (9 tests) 5222ms
+   ✓ charges actual elapsed time when timer callbacks are delayed  613ms
+   ✓ a pending promotion cannot revive a timed-out game  336ms
+   ✓ cancels a queued review before a new game replaces its history  542ms
+   ✓ cancels review between batches when the game is replaced  1074ms
+   ✓ cancels review when undo changes its history  1646ms
+ ✓ tests/storage/history.test.ts (8 tests) 1124ms
+   ✓ preserves a legally played 501-ply terminal save without poisoning retained history  1063ms
+ ✓ tests/account/history.test.ts (8 tests) 124ms
+ ✓ tests/engine/reviewer.test.ts (5 tests) 717ms
+ ✓ tests/game/rated-morphy.test.ts (16 tests) 145ms
+ ✓ tests/game/roster.test.ts (10 tests) 69ms
+ ✓ tests/storage/migration.test.ts (7 tests) 33ms
+ ✓ tests/engine.test.js (17 tests) 1587ms
+   ✓ retained engine and content > plays all 185 opening lines using their exact SAN  1153ms
+ ✓ tests/game/state.test.ts (10 tests) 39ms
+ ✓ tests/game/archive.test.ts (4 tests) 74ms
+ ✓ tests/coach/motifs.test.ts (47 tests) 266ms
+ ✓ tests/account/roster-generation.test.ts (8 tests) 41ms
+ ✓ tests/worker/roster.test.ts (3 tests) 44ms
+ ✓ tests/ui/Board.test.tsx (4 tests) 755ms
+   ✓ Board keyboard controls > keeps one square tabbable and moves focus in display coordinates  375ms
+ ✓ tests/worker/client.test.ts (5 tests) 18ms
+ ✓ tests/game/rated-chigorin.test.ts (4 tests) 89ms
+ ✓ tests/calibration/chigorin.test.ts (3 tests) 16945ms
+   ✓ Chigorin matches reject Morphy identities and forced openings  1098ms
+   ✓ Chigorin worker binds book and policy fingerprints and preserves completed games  15842ms
+ ✓ tests/game/opponents.test.ts (4 tests) 26ms
+ ✓ tests/calibration/roster.test.ts (6 tests) 622ms
+ ✓ tests/engine/board.test.ts (18 tests) 254ms
+ ✓ tests/ui/chat.test.tsx (3 tests) 334ms
+ ✓ tests/coach/annotate.test.ts (5 tests) 1267ms
+   ✓ coach annotations > marks a 300-point White drop as a blunder  564ms
+   ✓ coach annotations > inverts evaluation scores for a Black move  313ms
+ ✓ tests/account/push.test.ts (6 tests) 16ms
+ ✓ tests/game/sound.test.ts (4 tests) 1582ms
+   ✓ a fresh user gesture can activate audio while an earlier resume is still blocked  1506ms
+ ✓ tests/engine/root-candidates.test.ts (5 tests) 181ms
+ ✓ tests/ui/Modal.test.tsx (3 tests) 246ms
+ ✓ tests/ui/Roster.test.tsx (4 tests) 607ms
+ ❯ tests/engine/chigorin-corpus.test.ts (3 tests | 1 failed) 110172ms
+   ✓ exact named ordinary player games only; reject odds, consultation, ambiguous names, setups, variants and broken notation 86ms
+   × source games reproduce the checked compact book with legal occurrence frequencies 110080ms
+     → Corpus worker exceeded its 110-second deadline.
+   ✓ rejects malformed headers, duplicate tags, result mismatches and moves after a result 3ms
+ ✓ tests/account/h2h.test.tsx (2 tests) 320ms
+ ✓ tests/engine/roster-corpus.test.ts (4 tests) 225175ms
+   ✓ full exact source rebuild validates all legal moves, collisions and occurrences in child process  225131ms
+ ✓ tests/ui/rematch.test.tsx (3 tests) 374ms
+ ✓ tests/storage/roster-generation.test.ts (11 tests) 18ms
+ ✓ tests/storage/chigorin-generation.test.ts (2 tests) 10ms
+ ✓ tests/account/chigorin-generation.test.ts (1 test) 17ms
+ ✓ tests/ui/Chigorin.test.tsx (3 tests) 312ms
+   ✓ shows Chigorin's concise card, Wikipedia link and enabled play button on Home  304ms
+ ✓ tests/ui/CoachPanel.test.tsx (1 test) 432ms
+   ✓ retains earlier move stories and the expanded opening when later moves arrive  431ms
+ ✓ tests/account/records.test.ts (2 tests) 8ms
+ ✓ tests/engine/search.test.ts (6 tests) 82ms
+ ✓ tests/coach/book.test.ts (5 tests) 1084ms
+   ✓ opening book > plays all 185 lines using their exact SAN  934ms
+ ✓ tests/ui/UpdatePrompt.test.tsx (2 tests) 203ms
+ ✓ tests/ui/ResultModal.test.tsx (1 test) 144ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/calibration/matches.test.ts > plays opening SAN legally and records a forced mate without an invented result
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/calibration/matches.test.ts:42:1
+     40| });
+     41|
+     42| test("plays opening SAN legally and records a forced mate without an i…
+       | ^
+     43|   const { playMatch } = await import("../../scripts/calibration/match"…
+     44|   const game = playMatch({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/calibration/matches.test.ts > workers reject unsupported identity and incomplete, empty, extra, or changed fingerprints
+Error: Test timed out in 20000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/calibration/matches.test.ts:340:1
+    338| }, 20000);
+    339|
+    340| test("workers reject unsupported identity and incomplete, empty, extra…
+       | ^
+    341|   const { mkdtempSync, readFileSync, rmSync, writeFileSync } = await i…
+    342|   const { tmpdir } = await import("node:os");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/engine/chigorin-corpus.test.ts > source games reproduce the checked compact book with legal occurrence frequencies
+Error: Corpus worker exceeded its 110-second deadline.
+ ❯ Timeout._onTimeout tests/engine/chigorin-corpus.test.ts:35:14
+     33|     const deadline = setTimeout(() => {
+     34|       child.kill("SIGTERM");
+     35|       reject(new Error("Corpus worker exceeded its 110-second deadline…
+       |              ^
+     36|     }, 110000);
+     37|     let stderr = "";
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/engine/roster-behaviour.test.ts > tactical safety, terminal-before-book and pins (false)
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/engine/roster-behaviour.test.ts:113:3
+    111|     expect(inCheck(applyMove(continued, follow.result.move!), replyPos…
+    112|   });
+    113|   test(`tactical safety, terminal-before-book and pins (${reflected})`…
+       |   ^
+    114|     const trap = position("3rk3/8/8/3p4/8/8/8/3Q2K1 w - - 0 20");
+    115|     for (const engine of engines) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯⎯⎯ Unhandled Error ⎯⎯⎯⎯⎯⎯⎯
+Error: [vitest-worker]: Timeout calling "onTaskUpdate"
+ ❯ Object.onTimeoutError node_modules/vitest/dist/chunks/rpc.-pEldfrD.js:53:10
+ ❯ Timeout._onTimeout node_modules/vitest/dist/chunks/index.B521nVV-.js:59:62
+ ❯ listOnTimeout node:internal/timers:585:17
+ ❯ processTimers node:internal/timers:521:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  3 failed | 59 passed (62)
+      Tests  4 failed | 530 passed | 1 skipped (535)
+     Errors  1 error
+   Start at  15:50:22
+   Duration  692.22s (transform 8.63s, setup 12.65s, collect 15.38s, tests 602.86s, environment 38.24s, prepare 6.64s)
