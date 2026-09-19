@@ -31,8 +31,13 @@ export const CHIGORIN_RATINGS: Readonly<Record<Level, number>> = Object.freeze({
   club: 1350,
   strong: 1625,
 });
-export const ROSTER_RATINGS: Readonly<Record<RosterId, Readonly<Record<Level, number>> | null>> =
-  Object.freeze({ spassky: null, tal: null, fischer: null });
+// Independently accepted calibration for the historical roster, version 1 / plans-v1.
+export const ROSTER_RATINGS: Readonly<Record<RosterId, Readonly<Record<Level, number>>>> =
+  Object.freeze({
+    spassky: Object.freeze({ casual: 1150, club: 1325, strong: 1700 }),
+    tal: Object.freeze({ casual: 1200, club: 1325, strong: 1700 }),
+    fischer: Object.freeze({ casual: 1250, club: 1350, strong: 1675 }),
+  });
 export function opponentPracticeRating(opponent: OpponentConfig, level: Level): number | null {
   if (!isSupportedOpponent(opponent)) return null;
   if (isRosterId(opponent.id)) return ROSTER_RATINGS[opponent.id]?.[level] ?? null;

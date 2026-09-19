@@ -13,16 +13,14 @@ async function move(page: Page, from: string, to: string) {
   await page.getByRole("button", { name: new RegExp(`^${from},`) }).click();
   await page.getByRole("button", { name: new RegExp(`^${to},`) }).click();
 }
-test("roster cards honor flag, keep dark/mobile layout and gate all unmeasured starts", async ({
-  page,
-}, info) => {
+test("roster cards honor the build flag and expose measured starts", async ({ page }, info) => {
   await page.goto("/");
   await expect(page.locator(".app")).toHaveAttribute("data-theme", "dark");
   for (const id of ROSTER_IDS) {
     const button = page.getByRole("button", { name: `Play ${ROSTER_NAMES[id]}`, exact: true });
     if (process.env.VITE_PERSONALITY_BETA !== "true") await expect(button).toHaveCount(0);
     else {
-      await expect(button).toBeDisabled();
+      await expect(button).toBeEnabled();
       await expect(
         page.getByRole("link", { name: new RegExp(`${ROSTER_NAMES[id]} on Wikipedia`) }),
       ).toHaveAttribute("rel", "noopener noreferrer");
@@ -39,13 +37,13 @@ test("roster cards honor flag, keep dark/mobile layout and gate all unmeasured s
       .getByRole("dialog", { name: "New game" })
       .getByRole("button", { name: ROSTER_NAMES[id], exact: true });
     if (process.env.VITE_PERSONALITY_BETA !== "true") await expect(button).toHaveCount(0);
-    else await expect(button).toBeDisabled();
+    else await expect(button).toBeEnabled();
   }
 });
 for (const id of ROSTER_IDS)
   for (const level of ["casual", "club", "strong"] as const)
     for (const color of ["w", "b"] as const)
-      test(`${id} ${level} ${color}: native cold worker, offline resume, neutral review and gated recorded rematch`, async ({
+      test(`${id} ${level} ${color}: rated native worker, offline resume, neutral review and recorded rematch`, async ({
         page,
         context,
       }, info) => {
@@ -94,7 +92,7 @@ for (const id of ROSTER_IDS)
           .toBe(color === "w" ? 2 : 1);
         const before = await saved(page);
         expect(before.game.opponent).toEqual(session.game.opponent);
-        expect(before.game.rated).toBe(false);
+        expect(before.game.rated).toBe(true);
         const timings = () =>
           page.evaluate(
             () =>
@@ -160,17 +158,20 @@ for (const id of ROSTER_IDS)
         await page.getByRole("button", { name: "View board", exact: true }).click();
         await page.getByRole("button", { name: "Games", exact: true }).click();
         const records = page.getByRole("dialog", { name: "Recorded games" });
-        await expect(
-          records.getByRole("button", { name: "Rematch recorded game 1", exact: true }),
-        ).toBeDisabled();
+        const rematch = records.getByRole("button", {
+          name: "Rematch recorded game 1",
+          exact: true,
+        });
+        if (process.env.VITE_PERSONALITY_BETA === "true") await expect(rematch).toBeEnabled();
+        else await expect(rematch).toBeDisabled();
         await records.getByRole("button", { name: "Replay recorded game 1", exact: true }).click();
         await expect(records.getByRole("region", { name: "Recorded game replay" })).toBeVisible();
-        expect((await saved(page)).rating).toEqual(before.rating);
+        expect((await saved(page)).rating.games).toBe(before.rating.games + 1);
         await context.setOffline(false);
       });
 
 for (const id of ROSTER_IDS)
-  test(`account ${id} resumes exact beta, archives assistance and retains policy5 after reset`, async ({
+  test(`account ${id} preserves an assisted unrated archive and policy5 after reset`, async ({
     page,
     context,
   }, info) => {
@@ -241,9 +242,9 @@ for (const id of ROSTER_IDS)
     await enterPlay(page);
     await page.getByRole("button", { name: "View board", exact: true }).click();
     await page.getByRole("button", { name: "Games", exact: true }).click();
-    await expect(
-      page.getByRole("button", { name: "Rematch recorded game 1", exact: true }),
-    ).toBeDisabled();
+    const rematch = page.getByRole("button", { name: "Rematch recorded game 1", exact: true });
+    if (process.env.VITE_PERSONALITY_BETA === "true") await expect(rematch).toBeEnabled();
+    else await expect(rematch).toBeDisabled();
     await page.getByRole("button", { name: "Replay recorded game 1", exact: true }).click();
     await expect(page.getByRole("region", { name: "Recorded game replay" })).toBeVisible();
     await expect(page.getByText("Saved to account", { exact: true })).toBeVisible();
