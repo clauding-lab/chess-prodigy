@@ -1,0 +1,487 @@
+{
+  "seedBase": "0x18520000 + model index",
+  "trialsPerModel": 20000,
+  "estimator": "unchanged approximate-pair-wilson-v1; z=2.4; width<=300",
+  "interpretation": "Synthetic assumed outcomes only. Finite estimates counted explicitly. Fixed-size comparators include all finite estimates regardless of width; they are error analyses, not proposed rating eligibility. Coverage is empirical under the declared model, not a sequential confidence guarantee.",
+  "output": [
+    {
+      "model": {
+        "name": "Casual independent",
+        "wins": 0.73,
+        "draws": 0.17,
+        "coupling": "independent"
+      },
+      "truth": 1157.594352134785,
+      "trials": 20000,
+      "stopCounts": {
+        "50": 11651,
+        "100": 8349,
+        "200": 0
+      },
+      "rejectedAtCap": 0,
+      "metrics": {
+        "stoppedOverall": {
+          "count": 20000,
+          "bias": -5.5243675944862485,
+          "biasMonteCarloSE": 0.21983248936911956,
+          "rmse": 31.576021043879027,
+          "roundedBias": -5.0281021347839125,
+          "intervalCoverage": 0.99995
+        },
+        "acceptedOnly": {
+          "count": 20000,
+          "bias": -5.5243675944862485,
+          "biasMonteCarloSE": 0.21983248936911956,
+          "rmse": 31.576021043879027,
+          "roundedBias": -5.0281021347839125,
+          "intervalCoverage": 0.99995
+        },
+        "stop50": {
+          "count": 11651,
+          "bias": -23.456956992564532,
+          "biasMonteCarloSE": 0.20818316634922085,
+          "rmse": 32.483624487318316,
+          "roundedBias": -23.01792092716707,
+          "intervalCoverage": 0.9999141704574714
+        },
+        "stop100": {
+          "count": 8349,
+          "bias": 19.500497548284805,
+          "biasMonteCarloSE": 0.25329082917139095,
+          "rmse": 30.26400315515086,
+          "roundedBias": 20.07662642552114,
+          "intervalCoverage": 1
+        },
+        "stop200": {
+          "count": 0
+        },
+        "fixed100": {
+          "count": 20000,
+          "bias": 1.3835043188411944,
+          "biasMonteCarloSE": 0.19134649707994614,
+          "rmse": 27.095824827739953,
+          "roundedBias": 1.9506478652149573,
+          "intervalCoverage": 1
+        },
+        "fixed200": {
+          "count": 20000,
+          "bias": 0.706821027812385,
+          "biasMonteCarloSE": 0.13478116456244754,
+          "rmse": 19.07403581787423,
+          "roundedBias": 0.6768978652147747,
+          "intervalCoverage": 0.99995
+        }
+      }
+    },
+    {
+      "model": {
+        "name": "Casual concordant pair",
+        "wins": 0.73,
+        "draws": 0.17,
+        "coupling": "concordant"
+      },
+      "truth": 1157.594352134785,
+      "trials": 20000,
+      "stopCounts": {
+        "50": 11349,
+        "100": 8647,
+        "200": 4
+      },
+      "rejectedAtCap": 0,
+      "metrics": {
+        "stoppedOverall": {
+          "count": 20000,
+          "bias": -6.959472140992246,
+          "biasMonteCarloSE": 0.3130574949575052,
+          "rmse": 44.81667273975852,
+          "roundedBias": -4.87310213478388,
+          "intervalCoverage": 0.9938
+        },
+        "acceptedOnly": {
+          "count": 20000,
+          "bias": -6.959472140992246,
+          "biasMonteCarloSE": 0.3130574949575052,
+          "rmse": 44.81667273975852,
+          "roundedBias": -4.87310213478388,
+          "intervalCoverage": 0.9938
+        },
+        "stop50": {
+          "count": 11349,
+          "bias": -33.13715020631573,
+          "biasMonteCarloSE": 0.2937225992083508,
+          "rmse": 45.57611882141181,
+          "roundedBias": -30.929007170475938,
+          "intervalCoverage": 0.9919816723940436
+        },
+        "stop100": {
+          "count": 8647,
+          "bias": 27.360554157109302,
+          "biasMonteCarloSE": 0.3674703592218417,
+          "rmse": 43.77491224242186,
+          "roundedBias": 29.28838176136046,
+          "intervalCoverage": 0.9964149415982422
+        },
+        "stop200": {
+          "count": 4,
+          "bias": 74.3407687751889,
+          "biasMonteCarloSE": 17.462078171610205,
+          "rmse": 82.13553797456862,
+          "roundedBias": 73.65564786521509,
+          "intervalCoverage": 0.5
+        },
+        "fixed100": {
+          "count": 20000,
+          "bias": 2.663999448767054,
+          "biasMonteCarloSE": 0.2738668234022829,
+          "rmse": 38.82212812652309,
+          "roundedBias": 3.8306478652149103,
+          "intervalCoverage": 0.9937
+        },
+        "fixed200": {
+          "count": 20000,
+          "bias": 1.4709468699420296,
+          "biasMonteCarloSE": 0.19254173421377171,
+          "rmse": 27.269214748047414,
+          "roundedBias": 1.9368978652152486,
+          "intervalCoverage": 0.99525
+        }
+      }
+    },
+    {
+      "model": {
+        "name": "Casual antithetic pair",
+        "wins": 0.73,
+        "draws": 0.17,
+        "coupling": "antithetic"
+      },
+      "truth": 1157.594352134785,
+      "trials": 20000,
+      "stopCounts": {
+        "50": 12229,
+        "100": 7771,
+        "200": 0
+      },
+      "rejectedAtCap": 0,
+      "metrics": {
+        "stoppedOverall": {
+          "count": 20000,
+          "bias": -5.175120576062603,
+          "biasMonteCarloSE": 0.18109934690926496,
+          "rmse": 26.12893687075753,
+          "roundedBias": -4.666852134784121,
+          "intervalCoverage": 1
+        },
+        "acceptedOnly": {
+          "count": 20000,
+          "bias": -5.175120576062603,
+          "biasMonteCarloSE": 0.18109934690926496,
+          "rmse": 26.12893687075753,
+          "roundedBias": -4.666852134784121,
+          "intervalCoverage": 1
+        },
+        "stop50": {
+          "count": 12229,
+          "bias": -18.82935280676163,
+          "biasMonteCarloSE": 0.17046356938187354,
+          "rmse": 26.643811883471095,
+          "roundedBias": -18.394499325890756,
+          "intervalCoverage": 1
+        },
+        "stop100": {
+          "count": 7771,
+          "bias": 16.312153384715526,
+          "biasMonteCarloSE": 0.2193438431954437,
+          "rmse": 25.297480827031595,
+          "roundedBias": 16.935952845271146,
+          "intervalCoverage": 1
+        },
+        "stop200": {
+          "count": 0
+        },
+        "fixed100": {
+          "count": 20000,
+          "bias": 0.6248967331237357,
+          "biasMonteCarloSE": 0.1582339433781081,
+          "rmse": 22.386382304132912,
+          "roundedBias": 1.1756478652152909,
+          "intervalCoverage": 1
+        },
+        "fixed200": {
+          "count": 20000,
+          "bias": 0.18808534895367193,
+          "biasMonteCarloSE": 0.11089744178798021,
+          "rmse": 15.684394409758388,
+          "roundedBias": 0.10189786521508722,
+          "intervalCoverage": 1
+        }
+      }
+    },
+    {
+      "model": {
+        "name": "Casual colour asymmetry",
+        "wins": 0.73,
+        "draws": 0.17,
+        "coupling": "independent",
+        "whiteWinShift": 0.07
+      },
+      "truth": 1157.594352134785,
+      "trials": 20000,
+      "stopCounts": {
+        "50": 11685,
+        "100": 8315,
+        "200": 0
+      },
+      "rejectedAtCap": 0,
+      "metrics": {
+        "stoppedOverall": {
+          "count": 20000,
+          "bias": -5.529826359071334,
+          "biasMonteCarloSE": 0.21325695280508752,
+          "rmse": 30.661858031693164,
+          "roundedBias": -5.0031021347837825,
+          "intervalCoverage": 0.9999
+        },
+        "acceptedOnly": {
+          "count": 20000,
+          "bias": -5.529826359071334,
+          "biasMonteCarloSE": 0.21325695280508752,
+          "rmse": 30.661858031693164,
+          "roundedBias": -5.0031021347837825,
+          "intervalCoverage": 0.9999
+        },
+        "stop50": {
+          "count": 11685,
+          "bias": -22.765903891136567,
+          "biasMonteCarloSE": 0.2033512082415638,
+          "rmse": 31.646187081917507,
+          "roundedBias": -22.341891715447545,
+          "intervalCoverage": 0.999828840393667
+        },
+        "stop100": {
+          "count": 8315,
+          "bias": 18.69188933090683,
+          "biasMonteCarloSE": 0.2463379410868213,
+          "rmse": 29.22260643053549,
+          "roundedBias": 19.362953938576243,
+          "intervalCoverage": 1
+        },
+        "stop200": {
+          "count": 0
+        },
+        "fixed100": {
+          "count": 20000,
+          "bias": 1.1770418592360616,
+          "biasMonteCarloSE": 0.1861540233561255,
+          "rmse": 26.352454074940578,
+          "roundedBias": 1.6918978652154424,
+          "intervalCoverage": 0.99995
+        },
+        "fixed200": {
+          "count": 20000,
+          "bias": 0.6355716886630551,
+          "biasMonteCarloSE": 0.13058419439891875,
+          "rmse": 18.478327519224298,
+          "roundedBias": 0.6543978652147346,
+          "intervalCoverage": 1
+        }
+      }
+    },
+    {
+      "model": {
+        "name": "Mirrored weak independent",
+        "wins": 0.1,
+        "draws": 0.17,
+        "coupling": "independent"
+      },
+      "truth": 642.4056478652149,
+      "trials": 20000,
+      "stopCounts": {
+        "50": 11625,
+        "100": 8375,
+        "200": 0
+      },
+      "rejectedAtCap": 0,
+      "metrics": {
+        "stoppedOverall": {
+          "count": 20000,
+          "bias": 5.506461517151825,
+          "biasMonteCarloSE": 0.21927723872953445,
+          "rmse": 31.49557535491071,
+          "roundedBias": 4.99935213478406,
+          "intervalCoverage": 1
+        },
+        "acceptedOnly": {
+          "count": 20000,
+          "bias": 5.506461517151825,
+          "biasMonteCarloSE": 0.21927723872953445,
+          "rmse": 31.49557535491071,
+          "roundedBias": 4.99935213478406,
+          "intervalCoverage": 1
+        },
+        "stop50": {
+          "count": 11625,
+          "bias": 23.28355484041854,
+          "biasMonteCarloSE": 0.20930102041195423,
+          "rmse": 32.42498015146723,
+          "roundedBias": 22.865319876724207,
+          "intervalCoverage": 1
+        },
+        "stop100": {
+          "count": 8375,
+          "bias": -19.1692053345454,
+          "biasMonteCarloSE": 0.25440615890375423,
+          "rmse": 30.15807218302129,
+          "roundedBias": -19.799677715960893,
+          "intervalCoverage": 1
+        },
+        "stop200": {
+          "count": 0
+        },
+        "fixed100": {
+          "count": 20000,
+          "bias": -1.582935600525409,
+          "biasMonteCarloSE": 0.19088242333645594,
+          "rmse": 27.041221789914935,
+          "roundedBias": -2.1106478652146894,
+          "intervalCoverage": 0.9999
+        },
+        "fixed200": {
+          "count": 20000,
+          "bias": -0.5572380117103165,
+          "biasMonteCarloSE": 0.1351904708973261,
+          "rmse": 19.126938663322743,
+          "roundedBias": -0.4756478652146838,
+          "intervalCoverage": 0.99985
+        }
+      }
+    },
+    {
+      "model": {
+        "name": "Balanced draw heavy",
+        "wins": 0.25,
+        "draws": 0.5,
+        "coupling": "independent"
+      },
+      "truth": 900,
+      "trials": 20000,
+      "stopCounts": {
+        "50": 20000,
+        "100": 0,
+        "200": 0
+      },
+      "rejectedAtCap": 0,
+      "metrics": {
+        "stoppedOverall": {
+          "count": 20000,
+          "bias": 0.004516206413236705,
+          "biasMonteCarloSE": 0.1745211350633043,
+          "rmse": 24.68101602592167,
+          "roundedBias": -0.0425,
+          "intervalCoverage": 1
+        },
+        "acceptedOnly": {
+          "count": 20000,
+          "bias": 0.004516206413236705,
+          "biasMonteCarloSE": 0.1745211350633043,
+          "rmse": 24.68101602592167,
+          "roundedBias": -0.0425,
+          "intervalCoverage": 1
+        },
+        "stop50": {
+          "count": 20000,
+          "bias": 0.004516206413236705,
+          "biasMonteCarloSE": 0.1745211350633043,
+          "rmse": 24.68101602592167,
+          "roundedBias": -0.0425,
+          "intervalCoverage": 1
+        },
+        "stop100": {
+          "count": 0
+        },
+        "stop200": {
+          "count": 0
+        },
+        "fixed100": {
+          "count": 20000,
+          "bias": 0.06199641862962501,
+          "biasMonteCarloSE": 0.12257033229071158,
+          "rmse": 17.334173493796353,
+          "roundedBias": 0.0175,
+          "intervalCoverage": 1
+        },
+        "fixed200": {
+          "count": 20000,
+          "bias": 0.009633420432425436,
+          "biasMonteCarloSE": 0.0865891784344876,
+          "rmse": 12.245562838921693,
+          "roundedBias": 0.06625,
+          "intervalCoverage": 1
+        }
+      }
+    },
+    {
+      "model": {
+        "name": "Extreme dominance",
+        "wins": 0.98,
+        "draws": 0.01,
+        "coupling": "independent"
+      },
+      "truth": 1626.937988576772,
+      "trials": 20000,
+      "stopCounts": {
+        "50": 0,
+        "100": 0,
+        "200": 20000
+      },
+      "rejectedAtCap": 19998,
+      "metrics": {
+        "stoppedOverall": {
+          "count": 19995,
+          "bias": 13.389179237327745,
+          "biasMonteCarloSE": 0.5130625541380534,
+          "rmse": 73.77409873322922,
+          "roundedBias": 15.175039680293855,
+          "intervalCoverage": 0.9992498124531133
+        },
+        "acceptedOnly": {
+          "count": 2,
+          "bias": -185.16049660576323,
+          "biasMonteCarloSE": 11.347908719617513,
+          "rmse": 185.85467324743382,
+          "roundedBias": -189.4379885767721,
+          "intervalCoverage": 0
+        },
+        "stop50": {
+          "count": 0
+        },
+        "stop100": {
+          "count": 0
+        },
+        "stop200": {
+          "count": 19995,
+          "bias": 13.389179237327745,
+          "biasMonteCarloSE": 0.5130625541380534,
+          "rmse": 73.77409873322922,
+          "roundedBias": 15.175039680293855,
+          "intervalCoverage": 0.9992498124531133
+        },
+        "fixed100": {
+          "count": 19634,
+          "bias": 22.04628801287176,
+          "biasMonteCarloSE": 0.7287373406260322,
+          "rmse": 104.46450966116014,
+          "roundedBias": 20.976343703967135,
+          "intervalCoverage": 0.9987266985840888
+        },
+        "fixed200": {
+          "count": 19995,
+          "bias": 13.389179237327745,
+          "biasMonteCarloSE": 0.5130625541380534,
+          "rmse": 73.77409873322922,
+          "roundedBias": 15.175039680293855,
+          "intervalCoverage": 0.9992498124531133
+        }
+      }
+    }
+  ]
+}

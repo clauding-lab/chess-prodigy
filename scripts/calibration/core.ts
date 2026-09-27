@@ -29,8 +29,24 @@ export function seededRandom(seed: number): () => number {
     return ((n ^ (n >>> 14)) >>> 0) / 4294967296;
   };
 }
+// This versioned contract also supplies the manifest labels. Historical estimates
+// must remain reproducible; a changed estimator needs a new protocol.
+export const CALIBRATION_CHECKPOINTS = Object.freeze([50, 100, 200] as const);
+export const CALIBRATION_INTERVAL = Object.freeze({
+  method: "approximate-pair-wilson-v1",
+  z: 2.4,
+  maximumWidth: 300,
+} as const);
+export function intervalWithinLimit(lower: number, upper: number): boolean {
+  return (
+    Number.isFinite(lower) &&
+    Number.isFinite(upper) &&
+    upper >= lower &&
+    upper - lower <= CALIBRATION_INTERVAL.maximumWidth
+  );
+}
 function wilson(p: number, n: number) {
-  const z = 2.4,
+  const z = CALIBRATION_INTERVAL.z,
     z2 = z * z,
     denom = 1 + z2 / n;
   const center = (p + z2 / (2 * n)) / denom;
@@ -62,14 +78,12 @@ export function estimate(
     games: 2 * n,
     unresolved,
     eligible:
-      [50, 100, 200].includes(n) &&
+      (CALIBRATION_CHECKPOINTS as readonly number[]).includes(n) &&
       !unresolved &&
       rating !== null &&
       rating >= 0 &&
       rating <= 10000 &&
-      Number.isFinite(lower) &&
-      Number.isFinite(upper) &&
-      upper - lower <= 300,
+      intervalWithinLimit(lower, upper),
   };
 }
 

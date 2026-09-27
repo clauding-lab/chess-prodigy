@@ -5,7 +5,7 @@ import { arch, cpus, platform } from "node:os";
 import { LEVEL_CFG } from "../../src/engine/search";
 import type { Level } from "../../src/engine/types";
 import { ENGINE_ELO } from "../../src/rating/fide";
-import { sampleOpening } from "./core";
+import { sampleOpening, CALIBRATION_CHECKPOINTS, CALIBRATION_INTERVAL } from "./core";
 
 export const LEGACY_PROTOCOL = "morphy-paired-v1";
 export const HISTORICAL_PROTOCOL = "morphy-historical-paired-v1";
@@ -71,6 +71,7 @@ export interface CalibrationOpponentIdentity {
 
 export interface CalibrationManifest {
   schemaVersion: 2;
+  purpose?: "accepted-evidence" | "exploratory";
   protocol: CalibrationProtocol;
   opponent: CalibrationOpponentIdentity;
   classic: {
@@ -90,8 +91,8 @@ export interface CalibrationManifest {
   openingPolicy: "sampled-six-ply-v1" | "start-position-v1";
   pairSeedPolicy: "color-swapped-20260912-v1";
   adjudication: "none";
-  checkpoints: readonly [50, 100, 200];
-  interval: { method: "approximate-pair-wilson-v1"; z: 2.4; maximumWidth: 300 };
+  checkpoints: typeof CALIBRATION_CHECKPOINTS;
+  interval: typeof CALIBRATION_INTERVAL;
   node: string;
   arch: string;
   platform: string;
@@ -258,6 +259,9 @@ export function assertManifest(
       expected.protocol === LEGACY_PROTOCOL ? "sampled-six-ply-v1" : "start-position-v1";
   if (
     value.schemaVersion !== 2 ||
+    (value.purpose !== undefined &&
+      value.purpose !== "accepted-evidence" &&
+      value.purpose !== "exploratory") ||
     value.protocol !== expected.protocol ||
     value.level !== expected.level ||
     JSON.stringify(value.opponent) !== JSON.stringify(expectedOpponent) ||
@@ -267,9 +271,8 @@ export function assertManifest(
     value.openingPolicy !== expectedOpening ||
     value.pairSeedPolicy !== "color-swapped-20260912-v1" ||
     value.adjudication !== "none" ||
-    JSON.stringify(value.checkpoints) !== JSON.stringify([50, 100, 200]) ||
-    JSON.stringify(value.interval) !==
-      JSON.stringify({ method: "approximate-pair-wilson-v1", z: 2.4, maximumWidth: 300 }) ||
+    JSON.stringify(value.checkpoints) !== JSON.stringify(CALIBRATION_CHECKPOINTS) ||
+    JSON.stringify(value.interval) !== JSON.stringify(CALIBRATION_INTERVAL) ||
     value.node !== machine.node ||
     value.arch !== machine.arch ||
     value.platform !== machine.platform ||

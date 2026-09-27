@@ -3,13 +3,9 @@ import { join, resolve } from "node:path";
 import { LEVEL_CFG } from "../../src/engine/search";
 import type { Color, Level } from "../../src/engine/types";
 import { ENGINE_ELO } from "../../src/rating/fide";
-import { estimate, type Score } from "./core";
+import { estimate, CALIBRATION_CHECKPOINTS, CALIBRATION_INTERVAL, type Score } from "./core";
 import { playMatch, verifySavedMatch, type MatchOptions, type MatchResult } from "./match";
 import {
-  HISTORICAL_PROTOCOL,
-  PLANS_PROTOCOL,
-  CHIGORIN_PROTOCOL,
-  rosterForProtocol,
   LEGACY_PROTOCOL,
   assertManifest,
   machineIdentity,
@@ -24,7 +20,7 @@ const [levelText, directoryText, pairText = "50", limitText = "1000", ...selecto
   process.argv.slice(2);
 if (!(["casual", "club", "strong"] as string[]).includes(levelText) || !directoryText)
   throw new Error(
-    "Usage: run.ts LEVEL DIRECTORY [PAIRS=50] [MAX_PLIES=1000] [PROTOCOL] [--init-only|--verify-only] [--concurrency=N]",
+    "Usage: run.ts LEVEL DIRECTORY [PAIRS=50] [MAX_PLIES=1000] [PROTOCOL] [--init-only|--verify-only] [--concurrency=N] [--exploratory]",
   );
 const protocolSelectors = selectors.filter((value) => !value.startsWith("--"));
 if (protocolSelectors.length > 1) throw new Error("Only one calibration protocol may be selected");
@@ -37,10 +33,14 @@ if (
   concurrencyValues.length > 1 ||
   flags.some(
     (value) =>
-      value !== "--init-only" && value !== "--verify-only" && !value.startsWith("--concurrency="),
+      value !== "--init-only" &&
+      value !== "--verify-only" &&
+      value !== "--exploratory" &&
+      !value.startsWith("--concurrency="),
   )
 )
   throw new Error("Invalid calibration run mode");
+const purpose = flags.includes("--exploratory") ? "exploratory" : "accepted-evidence";
 const mode = modes[0] ?? "run",
   concurrency = Number(concurrencyValues[0]?.slice("--concurrency=".length) ?? "1"),
   level = levelText as Level,
@@ -64,6 +64,7 @@ mkdirSync(directory, { recursive: true });
 
 const manifest: CalibrationManifest = {
   schemaVersion: 2,
+  purpose,
   protocol,
   opponent: opponentIdentity(protocol),
   classic: {
@@ -80,8 +81,8 @@ const manifest: CalibrationManifest = {
   openingPolicy: protocol === LEGACY_PROTOCOL ? "sampled-six-ply-v1" : "start-position-v1",
   pairSeedPolicy: "color-swapped-20260912-v1",
   adjudication: "none",
-  checkpoints: [50, 100, 200],
-  interval: { method: "approximate-pair-wilson-v1", z: 2.4, maximumWidth: 300 },
+  checkpoints: CALIBRATION_CHECKPOINTS,
+  interval: CALIBRATION_INTERVAL,
   ...machine,
   concurrency,
   source: sourceFingerprints(protocol),
@@ -97,7 +98,15 @@ if (existsSync(manifestPath)) {
 if (mode === "--init-only") {
   console.log(JSON.stringify({ initialized: true, level, protocol, manifest: manifestPath }));
 } else {
+  for (const checkpoint of CALIBRATION_CHECKPOINTS) {
+    if (
+      checkpoint > pairCount &&
+      existsSync(join(directory, `${level}-${checkpoint}-summary.json`))
+    )
+      throw new Error("Cannot shorten a recorded checkpoint; preserve the existing evidence.");
+  }
   const pairs: [Score | null, Score | null][] = [];
+  let firstEligible: number | null = null;
   for (let pair = 0; pair < pairCount; pair++) {
     const seed = (0x20260912 + pair * 7919) >>> 0,
       opening = openingForProtocol(protocol, seed),
@@ -131,16 +140,13 @@ if (mode === "--init-only") {
     }
     pairs.push(results);
     const measured = estimate(pairs, ENGINE_ELO[level]),
+      qualifying = measured.eligible && (protocol === LEGACY_PROTOCOL || maxPlies === 1000),
+      supersededBy = firstEligible,
       summary = {
         ...measured,
-        eligible:
-          measured.eligible &&
-          (protocol === LEGACY_PROTOCOL ||
-            ((protocol === HISTORICAL_PROTOCOL ||
-              protocol === PLANS_PROTOCOL ||
-              protocol === CHIGORIN_PROTOCOL ||
-              rosterForProtocol(protocol) !== null) &&
-              maxPlies === 1000)),
+        eligible: purpose === "accepted-evidence" && qualifying && supersededBy === null,
+        purpose,
+        supersededBy,
         protocol,
         opponentVersion: manifest.opponent.version,
         level,
@@ -149,10 +155,26 @@ if (mode === "--init-only") {
         draws: pairs.flat().filter((score) => score === 0.5).length,
         losses: pairs.flat().filter((score) => score === 0).length,
       };
-    writeFileSync(
-      join(directory, `${level}-summary.json`),
-      JSON.stringify(summary, null, 2) + "\n",
-    );
+    if ((CALIBRATION_CHECKPOINTS as readonly number[]).includes(pairs.length)) {
+      const checkpoint = join(directory, `${level}-${pairs.length}-summary.json`);
+      const serialized = JSON.stringify(summary, null, 2) + "\n";
+      const existing = existsSync(checkpoint);
+      if (existing) {
+        if (readFileSync(checkpoint, "utf8") !== serialized)
+          throw new Error(`Immutable checkpoint mismatch: ${checkpoint}`);
+      } else writeFileSync(checkpoint, serialized, { flag: "wx" });
+      if (qualifying && firstEligible === null) firstEligible = pairs.length;
+      if (existing && summary.eligible && pairCount > pairs.length)
+        throw new Error(
+          "Cannot extend an accepted checkpoint; use a separate exploratory directory",
+        );
+    }
+    if (summary.eligible || pairs.length === pairCount)
+      writeFileSync(
+        join(directory, `${level}-summary.json`),
+        JSON.stringify(summary, null, 2) + "\n",
+      );
     console.log(JSON.stringify(summary));
+    if (summary.eligible) break;
   }
 }
