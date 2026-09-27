@@ -164,7 +164,7 @@ Fresh frozen complete-game measurement and independent review precede rated norm
 
 Authority advances to state-v6/account-v6/history-v5, preserving prior recovery and pending versions.
 Wire schema remains2; accepting Chigorin including assisted games permanently raises account policy4,
-which survives reset. Old clients must not overwrite it. The compact engine requires an explicit3MiB
+which survives reset. Old clients must not overwrite it. The compact engine requires an explicit8MiB
 Workbox file cache ceiling; keep offline worker coverage. Owner also requested the Saved to account
 status on a centered separate line below header navigation. Dark remains default. This pass prepares
 and verifies a local2.5.0 candidate; do not claim publication/deployment from local evidence.

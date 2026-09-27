@@ -155,54 +155,64 @@ for (const color of ["w", "b"] as const)
     expect(next.rating).toEqual(previous.rating);
   });
 
-test("archived Morphy replay remains available and rematch obeys the beta build flag", async ({
-  page,
-}) => {
-  const previous = fixture(
-    "synthetic-morphy-record",
-    { opponent: morphyConfig(4), playerColor: "b", time: "10+0" },
-    true,
-  );
-  const active = fixture("synthetic-active-morphy", { opponent: morphyConfig(9) });
-  await seed(page, active, [archiveGame(previous)!]);
-  await page.goto("/");
-  await enterPlay(page);
-  const records = await openRecords(page);
-  await records
-    .getByRole("combobox", { name: "Opponent and difficulty" })
-    .selectOption({ label: "Paul Morphy · v1 · Casual" });
-  await expect(records.getByRole("region", { name: "Recorded rivalry" })).toContainText(
-    "1 recorded game",
-  );
-  await records.getByRole("button", { name: "Replay recorded game 1" }).click();
-  await records.getByRole("slider", { name: "Replay position" }).press("End");
-  await expect(records.getByRole("region", { name: "Recorded game replay" })).toContainText(
-    "2 / 2 half-moves",
-  );
-  expect((await saved(page)).game).toEqual(active.game);
-  const rematch = records.getByRole("button", { name: "Rematch recorded game 1" });
-  if (process.env.VITE_PERSONALITY_BETA !== "true") {
-    await expect(rematch).toBeDisabled();
-    await expect(records).toContainText("Paul Morphy beta is disabled in this build");
-    return;
-  }
-  await rematch.click();
-  await page.getByRole("button", { name: "Forfeit and continue", exact: true }).click();
-  const setup = page.getByRole("dialog", { name: "New game" });
-  for (const name of ["Paul Morphy", "Black", "Casual", "10 min"])
-    await expect(setup.getByRole("button", { name, exact: true })).toHaveAttribute(
-      "aria-pressed",
-      "true",
+for (const mode of ["replay", "rematch"] as const)
+  test(`archived Morphy ${mode} respects its original opponent and build availability`, async ({
+    page,
+  }) => {
+    test.skip(
+      mode === "rematch" && process.env.VITE_PERSONALITY_BETA !== "true",
+      "Historical rematches require the enabled build",
     );
-  await setup.getByRole("button", { name: "Start", exact: true }).click();
-  const next = await saved(page);
-  expect(next.game.id).not.toBe(previous.game.id);
-  expect(next.game.setup).toEqual(previous.game.setup);
-  expect(next.game.opponent).toMatchObject({ ...previous.game.opponent, seed: expect.any(Number) });
-  expect(next.game.opponent.seed).not.toBe(previous.game.opponent.seed);
-  expect(next.game.rated).toBe(false);
-  expect(next.rating).toEqual(active.rating);
-});
+    const previous = fixture(
+      "synthetic-morphy-record",
+      { opponent: morphyConfig(4), playerColor: "b", time: "10+0" },
+      true,
+    );
+    const active = fixture("synthetic-active-morphy", { opponent: morphyConfig(9) });
+    await seed(page, active, [archiveGame(previous)!]);
+    await page.goto("/");
+    await enterPlay(page);
+    const records = await openRecords(page);
+    await records
+      .getByRole("combobox", { name: "Opponent and difficulty" })
+      .selectOption({ label: "Paul Morphy · v1 · Casual" });
+    await expect(records.getByRole("region", { name: "Recorded rivalry" })).toContainText(
+      "1 recorded game",
+    );
+    await records.getByRole("button", { name: "Replay recorded game 1" }).click();
+    await records.getByRole("slider", { name: "Replay position" }).press("End");
+    await expect(records.getByRole("region", { name: "Recorded game replay" })).toContainText(
+      "2 / 2 half-moves",
+    );
+    expect((await saved(page)).game).toEqual(active.game);
+    const rematch = records.getByRole("button", { name: "Rematch recorded game 1" });
+    if (mode === "replay") {
+      if (process.env.VITE_PERSONALITY_BETA !== "true") {
+        await expect(rematch).toBeDisabled();
+        await expect(records).toContainText("Paul Morphy beta is disabled in this build");
+      } else await expect(rematch).toBeEnabled();
+      return;
+    }
+    await rematch.click();
+    await page.getByRole("button", { name: "Forfeit and continue", exact: true }).click();
+    const setup = page.getByRole("dialog", { name: "New game" });
+    for (const name of ["Paul Morphy", "Black", "Casual", "10 min"])
+      await expect(setup.getByRole("button", { name, exact: true })).toHaveAttribute(
+        "aria-pressed",
+        "true",
+      );
+    await setup.getByRole("button", { name: "Start", exact: true }).click();
+    const next = await saved(page);
+    expect(next.game.id).not.toBe(previous.game.id);
+    expect(next.game.setup).toEqual(previous.game.setup);
+    expect(next.game.opponent).toMatchObject({
+      ...previous.game.opponent,
+      seed: expect.any(Number),
+    });
+    expect(next.game.opponent.seed).not.toBe(previous.game.opponent.seed);
+    expect(next.game.rated).toBe(false);
+    expect(next.rating).toEqual(active.rating);
+  });
 
 test("recorded games and keyboard replay fit a 320px screen in dark and wooden themes", async ({
   page,

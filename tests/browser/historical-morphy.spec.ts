@@ -57,10 +57,14 @@ for (const color of ["White", "Black"] as const)
     });
   });
 
-for (const switchToCurrent of [false, true])
-  test(`version-3 save migration preserves its receipt and ${switchToCurrent ? "explicit selection chooses version 4" : "rematch keeps version 3"}`, async ({
+for (const switchToCurrent of [null, false, true])
+  test(`version-3 save migration preserves its receipt and ${switchToCurrent === null ? "checks rematch availability" : switchToCurrent ? "explicit selection chooses version 4" : "rematch keeps version 3"}`, async ({
     page,
   }, info) => {
+    test.skip(
+      switchToCurrent !== null && process.env.VITE_PERSONALITY_BETA !== "true",
+      "Historical rematches require the enabled build",
+    );
     const now = Date.now();
     let session = reduceSession(freshSession(now, "initial"), {
       type: "new",
@@ -111,8 +115,9 @@ for (const switchToCurrent of [false, true])
     const rematch = page
       .getByRole("dialog", { name: "Resignation" })
       .getByRole("button", { name: "Rematch", exact: true });
-    if (process.env.VITE_PERSONALITY_BETA !== "true") {
-      await expect(rematch).toBeDisabled();
+    if (switchToCurrent === null) {
+      if (process.env.VITE_PERSONALITY_BETA !== "true") await expect(rematch).toBeDisabled();
+      else await expect(rematch).toBeEnabled();
       return;
     }
     await rematch.click();

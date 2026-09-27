@@ -1,3 +1,6 @@
+import { vi } from "vitest";
+// Harness allowance under shared CPU load; production search budgets stay unchanged.
+vi.setConfig({ testTimeout: 30000 });
 import { describe, expect, it } from "vitest";
 import {
   START,

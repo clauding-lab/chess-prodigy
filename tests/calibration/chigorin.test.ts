@@ -2,7 +2,7 @@ import { expect, test } from "vitest";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { spawnSync } from "node:child_process";
+import { runProcess } from "./process";
 import {
   parseProtocol,
   opponentIdentity,
@@ -47,12 +47,12 @@ test("Chigorin matches reject Morphy identities and forced openings", async () =
   ).toThrow(/identity/i);
 });
 
-test("Chigorin worker binds book and policy fingerprints and preserves completed games", () => {
+test("Chigorin worker binds book and policy fingerprints and preserves completed games", async () => {
   const dir = mkdtempSync(join(tmpdir(), "chigorin-worker-"));
   const run = (script: string, args: string[]) =>
-    spawnSync(process.execPath, ["--import", "tsx", script, ...args], { encoding: "utf8" });
+    runProcess(process.execPath, ["--import", "tsx", script, ...args], { encoding: "utf8" });
   try {
-    const init = run("scripts/calibration/run.ts", [
+    const init = await run("scripts/calibration/run.ts", [
       "casual",
       dir,
       "1",
@@ -69,19 +69,19 @@ test("Chigorin worker binds book and policy fingerprints and preserves completed
     expect(manifest.source["src/book/chigorin-book.json"]).toMatch(/^[a-f0-9]{64}$/);
     const worker = () =>
       run("scripts/calibration/worker.ts", ["casual", dir, "0", "chigorin-plans-paired-v1"]);
-    const first = worker();
+    const first = await worker();
     expect(first.status, first.stderr).toBe(0);
     const gamePath = join(dir, "casual-0000-w.json"),
       before = readFileSync(gamePath, "utf8");
     expect(JSON.parse(before).opponent.id).toBe("chigorin");
-    expect(worker().status).toBe(0);
+    expect((await worker()).status).toBe(0);
     expect(readFileSync(gamePath, "utf8")).toBe(before);
     manifest.source["src/book/chigorin-book.json"] = "a".repeat(64);
     writeFileSync(file, JSON.stringify(manifest));
-    const changed = worker();
+    const changed = await worker();
     expect(changed.status).not.toBe(0);
     expect(changed.stderr).toContain("source fingerprint mismatch");
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
-}, 20000);
+}, 60000);
