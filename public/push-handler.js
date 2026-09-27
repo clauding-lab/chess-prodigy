@@ -1,4 +1,12 @@
 /* Imported by Workbox; keep its offline cache and explicit update lifecycle. */
+self.addEventListener('message', (event) => {
+  if (event.data?.kind !== 'chess-update-clients' || !event.ports?.[0]) return;
+  event.waitUntil((async () => {
+    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const scoped = clients.filter((client) => client.url.startsWith(self.registration.scope));
+    event.ports[0].postMessage({ kind: 'chess-update-clients', sole: scoped.length === 1 && scoped[0].id === event.source?.id });
+  })());
+});
 self.addEventListener('push', (event) => {
   let message;
   try { message = event.data?.json(); } catch { return; }

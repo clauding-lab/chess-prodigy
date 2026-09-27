@@ -24,6 +24,7 @@ export interface GameStorageAdapter {
   scope?: "guest" | "account";
   temporary?: boolean;
   writable?(): boolean;
+  prepareUpdate?(): Promise<boolean>;
   history?(): HistoryResult;
   refreshHistory?(): Promise<void>;
   subscribeHistory?(listener: () => void): () => void;

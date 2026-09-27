@@ -6,6 +6,7 @@ import { resolve, extname } from "node:path";
 
 test("a real waiting service worker defers active play and preserves saves when accepted", async ({
   page,
+  context,
 }) => {
   let version = 1;
   const root = resolve("dist");
@@ -72,12 +73,12 @@ test("a real waiting service worker defers active play and preserves saves when 
     await expect
       .poll(() =>
         page.evaluate(
-          () => JSON.parse(localStorage.getItem("chess-prodigy-state-v7")).game.hist.length,
+          () => JSON.parse(localStorage.getItem("chess-prodigy-state-v8")).game.moves.length,
         ),
       )
       .toBe(2);
     const oldId = await page.evaluate(
-      () => JSON.parse(localStorage.getItem("chess-prodigy-state-v7")).game.id,
+      () => JSON.parse(localStorage.getItem("chess-prodigy-state-v8")).game.id,
     );
     version = 2;
     await page.evaluate(async () => {
@@ -92,21 +93,28 @@ test("a real waiting service worker defers active play and preserves saves when 
     await expect(page.getByLabel("App update")).toContainText("wait until your game finishes");
     await expect(page.getByRole("button", { name: "Update now", exact: true })).toHaveCount(0);
     expect(
-      await page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v7")).game.id),
+      await page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v8")).game.id),
     ).toBe(oldId);
     await page.getByRole("button", { name: "Resign", exact: true }).click();
     await page.getByRole("dialog").getByRole("button", { name: "Resign", exact: true }).click();
     await page.getByRole("button", { name: "View board", exact: true }).click();
     const before = await page.evaluate(() =>
-      JSON.parse(localStorage.getItem("chess-prodigy-state-v7")),
+      JSON.parse(localStorage.getItem("chess-prodigy-state-v8")),
     );
     await expect(page.getByRole("button", { name: "Update now", exact: true })).toBeVisible();
+    const other = await context.newPage();
+    await other.goto(url);
+    await expect(other.getByRole("button", { name: "Take over in this tab" })).toBeVisible();
+    await page.getByRole("button", { name: "Update now", exact: true }).click();
+    await expect(page.getByRole("alert")).toContainText("Close other Chess Prodigy");
+    await expect(page.locator('meta[name="chess-test-release"]')).toHaveAttribute("content", "1");
+    await other.close();
     await Promise.all([
       page.waitForEvent("load"),
       page.getByRole("button", { name: "Update now", exact: true }).click(),
     ]);
     const after = await page.evaluate(() =>
-      JSON.parse(localStorage.getItem("chess-prodigy-state-v7")),
+      JSON.parse(localStorage.getItem("chess-prodigy-state-v8")),
     );
     expect(after.game).toEqual(before.game);
     expect(after.rating).toEqual(before.rating);

@@ -602,6 +602,7 @@ export default function App({
         <UpdatePrompt
           active={available && game.started && !game.over}
           save={available ? gameApi.saveNow : () => recoveryExported}
+          ready={storage?.prepareUpdate}
         />
       </div>
       {promotion && (
