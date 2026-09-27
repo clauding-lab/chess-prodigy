@@ -2,7 +2,7 @@
 
 | ID | Finding | Status | Evidence |
 |---|---|---|---|
-| F03 | A takeback followed by a transposition makes the live game impossible to save and blocks every new game | Pending | Original review |
+| F03 | A takeback followed by a transposition makes the live game impossible to save and blocks every new game | Fixed; tests and review passed | R02: 2 RED, 65 focused GREEN, full 541 tests; independent review no findings |
 | F04 | Server size limits (256 KiB / 500 plies / key count) reject legal saves that the client accepts, and the client retries the rejected save forever, blocking the account outbox for good (guest 501+ ply games block new games) | Pending | Original review |
 | F01 | Casual roster/Chigorin/Morphy-v4 plays an unevaluated capture (hangs queen, walks into mate) whenever depth-1 root search misses the 170 ms budget | Pending | Original review |
 | F02 | Closing or suspending the app during the engine's turn in a timed game gives the player a free rated win on time | Pending | Original review |

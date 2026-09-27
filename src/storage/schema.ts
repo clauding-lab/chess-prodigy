@@ -229,12 +229,11 @@ function replayMatches(game: Game): boolean {
     if (entry.keyAfter !== key) return false;
     keys[key] = (keys[key] ?? 0) + 1;
   }
-  const positiveStoredKeys = Object.fromEntries(
-    Object.entries(game.keys).filter(([, count]) => count > 0),
-  );
+  const positiveStoredKeys = Object.entries(game.keys).filter(([, count]) => count > 0);
   if (!(
     equal(position, game.st) &&
-    equal(keys, positiveStoredKeys) &&
+    positiveStoredKeys.length === Object.keys(keys).length &&
+    positiveStoredKeys.every(([key, count]) => Object.hasOwn(keys, key) && keys[key] === count) &&
     (game.hist.length === 0 || game.started)
   ))
     return false;

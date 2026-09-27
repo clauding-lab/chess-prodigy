@@ -32,6 +32,35 @@ beforeEach(() => {
   fake.sound.mockClear();
 });
 afterEach(() => vi.useRealTimers());
+it("can save and replace a game after a takeback transposition", async () => {
+  const { applyMove, sanFor } = await import("../../src/engine/board");
+  const { reduceSession } = await import("../../src/game/state");
+  const { saveState } = await import("../../src/storage/store");
+  let session = freshSession(1000, "transposition");
+  const find = (san: string) =>
+    legalMoves(session.game.st).find(
+      (move) => sanFor(session.game.st, move, applyMove(session.game.st, move)) === san,
+    )!;
+  const play = (san: string) => {
+    session = reduceSession(session, { type: "move", move: find(san), book: false, now: 2000 });
+  };
+  for (const san of ["e4", "e5", "Nf3", "Nc6"]) play(san);
+  session = reduceSession(session, { type: "undo", now: 2001 });
+  session = reduceSession(session, { type: "undo", now: 2002 });
+  play("Nf3");
+  play("e5");
+  expect(saveState(localStorage, session)).toBe(true);
+  const { result } = renderHook(() => useGame(true));
+  act(() => result.current.move(find("e4")));
+  expect(result.current.storageStatus).toBe("saved");
+  let accepted = false;
+  act(() => {
+    accepted = result.current.startGame({ playerColor: "w", level: "club", time: "none" });
+  });
+  expect(accepted).toBe(true);
+  expect(result.current.game.id).not.toBe("transposition");
+  expect(JSON.parse(localStorage.getItem(SAVE_KEY)!).game.id).toBe(result.current.game.id);
+});
 it("blocks new beta games when the capability flag is off without abandoning Classic", async () => {
   const { morphyConfig } = await import("../../src/engine/opponents");
   vi.stubEnv("VITE_PERSONALITY_BETA", "false");
