@@ -18,6 +18,7 @@ export interface ApplicationOptions {
   staticDir?: string;
   notifications?: boolean;
   trustedLocalTunnel?: boolean;
+  assetArchivePath?: string;
 }
 
 export interface Application {
@@ -141,6 +142,18 @@ export async function createApplication(options: ApplicationOptions): Promise<Ap
           },
         }),
       );
+      if (options.assetArchivePath) {
+        app.use(
+          "/assets",
+          express.static(resolve(options.assetArchivePath), {
+            index: false,
+            redirect: false,
+            dotfiles: "deny",
+            immutable: true,
+            maxAge: "1y",
+          }),
+        );
+      }
       app.get("/{*splat}", (request, response, next) => {
         if (!request.accepts("html") || request.path.split("/").at(-1)?.includes(".")) {
           next();

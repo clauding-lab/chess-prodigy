@@ -22,6 +22,7 @@ const application = await createApplication({
   staticDir: "dist",
   notifications: true,
   trustedLocalTunnel: process.env.TRUST_LOCAL_CLOUDFLARE_TUNNEL === "true",
+  assetArchivePath: process.env.ASSET_ARCHIVE_PATH,
 });
 const server = createServer(application.app);
 

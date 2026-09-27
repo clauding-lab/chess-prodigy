@@ -196,3 +196,25 @@ For the existing **loopback-only Cloudflare Tunnel** origin, set
 unset for direct access or another proxy configuration; forwarded headers are otherwise ignored.
 Do not expose a trusted origin directly to untrusted local proxy processes. This setting has not
 been changed on production by the local repair work.
+
+### Retain old worker assets before switching releases
+
+Set `ASSET_ARCHIVE_PATH=/var/lib/chess-prodigy/public-assets` in the private service environment.
+This directory is for **public hashed build files only**; never put databases, backups or secrets
+inside it. Before switching `current`, run `ASSET_SOURCE_PATH=/path/to/release/dist
+ASSET_ARCHIVE_PATH=/var/lib/chess-prodigy/public-assets node deploy/retain-assets.mjs` for the
+currently served release and the new candidate. Run with an identity that can write the archive;
+the service needs read access. Keep it outside release-pruning paths.
+
+The script atomically adds files, verifies existing same-name bytes and refuses collisions. It
+never removes old files. Retain assets for **at least 30 days after the last release containing
+them**, including rollback releases; the file modification time records that inclusion. Manual
+cleanup after that window needs a separate reviewed operation. An old tab beyond the retained
+window may need to save/export and reopen the app; do not assume every old tab is controlled by
+the latest service worker.
+
+The server tries current build files first and then this archive under `/assets/`. Missing scripts
+return 404, never the new HTML shell. Local synthetic tests cover old-worker HTTP delivery after a
+frontend switch, immutable caching, private dotfile rejection and collision refusal. Browser
+release-switch and physical-device evidence are separate gates. No production archive or
+environment has been changed in this local pass.
