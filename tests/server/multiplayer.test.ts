@@ -444,3 +444,52 @@ it("joins a retained v1.2 waiting game and preserves its completed result on rea
     state_json: raw,
   });
 });
+
+it("settles a real automatic threefold draw exactly once for both players and H2H", async () => {
+  const { db, a, b, game } = await fixture();
+  let current = await game();
+  const moves = [
+    ["g1", "f3"],
+    ["g8", "f6"],
+    ["f3", "g1"],
+    ["f6", "g8"],
+    ["g1", "f3"],
+    ["g8", "f6"],
+    ["f3", "g1"],
+    ["f6", "g8"],
+  ];
+  let lastRevision = current.revision;
+  for (const [i, [from, to]] of moves.entries()) {
+    lastRevision = current.revision;
+    current = (
+      await (i % 2 ? b : a)
+        .post(`/${current.id}/move`, {
+          expectedRevision: current.revision,
+          move: { from: sqIndex(from), to: sqIndex(to) },
+        })
+        .expect(200)
+    ).body;
+  }
+  expect(current.result).toMatchObject({ result: "½-½", reason: "Threefold repetition" });
+  expect(current.ratingChanges).toEqual({ white: 0, black: 0 });
+  expect(current.headToHead).toMatchObject({ draws: 1 });
+  const ratings = () =>
+    db.prepare("SELECT user_id,rating,games FROM mp_ratings ORDER BY user_id").all();
+  const before = ratings();
+  expect(before).toEqual(
+    [
+      { user_id: a.id, rating: 1200, games: 1 },
+      { user_id: b.id, rating: 1200, games: 1 },
+    ].sort((x, y) => x.user_id.localeCompare(y.user_id)),
+  );
+  await b
+    .post(`/${current.id}/move`, {
+      expectedRevision: lastRevision,
+      move: { from: sqIndex("f6"), to: sqIndex("g8") },
+    })
+    .expect(409);
+  await a.post(`/${current.id}/resign`, { expectedRevision: current.revision }).expect(409);
+  expect(ratings()).toEqual(before);
+  expect((await a.get(`/${current.id}`).expect(200)).body.headToHead.draws).toBe(1);
+  expect((await b.get(`/${current.id}`).expect(200)).body.headToHead.draws).toBe(1);
+});

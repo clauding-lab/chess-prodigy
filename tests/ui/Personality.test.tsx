@@ -1,3 +1,4 @@
+import { parseSessionInput } from "../../src/storage/input";
 import { renderPlayingApp as render } from "./enter-playing-app";
 import React from "react";
 import { act, screen, fireEvent, waitFor, within } from "@testing-library/react";
@@ -41,7 +42,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
-const saved = () => JSON.parse(localStorage.getItem(SAVE_KEY)!);
+const saved = () => parseSessionInput(JSON.parse(localStorage.getItem(SAVE_KEY)!))!;
 
 it("hides new Morphy selection in an ordinary build and keeps Classic explicit", () => {
   render(<App />);

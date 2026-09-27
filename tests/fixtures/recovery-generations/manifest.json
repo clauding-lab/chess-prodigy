@@ -1,0 +1,83 @@
+{
+  "synthetic": true,
+  "description": "Legally played Fool\u2019s mate and saved by each historical implementation; no player data. Fixed date 2 September 2026 BDT.",
+  "generations": [
+    {
+      "generation": 1,
+      "commit": "6b426f4f86a7cead5b1ba2418ce6df4fe1ce95d5",
+      "stateSha256": "e727a1fa3cd669a10f7ede551e5437dcbaebf3fe45b78272caa84a6b2775c322",
+      "storeSha256": "f306ad57311b75723e8be9348bc7a00bc8ac2c89f2f6e4b207b14df799d74d0f",
+      "fixtures": {
+        "casual": "b86bcdf2a0a1dcd631d68ca324d8055955e173922d4f83b5013763b353a87e97",
+        "club": "b6558c4384214ec07c0154680b54ac0a62fab4e06660dbbac40498faff3426a4",
+        "strong": "4c0327983751b38d12523f37cab1ff521cbd7028989b32a2167235883f50868b"
+      }
+    },
+    {
+      "generation": 2,
+      "commit": "266d3b258b3e54e714e8dd96e91a5167c0c1ba6f",
+      "stateSha256": "b8b774e05dcbc002bb27f8d8d6430f8002cbd20aead75ab65fd2b05cd6b51eaa",
+      "storeSha256": "a2a9a6c6d7dba7a94d762f3ed71be5f8a1faf02f356b37437d80fabd7ff8b02d",
+      "fixtures": {
+        "casual": "1abba140c7a20acfc4c84483c9f72f3e0f4090a1d32ec6468ffe7723416b2886",
+        "club": "34b0da2c4b8a23895bb9c825628398a8776562039cd2a1bf4361d98b12556096",
+        "strong": "a17def2cbed07b60d4d52e25061aa6e82370f4e352235f0dc600a4dafd09e0bb"
+      }
+    },
+    {
+      "generation": 3,
+      "commit": "7f6c4209bb3196b0449904804ad03f3e8e26b837",
+      "stateSha256": "ec206e9f9a476d30a1f516b8fd6e54497e7f61fec094b3a34d05f32526bafeec",
+      "storeSha256": "aa2cbcd10b5065e3822efa05544a701ff269a6f7489a1f6dcbeac71777c62a0d",
+      "fixtures": {
+        "casual": "c4f06991d4dddc68f715522b69214cd3cefba94fe9a88a0ce9861e0eda03add9",
+        "club": "984eb2fa34589052202b9f22cd9628d9db2751cf0cd9c460d44e5bef2f308249",
+        "strong": "d8f45e671a6f17aecc352fea83f15df8ae401663be379ab87b188941038d5a73"
+      }
+    },
+    {
+      "generation": 4,
+      "commit": "168a2ed5d95b0917341d5d8be30c4b240cea4d0a",
+      "stateSha256": "3047ae42e773c2a475e689d7399705da36d4fe6f46d105d4f757a0bb5341c383",
+      "storeSha256": "ff63749c956ee330469e853f33ee82320e8651528a25caa00ed7419c3bc7876e",
+      "fixtures": {
+        "casual": "1656cd3a04f69b1081d7786a47f1baf07a1654ad257d95526d99cd9ff90300de",
+        "club": "abd5ab0ed6617eecdaa8cc79eeecf5e62a09f9c12ce3f64f4782f03b06de44e3",
+        "strong": "c9eb9b03e4fc2884b5ad0960a4f4314d9a19ac985208b36b55657b5ffecac2be"
+      }
+    },
+    {
+      "generation": 5,
+      "commit": "da6d784722f988da5ad80a4e8c519f2691bf32be",
+      "stateSha256": "3047ae42e773c2a475e689d7399705da36d4fe6f46d105d4f757a0bb5341c383",
+      "storeSha256": "3d6f32c67e5f173f099f1d6f6c6fd57efee33abb867c05f9f112aca677de4681",
+      "fixtures": {
+        "casual": "74bb34d082399f488fddfaac7f62ce1fa877a85425980020475e36e2e9860bd7",
+        "club": "46d793b0a818f9e26f86a8ad62a7e9b2cde5b1f9e6586562ce36b171f4989d30",
+        "strong": "e6bcc0cc1386898314ca782a7cb4dbf317c23f243c8e8f60fe49c9c57519aafb"
+      }
+    },
+    {
+      "generation": 6,
+      "commit": "385f05d6e12efb35234a11f904ee194369deac8b",
+      "stateSha256": "3047ae42e773c2a475e689d7399705da36d4fe6f46d105d4f757a0bb5341c383",
+      "storeSha256": "ee14b209e862482ec39f899042e72ee1bbd1fc237a44c9067d1c2e94f14e0214",
+      "fixtures": {
+        "casual": "cf1c6b308f6b9222a13e2cc56da589e7fbfe1da5d25341056b3af4078990ee0e",
+        "club": "9a14fd684bd565ef0d2d1fd94554623e5a01266ab610a2866f2b1288370d6ad9",
+        "strong": "2966538a7074884672b9607dca28e1ffb26d8bf486298315f4090e3140e181e5"
+      }
+    },
+    {
+      "generation": 7,
+      "commit": "e6aa9d9b96446197de0abe313179f9db273920dd",
+      "stateSha256": "3047ae42e773c2a475e689d7399705da36d4fe6f46d105d4f757a0bb5341c383",
+      "storeSha256": "c9095a6adb49c61b531fac51dd58e04af2d66f54dcfd7d3fd0a40e93e1c8dd0f",
+      "fixtures": {
+        "casual": "3b59f78adc56ec2cd87163572c411a73fc78e8c53712221c28eee002d99e9c96",
+        "club": "45eb927645ece619f6fec2602b44e58c4d1beb6b34f0010d74ba1120326b264e",
+        "strong": "930d292289f5592c78e0da44726a745912f58a77a00ef3a885b0b42afa4f36df"
+      }
+    }
+  ]
+}

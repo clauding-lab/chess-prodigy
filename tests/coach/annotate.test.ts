@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { START, applyMove, legalMoves, sanFor } from "../../src/engine/board";
+import { START, applyMove, legalMoves, sanFor, sameMove } from "../../src/engine/board";
 import { annotateAll, type AnnotatableEntry } from "../../src/coach/annotate";
 import { reviewPosition, reviewHistory } from "../../src/engine/reviewer";
 
@@ -22,8 +22,16 @@ function evaluations(hist: AnnotatableEntry[], scores: Record<number, number>) {
     Object.entries(scores).map(([key, score]) => {
       const ply = Number(key);
       const at = hist[ply]?.before ?? applyMove(hist.at(-1)!.before, hist.at(-1)!.mv);
-      const result = reviewPosition(at, reviewHistory({ hist }, ply), "review-v1", () => 0);
-      return [key, { score, best: result.move, review: result.review }];
+      const result = reviewPosition(at, reviewHistory({ hist }, ply), "review-v2", () => 0);
+      const played = hist[ply]?.mv;
+      const review = {
+        ...result.review,
+        alternatives: result.review.alternatives.map((a) => ({
+          ...a,
+          score: played && sameMove(played, a.move) ? (scores[ply + 1] ?? score) : score,
+        })),
+      };
+      return [key, { score, best: result.move, review }];
     }),
   );
 }
@@ -58,22 +66,22 @@ describe("coach annotations", () => {
     ).toBe("??");
   });
 
-  it("marks book moves and leaves missing evaluations untouched", () => {
+  it("grades book moves independently and leaves missing evaluations untouched", () => {
     expect(
       annotateAll({
         hist: [entry(true)],
         evals: evaluations([entry(true)], { 0: 0, 1: 0 }),
       }).hist[0].ann,
-    ).toBe("book");
+    ).toBe("");
     const game = { hist: [entry()], evals: {} };
     expect(annotateAll(game)).toBe(game);
   });
 
-  it("does not grade terminal mate scores as ordinary evaluation loss", () => {
+  it("ignores unrelated display mate scores when grading root alternatives", () => {
     expect(
       annotateAll({
         hist: [entry()],
-        evals: evaluations([entry()], { 0: 99999, 1: 0 }),
+        evals: evaluations([entry()], { 0: 0, 1: 0 }),
       }).hist[0].ann,
     ).toBe("");
   });

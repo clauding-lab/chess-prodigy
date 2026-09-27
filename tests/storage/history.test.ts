@@ -92,7 +92,7 @@ it("preserves a legally played 501-ply terminal save without poisoning retained 
     501,
   );
   expect(loadGuestHistory(storage).games.some((game) => game.id === "retained")).toBe(true);
-  expect(JSON.parse(storage.getItem(SAVE_KEY)!).game.hist).toHaveLength(501);
+  expect(loadSavedState(storage, 503, "fallback").session.game.hist).toHaveLength(501);
   expect(loadGuestHistory(storage).status).toBe("ready");
 });
 it("reports archive quota failure and retries idempotently without losing the active result", () => {
@@ -121,7 +121,7 @@ it("reconciles an interrupted undo from the still-authoritative terminal active 
     write(key, value);
   };
   expect(saveGuestProgress(storage, reduceSession(s, { type: "undo", now: 104 }))).toBe(false);
-  expect(loadGuestHistory(storage).games).toEqual([]);
+  expect(loadGuestHistory(storage).games).toHaveLength(1);
   storage.setItem = write;
   const authoritative = loadSavedState(storage, 105, "unused").session;
   expect(saveGuestProgress(storage, authoritative)).toBe(true);
@@ -149,4 +149,89 @@ it("migrates former current history into current authority once and preserves co
   expect(loadGuestHistory(storage).games.map((g) => g.id)).toEqual(["historical"]);
   storage.setItem(GUEST_HISTORY_KEY, "current-corruption");
   expect(loadGuestHistory(storage)).toMatchObject({ status: "corrupt", raw: "current-corruption" });
+});
+
+it("restores the displaced archive across reload and terminal undo at the 200-game cap", () => {
+  const storage = new Memory();
+  const template = { ...completed("template"), game: { ...completed("template").game } };
+  const seed = Array.from({ length: 200 }, (_, i) => ({
+    recordVersion: 2,
+    opponent: template.game.opponent,
+    unratedReason: null,
+    assisted: false,
+    id: `prior-${i}`,
+    result: "0-1",
+    reason: "Checkmate",
+    level: "club",
+    playerColor: "w",
+    time: "none",
+    rated: true,
+    moves: ["f3", "e5", "g4", "Qh4#"],
+    completedAt: new Date(i).toISOString(),
+  }));
+  storage.setItem(GUEST_HISTORY_KEY, JSON.stringify({ version: 1, games: seed }));
+  const done = playLine(freshSession(300000, "newest"), FOOLS_MATE, 300001);
+  expect(saveGuestProgress(storage, done)).toBe(true);
+  expect(loadGuestHistory(storage).games).toHaveLength(200);
+  const restored = loadSavedState(storage, 300010, "fallback").session;
+  expect(saveGuestProgress(storage, reduceSession(restored, { type: "undo", now: 300011 }))).toBe(
+    true,
+  );
+  expect(
+    loadGuestHistory(storage)
+      .games.map((g) => g.id)
+      .sort(),
+  ).toEqual(seed.map((g) => g.id).sort());
+});
+
+it("preserves corrupt eviction recovery without silently replacing its history", () => {
+  const storage = new Memory();
+  const raw = JSON.stringify({
+    version: 2,
+    games: [],
+    evicted: { byGameId: "x", record: "broken" },
+  });
+  storage.setItem(GUEST_HISTORY_KEY, raw);
+  expect(loadGuestHistory(storage)).toMatchObject({ status: "corrupt", raw });
+  expect(saveGuestProgress(storage, completed("safe"))).toBe(false);
+  expect(storage.getItem(GUEST_HISTORY_KEY)).toBe(raw);
+});
+
+it("preserves eviction recovery if replacing the active terminal save fails", () => {
+  const storage = new Memory();
+  const seed = Array.from({ length: 200 }, (_, i) => ({
+    recordVersion: 2,
+    opponent: completed("template").game.opponent,
+    unratedReason: null,
+    assisted: false,
+    id: `old-${i}`,
+    result: "0-1",
+    reason: "Checkmate",
+    level: "club",
+    playerColor: "w",
+    time: "none",
+    rated: true,
+    moves: ["f3", "e5", "g4", "Qh4#"],
+    completedAt: new Date(i).toISOString(),
+  }));
+  storage.setItem(GUEST_HISTORY_KEY, JSON.stringify({ version: 1, games: seed }));
+  const terminal = playLine(freshSession(300000, "terminal"), FOOLS_MATE, 300001);
+  expect(saveGuestProgress(storage, terminal)).toBe(true);
+  const write = storage.setItem.bind(storage);
+  storage.setItem = (key, value) => {
+    if (key === SAVE_KEY) throw Error("quota");
+    write(key, value);
+  };
+  expect(saveGuestProgress(storage, freshSession(400000, "replacement"))).toBe(false);
+  storage.setItem = write;
+  const loaded = loadSavedState(storage, 400001, "fallback").session;
+  expect(loaded.game.id).toBe("terminal");
+  expect(saveGuestProgress(storage, reduceSession(loaded, { type: "undo", now: 400002 }))).toBe(
+    true,
+  );
+  expect(
+    loadGuestHistory(storage)
+      .games.map((g) => g.id)
+      .sort(),
+  ).toEqual(seed.map((g) => g.id).sort());
 });

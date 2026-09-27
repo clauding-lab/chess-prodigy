@@ -1,3 +1,4 @@
+import { parseSessionInput } from "../../src/storage/input";
 import { SAVE_KEY } from "../../src/storage/store";
 import { renderPlayingApp as render } from "./enter-playing-app";
 import React, { StrictMode } from "react";
@@ -54,9 +55,9 @@ it("starts, plays a legal move, receives an engine reply and preserves theme acr
   // The reply deliberately waits at least one second; a one-second wall-clock
   // polling deadline races that requirement under a busy full-suite run.
   await act(async () => vi.advanceTimersByTimeAsync(999));
-  expect(JSON.parse(localStorage.getItem(SAVE_KEY)!).game.hist).toHaveLength(1);
+  expect(parseSessionInput(JSON.parse(localStorage.getItem(SAVE_KEY)!))!.game.hist).toHaveLength(1);
   await act(async () => vi.advanceTimersByTimeAsync(1));
-  expect(JSON.parse(localStorage.getItem(SAVE_KEY)!).game.hist).toHaveLength(2);
+  expect(parseSessionInput(JSON.parse(localStorage.getItem(SAVE_KEY)!))!.game.hist).toHaveLength(2);
   fireEvent.click(screen.getByRole("button", { name: "Wooden board" }));
   view.unmount();
   render(<App />);
@@ -156,7 +157,7 @@ it("keeps timed computer replies running while the player views friend games", a
   await act(async () => {
     await vi.advanceTimersByTimeAsync(1500);
   });
-  const saved = JSON.parse(localStorage.getItem(SAVE_KEY)!);
+  const saved = parseSessionInput(JSON.parse(localStorage.getItem(SAVE_KEY)!))!;
   expect(saved.game.hist).toHaveLength(2);
   expect(saved.game.over).toBeNull();
 });
@@ -192,7 +193,7 @@ it.each([1400, 1500.25])(
     fireEvent.click(screen.getByRole("button", { name: "Forfeit and continue", exact: true }));
     fireEvent.click(screen.getByRole("button", { name: /Strong/ }));
     fireEvent.click(screen.getByRole("button", { name: "Start", exact: true }));
-    const saved = JSON.parse(localStorage.getItem(SAVE_KEY)!);
+    const saved = parseSessionInput(JSON.parse(localStorage.getItem(SAVE_KEY)!))!;
     expect(Math.round(saved.rating.rating)).toBe(value === 1400 ? 1400 : 1472);
     expect(saved.rating.games).toBe(1);
     expect(saved.game.setup.level).toBe("strong");

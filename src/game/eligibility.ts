@@ -11,6 +11,8 @@ export function unratedDescription(game: Game): string {
       return "Unrated game (hint used).";
     case "takeback":
       return "Unrated game (takeback used).";
+    case "temporary-session":
+      return "Unrated temporary game — progress is lost when this tab closes.";
     case "rating-reset":
       return "Unrated game (rating reset).";
     default:

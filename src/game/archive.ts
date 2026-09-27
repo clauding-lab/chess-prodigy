@@ -33,10 +33,22 @@ export function archiveGame(snapshot: Session): GameRecord | null {
   };
 }
 
+const archiveIdEncoder = new TextEncoder();
+function compareArchiveIds(a: string, b: string): number {
+  // Match SQLite BINARY ordering used by server retention, independent of locale.
+  const left = archiveIdEncoder.encode(a),
+    right = archiveIdEncoder.encode(b);
+  for (let i = 0; i < Math.min(left.length, right.length); i++) {
+    if (left[i] !== right[i]) return left[i] - right[i];
+  }
+  return left.length - right.length;
+}
+
 export function retainedArchive(records: GameRecord[]): GameRecord[] {
   return [...new Map(records.map((record) => [record.id, record])).values()]
     .sort(
-      (a, b) => Date.parse(b.completedAt) - Date.parse(a.completedAt) || b.id.localeCompare(a.id),
+      (a, b) =>
+        Date.parse(b.completedAt) - Date.parse(a.completedAt) || compareArchiveIds(b.id, a.id),
     )
     .slice(0, ARCHIVE_LIMIT);
 }

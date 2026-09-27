@@ -1,11 +1,14 @@
+import type { WriteRevision } from "./revision";
 import type { GameRecord } from "../account/types";
 import type { Session } from "../game/types";
-import { parseGameRecord } from "../account/records";
-import { ARCHIVE_LIMIT, updateArchive } from "../game/archive";
+import { parseGameRecord, parseArchiveEviction } from "../account/records";
+import { ARCHIVE_LIMIT } from "../game/archive";
+import { updateRecoverableArchive, type ArchiveEviction } from "../game/archive-recovery";
 import { parseSavedState } from "./schema";
 import { saveState, type StorageLike } from "./store";
 
-export const GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v6";
+export const GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v7";
+export const ROSTER_GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v6";
 export const CHIGORIN_GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v5";
 export const PLANNED_GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v4";
 export const HISTORICAL_GUEST_HISTORY_KEY = "chess-prodigy-guest-history-v3";
@@ -16,12 +19,15 @@ export interface HistoryResult {
   status: "ready" | "corrupt" | "unavailable" | "incomplete";
   pending?: boolean;
   raw?: string;
+  evicted?: ArchiveEviction;
 }
 export function parseHistory(value: unknown): GameRecord[] | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
-  const history = value as { version?: unknown; games?: unknown };
+  const history = value as { version?: unknown; games?: unknown; evicted?: unknown };
   if (
-    history.version !== 1 ||
+    (history.version !== 1 && history.version !== 2) ||
+    (history.evicted !== undefined &&
+      (history.version !== 2 || !parseArchiveEviction(history.evicted))) ||
     !Array.isArray(history.games) ||
     history.games.length > ARCHIVE_LIMIT
   )
@@ -37,6 +43,7 @@ export function loadGuestHistory(storage: StorageLike | null): HistoryResult {
     if (!storage) return { games: [], status: "unavailable" };
     raw =
       storage.getItem(GUEST_HISTORY_KEY) ??
+      storage.getItem(ROSTER_GUEST_HISTORY_KEY) ??
       storage.getItem(CHIGORIN_GUEST_HISTORY_KEY) ??
       storage.getItem(PLANNED_GUEST_HISTORY_KEY) ??
       storage.getItem(HISTORICAL_GUEST_HISTORY_KEY) ??
@@ -47,34 +54,48 @@ export function loadGuestHistory(storage: StorageLike | null): HistoryResult {
   }
   if (raw === null) return { games: [], status: "ready" };
   try {
-    const games = raw.length <= 2500000 ? parseHistory(JSON.parse(raw)) : null;
-    if (games) return { games, status: "ready" };
+    const value: unknown = raw.length <= 2500000 ? JSON.parse(raw) : null;
+    const games = parseHistory(value);
+    if (games) {
+      const evicted = (value as { evicted?: unknown }).evicted;
+      return {
+        games,
+        status: "ready",
+        ...(evicted ? { evicted: parseArchiveEviction(evicted)! } : {}),
+      };
+    }
   } catch {
     /* Preserve the original bytes below. */
   }
   return { games: [], status: "corrupt", raw };
 }
-export function saveGuestProgress(storage: StorageLike | null, session: Session): boolean {
+export function saveGuestProgress(
+  storage: StorageLike | null,
+  session: Session,
+  options: WriteRevision = {},
+): boolean {
   const normalized = parseSavedState(session);
   if (!storage || !normalized) return false;
+  // The active game is authoritative. Do not clear recovery for a replacement
+  // until that replacement is durable. An interrupted archive write can be
+  // reconciled idempotently from this saved active game on the next transition.
+  if (!saveState(storage, normalized, options)) return false;
   const history = loadGuestHistory(storage);
   let archived = history.status === "ready";
   if (archived) {
     try {
-      const games = updateArchive(history.games, normalized);
-      const encoded = JSON.stringify({ version: 1, games });
-      if (encoded.length > 2500000 || !parseHistory({ version: 1, games })) archived = false;
+      const next = updateRecoverableArchive(history, normalized);
+      const encoded = JSON.stringify({ version: 2, ...next });
+      if (encoded.length > 2500000 || !parseHistory({ version: 2, ...next })) archived = false;
       else if (
         storage.getItem(GUEST_HISTORY_KEY) === null ||
-        JSON.stringify(games) !== JSON.stringify(history.games)
+        JSON.stringify(next.games) !== JSON.stringify(history.games) ||
+        JSON.stringify(next.evicted) !== JSON.stringify(history.evicted)
       )
         storage.setItem(GUEST_HISTORY_KEY, encoded);
     } catch {
       archived = false;
     }
   }
-  // Active state remains the recovery authority if the independent archive write fails.
-  // On reopening, reconcile its terminal/undone ID without touching unrelated records.
-  const saved = saveState(storage, normalized);
-  return archived && saved;
+  return archived;
 }

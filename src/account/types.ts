@@ -1,3 +1,4 @@
+import type { ArchiveEviction } from "../game/archive-recovery";
 import type { Session, TimeControl, UnratedReason } from "../game/types";
 import type { OpponentConfig } from "../engine/opponents";
 
@@ -32,6 +33,7 @@ export interface RecordsEnvelope {
   snapshot: Session | null;
   games: GameRecord[];
   updatedAt: string | null;
+  evicted?: ArchiveEviction;
 }
 
 export interface LeaderboardPlayer {

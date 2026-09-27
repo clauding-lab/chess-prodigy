@@ -3,6 +3,9 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import request from "supertest";
+import Database from "better-sqlite3";
+import { archiveGame } from "../../src/game/archive";
+import { playLine, FOOLS_MATE } from "../game/play-line";
 import { expect, it } from "vitest";
 import { createTestApplication } from "./http-fixture";
 import { encodeCompactSession, decodeCompactSession } from "../../src/storage/compact";
@@ -25,6 +28,8 @@ async function fixture() {
   agent.set("X-Chess-Account", response.body.user.id);
   return {
     agent,
+    databasePath: join(directory, "db.sqlite"),
+    userId: response.body.user.id as string,
     close: async () => {
       await application.close();
       await rm(directory, { recursive: true, force: true });
@@ -95,6 +100,51 @@ it("archives a legal 501-half-move game in compact format and rejects over-limit
       .expect(413);
     expect((await f.agent.get("/api/records")).body.version).toBe(1);
   } finally {
+    await f.close();
+  }
+});
+
+it("transactionally restores a displaced archive after a rated mate is undone", async () => {
+  const f = await fixture();
+  const db = new Database(f.databasePath);
+  try {
+    const done = playLine(freshSession(300000, "current"), FOOLS_MATE, 300001);
+    const template = archiveGame(done)!;
+    const insert = db.prepare(
+      "INSERT INTO game_records(user_id, game_id, record, completed_at) VALUES (?, ?, ?, ?)",
+    );
+    for (let i = 0; i < 200; i++) {
+      const record = {
+        ...template,
+        id: i === 0 ? "B" : i === 1 ? "a" : `z-${i}`,
+        completedAt: new Date(0).toISOString(),
+      };
+      insert.run(f.userId, record.id, JSON.stringify(record), record.completedAt);
+    }
+    const put = (expectedVersion: number, snapshot: typeof done) =>
+      f.agent
+        .put("/api/records")
+        .set("Origin", origin)
+        .set("X-Chess-Rating-Policy", "6")
+        .send({ expectedVersion, snapshot: encodeCompactSession(snapshot) });
+    const saved = await put(0, done).expect(200);
+    expect(saved.body.games).toHaveLength(200);
+    expect(saved.body.games.some((g: { id: string }) => g.id === "B")).toBe(false);
+    const undo = reduceSession(done, { type: "undo", now: 300010 });
+    db.exec(
+      "CREATE TRIGGER fail_restore BEFORE INSERT ON game_records WHEN NEW.game_id = 'B' BEGIN SELECT RAISE(ABORT, 'synthetic restore fault'); END",
+    );
+    await put(1, undo).expect(500);
+    expect((await f.agent.get("/api/records")).body.version).toBe(1);
+    db.exec("DROP TRIGGER fail_restore");
+    const restored = await put(1, undo).expect(200);
+    expect(restored.body.games).toHaveLength(200);
+    expect(restored.body.games.some((g: { id: string }) => g.id === "B")).toBe(true);
+    expect(restored.body.games.some((g: { id: string }) => g.id === "current")).toBe(false);
+    expect(restored.body.snapshot.rating.games).toBe(0);
+    expect((await f.agent.get("/api/records")).body.games).toEqual(restored.body.games);
+  } finally {
+    db.close();
     await f.close();
   }
 });

@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { AccountShell } from "../../src/account/AccountShell";
+import { parseSessionInput } from "../../src/storage/input";
 import { accountStorageKey } from "../../src/account/sync";
 import { freshSession, reduceSession } from "../../src/game/state";
 import { legalMoves } from "../../src/engine/board";
@@ -21,6 +22,16 @@ vi.mock("../../src/worker/client", () => ({
 
 beforeEach(() => {
   localStorage.clear();
+  Object.defineProperty(navigator, "locks", {
+    configurable: true,
+    value: {
+      request: async (
+        _name: string,
+        _options: unknown,
+        callback: (lock: object) => Promise<void>,
+      ) => callback({}),
+    },
+  });
   engine.jobs = [];
   window.history.replaceState(null, "", "/");
 });
@@ -68,7 +79,8 @@ it("renaming an account keeps its in-flight computer reply", async () => {
   await waitFor(
     () =>
       expect(
-        JSON.parse(localStorage.getItem(accountStorageKey("user"))!).snapshot.game.hist,
+        parseSessionInput(JSON.parse(localStorage.getItem(accountStorageKey("user"))!).snapshot)
+          ?.game.hist,
       ).toHaveLength(2),
     { timeout: 2000 },
   );
@@ -131,5 +143,156 @@ it("offers recovery without claiming durability when account storage writes fail
     expect(screen.getByRole("button", { name: "Download recovery copy" })).toBeTruthy();
   } finally {
     failingWrite.mockRestore();
+  }
+});
+
+it("blocks persistent gameplay when browser locks are unavailable", async () => {
+  Object.defineProperty(navigator, "locks", { configurable: true, value: undefined });
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => Response.json(null)),
+  );
+  render(<AccountShell />);
+  expect(await screen.findByText(/cannot safely coordinate saved games/i)).toBeTruthy();
+  expect(screen.queryByRole("button", { name: "Play Classic" })).toBeNull();
+  expect(localStorage.length).toBe(0);
+  fireEvent.click(screen.getByRole("button", { name: "Play temporarily without saving" }));
+  expect(await screen.findByText(/temporary unrated play/i)).toBeTruthy();
+  expect(localStorage.length).toBe(0);
+});
+
+it("does not initialize or download the account outbox before exclusive ownership", async () => {
+  Object.defineProperty(navigator, "locks", {
+    configurable: true,
+    value: {
+      request: async (_name: string, _options: unknown, callback: (lock: null) => Promise<void>) =>
+        callback(null),
+    },
+  });
+  const fetcher = vi.fn(async (url: string) => {
+    if (url === "/api/auth/get-session")
+      return Response.json({ user: { id: "held", name: "Held", email: "held@example.com" } });
+    throw Error("Records must not be opened without ownership");
+  });
+  vi.stubGlobal("fetch", fetcher);
+  render(<AccountShell />);
+  await screen.findByText(/open in another tab/);
+  expect(fetcher.mock.calls.map(([url]) => url)).not.toContain("/api/records");
+  expect(localStorage.getItem(accountStorageKey("held"))).toBeNull();
+  expect(screen.queryByText("Saved to account")).toBeNull();
+});
+
+function blockedAccountWithPush() {
+  let grant = false;
+  Object.defineProperty(navigator, "locks", {
+    configurable: true,
+    value: {
+      request: async (
+        _name: string,
+        _options: unknown,
+        callback: (lock: object | null) => Promise<void>,
+      ) => callback(grant ? {} : null),
+    },
+  });
+  localStorage.setItem("chess-push-owner", "push-account");
+  let finish!: (success: boolean) => void;
+  const unsubscribe = vi.fn(
+    () =>
+      new Promise<boolean>((resolve) => {
+        finish = resolve;
+      }),
+  );
+  Object.defineProperty(navigator, "serviceWorker", {
+    configurable: true,
+    value: {
+      getRegistration: async () => ({
+        pushManager: { getSubscription: async () => ({ unsubscribe }) },
+      }),
+    },
+  });
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url: string) => {
+      if (url === "/api/auth/get-session")
+        return Response.json({
+          user: { id: "push-account", name: "Push Player", email: "push@example.com" },
+        });
+      if (url === "/api/records")
+        return Response.json({ version: 0, snapshot: null, games: [], updatedAt: null });
+      return Response.json({ games: [], opponents: [], rating: { rating: 1200, games: 0 } });
+    }),
+  );
+  return {
+    unsubscribe,
+    finish: (success: boolean) => finish(success),
+    grant: () => {
+      grant = true;
+    },
+  };
+}
+
+afterEach(() => {
+  Reflect.deleteProperty(navigator, "serviceWorker");
+});
+
+it("awaits push cancellation before a blocked account enters temporary guest play", async () => {
+  const push = blockedAccountWithPush();
+  render(<AccountShell />);
+  fireEvent.click(await screen.findByRole("button", { name: "Play temporarily without saving" }));
+  await waitFor(() => expect(push.unsubscribe).toHaveBeenCalledOnce());
+  expect(screen.queryByText(/Temporary unrated play/)).toBeNull();
+  expect(localStorage.getItem("chess-push-owner")).toBe("push-account");
+  await act(async () => push.finish(true));
+  expect(await screen.findByText(/Temporary unrated play/)).toBeTruthy();
+  expect(localStorage.getItem("chess-push-owner")).toBeNull();
+  expect(localStorage.getItem(accountStorageKey("push-account"))).toBeNull();
+});
+
+it("preserves a blocked account identity when device push cancellation fails", async () => {
+  const push = blockedAccountWithPush();
+  render(<AccountShell />);
+  fireEvent.click(await screen.findByRole("button", { name: "Play temporarily without saving" }));
+  await waitFor(() => expect(push.unsubscribe).toHaveBeenCalledOnce());
+  await act(async () => push.finish(false));
+  expect(await screen.findByText(/Could not disable the previous account/)).toBeTruthy();
+  expect(screen.queryByText(/Temporary unrated play/)).toBeNull();
+  expect(screen.getByRole("button", { name: "Take over in this tab" })).toBeTruthy();
+  expect(localStorage.getItem("chess-push-owner")).toBe("push-account");
+});
+
+it("ignores late temporary-play completion after a newer account takeover", async () => {
+  const push = blockedAccountWithPush();
+  render(<AccountShell />);
+  fireEvent.click(await screen.findByRole("button", { name: "Play temporarily without saving" }));
+  await waitFor(() => expect(push.unsubscribe).toHaveBeenCalledOnce());
+  push.grant();
+  fireEvent.click(screen.getByRole("button", { name: "Take over in this tab" }));
+  expect(await screen.findByRole("button", { name: "Push Player", exact: true })).toBeTruthy();
+  await act(async () => push.finish(true));
+  expect(screen.queryByText(/Temporary unrated play/)).toBeNull();
+  expect(screen.getByRole("button", { name: "Push Player", exact: true })).toBeTruthy();
+});
+
+it("keeps a mounted account and its pending copy when temporary push cancellation fails", async () => {
+  const push = blockedAccountWithPush();
+  push.grant();
+  render(<AccountShell />);
+  await screen.findByRole("button", { name: "Push Player", exact: true });
+  const failing = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+    throw Error("quota");
+  });
+  try {
+    fireEvent.click(screen.getByRole("button", { name: "New game", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Start", exact: true }));
+    fireEvent.click(await screen.findByRole("button", { name: "Play temporarily without saving" }));
+    await waitFor(() => expect(push.unsubscribe).toHaveBeenCalledOnce());
+    await act(async () => push.finish(false));
+    expect(await screen.findByText(/Could not disable the previous account/)).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Push Player", exact: true })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Download recovery copy" })).toBeTruthy();
+    expect(screen.queryByText(/Temporary unrated play/)).toBeNull();
+    expect(localStorage.getItem("chess-push-owner")).toBe("push-account");
+  } finally {
+    failing.mockRestore();
   }
 });

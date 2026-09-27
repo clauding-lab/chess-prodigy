@@ -1,3 +1,4 @@
+import { parseSessionInput } from "../../src/storage/input";
 import { afterEach, expect, it, vi } from "vitest";
 import { freshSession } from "../../src/game/state";
 import { AccountSync, accountStorageKey, previousAccountStorageKey } from "../../src/account/sync";
@@ -367,7 +368,10 @@ it("migrates legacy pending terminal writes without losing their version or ackn
   expect(JSON.parse(storage.getItem(accountStorageKey("legacy"))!).baseVersion).toBe(8);
   // A live legacy object is normalized before queueing too.
   expect(sync.save(snapshot)).toBe(true);
-  expect(JSON.parse(storage.getItem(accountStorageKey("legacy"))!).snapshot.game.evals).toEqual({});
+  expect(
+    parseSessionInput(JSON.parse(storage.getItem(accountStorageKey("legacy"))!).snapshot)?.game
+      .evals,
+  ).toEqual({});
   sync.dispose();
 });
 
@@ -404,19 +408,19 @@ it("migrates the v4 pending queue into v6 and sends policy 4 with the same owner
   const sent: number[] = [];
   const sync = new AccountSync("user", storage, async (_url, init) => {
     const headers = new Headers(init?.headers);
-    expect(headers.get("X-Chess-Rating-Policy")).toBe("5");
+    expect(headers.get("X-Chess-Rating-Policy")).toBe("6");
     expect(headers.get("X-Chess-Account")).toBe("user");
     const body = JSON.parse(String(init?.body));
     sent.push(body.expectedVersion);
-    expect(
-      JSON.parse(storage.getItem("chess-prodigy-account-v7:user")!).pending[0].snapshot,
-    ).toEqual(snapshot);
+    expect(JSON.parse(storage.getItem(accountStorageKey("user"))!).pending[0].snapshot).toEqual(
+      snapshot,
+    );
     return new Response(JSON.stringify({ ...empty, version: 6, snapshot }));
   });
   expect(sync.initialize(initial()).game.id).toBe("pending-v3");
   await sync.flush();
   expect(sent).toEqual([5]);
   expect(storage.getItem("chess-prodigy-account-v4:user")).toBe(raw);
-  expect(storage.getItem("chess-prodigy-account-v7:other")).toBeNull();
+  expect(storage.getItem(accountStorageKey("other"))).toBeNull();
   expect(sync.status()).toMatchObject({ state: "idle", pending: 0 });
 });

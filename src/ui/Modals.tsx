@@ -439,6 +439,10 @@ export function ReviewModal({
       onClose={onClose}
       title={<>Game review {reviewing && <span className="thinking quiet">analysing…</span>}</>}
     >
+      <p className="note">
+        Grades compare legal alternatives from the same position at one completed search depth.
+        Opening membership does not guarantee a good move.
+      </p>
       {book.info && (
         <div className="note">
           {book.info.name} ({book.info.eco})

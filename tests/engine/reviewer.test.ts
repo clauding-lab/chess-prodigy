@@ -51,11 +51,11 @@ describe("neutral reviewer independence", () => {
         (a, b) => biased(applyMove(position, b)) - biased(applyMove(position, a)),
       )[0];
       expect(sanFor(position, bad, applyMove(position, bad))).toBe(badSan);
-      const before = reviewPosition(position, [], "review-v1", fixedClock);
+      const before = reviewPosition(position, [], "review-v2", fixedClock);
       const after = reviewPosition(
         applyMove(position, bad),
         [toFEN(position)],
-        "review-v1",
+        "review-v2",
         fixedClock,
       );
       expect(sanFor(position, before.move!, applyMove(position, before.move!))).toBe(bestSan);
@@ -74,7 +74,7 @@ describe("neutral reviewer independence", () => {
         const request = {
           type: "analyse" as const,
           reviewer: REVIEWER,
-          policy: "review-v1" as const,
+          policy: "review-v2" as const,
           history: [],
           position,
           gameId: "fixture",
@@ -98,7 +98,7 @@ describe("neutral reviewer independence", () => {
     const request = {
       type: "analyse" as const,
       reviewer: REVIEWER,
-      policy: "review-v1" as const,
+      policy: "review-v2" as const,
       history: [],
       position,
       gameId: "reuse",
@@ -125,7 +125,7 @@ describe("neutral reviewer independence", () => {
 
   it("invalidates history, rule-state, policy, version and purpose mismatches", () => {
     const position = START();
-    const r = value(reviewPosition(position, [], "review-v1", fixedClock));
+    const r = value(reviewPosition(position, [], "review-v2", fixedClock));
     expect(isNeutralEvaluation(r, position, [])).toBe(true);
     expect(isNeutralEvaluation(r, { ...position, halfmove: 99 }, [])).toBe(false);
     expect(isNeutralEvaluation(r, position, [toFEN(position)])).toBe(false);
@@ -140,9 +140,9 @@ describe("neutral reviewer independence", () => {
   it("replaces annotations and clears them for incomplete or incompatible reanalysis", () => {
     const position = fromFEN("4k3/8/8/8/8/8/q7/R3K3 w - - 0 1");
     const move = legalMoves(position).find((m) => m.to === 57)!;
-    const before = value(reviewPosition(position, [], "review-v1", fixedClock));
+    const before = value(reviewPosition(position, [], "review-v2", fixedClock));
     const after = value(
-      reviewPosition(applyMove(position, move), [toFEN(position)], "review-v1", fixedClock),
+      reviewPosition(applyMove(position, move), [toFEN(position)], "review-v2", fixedClock),
     );
     const first = annotateAll({ hist: [entry(position, move)], evals: { 0: before, 1: after } });
     expect(first.hist[0].ann).toBe("??");
@@ -152,13 +152,13 @@ describe("neutral reviewer independence", () => {
       ...first,
       evals: { 0: before, 1: { ...after, score: before.score } },
     });
-    expect(updated.hist[0]).toMatchObject({ ann: "", better: null });
-    const incomplete = { ...after, review: { ...after.review, depth: 0 } };
-    expect(annotateAll({ ...first, evals: { 0: before, 1: incomplete } }).hist[0]).toMatchObject({
+    expect(updated.hist[0]).toMatchObject({ ann: "??", better: "Rxa2" });
+    const incomplete = { ...before, review: { ...before.review, depth: 0 } };
+    expect(annotateAll({ ...first, evals: { 0: incomplete, 1: after } }).hist[0]).toMatchObject({
       ann: null,
       better: null,
     });
-    expect(annotateAll({ ...first, evals: { 0: before } }).hist[0]).toMatchObject({
+    expect(annotateAll({ ...first, evals: { 1: after } }).hist[0]).toMatchObject({
       ann: null,
       better: null,
     });

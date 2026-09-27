@@ -1,5 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import App from "../App";
+import { acquireWriter, type WriterLease } from "../storage/coordination";
+import {
+  guestStorage,
+  temporaryStorage,
+  rawGuestRecovery,
+  downloadRecoveryBytes,
+} from "../storage/play-storage";
+import { loadSavedState, saveState } from "../storage/store";
+import { loadGuestHistory, GUEST_HISTORY_KEY } from "../storage/history";
 import { freshSession } from "../game/state";
 import type { GameStorageAdapter } from "../game/useGame";
 import { Modal } from "../ui/Modal";
@@ -14,7 +23,9 @@ import { detachDevicePush, reconcileDevicePush } from "../multiplayer/notificati
 
 type Boot =
   | { kind: "loading" }
-  | { kind: "guest" }
+  | { kind: "guest"; storage: GameStorageAdapter; mountKey: string }
+  | { kind: "blocked"; user: AccountUser | null; waiting?: boolean }
+  | { kind: "guest-recovery"; message: string; exported: boolean }
   | { kind: "auth-error"; message: string }
   | { kind: "records-error"; user: AccountUser; message: string }
   | {
@@ -52,8 +63,17 @@ export function AccountShell() {
   const multiplayerOpen =
     path === "/games" || path.startsWith("/invite/") || path.startsWith("/game/");
   const accountRequest = useRef(0);
+  const bootActions = useRef<{
+    openGuest(): Promise<void>;
+    openAccount(user: AccountUser): Promise<void>;
+  } | null>(null);
+  const writer = useRef<WriterLease | null>(null);
+  const writerUser = useRef<AccountUser | null>(null);
+  const syncRef = useRef<AccountSync | null>(null);
+  const lockWait = useRef<AbortController | null>(null);
   const [boot, setBoot] = useState<Boot>({ kind: "loading" });
   const [authOpen, setAuthOpen] = useState(false);
+  const [temporaryError, setTemporaryError] = useState<string | null>(null);
   const [accountOpen, setAccountOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
@@ -82,22 +102,133 @@ export function AccountShell() {
             return;
           }
           if (!active) return;
-          setBoot({ kind: "guest" });
+          await bootActions.current!.openGuest();
           return;
         }
-        await openAccount(user);
+        await bootActions.current!.openAccount(user);
       })
       .catch(() => {
-        if (active) setBoot({ kind: "guest" });
+        if (active) void bootActions.current!.openGuest();
       });
     return () => {
       active = false;
       invalidateAccountRequest(accountRequest);
+      lockWait.current?.abort();
+      syncRef.current?.dispose();
+      syncRef.current = null;
+      writer.current?.release();
+      writer.current = null;
     };
   }, []);
 
-  async function openAccount(user: AccountUser) {
+  function relinquish(user: AccountUser | null) {
+    invalidateAccountRequest(accountRequest);
+    syncRef.current?.dispose();
+    syncRef.current = null;
+    writer.current?.release();
+    writer.current = null;
+    setBoot({ kind: "blocked", user });
+  }
+
+  async function own(user: AccountUser | null, requestId: number, wait = false) {
+    setTemporaryError(null);
+    const identity = user ? `account:${user.id}` : "guest";
+    if (writer.current?.identity === identity && writer.current.active()) return writer.current;
+    syncRef.current?.dispose();
+    syncRef.current = null;
+    writer.current?.release();
+    writer.current = null;
+    lockWait.current?.abort();
+    const controller = new AbortController();
+    lockWait.current = controller;
+    setBoot(wait ? { kind: "blocked", user, waiting: true } : { kind: "loading" });
+    const lease = await acquireWriter(identity, () => relinquish(user), {
+      wait,
+      signal: controller.signal,
+    });
+    if (requestId !== accountRequest.current) {
+      lease?.release();
+      return null;
+    }
+    if (!lease) {
+      setBoot({ kind: "blocked", user });
+      return null;
+    }
+    writer.current = lease;
+    writerUser.current = user;
+    return lease;
+  }
+
+  async function openGuest(wait = false) {
     const requestId = ++accountRequest.current;
+    const lease = await own(null, requestId, wait);
+    if (!lease) return;
+    const storage = localStorageSafe();
+    const active = loadSavedState(storage, Date.now(), crypto.randomUUID());
+    const history = loadGuestHistory(storage);
+    if (
+      [active.status, history.status].some(
+        (status) => status === "corrupt" || status === "unavailable",
+      )
+    ) {
+      setBoot({
+        kind: "guest-recovery",
+        exported: false,
+        message:
+          "Saved game or recorded history could not be opened safely. Your original data is preserved. Download it before explicitly resetting, or start separate temporary play.",
+      });
+      return;
+    }
+    setBoot({
+      kind: "guest",
+      storage: guestStorage(storage, lease),
+      mountKey: crypto.randomUUID(),
+    });
+  }
+
+  async function playTemporary() {
+    const requestId = ++accountRequest.current;
+    lockWait.current?.abort();
+    setBoot((previous) =>
+      previous.kind === "blocked" ? { ...previous, waiting: false } : previous,
+    );
+    setTemporaryError(null);
+    try {
+      await reconcileDevicePush(null);
+    } catch (error) {
+      if (requestId === accountRequest.current)
+        setTemporaryError(
+          error instanceof Error
+            ? error.message
+            : "Could not disable device alerts. Retry before entering temporary play.",
+        );
+      return;
+    }
+    if (requestId !== accountRequest.current) return;
+    syncRef.current?.dispose();
+    syncRef.current = null;
+    writer.current?.release();
+    writer.current = null;
+    setBoot({ kind: "guest", storage: temporaryStorage(), mountKey: crypto.randomUUID() });
+  }
+
+  useEffect(() => {
+    const hide = () => {
+      lockWait.current?.abort();
+      if (writer.current) relinquish(writerUser.current);
+      else if (boot.kind === "blocked") {
+        invalidateAccountRequest(accountRequest);
+        setBoot({ ...boot, waiting: false });
+      }
+    };
+    window.addEventListener("pagehide", hide);
+    return () => window.removeEventListener("pagehide", hide);
+  }, [boot]);
+
+  async function openAccount(user: AccountUser, wait = false) {
+    const requestId = ++accountRequest.current;
+    const lease = await own(user, requestId, wait);
+    if (!lease) return;
     try {
       await reconcileDevicePush(user.id);
     } catch {
@@ -149,12 +280,15 @@ export function AccountShell() {
       return;
     }
     if (offline) sync.markOffline();
+    syncRef.current = sync;
     setBoot((previous) => {
       if (previous.kind === "account") previous.sync.dispose();
       return { kind: "account", user, sync, initial, mountKey: crypto.randomUUID() };
     });
     setAuthOpen(false);
   }
+
+  bootActions.current = { openGuest, openAccount };
 
   const activeSync = boot.kind === "account" ? boot.sync : null;
   useEffect(() => {
@@ -182,15 +316,24 @@ export function AccountShell() {
     let hasChanged = false;
     return {
       scope: "account",
+      writable: () =>
+        writer.current?.identity === `account:${accountId}` &&
+        writer.current.active() &&
+        syncRef.current === activeSync,
       history: () => activeSync.history(),
       subscribeHistory: (listener) => activeSync.subscribe(listener),
-      refreshHistory: async () => activeSync.acceptHistory(await getRecords(accountId)),
+      refreshHistory: async () => {
+        const lease = writer.current;
+        const remote = await getRecords(accountId);
+        if (lease?.active() && syncRef.current === activeSync) activeSync.acceptHistory(remote);
+      },
       load: () => ({
         session: accountInitial,
         status: "saved",
         hasSavedGame: accountInitial.game.started && !accountInitial.game.over,
       }),
       save: (session, options) => {
+        if (!writer.current?.active() || syncRef.current !== activeSync) return false;
         if (!hasChanged && JSON.stringify(session) === JSON.stringify(accountInitial)) return true;
         hasChanged = true;
         const saved = activeSync.save(session, options);
@@ -202,6 +345,90 @@ export function AccountShell() {
     };
   }, [activeSync, accountInitial, accountId]);
 
+  if (boot.kind === "blocked")
+    return (
+      <div className="account-loading">
+        <div role="alert">
+          <p>
+            {navigator.locks
+              ? "This saved progress is open in another tab, or this tab released it. This tab cannot change it until it owns the save."
+              : "This browser cannot safely coordinate saved games. Persistent play is blocked."}
+          </p>
+          {navigator.locks && (
+            <button
+              className="btn primary"
+              disabled={boot.waiting}
+              onClick={() => void (boot.user ? openAccount(boot.user, true) : openGuest(true))}
+            >
+              {boot.waiting ? "Waiting for the other tab to release…" : "Take over in this tab"}
+            </button>
+          )}
+          {boot.waiting && (
+            <p>
+              Close the other tab if it cannot respond. Progress will be reloaded after it releases
+              the save.
+            </p>
+          )}
+          {temporaryError && <p role="alert">{temporaryError}</p>}
+          <button className="btn" onClick={playTemporary}>
+            Play temporarily without saving
+          </button>
+        </div>
+      </div>
+    );
+  if (boot.kind === "guest-recovery")
+    return (
+      <div className="account-loading">
+        <div role="alert">
+          <p>{boot.message}</p>
+          <button
+            className="btn"
+            onClick={() => {
+              try {
+                downloadRecoveryBytes(rawGuestRecovery(localStorageSafe()));
+                setBoot({ ...boot, exported: true });
+              } catch (error) {
+                setBoot({ ...boot, message: String(error) });
+              }
+            }}
+          >
+            Download original saved data
+          </button>
+          <button
+            className="btn"
+            disabled={!boot.exported}
+            onClick={() => {
+              if (!writer.current?.active()) return;
+              if (
+                !window.confirm(
+                  "Reset the current saved game and recorded history? Keep your downloaded originals for recovery.",
+                )
+              )
+                return;
+              try {
+                const storage = localStorageSafe();
+                if (!storage) throw Error("Storage is unavailable. Use temporary play.");
+                // Older recovery generations remain untouched. Only explicit current authority is reset.
+                if (!saveState(storage, freshSession(Date.now(), crypto.randomUUID())))
+                  throw Error(
+                    "Reset could not be saved. Keep your downloaded originals and use temporary play.",
+                  );
+                storage.setItem(GUEST_HISTORY_KEY, JSON.stringify({ version: 2, games: [] }));
+                void openGuest();
+              } catch (error) {
+                setBoot({ ...boot, message: String(error) });
+              }
+            }}
+          >
+            Reset after downloading originals
+          </button>
+          {temporaryError && <p role="alert">{temporaryError}</p>}
+          <button className="btn" onClick={playTemporary}>
+            Play temporarily without saving
+          </button>
+        </div>
+      </div>
+    );
   if (boot.kind === "loading")
     return (
       <div className="account-loading" role="status">
@@ -280,9 +507,21 @@ export function AccountShell() {
   const conflict = account && syncStatus?.state === "conflict";
   return (
     <>
+      {temporaryError && (
+        <div className="notice" role="alert">
+          {temporaryError}
+        </div>
+      )}
       <App
-        key={account ? `${account.user.id}:${account.mountKey}` : "guest"}
-        storage={adapter}
+        key={
+          account
+            ? `${account.user.id}:${account.mountKey}`
+            : boot.kind === "guest"
+              ? boot.mountKey
+              : "guest"
+        }
+        storage={boot.kind === "guest" ? boot.storage : adapter}
+        onTemporary={playTemporary}
         suspended={multiplayerOpen}
         accountControls={controls}
         accountNotice={
@@ -317,6 +556,16 @@ export function AccountShell() {
               >
                 Download recovery copy
               </button>
+              {syncStatus.canCompactRetry && (
+                <button
+                  className="linkbtn"
+                  onClick={() => {
+                    if (account.sync.retryCompactRejected()) void account.sync.flush();
+                  }}
+                >
+                  Retry compact save
+                </button>
+              )}
             </>
           ) : syncStatus?.state === "upgrade-required" ? (
             "Sync paused: update Chess Prodigy to use this account's newer save format. Your pending changes are preserved."
@@ -365,7 +614,7 @@ export function AccountShell() {
             invalidateAccountRequest(accountRequest);
             account.sync.dispose();
             setAccountOpen(false);
-            setBoot({ kind: "guest" });
+            await openGuest();
           }}
         />
       )}

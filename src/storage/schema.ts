@@ -20,7 +20,9 @@ import { opponentPracticeRating, opponentRatingLabel } from "../rating/opponents
 export const isUnratedReason = (value: unknown): value is Game["unratedReason"] =>
   value === null ||
   (typeof value === "string" &&
-    ["beta", "hint", "takeback", "rating-reset", "legacy-unrated"].includes(value));
+    ["beta", "hint", "takeback", "rating-reset", "legacy-unrated", "temporary-session"].includes(
+      value,
+    ));
 
 const object = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);

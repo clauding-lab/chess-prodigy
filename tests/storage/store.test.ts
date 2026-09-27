@@ -218,7 +218,7 @@ it("retains qualified neutral caches but invalidates stale versions and annotati
   const { reviewPosition } = await import("../../src/engine/reviewer");
   const { parseSavedState } = await import("../../src/storage/schema");
   const s = freshSession(0, "neutral-save");
-  const r = reviewPosition(s.game.st, [], "review-v1", () => 0);
+  const r = reviewPosition(s.game.st, [], "review-v2", () => 0);
   s.game.evals[0] = { score: r.score, best: r.move, review: r.review };
   const restored = parseSavedState(JSON.parse(JSON.stringify(s)))!;
   expect(restored.game.evals[0]).toEqual(s.game.evals[0]);
@@ -232,7 +232,7 @@ it("discards malformed derived reviewer metadata without rejecting authoritative
   const { reviewPosition } = await import("../../src/engine/reviewer");
   const { parseSavedState } = await import("../../src/storage/schema");
   const s = freshSession(0, "malformed-review");
-  const r = reviewPosition(s.game.st, [], "review-v1", () => 0);
+  const r = reviewPosition(s.game.st, [], "review-v2", () => 0);
   for (const metadata of [
     null,
     "bad",

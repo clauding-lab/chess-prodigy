@@ -94,7 +94,7 @@ it("rejects an opponent result masquerading as a neutral worker reply", async ()
   const pending = client.request({
     type: "analyse",
     reviewer: REVIEWER,
-    policy: "review-v1",
+    policy: "review-v2",
     history: [],
     gameId: "neutral",
     revision: 0,

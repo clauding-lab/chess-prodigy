@@ -1,3 +1,4 @@
+import { parseSessionInput } from "../../src/storage/input";
 import React, { StrictMode } from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
@@ -26,7 +27,7 @@ afterEach(() => {
   vi.unstubAllEnvs();
   vi.restoreAllMocks();
 });
-const saved = () => JSON.parse(localStorage.getItem(SAVE_KEY)!);
+const saved = () => parseSessionInput(JSON.parse(localStorage.getItem(SAVE_KEY)!))!;
 function seed(timed = false, assisted = false) {
   let s = reduceSession(freshSession(Date.now(), "initial"), {
     type: "new",
@@ -174,7 +175,9 @@ it("keeps the forfeited terminal game and explains a failed archive before any r
   expect(saved().game.id).toBe("unfinished");
   expect(saved().game.over.reason).toBe("Abandoned");
   expect(screen.getByText(/Your result could not be saved/)).toBeTruthy();
-  expect(screen.getByRole("button", { name: "Download recovery save", exact: true })).toBeTruthy();
+  expect(
+    screen.getAllByRole("button", { name: "Download recovery save", exact: true }).length,
+  ).toBeGreaterThan(0);
   expect(screen.queryByRole("dialog", { name: "New game" })).toBeNull();
   fail.mockRestore();
 });

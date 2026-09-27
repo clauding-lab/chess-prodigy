@@ -7,8 +7,9 @@ import type { GameRecord, LegacyGameRecord } from "../src/account/types.js";
 import { parseSessionInput } from "../src/storage/input.js";
 import type { CompactSession } from "../src/storage/compact.js";
 import { MAX_COMPACT_BYTES, MAX_GAME_PLIES } from "../src/storage/capacity.js";
+import { updateRecoverableArchive, type ArchiveEviction } from "../src/game/archive-recovery.js";
 import { archiveGame } from "../src/game/archive.js";
-import { parseGameRecord } from "../src/account/records.js";
+import { parseGameRecord, parseArchiveEviction } from "../src/account/records.js";
 import type { ChessAuth } from "./auth.js";
 
 import { isRatedOpponent, isRosterOpponent, isSupportedOpponent } from "../src/engine/opponents.js";
@@ -22,6 +23,7 @@ export interface RecordsEnvelope {
   snapshot: Session | LegacySession | CompactSession | null;
   games: (GameRecord | LegacyGameRecord)[];
   updatedAt: string | null;
+  evicted?: ArchiveEviction;
 }
 
 export interface PutRecordsBody {
@@ -61,6 +63,10 @@ function initialize(database: Database.Database): void {
     );
     CREATE INDEX IF NOT EXISTS game_records_owner_completed
       ON game_records(user_id, completed_at DESC);
+    CREATE TABLE IF NOT EXISTS archive_evictions (
+      user_id TEXT PRIMARY KEY REFERENCES user(id) ON DELETE CASCADE,
+      recovery TEXT NOT NULL
+    );
     CREATE TABLE IF NOT EXISTS record_client_policy (
       user_id TEXT PRIMARY KEY REFERENCES user(id) ON DELETE CASCADE,
       minimum_policy INTEGER NOT NULL DEFAULT 1 CHECK(minimum_policy >= 1)
@@ -167,7 +173,13 @@ function readEnvelope(database: Database.Database, userId: string): RecordsEnvel
       "SELECT record FROM game_records WHERE user_id = ? ORDER BY completed_at DESC, game_id DESC LIMIT ?",
     )
     .all(userId, MAX_ARCHIVED_GAMES) as Array<{ record: string }>;
+  const eviction = database
+    .prepare("SELECT recovery FROM archive_evictions WHERE user_id = ?")
+    .get(userId) as { recovery: string } | undefined;
+  const evicted = eviction ? parseArchiveEviction(JSON.parse(eviction.recovery)) : undefined;
+  if (evicted === null) throw new Error("Invalid retained archive recovery.");
   return {
+    ...(evicted ? { evicted } : {}),
     version: row?.version ?? 0,
     snapshot: row ? (JSON.parse(row.snapshot) as Session | LegacySession | CompactSession) : null,
     games: games.map(({ record }) => JSON.parse(record) as GameRecord | LegacyGameRecord),
@@ -258,7 +270,7 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
         .get(userId) as { minimum_policy: number } | undefined;
       const requiredPolicy = Math.max(
         policyRow?.minimum_policy ?? 0,
-        compact ? 6 : 0,
+        compact || snapshot.game.unratedReason === "temporary-session" ? 6 : 0,
         roster
           ? 5
           : chigorin
@@ -288,13 +300,49 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
       // Incompatible clients must update even when their record version is stale.
       // Do not expose a conflict action that they cannot safely resolve.
       if (version !== body.expectedVersion) return "conflict";
-      if (compact || measured || chigorin || roster)
+      if (
+        compact ||
+        snapshot.game.unratedReason === "temporary-session" ||
+        measured ||
+        chigorin ||
+        roster
+      )
         database
           .prepare(
             `INSERT INTO record_client_policy(user_id, minimum_policy) VALUES (?, ?)
             ON CONFLICT(user_id) DO UPDATE SET minimum_policy = MAX(record_client_policy.minimum_policy, excluded.minimum_policy)`,
           )
           .run(userId, requiredPolicy);
+      const previousRecovery = database
+        .prepare("SELECT recovery FROM archive_evictions WHERE user_id = ?")
+        .get(userId) as { recovery: string } | undefined;
+      if (archive || previousRecovery) {
+        const previous = readEnvelope(database, userId);
+        const previousGames = previous.games.map(parseGameRecord);
+        if (previousGames.some((record) => !record))
+          throw new Error("Invalid retained archive; recovery required.");
+        const recovered = updateRecoverableArchive(
+          { games: previousGames as GameRecord[], evicted: previous.evicted },
+          snapshot,
+        );
+        const oldIds = new Set(previous.games.map((record) => record.id));
+        for (const record of recovered.games) {
+          if (record.id !== snapshot.game.id && !oldIds.has(record.id))
+            database
+              .prepare(
+                "INSERT INTO game_records(user_id, game_id, record, completed_at) VALUES (?, ?, ?, ?)",
+              )
+              .run(userId, record.id, JSON.stringify(record), record.completedAt);
+        }
+        if (recovered.evicted)
+          database
+            .prepare(
+              `INSERT INTO archive_evictions(user_id, recovery) VALUES (?, ?)
+            ON CONFLICT(user_id) DO UPDATE SET recovery = excluded.recovery`,
+            )
+            .run(userId, JSON.stringify(recovered.evicted));
+        else database.prepare("DELETE FROM archive_evictions WHERE user_id = ?").run(userId);
+      }
       const updatedAt = new Date().toISOString();
       database
         .prepare(

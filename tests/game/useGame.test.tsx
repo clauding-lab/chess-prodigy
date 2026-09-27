@@ -1,3 +1,4 @@
+import { parseSessionInput } from "../../src/storage/input";
 import { playLine, FOOLS_MATE } from "./play-line";
 import { SAVE_KEY } from "../../src/storage/store";
 import React, { StrictMode } from "react";
@@ -253,7 +254,7 @@ it("does not overwrite corrupt data until explicit recovery", () => {
   expect(localStorage.getItem(SAVE_KEY)).toBe("bad");
   act(() => result.current.enableSaving());
   expect(result.current.storageStatus).toBe("saved");
-  expect(JSON.parse(localStorage.getItem(SAVE_KEY)!).game.hist).toHaveLength(1);
+  expect(parseSessionInput(JSON.parse(localStorage.getItem(SAVE_KEY)!))?.game.hist).toHaveLength(1);
 });
 
 it("sends legal opening continuations to the engine, rather than the moves already played", async () => {
@@ -352,7 +353,7 @@ async function completedReviewFixture() {
     const r = reviewPosition(
       s.game.hist[ply]?.before ?? s.game.st,
       reviewHistory(s.game, ply),
-      "review-v1",
+      "review-v2",
       () => 0,
     );
     s = reduceSession(s, {
@@ -360,7 +361,22 @@ async function completedReviewFixture() {
       gameId: s.game.id,
       revision: s.game.revision,
       ply,
-      value: { score: ply === 0 ? 0 : -500, best: r.move, review: r.review },
+      value: {
+        score: 0,
+        best: r.move,
+        review: {
+          ...r.review,
+          alternatives: r.review.alternatives.map((a) => ({
+            ...a,
+            score:
+              ply === 0 &&
+              a.move.from === s.game.hist[0].mv.from &&
+              a.move.to === s.game.hist[0].mv.to
+                ? -500
+                : 0,
+          })),
+        },
+      },
     });
   }
   expect(s.game.hist[0].ann).toBe("??");
@@ -377,10 +393,21 @@ it("explicit reanalysis replaces a cached live verdict and persists its replacem
     const job = fake.jobs.at(-1)!;
     if (job.input.type !== "analyse") throw new Error("Expected review work");
     const r = reviewPosition(job.input.position, job.input.history, job.input.policy, () => 0);
-    await act(async () => job.resolve({ ...r, score: 0 }));
+    await act(async () =>
+      job.resolve({
+        ...r,
+        score: 0,
+        review: {
+          ...r.review,
+          alternatives: r.review.alternatives.map((a) => ({ ...a, score: 0 })),
+        },
+      }),
+    );
   }
   expect(result.current.game.hist[0]).toMatchObject({ ann: "", better: null });
-  expect(JSON.parse(localStorage.getItem(SAVE_KEY)!).game.hist[0].ann).toBe("");
+  const persisted = JSON.parse(localStorage.getItem(SAVE_KEY)!);
+  expect(persisted.game).not.toHaveProperty("evals");
+  expect(parseSessionInput(persisted)?.game.hist[0].ann).toBeNull();
 });
 
 it.each(["cancel", "undo", "new", "unmount"])(
@@ -458,3 +485,25 @@ it.each(["hint", "review"] as const)(
     expect(result.current.engineError).toBeNull();
   },
 );
+
+it("temporary play can finish and start further games without saving or rating", async () => {
+  const { temporaryStorage } = await import("../../src/storage/play-storage");
+  const adapter = temporaryStorage();
+  localStorage.setItem("chess-prodigy-state-v8", "damaged-original");
+  const { result } = renderHook(() => useGame(true, adapter));
+  for (let game = 0; game < 2; game++) {
+    act(() => {
+      expect(result.current.startGame({ playerColor: "w", level: "club", time: "none" })).toBe(
+        true,
+      );
+    });
+    act(() => result.current.move(legalMoves(result.current.game.st)[0]));
+    act(() => result.current.resign());
+    expect(result.current.game.over?.reason).toBe("Resignation");
+    expect(result.current.game.rated).toBe(false);
+    expect(result.current.game.ratingApplied).toBeNull();
+    expect(result.current.rating.games).toBe(0);
+  }
+  expect(localStorage.getItem("chess-prodigy-state-v8")).toBe("damaged-original");
+  expect(localStorage.length).toBe(1);
+});

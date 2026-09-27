@@ -55,7 +55,8 @@ export interface Session {
   rating: Rating;
   preferences: Preferences;
 }
-export type UnratedReason = null | "beta" | "hint" | "takeback" | "rating-reset" | "legacy-unrated";
+export type UnratedReason =
+  null | "beta" | "hint" | "takeback" | "rating-reset" | "legacy-unrated" | "temporary-session";
 export type LegacySession = Omit<Session, "version" | "game"> & {
   version: 1;
   game: Omit<Game, "opponent" | "unratedReason" | "takebackUsed">;

@@ -59,6 +59,7 @@ const outcome = (record: GameRecord) =>
 const assistance = (record: GameRecord) =>
   record.assisted === null ? "Unknown assistance" : record.assisted ? "Assisted" : "Unassisted";
 const unratedReasons = {
+  "temporary-session": "Temporary game",
   beta: "Unrated beta",
   hint: "Unrated — hint used",
   takeback: "Unrated — takeback used",

@@ -89,11 +89,13 @@ export default function App({
   accountControls,
   accountNotice,
   suspended = false,
+  onTemporary,
 }: {
   storage?: GameStorageAdapter;
   accountControls?: ReactNode;
   accountNotice?: ReactNode;
   suspended?: boolean;
+  onTemporary?(): void;
 } = {}) {
   const [home, setHome] = useState(true);
   const [hasChosenGame, setHasChosenGame] = useState(false);
@@ -568,30 +570,26 @@ export default function App({
             </button>
           </div>
         )}
-        {gameApi.storageStatus !== "saved" && (
-          <div className="notice" role="alert">
-            {gameApi.storageStatus === "corrupt"
-              ? "The saved game could not be read. This game will stay in this tab until you choose to replace the damaged save."
-              : "Saving is unavailable on this device."}{" "}
-            <button
-              className="linkbtn"
-              onClick={() =>
-                setConfirm({
-                  title: "Enable saving?",
-                  body: "This replaces the unreadable saved data with your current game and rating.",
-                  yes: "Enable saving",
-                  cancel: "Cancel",
-                  onYes: () => {
-                    gameApi.enableSaving();
-                    setConfirm(null);
-                  },
-                })
-              }
-              type="button"
-            >
-              Enable saving
-            </button>
+        {gameApi.temporary ? (
+          <div className="notice" role="status">
+            Temporary unrated play — games are lost when this tab closes. Existing saved progress is
+            untouched.
           </div>
+        ) : (
+          gameApi.storageStatus !== "saved" && (
+            <div className="notice" role="alert">
+              Saving is unavailable. Keep this tab open and download your current game before
+              starting separate temporary play.{" "}
+              <button className="linkbtn" onClick={downloadRecovery}>
+                Download recovery save
+              </button>
+              {onTemporary && (
+                <button className="linkbtn" onClick={onTemporary}>
+                  Play temporarily without saving
+                </button>
+              )}
+            </div>
+          )
         )}
         {home && startError && (
           <p className="notice" role="alert">

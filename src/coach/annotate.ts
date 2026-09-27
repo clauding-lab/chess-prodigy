@@ -11,15 +11,10 @@ export function annotateAll<
   let changed = false;
   const histories = reviewHistoryIdentities(game);
   const hist = game.hist.map((entry, ply) => {
-    const before = game.evals[ply],
-      after = game.evals[ply + 1];
-    const next = applyMove(entry.before, entry.mv);
+    const before = game.evals[ply];
     const qualified =
-      isNeutralEvaluation(before, entry.before, histories[ply]) &&
-      isNeutralEvaluation(after, next, histories[ply + 1]) &&
-      before.review.policy === after.review.policy &&
-      reviewComplete(before) &&
-      reviewComplete(after);
+      isNeutralEvaluation(before, entry.before, histories[ply], "review-v2") &&
+      reviewComplete(before);
     const update = (ann: string | null, better: string | null = null) => {
       if (entry.ann === ann && entry.better === better) return entry;
       changed = true;
@@ -27,24 +22,25 @@ export function annotateAll<
     };
     if (!qualified) return update(null);
     const multiplier = entry.before.turn === "w" ? 1 : -1;
-    const moverBefore = multiplier * before.score,
-      moverAfter = multiplier * after.score;
-    if (entry.book) return update("book");
-    if (Math.abs(moverBefore) > 3000 || Math.abs(moverAfter) > 3000) return update("");
-    const drop = moverBefore - moverAfter;
+    const played = before.review.alternatives.find(({ move }) => sameMove(move, entry.mv));
+    if (!played) return update(null);
+    const best = before.review.alternatives.reduce((a, b) =>
+      multiplier * b.score > multiplier * a.score ? b : a,
+    );
+    const drop = multiplier * (best.score - played.score);
     let ann = "";
     if (drop >= 250) ann = "??";
     else if (drop >= 120) ann = "?";
     else if (drop >= 50) ann = "?!";
     else if (
-      before.best &&
-      sameMove(entry.mv, before.best) &&
+      best.move &&
+      sameMove(entry.mv, best.move) &&
       entry.motifs.some(({ key }) => MOTIFS[key].kind === "tactic" && key !== "check")
     )
       ann = "!";
     let better: string | null = null;
-    if (ann && ann !== "!" && before.best && !sameMove(before.best, entry.mv))
-      better = sanFor(entry.before, before.best, applyMove(entry.before, before.best));
+    if (ann && ann !== "!" && best.move && !sameMove(best.move, entry.mv))
+      better = sanFor(entry.before, best.move, applyMove(entry.before, best.move));
     return update(ann, better);
   });
   return changed ? { ...game, hist } : game;

@@ -35,7 +35,10 @@ it("saves and reloads a legal transposition after takebacks, including its termi
   const session = transposed();
   expect(parseSavedState(session)).not.toBeNull();
   expect(saveState(storage, session)).toBe(true);
-  expect(loadSavedState(storage, 3000, "fallback").session.game).toEqual(session.game);
+  expect(loadSavedState(storage, 3000, "fallback").session.game).toEqual({
+    ...session.game,
+    keys: Object.fromEntries(Object.entries(session.game.keys).filter(([, count]) => count > 0)),
+  });
   const ended = reduceSession(session, { type: "resign", now: 4000 });
   expect(saveGuestProgress(storage, ended)).toBe(true);
   expect(loadSavedState(storage, 4001, "fallback").session.game.over).toEqual(ended.game.over);

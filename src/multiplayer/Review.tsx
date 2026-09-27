@@ -39,7 +39,7 @@ export function CompletedReview({ game, color }: { game: Game; color: Color }) {
           revision: game.revision,
           position: game.hist[ply]?.before ?? game.st,
           reviewer: REVIEWER,
-          policy: "review-v1",
+          policy: "review-v2",
           history: reviewHistory(game, ply),
         });
         if (revision.current !== token) return;
@@ -51,7 +51,7 @@ export function CompletedReview({ game, color }: { game: Game; color: Color }) {
             value,
             game.hist[ply]?.before ?? game.st,
             reviewHistory(game, ply),
-            "review-v1",
+            "review-v2",
           )
         )
           throw new Error("Position review was incompatible. Please retry.");

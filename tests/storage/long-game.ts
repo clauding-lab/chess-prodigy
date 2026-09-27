@@ -38,7 +38,7 @@ export function longGame(plies: number, reviewed = false) {
         review: {
           purpose: "neutral-review",
           reviewer: REVIEWER,
-          policy: "review-v1",
+          policy: "review-v2",
           depth: 3,
           position: toFEN(position),
           history: histories[ply],

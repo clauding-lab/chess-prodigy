@@ -102,8 +102,8 @@ export function CoachPanel({
                   <div className="state">
                     {book.inBook
                       ? ply === 0
-                        ? "Book position"
-                        : "Still in book"
+                        ? "Coaching opening position"
+                        : "Still in the coaching opening"
                       : `Left the book at move ${Math.ceil((book.leftAt ?? 0) / 2)}`}
                   </div>
                   <Card
@@ -121,10 +121,14 @@ export function CoachPanel({
                   {ply === 0
                     ? "Play a move to see the opening."
                     : book.inBook
-                      ? "In book, no named line yet."
+                      ? "In the coaching opening, no named line yet."
                       : "Out of the book; no named opening matched."}
                 </div>
               )}
+              <p className="history-note">
+                Coaching opening membership and documented master moves are separate from neutral
+                move quality. Either can receive a mistake grade.
+              </p>
             </div>
             {feed.length > 0 && (
               <>

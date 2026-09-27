@@ -1,3 +1,4 @@
+import { encodeCompactSession } from "../../src/storage/compact";
 import { expect, it, vi } from "vitest";
 import { AccountSync, accountStorageKey } from "../../src/account/sync";
 import { freshSession } from "../../src/game/state";
@@ -44,9 +45,9 @@ it("does not create writable account authority from a failed download without a 
 it("uses an authentic cached copy offline but refuses a regressed acknowledged server version", () => {
   const storage = new MemoryStorage();
   new AccountSync("user", storage).initialize(envelope(7, "authoritative"));
-  const raw = storage.getItem(accountStorageKey("user"));
   const offline = new AccountSync("user", storage);
   expect(offline.initialize(envelope(), false).game.id).toBe("authoritative");
+  const raw = storage.getItem(accountStorageKey("user"));
   const regressed = new AccountSync("user", storage);
   expect(() => regressed.initialize(envelope(6, "older"))).toThrow(/version|older/i);
   expect(regressed.save(freshSession(1, "replacement"))).toBe(false);
@@ -68,9 +69,12 @@ it("recognizes a lost acknowledgement after reload and preserves later pending g
     const body = JSON.parse(String(init?.body));
     sent.push(body.snapshot.game.id);
     if (body.expectedVersion === 0)
-      return new Response(JSON.stringify({ current: { ...envelope(1), snapshot: accepted } }), {
-        status: 409,
-      });
+      return new Response(
+        JSON.stringify({ current: { ...envelope(1), snapshot: encodeCompactSession(accepted) } }),
+        {
+          status: 409,
+        },
+      );
     return new Response(JSON.stringify({ ...envelope(2), snapshot: body.snapshot }));
   });
   reloaded.initialize({ ...envelope(1), snapshot: accepted });
@@ -294,4 +298,80 @@ it("does not coalesce a restored old outbox that predates attempted-write marker
   const retained = JSON.parse(sync.exportRecovery()).pending;
   expect(retained).toHaveLength(2);
   expect(retained[0].snapshot).toEqual(pending);
+});
+
+it("explicitly converts a permanently rejected legacy pending save while retaining its exact recovery copy", async () => {
+  const storage = new MemoryStorage();
+  const old = freshSession(1, "oversized-legacy");
+  old.game.evals[0] = { score: 999, best: null };
+  const raw = JSON.stringify({
+    baseVersion: 7,
+    snapshot: old,
+    pending: [{ snapshot: old, terminal: true, attempted: true, rejected: 413 }],
+  });
+  storage.setItem(accountStorageKey("user"), raw);
+  const request = vi.fn(async (_url, init) => {
+    const body = JSON.parse(String(init?.body));
+    expect(body.snapshot.version).toBe(3);
+    expect(body.expectedVersion).toBe(7);
+    return new Response(JSON.stringify({ ...envelope(8), snapshot: body.snapshot }));
+  });
+  const sync = new AccountSync("user", storage, request);
+  sync.initialize(envelope(7));
+  sync.save(freshSession(2, "later"), { terminal: true });
+  await sync.flush();
+  expect(request).not.toHaveBeenCalled();
+  expect(sync.status().canCompactRetry).toBe(true);
+  expect(sync.retryCompactRejected()).toBe(true);
+  const recovery = JSON.parse(sync.exportRecovery());
+  expect(recovery.pending[0].originalRejected).toEqual(old);
+  expect(recovery.pending[0].snapshot.version).toBe(3);
+  expect(recovery.pending[1].snapshot.game.id).toBe("later");
+  // A successful acknowledgement can be consumed without discarding later work.
+  sync.dispose();
+  const reloaded = new AccountSync("user", storage, async (_url, init) => {
+    const body = JSON.parse(String(init?.body));
+    return new Response(
+      JSON.stringify({ ...envelope(body.expectedVersion + 1), snapshot: body.snapshot }),
+    );
+  });
+  reloaded.initialize(envelope(7));
+  expect(JSON.parse(reloaded.exportRecovery()).pending[0].originalRejected).toEqual(old);
+  await reloaded.flush();
+  expect(reloaded.status()).toMatchObject({ state: "idle", pending: 0 });
+});
+it("never rewrites an ambiguously attempted or already compact rejected wire", async () => {
+  const storage = new MemoryStorage();
+  const sync = new AccountSync("user", storage, async () => new Response(null, { status: 413 }));
+  sync.initialize(envelope());
+  sync.save(freshSession(1, "compact"));
+  expect(sync.retryCompactRejected()).toBe(false);
+  await sync.flush();
+  expect(sync.status().canCompactRetry).toBe(false);
+  expect(sync.retryCompactRejected()).toBe(false);
+});
+
+it("retains original rejected recovery when a converted nonterminal game changes before retry", () => {
+  const storage = new MemoryStorage();
+  const old = freshSession(1, "same-game");
+  storage.setItem(
+    accountStorageKey("user"),
+    JSON.stringify({
+      baseVersion: 7,
+      snapshot: old,
+      pending: [{ snapshot: old, terminal: false, attempted: true, rejected: 413 }],
+    }),
+  );
+  const sync = new AccountSync("user", storage);
+  sync.initialize(envelope(7));
+  expect(sync.retryCompactRejected()).toBe(true);
+  expect(sync.save(freshSession(2, "same-game"))).toBe(true);
+  const recovery = JSON.parse(sync.exportRecovery());
+  expect(recovery.pending).toHaveLength(2);
+  expect(recovery.pending[0].originalRejected).toEqual(old);
+  expect(recovery.pending[1].snapshot.game.clockAt).toBe(2);
+  sync.dispose();
+  const reloaded = new AccountSync("user", storage);
+  reloaded.initialize(envelope(7));
+  expect(JSON.parse(reloaded.exportRecovery()).pending[0].originalRejected).toEqual(old);
 });

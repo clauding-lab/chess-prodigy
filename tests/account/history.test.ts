@@ -123,7 +123,7 @@ it("replaces the server history base on acknowledgements without sending cached 
     const body = JSON.parse(String(init?.body));
     expect(Object.keys(body).sort()).toEqual(["expectedVersion", "snapshot"]);
     expect(body.snapshot).not.toHaveProperty("history");
-    return new Response(JSON.stringify(accepted));
+    return new Response(JSON.stringify({ ...accepted, snapshot: body.snapshot }));
   });
   sync.initialize(remote());
   sync.save(terminal, { terminal: true });
@@ -160,3 +160,32 @@ for (const choice of ["cloud", "device"] as const)
     bob.initialize({ ...remote(), games: [] });
     expect(bob.history().games).toEqual([]);
   });
+
+it("retains acknowledged eviction recovery across offline reload before pending undo", async () => {
+  localStorage.clear();
+  const done = finished("latest", 300000);
+  const seed = Array.from({ length: 200 }, (_, i) => ({
+    ...archiveGame(done)!,
+    id: `prior-${i}`,
+    completedAt: new Date(i).toISOString(),
+  }));
+  const accepted = {
+    version: 8,
+    snapshot: done,
+    updatedAt: null,
+    games: [archiveGame(done)!, ...seed.slice(1)],
+    evicted: { byGameId: done.game.id, record: seed[0] },
+  };
+  const sync = new AccountSync("alice", localStorage);
+  sync.initialize(accepted);
+  sync.dispose();
+  const reloaded = new AccountSync("alice", localStorage);
+  reloaded.initialize(remote(0), false);
+  reloaded.save(reduceSession(done, { type: "undo", now: 300010 }));
+  expect(
+    reloaded
+      .history()
+      .games.map((g) => g.id)
+      .sort(),
+  ).toEqual(seed.map((g) => g.id).sort());
+});

@@ -148,7 +148,8 @@ export function decodeCompactSession(value: unknown): Session | null {
   }
   const { moves: _moves, ...metadata } = g;
   return parseSavedState({
-    ...value,
+    rating: value.rating,
+    preferences: value.preferences,
     version: 2,
     game: { ...metadata, st, hist, keys, evals: {} },
   });

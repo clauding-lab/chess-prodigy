@@ -22,6 +22,8 @@ export interface GameStorageAdapter {
   load(now: number, fallbackId: string): LoadResult;
   save(session: LoadResult["session"], options?: { terminal?: boolean }): boolean;
   scope?: "guest" | "account";
+  temporary?: boolean;
+  writable?(): boolean;
   history?(): HistoryResult;
   refreshHistory?(): Promise<void>;
   subscribeHistory?(listener: () => void): () => void;
@@ -48,7 +50,16 @@ export function useGame(
 ) {
   const backgroundRef = useRef(background);
   backgroundRef.current = background;
-  const [initial] = useState(() => storage.load(Date.now(), newId()));
+  const [initial] = useState(() => {
+    const loaded = storage.load(Date.now(), newId());
+    if (storage.temporary)
+      loaded.session.game = {
+        ...loaded.session.game,
+        rated: false,
+        unratedReason: loaded.session.game.unratedReason ?? "temporary-session",
+      };
+    return loaded;
+  });
   const [session, setSession] = useState(initial.session);
   const [history, setHistory] = useState<HistoryResult>(
     () => storage.history?.() ?? { games: [], status: "incomplete" },
@@ -75,7 +86,11 @@ export function useGame(
   const mounted = useRef(false);
   const persist = useCallback(
     (session = current.current, options?: { terminal?: boolean }) => {
-      if (storageState.current === "corrupt" || !isSupportedOpponent(session.game.opponent))
+      if (
+        storage.writable?.() === false ||
+        storageState.current === "corrupt" ||
+        !isSupportedOpponent(session.game.opponent)
+      )
         return false;
       const status = storage.save(session, options) ? "saved" : "unavailable";
       storageState.current = status;
@@ -99,6 +114,7 @@ export function useGame(
   }, [invalidateWork]);
   const dispatch = useCallback(
     (action: SessionAction) => {
+      if (storage.writable?.() === false) return false;
       const previous = current.current;
       if (action.type === "new") {
         const prior = settlePriorGame(previous, action.now);
@@ -112,7 +128,16 @@ export function useGame(
           return false;
         }
       }
-      const next = reduceSession(previous, action);
+      let next = reduceSession(previous, action);
+      if (storage.temporary && action.type === "new" && next !== previous)
+        next = {
+          ...next,
+          game: {
+            ...next.game,
+            rated: false,
+            unratedReason: next.game.unratedReason ?? "temporary-session",
+          },
+        };
       if (next === previous) return false;
       const changedPosition =
         next.game.id !== previous.game.id || next.game.revision !== previous.game.revision;
@@ -134,7 +159,7 @@ export function useGame(
       if (action.type !== "tick" || next.game.over !== previous.game.over) persist();
       return true;
     },
-    [invalidate, persist],
+    [invalidate, persist, storage],
   );
   useEffect(() => {
     mounted.current = true;
@@ -147,7 +172,8 @@ export function useGame(
     };
     const timer = setInterval(tick, 200);
     window.addEventListener("focus", tick);
-    window.addEventListener("pagehide", save);
+    // Every transition is saved while ownership is alive. Never rewrite a whole
+    // snapshot during pagehide: another tab may already be taking ownership.
     document.addEventListener("visibilitychange", save);
     return () => {
       mounted.current = false;
@@ -156,7 +182,7 @@ export function useGame(
       client.current = null;
       clearInterval(timer);
       window.removeEventListener("focus", tick);
-      window.removeEventListener("pagehide", save);
+
       document.removeEventListener("visibilitychange", save);
     };
   }, [dispatch, persist, invalidateWork]);
@@ -304,7 +330,7 @@ export function useGame(
               ply === g.hist.length ? g.st : g.hist[ply].before,
               ply,
               token,
-              "review-v1",
+              "review-v2",
             );
         }
       }
@@ -384,7 +410,7 @@ export function useGame(
     const run = async () => {
       for (let ply = 0; ply <= g.hist.length; ply++) {
         if (generation.current !== token) return;
-        await analyse(ply === g.hist.length ? g.st : g.hist[ply].before, ply, token, "review-v1");
+        await analyse(ply === g.hist.length ? g.st : g.hist[ply].before, ply, token, "review-v2");
       }
     };
     void run()
@@ -416,6 +442,7 @@ export function useGame(
     hint,
     engineError,
     storageStatus,
+    temporary: !!storage.temporary,
     startGame: (setup: Setup) => {
       if (!isSupportedOpponent(current.current.game.opponent)) return false;
       if (

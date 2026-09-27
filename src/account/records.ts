@@ -2,6 +2,7 @@ import { isUnratedReason } from "../storage/schema";
 import { parseSessionInput } from "../storage/input";
 import { CLASSIC, isOpponentConfig, isRatedOpponent } from "../engine/opponents";
 import type { GameRecord, RecordsEnvelope } from "./types";
+import type { ArchiveEviction } from "../game/archive-recovery";
 import { ARCHIVE_MOVE_LIMIT } from "../game/archive";
 
 const object = (value: unknown): value is Record<string, unknown> =>
@@ -68,6 +69,18 @@ export function parseGameRecord(value: unknown): GameRecord | null {
   return value as unknown as GameRecord;
 }
 
+export function parseArchiveEviction(value: unknown): ArchiveEviction | null {
+  if (
+    !object(value) ||
+    !text(value.byGameId) ||
+    !value.byGameId.length ||
+    value.byGameId.length > 256 * 1024
+  )
+    return null;
+  const record = parseGameRecord(value.record);
+  return record && record.id !== value.byGameId ? { byGameId: value.byGameId, record } : null;
+}
+
 export function parseRecordsEnvelope(value: unknown): RecordsEnvelope | null {
   if (!object(value) || !Number.isSafeInteger(value.version) || Number(value.version) < 0)
     return null;
@@ -82,9 +95,12 @@ export function parseRecordsEnvelope(value: unknown): RecordsEnvelope | null {
     )
   )
     return null;
+  const evicted = value.evicted === undefined ? undefined : parseArchiveEviction(value.evicted);
+  if (evicted === null) return null;
   const games = value.games.map(parseGameRecord);
   if (games.some((game) => !game)) return null;
   return {
+    ...(evicted ? { evicted } : {}),
     version: Number(value.version),
     snapshot,
     games: games as GameRecord[],

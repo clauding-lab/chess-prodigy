@@ -58,9 +58,7 @@ describe("motif catalogue", () => {
     expect(motifs("4k3/8/8/8/3PP3/8/8/4K3 w - - 0 1", "d5")).not.toContain("duo");
   });
 
-  it("documents that a legal move creating the mover's doubled pawns is intentionally quiet", () => {
-    // The preserved detector reports only newly doubled enemy pawns. A legal move cannot
-    // create doubled pawns for the non-moving enemy, so no positive legal fixture exists.
+  it("does not report doubling when a capture leaves one pawn per file", () => {
     expect(motifs("4k3/8/8/3n4/2P1P3/8/8/4K3 w - - 0 1", "exd5")).not.toContain("doubled");
   });
 
@@ -81,4 +79,21 @@ describe("motif catalogue", () => {
       else for (const key of expected.split(" (")[0].split(", ")) expect(keys, san).toContain(key);
     }
   });
+});
+
+it.each([
+  ["discovered", "7k/8/5q2/8/8/2Q5/8/B6K w - - 0 1", "Qb2", false],
+  ["discovered", "4k3/8/8/8/8/4B3/8/4R1K1 w - - 0 1", "Bd4+", true],
+  ["sacrifice", "1r5k/P7/8/8/8/8/8/4K3 w - - 0 1", "a8=Q", false],
+  ["sacrifice", "1r5k/8/8/8/8/8/3Q4/4K3 w - - 0 1", "Qb2+", true],
+  ["sacrifice", "4k3/4n3/8/8/8/8/3Q4/4R1K1 w - - 0 1", "Qd5", false],
+  ["doubled", "4k3/8/8/3n4/2P5/3P4/8/4K3 w - - 0 1", "cxd5", true],
+  ["doubled", "4k3/8/8/3n4/2P5/2P5/8/4K3 w - - 0 1", "cxd5", false],
+  ["doubled", "4k3/8/8/3n4/2P5/2P5/2P5/4K3 w - - 0 1", "cxd5", false],
+  ["doubled", "4k3/8/8/3n4/2P5/3P3P/7P/4K3 w - - 0 1", "cxd5", true],
+  ["backrank", "7k/8/6K1/8/8/8/8/R7 w - - 0 1", "Ra8#", false],
+  ["backrank", "6k1/5ppp/8/8/8/8/8/R3K3 w - - 0 1", "Ra8#", true],
+])("R11 %s: %s %s => %s", (key, fen, san, present) => {
+  const keys = motifs(fen as string, san as string, key === "backrank" ? "Checkmate" : null);
+  expect(keys.includes(key as (typeof keys)[number])).toBe(present);
 });

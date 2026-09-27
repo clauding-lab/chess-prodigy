@@ -48,6 +48,7 @@ export interface Motif {
 }
 
 export interface PositionEval {
+  // Position display only; move-loss grades use review.alternatives at this root.
   score: number;
   best: Move | null;
   // Absent only in legacy/untrusted data; never qualifies for neutral review.
@@ -59,6 +60,7 @@ export interface AnnotatableEntry {
   mv: Move;
   before: Position;
   motifs: Motif[];
+  // Opening/repertoire provenance, never a move-quality exemption.
   book: boolean;
   ann: string | null;
   better: string | null;

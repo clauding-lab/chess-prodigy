@@ -240,10 +240,31 @@ function attacksFrom(board: Position["board"], square: number): number[] {
   return out;
 }
 
-function attackersOf(board: Position["board"], square: number, color: Color): number[] {
+// A geometric ray alone is not a usable threat when moving exposes its own king.
+function canThreaten(board: Position["board"], from: number, to: number): boolean {
+  if (!attacksFrom(board, from).includes(to)) return false;
+  const piece = board[from];
+  if (!piece) return false;
+  const copy = board.slice();
+  copy[to] = piece;
+  copy[from] = null;
+  const king = kingSq(copy, piece[0] as Color);
+  return king >= 0 && !isAttacked(copy, rowOf(king), colOf(king), piece[0] === "w" ? "b" : "w");
+}
+
+function attackersOf(
+  board: Position["board"],
+  square: number,
+  color: Color,
+  usable = true,
+): number[] {
   const out: number[] = [];
   for (let i = 0; i < 64; i += 1)
-    if (board[i]?.[0] === color && attacksFrom(board, i).includes(square)) out.push(i);
+    if (
+      board[i]?.[0] === color &&
+      (usable ? canThreaten(board, i, square) : attacksFrom(board, i).includes(square))
+    )
+      out.push(i);
   return out;
 }
 
@@ -428,7 +449,7 @@ export function detectMotifs(
     );
   let checkers: number[] = [];
   if (givesCheck) {
-    checkers = attackersOf(b1, enemyKing, me);
+    checkers = attackersOf(b1, enemyKing, me, false);
     if (checkers.length >= 2)
       add("doublecheck", `Double check from ${checkers.map(sqName).join(" and ")}.`, me);
     if (over?.reason === "Checkmate") {
@@ -437,7 +458,13 @@ export function detectMotifs(
         (square) =>
           rowOf(square) === homeRow && (b1[square]?.[1] === "r" || b1[square]?.[1] === "q"),
       );
-      if (rowOf(enemyKing) === homeRow && lineMate)
+      const escapeRow = homeRow === 0 ? 1 : 6;
+      const pawnBarrier = [-1, 0, 1].some(
+        (dc) =>
+          inB(escapeRow, colOf(enemyKing) + dc) &&
+          b1[idx(escapeRow, colOf(enemyKing) + dc)] === `${enemy}p`,
+      );
+      if (rowOf(enemyKing) === homeRow && lineMate && pawnBarrier)
         add(
           "backrank",
           `Mate on the back rank with the ${b1[checkers[0]]?.[1] === "q" ? "queen" : "rook"}.`,
@@ -451,6 +478,7 @@ export function detectMotifs(
       return (
         !!target &&
         target[0] === enemy &&
+        canThreaten(b1, move.to, square) &&
         (target[1] === "k" ||
           pieceValue(target) > pieceValue(moved) ||
           attackersOf(b1, square, enemy).length === 0)
@@ -490,6 +518,7 @@ export function detectMotifs(
         ) {
           const front = b1[first]!,
             rear = b1[second]!;
+          if (!canThreaten(b1, move.to, first)) continue;
           if (rear[1] === "k")
             add("pin", `The ${pieceName(front)} on ${sqName(first)} is pinned to the king.`, me);
           else if (front[1] === "k")
@@ -532,7 +561,11 @@ export function detectMotifs(
       const targetSquare = idx(rr, cc),
         target = b1[targetSquare];
       if (target) {
-        if (target[0] === enemy && (target[1] === "k" || pieceValue(target) >= 500))
+        if (
+          target[0] === enemy &&
+          canThreaten(b1, square, targetSquare) &&
+          (target[1] === "k" || pieceValue(target) >= 500)
+        )
           add(
             "discovered",
             `Moving from ${sqName(move.from)} unmasks the ${pieceName(piece)} on ${sqName(square)} against the ${pieceName(target)} on ${sqName(targetSquare)}.`,
@@ -544,7 +577,7 @@ export function detectMotifs(
       cc += dc;
     }
   }
-  if (moved && moved[1] !== "k") {
+  if (moved && moved[1] !== "k" && !move.promo) {
     const attackers = attackersOf(b1, move.to, enemy),
       defenders = attackersOf(b1, move.to, me);
     if (attackers.length) {
@@ -580,7 +613,11 @@ export function detectMotifs(
       who = side === "w" ? "White" : "Black";
     if (key === "duo") add(key, `${who} has the classical pawn duo in the centre.`, side);
     if (key === "iqp") add(key, `${who} now has an isolated queen's pawn.`, side);
-    if (key === "doubled" && side === enemy) add(key, `${who}'s pawns are doubled.`, side);
+    if (key === "doubled" && side === me) {
+      const previous = [...beforeStructure].find((tag) => tag.startsWith(`doubled:${side}:`));
+      if (Number(argument) > Number(previous?.split(":")[2] ?? 0))
+        add(key, `${who}'s pawns are doubled.`, side);
+    }
     if (key === "passed" && side === me) add(key, `${who} has a passed pawn on ${argument}.`, side);
     if (key === "outpost" && side === me)
       add(key, `Knight on ${argument} sits on an outpost.`, side);

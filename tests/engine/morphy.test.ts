@@ -165,7 +165,7 @@ describe("Morphy style-v1", () => {
       // A queen exchange is winning. A stronger forcing continuation is also valid;
       // the original exact-exchange assertion wrongly rejected a sound rook fork.
       const neutral = (move: typeof exchange) =>
-        reviewPosition(applyMove(b, move), [toFEN(b)], "review-v1", fixed).score *
+        reviewPosition(applyMove(b, move), [toFEN(b)], "review-v2", fixed).score *
         (b.turn === "w" ? 1 : -1);
       expect(neutral(exchange)).toBeGreaterThan(300);
       expect(neutral(choice.move!)).toBeGreaterThanOrEqual(neutral(exchange) - 80);
