@@ -14,11 +14,13 @@ type SyncState =
   | "signed-out"
   | "storage-error"
   | "error"
+  | "rejected"
   | "upgrade-required";
 interface PendingItem {
   snapshot: Session;
   terminal: boolean;
   attempted?: boolean;
+  rejected?: 400 | 413;
 }
 interface PersistedSync {
   baseVersion: number;
@@ -66,13 +68,15 @@ function validPersisted(value: unknown): PersistedSync | null {
     if (
       !snapshot ||
       typeof entry.terminal !== "boolean" ||
-      (entry.attempted !== undefined && typeof entry.attempted !== "boolean")
+      (entry.attempted !== undefined && typeof entry.attempted !== "boolean") ||
+      (entry.rejected !== undefined && entry.rejected !== 400 && entry.rejected !== 413)
     )
       return null;
     pending.push({
       snapshot,
       terminal: entry.terminal,
       ...(entry.attempted ? { attempted: true } : {}),
+      ...(entry.rejected ? { rejected: entry.rejected } : {}),
     });
   }
   return {
@@ -150,6 +154,8 @@ export class AccountSync {
     }
     if (!this.snapshot) throw new Error("Account sync requires an initial session.");
     this.initialized = true;
+    if (this.pending[0]?.rejected && this.syncState !== "storage-error")
+      this.syncState = "rejected";
     return this.snapshot;
   }
 
@@ -175,9 +181,14 @@ export class AccountSync {
   }
 
   flush(): Promise<void> {
+    if (this.disposed || !this.initialized) return Promise.resolve();
     if (this.running) return this.running;
-    if (this.disposed || !this.initialized || !this.pending.length || this.conflict)
+    if (this.pending[0]?.rejected) {
+      if (this.persistLocal()) this.syncState = "rejected";
+      this.emit();
       return Promise.resolve();
+    }
+    if (!this.pending.length || this.conflict) return Promise.resolve();
     // Never send migrated or changed outboxes until the new key is durable.
     if (!this.persistLocal()) {
       this.emit();
@@ -284,6 +295,13 @@ export class AccountSync {
       }
       if (!response.ok) {
         clearTimeout(timeoutId);
+        if (response.status === 400 || response.status === 413) {
+          sent.rejected = response.status;
+          this.syncState = "rejected";
+          this.persistLocal();
+          this.emit();
+          return;
+        }
         this.syncState =
           response.status === 426
             ? "upgrade-required"
@@ -389,7 +407,20 @@ export class AccountSync {
   }
 
   markOffline() {
-    this.syncState = "offline";
+    if (!this.pending[0]?.rejected) this.syncState = "offline";
+  }
+
+  exportRecovery(): string {
+    return JSON.stringify(
+      {
+        baseVersion: this.baseVersion,
+        snapshot: this.snapshot,
+        pending: this.pending,
+        history: this.corruptHistory ?? { version: 1, games: this.remoteGames },
+      },
+      null,
+      2,
+    );
   }
 
   dispose() {

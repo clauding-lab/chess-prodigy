@@ -295,6 +295,29 @@ export function AccountShell() {
                 Retry sync
               </button>
             </>
+          ) : account &&
+            (syncStatus?.state === "rejected" || syncStatus?.state === "storage-error") ? (
+            <>
+              {syncStatus.state === "storage-error"
+                ? "This browser could not save all your changes. Newer progress may exist only in this tab. Keep it open and download a private recovery copy now. "
+                : "The server rejected this save. Automatic retries have stopped; your queued games are preserved on this device. Download a private recovery copy before changing browsers or clearing storage. "}
+              <button
+                className="linkbtn"
+                type="button"
+                onClick={() => {
+                  const url = URL.createObjectURL(
+                    new Blob([account.sync.exportRecovery()], { type: "application/json" }),
+                  );
+                  const link = document.createElement("a");
+                  link.href = url;
+                  link.download = "chess-prodigy-account-recovery.json";
+                  link.click();
+                  setTimeout(() => URL.revokeObjectURL(url), 1000);
+                }}
+              >
+                Download recovery copy
+              </button>
+            </>
           ) : syncStatus?.state === "upgrade-required" ? (
             "Sync paused: update Chess Prodigy to use this account's newer save format. Your pending changes are preserved."
           ) : syncStatus?.state === "signed-out" ? (
@@ -305,8 +328,6 @@ export function AccountShell() {
               </button>{" "}
               to sync saved account changes.
             </>
-          ) : syncStatus?.state === "storage-error" ? (
-            "Account storage is unavailable in this browser. Keep this tab open while you finish playing."
           ) : null
         }
       />

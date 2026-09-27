@@ -147,3 +147,94 @@ it("does not acknowledge a different raw snapshot even when normalization remove
   expect(sync.status()).toMatchObject({ state: "conflict", pending: 1 });
   expect(JSON.parse(storage.getItem(accountStorageKey("user"))!).baseVersion).toBe(0);
 });
+
+it.each([400, 413])(
+  "preserves and exports a permanent %s rejection without automatic retries",
+  async (status) => {
+    const storage = new MemoryStorage();
+    const request = vi.fn(async () => new Response(null, { status }));
+    const sync = new AccountSync("user", storage, request);
+    sync.initialize(envelope(7));
+    sync.save(freshSession(1, "rejected"), { terminal: true });
+    await sync.flush();
+    sync.save(freshSession(2, "later"), { terminal: true });
+    await sync.flush();
+    expect(request).toHaveBeenCalledTimes(1);
+    expect(sync.status()).toMatchObject({ state: "rejected", pending: 2 });
+    const reloaded = new AccountSync("user", storage, request);
+    reloaded.initialize(envelope(7));
+    await reloaded.flush();
+    expect(request).toHaveBeenCalledTimes(1);
+    expect(reloaded.status()).toMatchObject({ state: "rejected", pending: 2 });
+    expect(
+      JSON.parse(reloaded.exportRecovery()).pending.map(
+        (item: { snapshot: { game: { id: string } } }) => item.snapshot.game.id,
+      ),
+    ).toEqual(["rejected", "later"]);
+  },
+);
+
+it("never describes a rejected outbox as durable when later local writes fail", async () => {
+  const storage = new MemoryStorage();
+  const request = vi.fn(async () => new Response(null, { status: 413 }));
+  const sync = new AccountSync("user", storage, request);
+  sync.initialize(envelope());
+  sync.save(freshSession(1, "rejected"));
+  await sync.flush();
+  const write = storage.setItem.bind(storage);
+  storage.setItem = () => {
+    throw Error("quota");
+  };
+  expect(sync.save(freshSession(2, "memory-only"), { terminal: true })).toBe(false);
+  await sync.flush();
+  expect(sync.status()).toMatchObject({ state: "storage-error", pending: 2 });
+  expect(JSON.parse(sync.exportRecovery()).pending).toHaveLength(2);
+  const durable = new AccountSync("user", storage, request);
+  expect(durable.initialize(envelope()).game.id).toBe("rejected");
+  storage.setItem = write;
+  await sync.flush();
+  expect(sync.status()).toMatchObject({ state: "rejected", pending: 2 });
+  expect(new AccountSync("user", storage, request).initialize(envelope()).game.id).toBe(
+    "memory-only",
+  );
+  expect(request).toHaveBeenCalledTimes(1);
+});
+
+it("retains a failed rejection-marker write in memory and retries persistence before reporting saved recovery", async () => {
+  const storage = new MemoryStorage();
+  const write = storage.setItem.bind(storage);
+  const request = vi.fn(async () => {
+    storage.setItem = () => {
+      throw Error("quota");
+    };
+    return new Response(null, { status: 400 });
+  });
+  const sync = new AccountSync("user", storage, request);
+  sync.initialize(envelope());
+  sync.save(freshSession(1, "rejected"));
+  await sync.flush();
+  expect(sync.status().state).toBe("storage-error");
+  expect(JSON.parse(sync.exportRecovery()).pending[0].rejected).toBe(400);
+  await sync.flush();
+  expect(sync.status().state).toBe("storage-error");
+  storage.setItem = write;
+  await sync.flush();
+  expect(sync.status().state).toBe("rejected");
+  expect(JSON.parse(storage.getItem(accountStorageKey("user"))!).pending[0].rejected).toBe(400);
+  expect(request).toHaveBeenCalledTimes(1);
+});
+
+it("does not let a disposed rejected sync overwrite its replacement's cache", async () => {
+  const storage = new MemoryStorage();
+  const sync = new AccountSync("user", storage, async () => new Response(null, { status: 413 }));
+  sync.initialize(envelope());
+  sync.save(freshSession(1, "rejected"));
+  await sync.flush();
+  sync.dispose();
+  const replacement = new AccountSync("user", storage);
+  replacement.initialize(envelope());
+  replacement.save(freshSession(2, "replacement"));
+  const expected = storage.getItem(accountStorageKey("user"));
+  await sync.flush();
+  expect(storage.getItem(accountStorageKey("user"))).toBe(expected);
+});

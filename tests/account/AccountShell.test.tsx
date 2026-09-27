@@ -108,3 +108,28 @@ it("offers retry without mounting a blank account when its first records downloa
     ).toBe(1575),
   );
 });
+
+it("offers recovery without claiming durability when account storage writes fail", async () => {
+  const snapshot = freshSession(Date.now(), "memory-only");
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url: string) => {
+      if (url === "/api/auth/get-session")
+        return Response.json({ user: { id: "user", name: "Player", email: "p@example.com" } });
+      if (url === "/api/records")
+        return Response.json({ version: 7, snapshot, games: [], updatedAt: null });
+      return Response.json({ games: [], opponents: [], rating: { rating: 1200, games: 0 } });
+    }),
+  );
+  const failingWrite = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+    throw Error("quota");
+  });
+  try {
+    render(<AccountShell />);
+    expect(await screen.findByText(/could not save all your changes/i)).toBeTruthy();
+    expect(screen.queryByText(/queued games are preserved on this device/i)).toBeNull();
+    expect(screen.getByRole("button", { name: "Download recovery copy" })).toBeTruthy();
+  } finally {
+    failingWrite.mockRestore();
+  }
+});
