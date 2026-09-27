@@ -1,4 +1,5 @@
-import { isUnratedReason, parseSavedState } from "../storage/schema";
+import { isUnratedReason } from "../storage/schema";
+import { parseSessionInput } from "../storage/input";
 import { CLASSIC, isOpponentConfig, isRatedOpponent } from "../engine/opponents";
 import type { GameRecord, RecordsEnvelope } from "./types";
 import { ARCHIVE_MOVE_LIMIT } from "../game/archive";
@@ -70,7 +71,7 @@ export function parseGameRecord(value: unknown): GameRecord | null {
 export function parseRecordsEnvelope(value: unknown): RecordsEnvelope | null {
   if (!object(value) || !Number.isSafeInteger(value.version) || Number(value.version) < 0)
     return null;
-  const snapshot = value.snapshot === null ? null : parseSavedState(value.snapshot);
+  const snapshot = value.snapshot === null ? null : parseSessionInput(value.snapshot);
   if (value.snapshot !== null && !snapshot) return null;
   if (
     !Array.isArray(value.games) ||

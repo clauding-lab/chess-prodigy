@@ -174,7 +174,7 @@ function validReceipt(value: unknown): value is RatingReceipt {
   );
 }
 
-function validGameShape(value: unknown): value is Game {
+export function validGameShape(value: unknown): value is Game {
   if (
     !object(value) ||
     !text(value.id) ||

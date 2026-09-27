@@ -100,6 +100,7 @@ export async function createApplication(options: ApplicationOptions): Promise<Ap
         void authHandler(replay as unknown as IncomingMessage, response).catch(next);
       },
     );
+    app.use("/api/records", express.json({ limit: 2 * 1024 * 1024 + 16 * 1024, strict: true }));
     app.use(express.json({ limit: "300kb", strict: true }));
     app.get("/api/health", (_request, response) => response.json({ status: "ok" }));
     app.get("/api/leaderboard", (_request, response) => response.json(readLeaderboard(database)));

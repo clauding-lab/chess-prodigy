@@ -1,0 +1,37 @@
+{
+  "scope": "local Mac codec measurement; format inactive; no device or API acceptance claim",
+  "node": "v22.23.0",
+  "sources": [
+    {
+      "path": "src/storage/compact.ts",
+      "sha256": "ac126b77a562feb5a21aa5c67d033fb2058a531194f0ad777c5a633bd8db8d75"
+    },
+    {
+      "path": "src/storage/capacity.ts",
+      "sha256": "5166393d2cfc05c81f0c91dbc852421b3f3dbb61e3126b3a17bf0e7df5f99ae6"
+    }
+  ],
+  "cases": [
+    {
+      "plies": 240,
+      "legacyBytes": 267596,
+      "compactBytes": 7669,
+      "decodeMs": 15.035082999999986,
+      "legalRoundTrip": true
+    },
+    {
+      "plies": 250,
+      "legacyBytes": 277651,
+      "compactBytes": 7953,
+      "decodeMs": 14.391000000000076,
+      "legalRoundTrip": true
+    },
+    {
+      "plies": 501,
+      "legacyBytes": 540988,
+      "compactBytes": 15134,
+      "decodeMs": 28.22779199999991,
+      "legalRoundTrip": true
+    }
+  ]
+}

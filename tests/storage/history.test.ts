@@ -55,7 +55,6 @@ it("does not report a newly written out-of-bounds archive as saved", () => {
 it("preserves a legally played 501-ply terminal save without poisoning retained history", () => {
   const storage = new Memory();
   expect(saveGuestProgress(storage, completed("retained"))).toBe(true);
-  const original = storage.getItem(GUEST_HISTORY_KEY);
   let s = freshSession(0, "long-legal-game"),
     random = 17;
   for (let ply = 0; ply < 501; ply++) {
@@ -88,8 +87,11 @@ it("preserves a legally played 501-ply terminal save without poisoning retained 
   }
   s = reduceSession(s, { type: "resign", now: 502 });
   expect(parseSavedState(s)).not.toBeNull();
-  expect(saveGuestProgress(storage, s)).toBe(false);
-  expect(storage.getItem(GUEST_HISTORY_KEY)).toBe(original);
+  expect(saveGuestProgress(storage, s)).toBe(true);
+  expect(loadGuestHistory(storage).games.find((game) => game.id === s.game.id)?.moves).toHaveLength(
+    501,
+  );
+  expect(loadGuestHistory(storage).games.some((game) => game.id === "retained")).toBe(true);
   expect(JSON.parse(storage.getItem(SAVE_KEY)!).game.hist).toHaveLength(501);
   expect(loadGuestHistory(storage).status).toBe("ready");
 });

@@ -1,5 +1,7 @@
-import type { Session } from "../game/types";
+import type { Session, LegacySession } from "../game/types";
 import { parseSavedState } from "../storage/schema";
+import { parseSessionInput } from "../storage/input";
+import type { CompactSession } from "../storage/compact";
 import type { GameRecord, RecordsEnvelope } from "./types";
 import { parseRecordsEnvelope } from "./records";
 import { overlayArchive } from "../game/archive";
@@ -16,7 +18,9 @@ type SyncState =
   | "error"
   | "rejected"
   | "upgrade-required";
+type WireSession = Session | LegacySession | CompactSession;
 interface PendingItem {
+  wireSnapshot?: WireSession;
   snapshot: Session;
   terminal: boolean;
   attempted?: boolean;
@@ -24,7 +28,7 @@ interface PendingItem {
 }
 interface PersistedSync {
   baseVersion: number;
-  pending: PendingItem[];
+  pending: Array<Omit<PendingItem, "snapshot" | "wireSnapshot"> & { snapshot: WireSession }>;
   snapshot: Session;
   history?: unknown;
 }
@@ -53,7 +57,9 @@ export const betaAccountStorageKey = (userId: string) =>
 export const previousAccountStorageKey = (userId: string) =>
   `chess-prodigy-account-v1:${encodeURIComponent(userId)}`;
 
-function validPersisted(value: unknown): PersistedSync | null {
+function validPersisted(
+  value: unknown,
+): (Omit<PersistedSync, "pending"> & { pending: PendingItem[] }) | null {
   if (!value || typeof value !== "object") return null;
   const candidate = value as Partial<PersistedSync>;
   if (!Number.isSafeInteger(candidate.baseVersion) || Number(candidate.baseVersion) < 0)
@@ -63,8 +69,8 @@ function validPersisted(value: unknown): PersistedSync | null {
   const pending: PendingItem[] = [];
   for (const item of candidate.pending) {
     if (!item || typeof item !== "object") return null;
-    const entry = item as Partial<PendingItem>;
-    const snapshot = parseSavedState(entry.snapshot);
+    const entry = item;
+    const snapshot = parseSessionInput(entry.snapshot);
     if (
       !snapshot ||
       typeof entry.terminal !== "boolean" ||
@@ -74,6 +80,7 @@ function validPersisted(value: unknown): PersistedSync | null {
       return null;
     pending.push({
       snapshot,
+      wireSnapshot: entry.snapshot,
       terminal: entry.terminal,
       ...(entry.attempted ? { attempted: true } : {}),
       ...(entry.rejected ? { rejected: entry.rejected } : {}),
@@ -171,6 +178,7 @@ export class AccountSync {
       last &&
       !last.terminal &&
       !last.attempted &&
+      !last.wireSnapshot &&
       last.snapshot.game.id === snapshot.game.id
     )
       this.pending[this.pending.length - 1] = { snapshot, terminal: false };
@@ -233,7 +241,10 @@ export class AccountSync {
               "X-Chess-Rating-Policy": "5",
             },
             signal: AbortSignal.any([this.abort.signal, timeout.signal]),
-            body: JSON.stringify({ expectedVersion: this.baseVersion, snapshot: sent.snapshot }),
+            body: JSON.stringify({
+              expectedVersion: this.baseVersion,
+              snapshot: sent.wireSnapshot ?? sent.snapshot,
+            }),
           }),
           expired,
         ]);
@@ -277,7 +288,7 @@ export class AccountSync {
         const rawCurrent = (body as { current: { snapshot: unknown } }).current;
         if (
           current.version === this.baseVersion + 1 &&
-          JSON.stringify(rawCurrent.snapshot) === JSON.stringify(sent.snapshot)
+          JSON.stringify(rawCurrent.snapshot) === JSON.stringify(sent.wireSnapshot ?? sent.snapshot)
         ) {
           if (this.pending[0] === sent) this.pending.shift();
           this.baseVersion = current.version;
@@ -326,7 +337,8 @@ export class AccountSync {
         !accepted ||
         accepted.version !== this.baseVersion + 1 ||
         !accepted.snapshot ||
-        JSON.stringify(accepted.snapshot) !== JSON.stringify(sent.snapshot)
+        JSON.stringify((body as { snapshot: unknown }).snapshot) !==
+          JSON.stringify(sent.wireSnapshot ?? sent.snapshot)
       ) {
         this.syncState = "error";
         this.emit();
@@ -415,7 +427,10 @@ export class AccountSync {
       {
         baseVersion: this.baseVersion,
         snapshot: this.snapshot,
-        pending: this.pending,
+        pending: this.pending.map(({ wireSnapshot, ...item }) => ({
+          ...item,
+          snapshot: wireSnapshot ?? item.snapshot,
+        })),
         history: this.corruptHistory ?? { version: 1, games: this.remoteGames },
       },
       null,
@@ -464,7 +479,10 @@ export class AccountSync {
         accountStorageKey(this.userId),
         JSON.stringify({
           baseVersion: this.baseVersion,
-          pending: this.pending,
+          pending: this.pending.map(({ wireSnapshot, ...item }) => ({
+            ...item,
+            snapshot: wireSnapshot ?? item.snapshot,
+          })),
           snapshot: this.snapshot,
           ...(this.corruptHistory !== undefined
             ? { history: this.corruptHistory }

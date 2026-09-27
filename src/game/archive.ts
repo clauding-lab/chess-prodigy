@@ -1,3 +1,4 @@
+import { MAX_GAME_PLIES } from "../storage/capacity";
 import { isGameTimestamp } from "./timestamps";
 import { START, applyMove, legalMoves, sanFor } from "../engine/board";
 import type { Move, Position } from "../engine/types";
@@ -5,7 +6,7 @@ import type { GameRecord } from "../account/types";
 import type { Session } from "./types";
 
 export const ARCHIVE_LIMIT = 200;
-export const ARCHIVE_MOVE_LIMIT = 500;
+export const ARCHIVE_MOVE_LIMIT = MAX_GAME_PLIES;
 
 export function archiveGame(snapshot: Session): GameRecord | null {
   const game = snapshot.game;

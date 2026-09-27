@@ -4,7 +4,9 @@ import { Router, type RequestHandler } from "express";
 import { fromNodeHeaders } from "better-auth/node";
 import type { Session, LegacySession } from "../src/game/types.js";
 import type { GameRecord, LegacyGameRecord } from "../src/account/types.js";
-import { parseSavedState } from "../src/storage/schema.js";
+import { parseSessionInput } from "../src/storage/input.js";
+import type { CompactSession } from "../src/storage/compact.js";
+import { MAX_COMPACT_BYTES, MAX_GAME_PLIES } from "../src/storage/capacity.js";
 import { archiveGame } from "../src/game/archive.js";
 import { parseGameRecord } from "../src/account/records.js";
 import type { ChessAuth } from "./auth.js";
@@ -17,14 +19,14 @@ const MAX_ARCHIVED_GAMES = 200;
 
 export interface RecordsEnvelope {
   version: number;
-  snapshot: Session | LegacySession | null;
+  snapshot: Session | LegacySession | CompactSession | null;
   games: (GameRecord | LegacyGameRecord)[];
   updatedAt: string | null;
 }
 
 export interface PutRecordsBody {
   expectedVersion: number;
-  snapshot: Session | LegacySession;
+  snapshot: Session | LegacySession | CompactSession;
 }
 
 export interface LeaderboardPlayer {
@@ -121,6 +123,17 @@ function isBoundedSnapshot(value: unknown): boolean {
   const game = session.game as Record<string, unknown> | undefined;
   if (!game || typeof game !== "object" || Array.isArray(game)) return false;
   if (!isGameTimestamp(game.clockAt)) return false;
+  if (session.version === 3) {
+    try {
+      return (
+        Array.isArray(game.moves) &&
+        game.moves.length <= MAX_GAME_PLIES &&
+        Buffer.byteLength(JSON.stringify(value), "utf8") <= MAX_COMPACT_BYTES
+      );
+    } catch {
+      return false;
+    }
+  }
   if (!Array.isArray(game.hist) || game.hist.length > MAX_HISTORY) return false;
   if (
     !game.keys ||
@@ -156,7 +169,7 @@ function readEnvelope(database: Database.Database, userId: string): RecordsEnvel
     .all(userId, MAX_ARCHIVED_GAMES) as Array<{ record: string }>;
   return {
     version: row?.version ?? 0,
-    snapshot: row ? (JSON.parse(row.snapshot) as Session | LegacySession) : null,
+    snapshot: row ? (JSON.parse(row.snapshot) as Session | LegacySession | CompactSession) : null,
     games: games.map(({ record }) => JSON.parse(record) as GameRecord | LegacyGameRecord),
     updatedAt: row?.updated_at ?? null,
   };
@@ -209,7 +222,7 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
       response.status(400).json({ error: "Invalid record snapshot." });
       return;
     }
-    const snapshot = parseSavedState(body.snapshot, { preserveDerived: true });
+    const snapshot = parseSessionInput(body.snapshot, { preserveDerived: true });
     if (!snapshot || !isSupportedOpponent(snapshot.game.opponent)) {
       response.status(400).json({ error: "Invalid record snapshot." });
       return;
@@ -233,6 +246,7 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
         (JSON.parse(current.snapshot) as { version: number }).version >= 2
       )
         return "upgrade";
+      const compact = body.snapshot!.version === 3;
       const measured =
         snapshot.game.opponent.id === "attack-development" &&
         isRatedOpponent(snapshot.game.opponent);
@@ -244,6 +258,7 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
         .get(userId) as { minimum_policy: number } | undefined;
       const requiredPolicy = Math.max(
         policyRow?.minimum_policy ?? 0,
+        compact ? 6 : 0,
         roster
           ? 5
           : chigorin
@@ -264,7 +279,8 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
             capability === "2" ||
             capability === "3" ||
             capability === "4" ||
-            capability === "5") &&
+            capability === "5" ||
+            capability === "6") &&
           Number(capability) >= requiredPolicy
         )
       )
@@ -272,7 +288,7 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
       // Incompatible clients must update even when their record version is stale.
       // Do not expose a conflict action that they cannot safely resolve.
       if (version !== body.expectedVersion) return "conflict";
-      if (measured || chigorin || roster)
+      if (compact || measured || chigorin || roster)
         database
           .prepare(
             `INSERT INTO record_client_policy(user_id, minimum_policy) VALUES (?, ?)

@@ -55,7 +55,7 @@ it("durably migrates a v1 outbox before sending, preserving versions, order and 
     const body = JSON.parse(String(init?.body));
     const persisted = JSON.parse(storage.getItem(accountStorageKey("user"))!);
     expect(persisted.pending[0].snapshot).toEqual(body.snapshot);
-    expect(body.snapshot.version).toBe(2);
+    expect(body.snapshot.version).toBe(1);
     expect(body.expectedVersion).toBe(7 + sent.length);
     sent.push(body.snapshot.game.id);
     return new Response(

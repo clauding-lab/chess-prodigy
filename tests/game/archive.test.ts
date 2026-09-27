@@ -1,3 +1,4 @@
+import { MAX_GAME_PLIES } from "../../src/storage/capacity";
 import { playLine, FOOLS_MATE } from "./play-line";
 import { expect, it } from "vitest";
 import {
@@ -42,7 +43,7 @@ it("archives metadata and legally replays without changing receipts or the live 
   expect(s).toEqual(before);
   expect(replayRecord({ ...record, moves: ["e5"] })).toBeNull();
   expect(replayRecord({ ...record, moves: ["f3", "e5", "g4", "Qh4#", "a3"] })).toBeNull();
-  expect(parseGameRecord({ ...record, moves: Array(501).fill("e4") })).toBeNull();
+  expect(parseGameRecord({ ...record, moves: Array(MAX_GAME_PLIES + 1).fill("e4") })).toBeNull();
   expect(parseGameRecord({ ...record, time: "invalid" })).toBeNull();
   expect(parseGameRecord({ ...record, time: ["none"] })).toBeNull();
   expect(parseGameRecord({ ...record, id: "x".repeat(257) })?.id).toHaveLength(257);

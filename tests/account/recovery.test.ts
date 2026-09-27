@@ -238,3 +238,60 @@ it("does not let a disposed rejected sync overwrite its replacement's cache", as
   await sync.flush();
   expect(storage.getItem(accountStorageKey("user"))).toBe(expected);
 });
+
+it.each([200, 409])(
+  "preserves an already attempted legacy wire across reload and exact %s acknowledgement",
+  async (status) => {
+    const storage = new MemoryStorage();
+    const raw = JSON.parse(JSON.stringify(freshSession(1, "legacy-attempt")));
+    raw.version = 1;
+    delete raw.game.opponent;
+    delete raw.game.unratedReason;
+    delete raw.game.takebackUsed;
+    raw.game.evals = { 0: { score: 8888, best: null } };
+    storage.setItem(
+      accountStorageKey("user"),
+      JSON.stringify({
+        baseVersion: 7,
+        snapshot: raw,
+        pending: [{ snapshot: raw, terminal: false, attempted: true }],
+      }),
+    );
+    const request = vi.fn(async (_url, init) => {
+      const body = JSON.parse(String(init?.body));
+      expect(body.snapshot).toEqual(raw);
+      const accepted = { ...envelope(8), snapshot: raw };
+      return new Response(JSON.stringify(status === 409 ? { current: accepted } : accepted), {
+        status,
+      });
+    });
+    const sync = new AccountSync("user", storage, request);
+    expect(sync.initialize(envelope(8)).game.evals).toEqual({});
+    expect(JSON.parse(storage.getItem(accountStorageKey("user"))!).pending[0].snapshot).toEqual(
+      raw,
+    );
+    expect(JSON.parse(sync.exportRecovery()).pending[0].snapshot).toEqual(raw);
+    await sync.flush();
+    expect(request).toHaveBeenCalledTimes(1);
+    expect(sync.status()).toMatchObject({ state: "idle", pending: 0 });
+  },
+);
+
+it("does not coalesce a restored old outbox that predates attempted-write markers", () => {
+  const storage = new MemoryStorage();
+  const pending = freshSession(1, "same-game");
+  storage.setItem(
+    accountStorageKey("user"),
+    JSON.stringify({
+      baseVersion: 7,
+      snapshot: pending,
+      pending: [{ snapshot: pending, terminal: false }],
+    }),
+  );
+  const sync = new AccountSync("user", storage);
+  sync.initialize(envelope(7));
+  sync.save(freshSession(2, "same-game"));
+  const retained = JSON.parse(sync.exportRecovery()).pending;
+  expect(retained).toHaveLength(2);
+  expect(retained[0].snapshot).toEqual(pending);
+});
