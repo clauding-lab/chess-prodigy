@@ -1,3 +1,4 @@
+import { ratingDate } from "../game/timestamps";
 import type { Level } from "../engine/types";
 export const FIDE_FLOOR = 1400;
 export const ENGINE_ELO: Record<Level, number> = { casual: 900, club: 1350, strong: 1800 };
@@ -48,7 +49,7 @@ export function ratingUpdate(
   const after = Math.max(FIDE_FLOOR, r.rating + K * (score - E)),
     delta = after - r.rating;
   const entry: RatingEntry = {
-    date: new Date(now + 6 * 60 * 60 * 1000).toISOString().slice(0, 10),
+    date: ratingDate(now),
     opp: meta.opp,
     oppRating,
     score,

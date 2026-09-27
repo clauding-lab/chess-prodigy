@@ -15,6 +15,60 @@ test.beforeEach(async ({ page }, info) => {
   await page.goto("/");
   await enterPlay(page);
 });
+test("new-game choices and time controls fit narrow and zoomed viewports", async ({
+  page,
+}, info) => {
+  for (const width of [320, 390]) {
+    await page.setViewportSize({ width, height: 740 });
+    await page.evaluate(() => (document.body.style.zoom = "2"));
+    const dialog = page.getByRole("dialog", { name: "New game" });
+    const names =
+      process.env.VITE_PERSONALITY_BETA === "true"
+        ? [
+            "Classic",
+            "Paul Morphy",
+            "Mikhail Chigorin",
+            "Boris Spassky",
+            "Mikhail Tal",
+            "Bobby Fischer",
+          ]
+        : ["Classic"];
+    for (const name of names)
+      await expect(dialog.getByRole("button", { name, exact: true })).toBeVisible();
+    expect(await dialog.evaluate((node) => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
+    await page.screenshot({
+      path: `/tmp/chess-r12-setup-${info.project.name}-${width}.png`,
+      animations: "disabled",
+    });
+  }
+});
+test("board focus survives the engine reply and arrow navigation resumes", async ({ page }) => {
+  await page.getByRole("button", { name: "Start", exact: true }).click();
+  const pawn = square(page, "e2");
+  await pawn.focus();
+  await pawn.press("Enter");
+  await pawn.press("ArrowUp");
+  const target = square(page, "e3");
+  await target.press("ArrowUp");
+  const landing = square(page, "e4");
+  await landing.press("Enter");
+  await expect(landing).toBeFocused();
+  await ready(page);
+  await expect(landing).toBeFocused();
+  await landing.press("ArrowRight");
+  await expect(square(page, "f4")).toBeFocused();
+});
+test("recorded games uses its wide dialog and narrow padding", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.getByRole("button", { name: "Start", exact: true }).click();
+  await page.getByRole("button", { name: "Games", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "Recorded games" });
+  await expect(dialog).toBeVisible();
+  expect(await dialog.evaluate((node) => Math.round(node.getBoundingClientRect().width))).toBe(560);
+  await page.setViewportSize({ width: 320, height: 740 });
+  expect(await dialog.evaluate((node) => getComputedStyle(node).paddingLeft)).toBe("14px");
+  expect(await dialog.evaluate((node) => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
+});
 test("name, both themes, layout and legal play", async ({ page }, info) => {
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));

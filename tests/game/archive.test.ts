@@ -1,3 +1,4 @@
+import { playLine, FOOLS_MATE } from "./play-line";
 import { expect, it } from "vitest";
 import {
   archiveGame,
@@ -47,7 +48,7 @@ it("archives metadata and legally replays without changing receipts or the live 
   expect(parseGameRecord({ ...record, id: "x".repeat(257) })?.id).toHaveLength(257);
 });
 it("keeps only 200 unique retained games and revises terminal undo/recompletion", () => {
-  const a = completed();
+  const a = playLine(freshSession(100, "one"), FOOLS_MATE, 101);
   let records = updateArchive([], a);
   expect(updateArchive(records, a)).toEqual(records);
   const undone = reduceSession(a, { type: "undo", now: 102 });

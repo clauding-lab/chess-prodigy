@@ -122,7 +122,7 @@ it.each([
   [4, "club", 1400],
   [4, "strong", 1625],
 ] as const)(
-  "keeps version %s %s receipts fixed at %s through forfeit, reload and undo",
+  "keeps version %s %s receipts fixed at %s through forfeit, reload and rejected undo",
   (version, level, rating) => {
     let s = reduceSession(freshSession(0, "prior"), {
       type: "new",
@@ -153,7 +153,7 @@ it.each([
       rated: true,
       opponent: { version },
     });
-    expect(reduceSession(reloaded, { type: "undo", now: 5 }).rating).toEqual(s.rating);
+    expect(reduceSession(reloaded, { type: "undo", now: 5 })).toBe(reloaded);
   },
 );
 it("rates only exact measured historical configurations", () => {

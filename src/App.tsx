@@ -1,3 +1,4 @@
+import { canUndoGame } from "./game/state";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Home } from "./ui/Home";
 import { Brand } from "./ui/Brand";
@@ -38,6 +39,50 @@ function fmtClock(ms: number) {
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 }
 const order = ["q", "r", "b", "n", "p"];
+function capStr(items: string[]) {
+  return order
+    .flatMap((t) => items.filter((x) => x === t))
+    .map((t) => GLYPH[t as keyof typeof GLYPH])
+    .join("");
+}
+
+type PlayerBarProps = {
+  color: Color;
+  game: ReturnType<typeof useGame>["game"];
+  captured: { byWhite: string[]; byBlack: string[]; adv: number };
+  aiColor: Color;
+  ratingValue: number;
+  thinking: boolean;
+};
+
+function PlayerBar({ color, game, captured, aiColor, ratingValue, thinking }: PlayerBarProps) {
+  const isTurn = !game.over && game.st.turn === color,
+    caps = color === "w" ? captured.byWhite : captured.byBlack,
+    adv = color === "w" ? captured.adv : -captured.adv,
+    low = !!game.clocks && game.clocks[color] < 30000;
+  const name =
+    color === aiColor
+      ? `${opponentName(game.opponent)} · ${LEVEL_LABEL[game.setup.level]}${game.opponent.id === "classic" ? ` (${ENGINE_ELO[game.setup.level]})` : ""}`
+      : `You (${Math.round(ratingValue)})`;
+  return (
+    <div className="playerbar">
+      <div>
+        <div className="pname">
+          <span aria-hidden="true" className={`turn-dot${isTurn ? " on" : ""}`} />
+          {name}
+          {color === aiColor && thinking && <span className="thinking quiet">thinking…</span>}
+        </div>
+        <div className="caps">
+          {capStr(caps)}
+          {adv > 0 && <span className="adv">+{adv}</span>}
+        </div>
+      </div>
+      {game.clocks && (
+        <div className={`clock${low ? " low" : ""}`}>{fmtClock(game.clocks[color])}</div>
+      )}
+    </div>
+  );
+}
 
 export default function App({
   storage,
@@ -266,42 +311,6 @@ export default function App({
     const value = (a: string[]) => a.reduce((sum, t) => sum + (VAL[t as keyof typeof VAL] ?? 0), 0);
     return { byWhite: b, byBlack: w, adv: (value(b) - value(w)) / 100 };
   }, [game.hist]);
-  function capStr(items: string[]) {
-    return order
-      .flatMap((t) => items.filter((x) => x === t))
-      .map((t) => GLYPH[t as keyof typeof GLYPH])
-      .join("");
-  }
-  function PlayerBar({ color }: { color: Color }) {
-    const isTurn = !game.over && game.st.turn === color,
-      caps = color === "w" ? captured.byWhite : captured.byBlack,
-      adv = color === "w" ? captured.adv : -captured.adv,
-      low = !!game.clocks && game.clocks[color] < 30000;
-    const name =
-      color === aiColor
-        ? `${opponentName(game.opponent)} · ${LEVEL_LABEL[game.setup.level]}${game.opponent.id === "classic" ? ` (${ENGINE_ELO[game.setup.level]})` : ""}`
-        : `You (${Math.round(rating.rating)})`;
-    return (
-      <div className="playerbar">
-        <div>
-          <div className="pname">
-            <span aria-hidden="true" className={`turn-dot${isTurn ? " on" : ""}`} />
-            {name}
-            {color === aiColor && gameApi.thinking && (
-              <span className="thinking quiet">thinking…</span>
-            )}
-          </div>
-          <div className="caps">
-            {capStr(caps)}
-            {adv > 0 && <span className="adv">+{adv}</span>}
-          </div>
-        </div>
-        {game.clocks && (
-          <div className={`clock${low ? " low" : ""}`}>{fmtClock(game.clocks[color])}</div>
-        )}
-      </div>
-    );
-  }
   const top: Color = preferences.flipped ? "w" : "b",
     bottom: Color = preferences.flipped ? "b" : "w";
   const pairs = [];
@@ -392,7 +401,14 @@ export default function App({
         >
           Home
         </button>
-        <PlayerBar color={top} />
+        <PlayerBar
+          color={top}
+          game={game}
+          captured={captured}
+          aiColor={aiColor}
+          ratingValue={rating.rating}
+          thinking={gameApi.thinking}
+        />
         <div className="boardwrap">
           <Board
             key={game.id}
@@ -409,7 +425,14 @@ export default function App({
             targets={targets}
           />
         </div>
-        <PlayerBar color={bottom} />
+        <PlayerBar
+          color={bottom}
+          game={game}
+          captured={captured}
+          aiColor={aiColor}
+          ratingValue={rating.rating}
+          thinking={gameApi.thinking}
+        />
         <div className="movelist">
           {pairs.length ? pairs : <span className="mv placeholder">Moves appear here</span>}
         </div>
@@ -424,7 +447,7 @@ export default function App({
           </button>
           <button
             className="btn"
-            disabled={!available || gameApi.thinking || !game.hist.length}
+            disabled={!available || gameApi.thinking || !canUndoGame(game)}
             onClick={gameApi.undo}
             type="button"
           >
@@ -672,11 +695,14 @@ export default function App({
         />
       )}
       {confirm && <ConfirmModal onCancel={() => setConfirm(null)} value={confirm} />}{" "}
-      {toast && (
-        <div aria-live="polite" className="toast">
-          {toast}
-        </div>
-      )}
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        role="status"
+        className={toast ? "toast" : "toast-region"}
+      >
+        {toast ?? ""}
+      </div>
     </div>
   );
 }

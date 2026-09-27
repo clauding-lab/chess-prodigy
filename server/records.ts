@@ -1,3 +1,4 @@
+import { isGameTimestamp } from "../src/game/timestamps";
 import type Database from "better-sqlite3";
 import { Router, type RequestHandler } from "express";
 import { fromNodeHeaders } from "better-auth/node";
@@ -119,12 +120,7 @@ function isBoundedSnapshot(value: unknown): boolean {
   const session = value as Record<string, unknown>;
   const game = session.game as Record<string, unknown> | undefined;
   if (!game || typeof game !== "object" || Array.isArray(game)) return false;
-  if (
-    typeof game.clockAt !== "number" ||
-    !Number.isFinite(game.clockAt) ||
-    Math.abs(game.clockAt) > 8_640_000_000_000_000
-  )
-    return false;
+  if (!isGameTimestamp(game.clockAt)) return false;
   if (!Array.isArray(game.hist) || game.hist.length > MAX_HISTORY) return false;
   if (
     !game.keys ||

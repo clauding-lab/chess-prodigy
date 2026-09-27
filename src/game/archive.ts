@@ -1,3 +1,4 @@
+import { isGameTimestamp } from "./timestamps";
 import { START, applyMove, legalMoves, sanFor } from "../engine/board";
 import type { Move, Position } from "../engine/types";
 import type { GameRecord } from "../account/types";
@@ -8,7 +9,7 @@ export const ARCHIVE_MOVE_LIMIT = 500;
 
 export function archiveGame(snapshot: Session): GameRecord | null {
   const game = snapshot.game;
-  if (!game.over) return null;
+  if (!game.over || !isGameTimestamp(game.clockAt)) return null;
   return {
     recordVersion: 2,
     opponent: { ...game.opponent },

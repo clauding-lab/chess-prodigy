@@ -1,3 +1,4 @@
+import { isGameTimestamp } from "../game/timestamps";
 import { START, applyMove, legalMoves, posKey, sameMove, sanFor } from "../engine/board";
 import type { Move, Piece, Position } from "../engine/types";
 import { MOTIF_KEYS } from "../coach/types";
@@ -188,7 +189,7 @@ function validGameShape(value: unknown): value is Game {
     !oneOf(value.setup.level, ["casual", "club", "strong"] as const) ||
     !oneOf(value.setup.time, ["none", "5+0", "10+0", "15+10"] as const) ||
     !(value.clocks === null || validClocks(value.clocks)) ||
-    !integer(value.clockAt) ||
+    !isGameTimestamp(value.clockAt) ||
     !bool(value.started) ||
     !bool(value.rated) ||
     !bool(value.hintUsed) ||

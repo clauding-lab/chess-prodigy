@@ -1,3 +1,4 @@
+import { playLine, FOOLS_MATE } from "./play-line";
 import { SAVE_KEY } from "../../src/storage/store";
 import React, { StrictMode } from "react";
 import { act, renderHook, waitFor } from "@testing-library/react";
@@ -386,7 +387,10 @@ it.each(["cancel", "undo", "new", "unmount"])(
   "rejects stale reanalysis after %s",
   async (action) => {
     const { reviewPosition } = await import("../../src/engine/reviewer");
-    const s = await completedReviewFixture();
+    const s =
+      action === "undo"
+        ? playLine(freshSession(Date.now(), "mate-review"), FOOLS_MATE, Date.now())
+        : await completedReviewFixture();
     localStorage.setItem(SAVE_KEY, JSON.stringify(s));
     const { result, unmount } = renderHook(() => useGame(true));
     act(() => result.current.review());
@@ -405,5 +409,52 @@ it.each(["cancel", "undo", "new", "unmount"])(
     await act(async () => job.resolve({ ...r, score: 700 }));
     expect(result.current.game).toBe(current);
     expect(localStorage.getItem(SAVE_KEY)).toBe(saved);
+  },
+);
+
+it.each(["hint", "review"] as const)(
+  "lets an explicit %s finish across Coach changes and background navigation",
+  async (operation) => {
+    const { reviewPosition } = await import("../../src/engine/reviewer");
+    const session = playLine(
+      freshSession(Date.now(), "background-analysis"),
+      ["e4", "e5"],
+      Date.now(),
+    );
+    localStorage.setItem(SAVE_KEY, JSON.stringify(session));
+    const { result, rerender } = renderHook(
+      ({ background }) => useGame(false, undefined, background),
+      {
+        initialProps: { background: false },
+      },
+    );
+    act(() => (operation === "hint" ? result.current.askHint() : result.current.review()));
+    const firstJob = fake.jobs.at(-1)!;
+    act(() => result.current.setPreferences({ coach: false }));
+    rerender({ background: true });
+    expect(fake.jobs.at(-1)).toBe(firstJob);
+    const count = operation === "hint" ? 1 : session.game.hist.length + 1;
+    for (let ply = 0; ply < count; ply++) {
+      const job = fake.jobs.at(-1)!;
+      if (job.input.type !== "analyse") throw Error("Expected neutral analysis");
+      const reply = reviewPosition(
+        job.input.position,
+        job.input.history,
+        job.input.policy,
+        () => 0,
+      );
+      await act(async () => job.resolve(reply));
+    }
+    if (operation === "hint") {
+      expect(result.current.hint).not.toBeNull();
+      expect(result.current.game.hintUsed).toBe(true);
+      expect(result.current.game.rated).toBe(false);
+    } else {
+      expect(Object.keys(result.current.game.evals)).toHaveLength(count);
+    }
+    expect(result.current.reviewing).toBe(false);
+    expect(result.current.thinking).toBe(false);
+    rerender({ background: false });
+    expect(result.current.engineError).toBeNull();
   },
 );

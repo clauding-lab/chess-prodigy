@@ -1,3 +1,4 @@
+import { playLine, FOOLS_MATE } from "../game/play-line";
 // @vitest-environment node
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { join } from "node:path";
@@ -136,8 +137,7 @@ describe("private account records", () => {
         now: 0,
         setup: { playerColor: "w", level: "strong", time: "none", opponent: morphyConfig(777) },
       });
-      s = reduceSession(s, { type: "move", move: legalMoves(s.game.st)[0], book: false, now: 1 });
-      s = reduceSession(s, { type: "resign", now: 2 });
+      s = playLine(s, FOOLS_MATE, 2);
       let version = 0;
       const put = () =>
         agent
@@ -415,7 +415,11 @@ describe("private account records", () => {
       secret: SECRET,
     });
     const agent = await signedUpAgent(application.app, "archive@example.com");
-    const completed = completedSession("archive-game");
+    const completed = playLine(
+      freshSession(1_800_000_000_000, "archive-game"),
+      FOOLS_MATE,
+      1_800_000_000_002,
+    );
     const first = await agent
       .put("/api/records")
       .set("Origin", BASE_URL)
@@ -425,11 +429,11 @@ describe("private account records", () => {
       expect.objectContaining({
         id: "archive-game",
         result: "0-1",
-        reason: "Resignation",
+        reason: "Checkmate",
         level: "club",
         playerColor: "w",
         rated: true,
-        moves: ["a3"],
+        moves: FOOLS_MATE,
       }),
     ]);
     const repeated = await agent
@@ -508,13 +512,25 @@ describe("private account records", () => {
       .send({ expectedVersion: 0, snapshot: multibyteSnapshot })
       .expect(400);
     const invalidTimestamp = freshSession(100, "invalid-timestamp");
-    invalidTimestamp.game.clockAt = Number.MAX_VALUE;
-    invalidTimestamp.game.over = { result: "1-0", reason: "Finished" };
+    for (const timestamp of [
+      Number.MAX_VALUE,
+      8_640_000_000_000_000,
+      Date.parse("9999-12-31T18:00:00Z"),
+      -1,
+    ]) {
+      invalidTimestamp.game.clockAt = timestamp;
+      await agent
+        .put("/api/records")
+        .set("Origin", BASE_URL)
+        .send({ expectedVersion: 0, snapshot: invalidTimestamp })
+        .expect(400);
+    }
+    const boundary = freshSession(Date.parse("9999-12-31T17:59:59.999Z"), "last-valid-date");
     await agent
       .put("/api/records")
       .set("Origin", BASE_URL)
-      .send({ expectedVersion: 0, snapshot: invalidTimestamp })
-      .expect(400);
+      .send({ expectedVersion: 0, snapshot: boundary })
+      .expect(200);
     await application.close();
   });
 

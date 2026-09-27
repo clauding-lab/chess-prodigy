@@ -64,6 +64,30 @@ it("starts, plays a legal move, receives an engine reply and preserves theme acr
   expect(screen.queryByRole("button", { name: "Start", exact: true })).toBe(null);
   expect(screen.getByRole("button", { name: "e4, white pawn" })).toBeTruthy();
 });
+it("keeps player bar nodes through timed clock ticks", async () => {
+  vi.useFakeTimers();
+  seedTimedPlayerTurn(300000);
+  const view = render(<App />);
+  const bars = Array.from(view.container.querySelectorAll(".playerbar"));
+  expect(bars).toHaveLength(2);
+  const before = bars.map((bar) => bar.querySelector(".clock")?.textContent);
+  await act(async () => vi.advanceTimersByTimeAsync(1250));
+  expect(bars.map((bar) => bar.querySelector(".clock")?.textContent)).not.toEqual(before);
+  expect(Array.from(view.container.querySelectorAll(".playerbar"))).toEqual(bars);
+});
+it("keeps the announcement region mounted before and after a copy message", async () => {
+  vi.useFakeTimers();
+  const view = render(<App />);
+  fireEvent.click(screen.getByRole("button", { name: "Start", exact: true }));
+  const region = view.container.querySelector('.toast-region[role="status"]');
+  expect(region?.textContent).toBe("");
+  fireEvent.click(screen.getByRole("button", { name: "Copy FEN" }));
+  expect(region?.isConnected).toBe(true);
+  expect(region?.textContent).toMatch(/FEN copied|Select and copy the FEN below/);
+  await act(async () => vi.advanceTimersByTimeAsync(2200));
+  expect(region?.textContent).toBe("");
+  expect(region?.isConnected).toBe(true);
+});
 it("keeps new-game cancellation available even before the first move", () => {
   render(<App />);
   fireEvent.click(screen.getByRole("button", { name: "Start", exact: true }));

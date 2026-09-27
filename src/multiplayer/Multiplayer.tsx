@@ -27,7 +27,7 @@ export function Multiplayer({
 }: {
   user: AccountUser | null;
   path: string;
-  navigate(path: string): void;
+  navigate(path: string, options?: { replace?: boolean }): void;
   controls: ReactNode;
   onSignIn(): void;
   onCompletedGame?(): void;
@@ -95,7 +95,7 @@ export function Multiplayer({
             setInvite(`${location.origin}/invite/${token}`);
             setInviteGameId(next.id);
           }
-          navigate(`/game/${next.id}`);
+          navigate(`/game/${next.id}`, { replace: true });
           return;
         }
         if (id) {
@@ -564,6 +564,7 @@ export function Multiplayer({
           )}
           {confirm && (
             <Modal
+              initialFocus=".confirm-cancel"
               title={confirm === "resign" ? "Resign this game?" : "Cancel invitation?"}
               onClose={() => setConfirm(null)}
             >
@@ -581,6 +582,9 @@ export function Multiplayer({
                 }}
               >
                 {confirm === "resign" ? "Resign" : "Cancel invitation"}
+              </button>
+              <button className="btn confirm-cancel" onClick={() => setConfirm(null)} type="button">
+                Keep playing
               </button>
             </Modal>
           )}

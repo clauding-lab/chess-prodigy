@@ -3,7 +3,7 @@ import { ROSTER_COPY } from "./Home";
 import { GLYPH } from "./Board";
 import { Modal } from "./Modal";
 import { FIDE_FLOOR, LEVEL_LABEL, ratingUpdate, type Rating } from "../rating/fide";
-import { TIME_CONTROLS } from "../game/state";
+import { canUndoGame, TIME_CONTROLS } from "../game/state";
 import { bookLookup } from "../book/book";
 import { MOTIFS } from "../coach/motifs";
 import type { Color, Level, Move } from "../engine/types";
@@ -141,7 +141,7 @@ export function SetupModal({
       )}
       <div className="optrow">
         <span className="opt-label">Opponent</span>
-        <div className="seg">
+        <div className="seg opponent-choices">
           <button
             className={`btn${!morphy && !chigorin && !roster ? " on" : ""}`}
             aria-pressed={!morphy && !chigorin && !roster}
@@ -412,7 +412,7 @@ export function ResultModal({
       <button className="btn full spaced" onClick={onDismiss} type="button">
         View board
       </button>
-      {game.over?.reason !== "Time out" && game.over?.reason !== "Resignation" && (
+      {canUndoGame(game) && (
         <button className="btn full spaced" onClick={onUndo} type="button">
           Take back last move
         </button>
@@ -487,12 +487,12 @@ export function ReviewModal({
 
 export function ConfirmModal({ value, onCancel }: { value: Confirmation; onCancel(): void }) {
   return (
-    <Modal onClose={onCancel} title={value.title}>
+    <Modal initialFocus=".confirm-cancel" onClose={onCancel} title={value.title}>
       <div className="note confirm-copy">{value.body}</div>
       <button className="btn primary full" onClick={value.onYes} type="button">
         {value.yes}
       </button>
-      <button className="btn full spaced" onClick={onCancel} type="button">
+      <button className="btn full spaced confirm-cancel" onClick={onCancel} type="button">
         {value.cancel ?? "Keep playing"}
       </button>
     </Modal>

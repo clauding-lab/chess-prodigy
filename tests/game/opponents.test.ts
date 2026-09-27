@@ -57,7 +57,7 @@ it("keeps beta resignation, clock expiry and abandonment unrated with no receipt
 });
 
 it("records assistance separately and preserves the beta reason through undo and reset", () => {
-  let s = reduceSession(moved(), { type: "resign", now: 2 });
+  let s = moved();
   s = reduceSession(s, { type: "undo", now: 3 });
   s = reduceSession(s, { type: "hint" });
   s = reduceSession(s, { type: "resetRating" });

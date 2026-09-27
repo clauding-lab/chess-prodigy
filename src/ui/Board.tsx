@@ -149,9 +149,11 @@ export function Board({
             aria-label={label(square, piece)}
             aria-pressed={selected === square}
             className={classes.join(" ")}
-            disabled={disabled}
+            aria-disabled={disabled}
             key={square}
-            onClick={() => onSquare(square)}
+            onClick={() => {
+              if (!disabled) onSquare(square);
+            }}
             onFocus={() => setFocusSquare(square)}
             onKeyDown={(event) => onKeyDown(event, square)}
             ref={(node) => {

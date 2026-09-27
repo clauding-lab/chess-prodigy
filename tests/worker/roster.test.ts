@@ -114,3 +114,11 @@ test("retry preserves exact factory request and cancellation rejects late replie
   client.dispose();
   expect(ports[2].terminated).toBe(true);
 });
+
+test.each(ROSTER_IDS)(
+  "generic worker refuses %s instead of playing a Morphy fallback",
+  async (id) => {
+    const { executeEngineRequest } = await import("../../src/worker/execute");
+    expect(() => executeEngineRequest(ai(id), () => 0)).toThrow(/worker|route|identity/i);
+  },
+);

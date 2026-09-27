@@ -1,4 +1,4 @@
-.recorded-games-modal {
+.modal.recorded-games-modal {
   width: min(92vw, 560px);
 }
 .recorded-games-modal p,
@@ -115,7 +115,7 @@ body:has(.app[data-theme="dark"]) .recorded-filter option {
   font-size: 13px;
 }
 @media (max-width: 380px) {
-  .recorded-games-modal {
+  .modal.recorded-games-modal {
     padding: 14px;
   }
   .recorded-rivalry {

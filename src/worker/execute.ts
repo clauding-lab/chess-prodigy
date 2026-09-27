@@ -2,9 +2,12 @@ import { search } from "../engine/search";
 import { chooseOpponentMove } from "../engine/morphy";
 import { REVIEWER, reviewPosition } from "../engine/reviewer";
 import type { EngineRequest, EngineResult } from "./protocol";
+import { isRosterId } from "../engine/opponents";
 
 export function executeEngineRequest(request: EngineRequest, now?: () => number): EngineResult {
-  if (request.type === "ai")
+  if (request.type === "ai") {
+    if (isRosterId(request.opponent.id))
+      throw new Error("This opponent identity requires its dedicated worker route.");
     return chooseOpponentMove(
       request.position,
       request.level,
@@ -13,6 +16,7 @@ export function executeEngineRequest(request: EngineRequest, now?: () => number)
       request.ply,
       now,
     );
+  }
   if (request.type === "analyse") {
     if (request.reviewer !== REVIEWER) throw new Error("Reviewer version is unavailable.");
     return reviewPosition(request.position, request.history, request.policy, now);

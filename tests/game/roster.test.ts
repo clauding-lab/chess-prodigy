@@ -1,3 +1,4 @@
+import { playLine, FOOLS_MATE } from "./play-line";
 import { unratedDescription } from "../../src/game/eligibility";
 import { legalMoves } from "../../src/engine/board";
 import { expect, test } from "vitest";
@@ -44,13 +45,7 @@ for (const id of ROSTER_IDS) {
       expect(game.game.rated).toBe(true);
       expect(game.game.unratedReason).toBeNull();
       expect(parseSavedState(game)?.game.opponent).toEqual(config);
-      const moved = reduceSession(game, {
-        type: "move",
-        move: legalMoves(game.game.st)[0],
-        book: false,
-        now: 1,
-      });
-      const end = reduceSession(moved, { type: "resign", now: 2 });
+      const end = playLine(game, FOOLS_MATE, 2);
       const difference = Math.max(-400, Math.min(400, ACCEPTED_RATINGS[id][level] - 1600));
       const expectedAfter = 1600 - 40 / (1 + 10 ** (difference / 400));
       expect(end.rating.rating).toBeCloseTo(expectedAfter, 10);

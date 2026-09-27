@@ -109,4 +109,32 @@ describe("Board keyboard controls", () => {
     fireEvent.keyDown(e4, { key: "ArrowRight" });
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "d4, empty" }));
   });
+
+  it("keeps keyboard focus through a disabled reply and promotion transition", () => {
+    const onSquare = vi.fn();
+    const props = {
+      board,
+      flipped: false,
+      selected: null,
+      targets: [],
+      lastMove: null,
+      hint: null,
+      checkedKing: null,
+      onSquare,
+    };
+    const view = render(<Board {...props} />);
+    const square = screen.getByRole("button", { name: "e2, white pawn" });
+    square.focus();
+    view.rerender(<Board {...props} disabled />);
+    expect(document.activeElement).toBe(square);
+    expect(square.getAttribute("aria-disabled")).toBe("true");
+    fireEvent.click(square);
+    fireEvent.keyDown(square, { key: "Enter" });
+    expect(onSquare).not.toHaveBeenCalled();
+    fireEvent.keyDown(square, { key: "ArrowUp" });
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "e3, empty" }));
+    view.rerender(<Board {...props} />);
+    fireEvent.keyDown(document.activeElement!, { key: "Enter" });
+    expect(onSquare).toHaveBeenCalledWith(44);
+  });
 });

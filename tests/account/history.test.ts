@@ -1,13 +1,11 @@
+import { playLine, FOOLS_MATE } from "../game/play-line";
 import { expect, it } from "vitest";
 import { AccountSync, accountStorageKey } from "../../src/account/sync";
 import { freshSession, reduceSession } from "../../src/game/state";
 import { archiveGame } from "../../src/game/archive";
-import { legalMoves } from "../../src/engine/board";
 
 function finished(id: string, now = 100) {
-  let s = freshSession(now, id);
-  s = reduceSession(s, { type: "move", move: legalMoves(s.game.st)[0], book: false, now: now + 1 });
-  return reduceSession(s, { type: "resign", now: now + 2 });
+  return playLine(freshSession(now, id), FOOLS_MATE, now + 2);
 }
 const remote = (version = 1) => ({
   version,

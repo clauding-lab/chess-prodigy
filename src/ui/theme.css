@@ -655,11 +655,17 @@ body:has(.app[data-theme="dark"]) [data-modal-root] .modal {
 }
 .seg {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
 }
 .seg .btn {
+  flex: 1 1 74px;
+  min-width: 0;
   padding: 8px 6px;
   font-size: 12.5px;
+}
+.opponent-choices .btn {
+  overflow-wrap: anywhere;
 }
 .seg .btn.on {
   background: var(--accent);

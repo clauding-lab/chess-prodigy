@@ -39,8 +39,8 @@ it("legally replays recorded moves with navigation without mutating the record",
   fireEvent.click(screen.getByRole("button", { name: "Replay recorded game 1" }));
   const dialog = screen.getByRole("dialog");
   expect(
-    (within(dialog).getByRole("button", { name: "e2, white pawn" }) as HTMLButtonElement).disabled,
-  ).toBe(true);
+    within(dialog).getByRole("button", { name: "e2, white pawn" }).getAttribute("aria-disabled"),
+  ).toBe("true");
   fireEvent.click(within(dialog).getByRole("button", { name: "Next move" }));
   expect(within(dialog).getByRole("button", { name: "e4, white pawn" })).toBeTruthy();
   fireEvent.change(within(dialog).getByRole("slider", { name: "Replay position" }), {

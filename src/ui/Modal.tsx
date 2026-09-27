@@ -22,6 +22,7 @@ export interface ModalProps {
   closeOnBackdrop?: boolean;
   closeOnEscape?: boolean;
   className?: string;
+  initialFocus?: string;
 }
 
 export function Modal({
@@ -31,6 +32,7 @@ export function Modal({
   closeOnBackdrop = true,
   closeOnEscape = true,
   className = "",
+  initialFocus,
 }: ModalProps) {
   const titleId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -49,7 +51,10 @@ export function Modal({
     restoreRef.current =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const nodes = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []);
-    (nodes[0] ?? dialogRef.current)?.focus();
+    const target = initialFocus
+      ? dialogRef.current?.querySelector<HTMLElement>(initialFocus)
+      : null;
+    (target ?? nodes[0] ?? dialogRef.current)?.focus();
     return () => {
       const wasTop = dialogStack.at(-1) === portal;
       const index = dialogStack.indexOf(portal);
@@ -59,7 +64,7 @@ export function Modal({
       syncInert();
       if (wasTop && restoreRef.current?.isConnected) restoreRef.current.focus();
     };
-  }, [portal]);
+  }, [portal, initialFocus]);
 
   function keyDown(event: React.KeyboardEvent) {
     if (event.key === "Escape" && closeOnEscape && onClose) {

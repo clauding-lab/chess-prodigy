@@ -83,6 +83,12 @@ export function settleClock(g: Game, now: number): Game {
         : null,
   };
 }
+export function canUndoGame(g: Game): boolean {
+  return (
+    g.hist.length > 0 &&
+    (!g.over || !["Time out", "Resignation", "Abandoned"].includes(g.over.reason))
+  );
+}
 export function reduceGame(g: Game, action: Action): Game {
   if (!isSupportedOpponent(g.opponent)) return g;
   if (action.type === "tick") return settleClock(g, action.now);
@@ -106,7 +112,8 @@ export function reduceGame(g: Game, action: Action): Game {
     return annotateAll({ ...g, evals: { ...g.evals, [action.ply]: action.value } });
   }
   if (action.type === "undo") {
-    if (!g.hist.length) return g;
+    g = settleClock(g, action.now);
+    if (!canUndoGame(g)) return g;
     const hist = g.hist.slice(),
       keys = { ...g.keys };
     let st = g.st,
@@ -259,7 +266,7 @@ export function reduceSession(s: Session, action: SessionAction): Session {
     };
   }
   let rating = s.rating;
-  if (action.type === "undo" && s.game.hist.length && s.game.ratingApplied?.gameId === s.game.id)
+  if (action.type === "undo" && canUndoGame(s.game) && s.game.ratingApplied?.gameId === s.game.id)
     rating = s.game.ratingApplied.before;
   const game = reduceGame(s.game, action);
   if (game === s.game && rating === s.rating) return s;

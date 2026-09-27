@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 import { Modal } from "../../src/ui/Modal";
+import { ConfirmModal } from "../../src/ui/Modals";
 
 function Fixture() {
   const [open, setOpen] = useState(false);
@@ -71,4 +72,17 @@ it("keeps the page inert until the last stacked dialog closes", () => {
   expect(view.container.hasAttribute("inert")).toBe(true);
   fireEvent.click(screen.getByRole("button", { name: "Close first" }));
   expect(view.container.hasAttribute("inert")).toBe(false);
+});
+
+it("focuses the safe action when a destructive confirmation opens", () => {
+  const onYes = vi.fn();
+  render(
+    <ConfirmModal
+      value={{ title: "Reset rating?", body: "Permanent", yes: "Reset", onYes }}
+      onCancel={vi.fn()}
+    />,
+  );
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Keep playing" }));
+  fireEvent.keyDown(document.activeElement!, { key: "Enter" });
+  expect(onYes).not.toHaveBeenCalled();
 });

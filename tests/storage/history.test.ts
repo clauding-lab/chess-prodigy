@@ -1,3 +1,4 @@
+import { playLine, FOOLS_MATE } from "../game/play-line";
 import { expect, it } from "vitest";
 import { loadGuestHistory, saveGuestProgress, GUEST_HISTORY_KEY } from "../../src/storage/history";
 import { SAVE_KEY, loadSavedState } from "../../src/storage/store";
@@ -14,9 +15,7 @@ class Memory {
   }
 }
 function completed(id: string) {
-  let s = freshSession(100, id);
-  s = reduceSession(s, { type: "move", move: legalMoves(s.game.st)[0], book: false, now: 101 });
-  return reduceSession(s, { type: "resign", now: 102 });
+  return playLine(freshSession(100, id), FOOLS_MATE, 102);
 }
 it("backfills an existing terminal save, preserves other tab records, and reconciles undo", () => {
   const storage = new Memory(),

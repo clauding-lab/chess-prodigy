@@ -1,3 +1,4 @@
+import { playLine, FOOLS_MATE } from "../game/play-line";
 import { it, expect } from "vitest";
 import { loadSavedState, saveState, SAVE_KEY, LEGACY_KEY } from "../../src/storage/store";
 import { freshSession, reduceSession } from "../../src/game/state";
@@ -80,8 +81,7 @@ it("rejects a finished rated game with a missing receipt", () => {
 it("preserves an undone game's unrated state without restoring its receipt", () => {
   const storage = new MemoryStorage();
   let s = freshSession(0, "one");
-  s = reduceSession(s, { type: "move", move: legalMoves(s.game.st)[0], book: false, now: 1 });
-  s = reduceSession(s, { type: "resign", now: 2 });
+  s = playLine(s, FOOLS_MATE, 2);
   s = reduceSession(s, { type: "undo", now: 3 });
   expect(saveState(storage, s)).toBe(true);
   const loaded = loadSavedState(storage, 4, "fallback").session;

@@ -1,3 +1,4 @@
+import { playLine, FOOLS_MATE } from "./play-line";
 import { describe, it, expect } from "vitest";
 import { freshGame, reduceGame, freshSession, reduceSession } from "../../src/game/state";
 import { legalMoves, sanFor, applyMove } from "../../src/engine/board";
@@ -48,9 +49,7 @@ describe("clock and game transitions", () => {
 describe("rating settlement", () => {
   it("settles a finished game once and reverses only its receipt on undo", () => {
     let s = freshSession(0, "one");
-    const m = legalMoves(s.game.st).find((m) => m.from === 52 && m.to === 36)!;
-    s = reduceSession(s, { type: "move", move: m, book: false, now: 1 });
-    s = reduceSession(s, { type: "resign", now: 2 });
+    s = playLine(s, FOOLS_MATE, 2);
     expect(s.rating.games).toBe(1);
     s = reduceSession(s, { type: "tick", now: 3 });
     expect(s.rating.games).toBe(1);

@@ -32,6 +32,7 @@ test("invitation survives registration and human moves update both boards and H2
   });
   try {
     const other = await second.newPage();
+    await other.goto("/");
     await other.goto(link);
     await enterPlay(other);
     await other.getByRole("button", { name: "Sign in or register" }).click();
@@ -40,6 +41,10 @@ test("invitation survives registration and human moves update both boards and H2
     await other.getByLabel("Email").fill(`sayem-${suffix}@example.com`);
     await other.getByLabel("Password", { exact: true }).fill("correct horse battery staple");
     await other.getByRole("button", { name: "Create account", exact: true }).click();
+    await expect(other.getByText("Adnan 0–0 Sayem", { exact: false })).toBeVisible();
+    await other.goBack();
+    await expect(other).toHaveURL("http://127.0.0.1:4318/");
+    await other.goForward();
     await expect(other.getByText("Adnan 0–0 Sayem", { exact: false })).toBeVisible();
     await expect(page.getByText("Your turn", { exact: true })).toBeVisible();
     await expect(page.locator(".brand img")).toBeVisible();
@@ -149,11 +154,9 @@ test("invitation survives registration and human moves update both boards and H2
 
 test("a failed previous-account push cleanup blocks account entry", async ({ page }, info) => {
   const suffix = `${info.project.name}-${Date.now()}`;
-  await page
-    .context()
-    .setExtraHTTPHeaders({
-      "CF-Connecting-IP": info.project.name === "desktop" ? "192.3.1.9" : "192.3.1.10",
-    });
+  await page.context().setExtraHTTPHeaders({
+    "CF-Connecting-IP": info.project.name === "desktop" ? "192.3.1.9" : "192.3.1.10",
+  });
   const signup = await page.request.post("/api/auth/sign-up/email", {
     data: {
       name: "New account",
