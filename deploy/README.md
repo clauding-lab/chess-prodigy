@@ -72,11 +72,11 @@ Run it by hand with `sudo systemctl start chess-prodigy-prune`, or preview witho
 
 ## Backups and recovery
 
-Install `chess-prodigy-backup.service` and `.timer`, then enable the timer. It runs at approximately **04:15 BDT** daily and retains the latest 14 copies under `/var/lib/chess-prodigy/backups`. `backup.mjs` uses SQLite's consistent online backup API, including committed write-ahead-log contents. Copying only the live `.sqlite` file can miss recent writes.
+Install `chess-prodigy-backup.service` and `.timer`, then enable the timer. It runs at approximately **04:15 BDT** daily and retains the latest 14 daily dates under `/var/lib/chess-prodigy/backups`. `backup.mjs` uses SQLite's consistent online backup API, including committed write-ahead-log contents. Copying only the live `.sqlite` file can miss recent writes.
 
 These are local recovery copies, not off-server disaster recovery. Copy backups to a separately secured destination when one is provisioned; they contain private data and must never enter Git or public file storage.
 
-Before a release, run `systemctl start chess-prodigy-backup` and confirm success. To restore, an operator must stop the app, preserve the current database and its `-wal`/`-shm` companions in a protected recovery folder, place the selected backup at `DATABASE_PATH` with owner `chess-prodigy` and mode 0600, then restart and verify. Restoring discards writes newer than the backup, so choose the restore point deliberately. Do not copy stale WAL files alongside a restored backup.
+Before a release, run `BACKUP_KIND=manual node deploy/backup.mjs` as the service user with the private environment loaded, and confirm success. To restore, an operator must stop the app, preserve the current database and its `-wal`/`-shm` companions in a protected recovery folder, place the selected backup at `DATABASE_PATH` with owner `chess-prodigy` and mode 0600, then restart and verify. Restoring discards writes newer than the backup, so choose the restore point deliberately. Do not copy stale WAL files alongside a restored backup.
 
 ## Account limitations
 
@@ -143,3 +143,38 @@ Wire schema stays 2. New-roster acceptance permanently requires client policy 5,
 assisted games and after reset. Do not roll back to code that lacks this protection or restore
 an older database to reverse deployment. Use compatible forward fixes. Measurement and final
 review evidence lives under `docs/verification/roster/`.
+
+### Account limitations and fair notification quotas
+
+Email remains an **unverified login identifier**. Registration returns a distinct duplicate-email
+error, so someone can test whether an address has an account. The registration limit (five attempts
+per five minutes per IP) slows this discovery but cannot prevent checks across multiple IPs. A
+frontend message cannot hide this API distinction. The owner accepted this limitation under D4 on
+27 September 2026 BDT; verified email/consent and recovery flows remain separate product work.
+
+Email delivery attempts, including provider failures and retries, have persistent daily budgets:
+20 per recipient account and recipient mailbox; 40 per opponent account/mailbox (the participant
+causing the reminder or joining an invitation); 40 per game creator account/mailbox; and 250 for
+the application. All applicable budgets are reserved together before sending; rejected jobs spend
+none. Daily windows reset at **06:00 BDT**. These reduce monopolization; many independently created
+accounts/mailboxes can still exhaust the shared budget. They do not prove mailbox ownership or
+make unsolicited reminders impossible.
+
+Quota identities are separate from login and delivery addresses. Only consumer `gmail.com` and
+`googlemail.com` are grouped together with dots and `+tags` removed. Other domains retain their
+full lowercase address, including dots and tags; custom Google Workspace domains are not assumed
+to share consumer Gmail rules. See Google's [Gmail address explanation](https://gmail.googleblog.com/2008/03/2-hidden-ways-to-get-more-from-your.html)
+[dots policy](https://support.google.com/mail/answer/7436150?hl=en), and
+[Google Mail transition](https://gmail.googleblog.com/2010/05/google-mail-is-becoming-gmail-in-uk.html).
+
+Chat permits four live browser peers per participant per match and ten live rooms per account,
+within the existing eight-peer room and 1,000-room server ceilings. Closing/expiring peers releases
+capacity; message erasure, room epochs and session tombstones still apply. Chat remains volatile.
+
+### Verified backups and visible failures
+
+Daily backups use `chess-daily-YYYY-MM-DD.sqlite`, with dates in BDT. Repeated runs replace only that day after SQLite integrity validation. `BACKUP_KIND=manual` is the command-line default: manual/pre-release copies and older unclassified `chess-…Z.sqlite` files are never removed by daily retention. Review those separately before any cleanup. New files are private (0600); an unfinished copy never replaces a verified backup.
+
+Every run writes `last-backup-status.json` with `ok` or `failed` and a BDT timestamp. Failed runs exit nonzero, so `systemctl --failed` and `systemctl status chess-prodigy-backup` expose failure; inspect `journalctl -u chess-prodigy-backup` for the error. No external alert destination has been configured or tested. A destination must be explicitly selected before adding outbound alerts. This is visible local failure reporting, not a claim that someone receives a notification.
+
+The isolated automated restore exercise copies a WAL-inclusive backup to a disposable database, opens it, checks SQLite integrity, and verifies synthetic rows. It does not inspect or restore live player data.
