@@ -6,6 +6,62 @@ import type { PushSubscription } from "web-push";
 import type { ChessAuth } from "./auth.js";
 import type { NotificationDelivery } from "./notification-delivery.js";
 import { isMultiplayerEventCurrent, type MultiplayerEvent } from "./multiplayer.js";
+// Quota identity only: never write this value back to login or delivery addresses.
+// Gmail's consumer domains ignore dots and +tags; arbitrary domains do not.
+function emailQuotaIdentity(email: string): string {
+  const lower = email.toLowerCase();
+  const at = lower.lastIndexOf("@");
+  const local = lower.slice(0, at);
+  const domain = lower.slice(at + 1);
+  const identity =
+    domain === "gmail.com" || domain === "googlemail.com"
+      ? `${local.split("+")[0].replaceAll(".", "")}@gmail.com`
+      : lower;
+  return createHash("sha256").update(identity).digest("hex");
+}
+
+/** Reserve all applicable budgets atomically before delivery, including failed attempts. */
+function reserveEmailAttempt(
+  db: Database.Database,
+  job: Job,
+  email: string,
+  time: number,
+): boolean {
+  const game = db
+    .prepare("SELECT creator_id,white_id,black_id FROM mp_games WHERE id=?")
+    .get(job.game_id) as { creator_id: string; white_id: string; black_id: string };
+  // The opponent causes joined/turn reminders; the creator also owns the game's budget.
+  const sender = game.white_id === job.user_id ? game.black_id : game.white_id;
+  const budgets = new Map<string, number>([
+    [`email:${emailQuotaIdentity(email)}`, 20],
+    [`email:account:${job.user_id}`, 20],
+    [`email:sender:${sender}`, 40],
+    [`email:creator:${game.creator_id}`, 40],
+    ["email:daily-total", 250],
+  ]);
+  for (const [role, userId] of [
+    ["sender", sender],
+    ["creator", game.creator_id],
+  ]) {
+    const user = db.prepare("SELECT email FROM user WHERE id=?").get(userId) as
+      { email: string } | undefined;
+    if (user) budgets.set(`email:${role}-mailbox:${emailQuotaIdentity(user.email)}`, 40);
+  }
+  const window = Math.floor(time / 86400000);
+  return db.transaction(() => {
+    const read = db.prepare("SELECT window,count FROM notification_limits WHERE user_id=?");
+    for (const [key, max] of budgets) {
+      const row = read.get(key) as { window: number; count: number } | undefined;
+      if (row?.window === window && row.count >= max) return false;
+    }
+    const reserve = db.prepare(
+      "INSERT INTO notification_limits VALUES(?,?,1) ON CONFLICT(user_id) DO UPDATE SET window=excluded.window,count=CASE WHEN window=excluded.window THEN count+1 ELSE 1 END",
+    );
+    for (const key of budgets.keys()) reserve.run(key, window);
+    return true;
+  })();
+}
+
 export function initializeNotifications(db: Database.Database) {
   db.exec(`CREATE TABLE IF NOT EXISTS notification_preferences(user_id TEXT PRIMARY KEY REFERENCES user(id),email INTEGER NOT NULL);
  CREATE TABLE IF NOT EXISTS notification_push(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES user(id),endpoint TEXT NOT NULL UNIQUE,subscription TEXT NOT NULL);
@@ -245,30 +301,10 @@ export function createNotificationWorker(
             setStatus(job.job_id, "stale");
             continue;
           }
-          const key =
-            "email:" + createHash("sha256").update(user.email.toLowerCase()).digest("hex");
-          const window = Math.floor(time / 86400000);
-          const limit = db
-            .prepare("SELECT window,count FROM notification_limits WHERE user_id=?")
-            .get(key) as { window: number; count: number } | undefined;
-          if (limit?.window === window && limit.count >= 20) {
+          if (!reserveEmailAttempt(db, job, user.email, time)) {
             setStatus(job.job_id, "limited");
             continue;
           }
-          db.prepare(
-            "INSERT INTO notification_limits VALUES(?,?,1) ON CONFLICT(user_id) DO UPDATE SET window=excluded.window,count=CASE WHEN window=excluded.window THEN count+1 ELSE 1 END",
-          ).run(key, window);
-          const totalKey = "email:daily-total";
-          const total = db
-            .prepare("SELECT window,count FROM notification_limits WHERE user_id=?")
-            .get(totalKey) as { window: number; count: number } | undefined;
-          if (total?.window === window && total.count >= 250) {
-            setStatus(job.job_id, "limited");
-            continue;
-          }
-          db.prepare(
-            "INSERT INTO notification_limits VALUES(?,?,1) ON CONFLICT(user_id) DO UPDATE SET window=excluded.window,count=CASE WHEN window=excluded.window THEN count+1 ELSE 1 END",
-          ).run(totalKey, window);
           await delivery.sendEmail(user.email, message);
         } else
           await delivery.sendPush(JSON.parse(device!.subscription) as PushSubscription, message);

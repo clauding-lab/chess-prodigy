@@ -67,6 +67,9 @@ function configuration({ database, baseURL, secret }: AuthOptions) {
       },
     },
     advanced: {
+      // Better Auth otherwise disables origin checks under NODE_ENV=test / TEST.
+      disableOriginCheck: false,
+      disableCSRFCheck: false,
       ipAddress: {
         ipAddressHeaders: ["cf-connecting-ip"],
       },

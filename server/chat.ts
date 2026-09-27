@@ -82,6 +82,16 @@ export class EphemeralChat {
     if (this.closed.has(closedKey))
       throw new ChatError(409, "Chat session ended. Reopen the match to chat.");
     if (action === "join") {
+      const ownPeers = room ? [...room.peers.values()].filter((p) => p.userId === userId) : [];
+      if (!room?.peers.has(key) && ownPeers.length >= 4)
+        throw new ChatError(429, "Close another match tab before opening chat.");
+      if (!ownPeers.length) {
+        const ownRooms = [...this.rooms.values()].filter((candidate) =>
+          [...candidate.peers.values()].some((p) => p.userId === userId),
+        ).length;
+        if (ownRooms >= 10)
+          throw new ChatError(429, "Close chat in another match before opening this one.");
+      }
       if (!room) {
         if (this.rooms.size >= 1000) throw new ChatError(429, "Chat is busy. Try again shortly.");
         room = { epoch: randomUUID(), peers: new Map(), messages: [] };
