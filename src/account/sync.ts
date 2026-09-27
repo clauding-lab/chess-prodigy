@@ -142,6 +142,16 @@ export class AccountSync {
     return () => this.listeners.delete(listener);
   }
 
+  private expiredSession = false;
+
+  sessionExpired(): void {
+    if (this.disposed || this.expiredSession) return;
+    this.expiredSession = true;
+    this.abort.abort();
+    this.syncState = "signed-out";
+    this.emit();
+  }
+
   initialize(remote: RecordsEnvelope, remoteAvailable = true): Session {
     if (this.disposed) throw new AccountRecoveryError("This account writer has been closed.");
     this.initialized = false;
@@ -218,6 +228,7 @@ export class AccountSync {
 
   flush(): Promise<void> {
     if (this.disposed || !this.initialized) return Promise.resolve();
+    if (this.expiredSession || this.syncState === "signed-out") return Promise.resolve();
     if (this.running) return this.running;
     if (this.pending[0]?.rejected) {
       if (this.persistLocal()) this.syncState = "rejected";
@@ -236,10 +247,36 @@ export class AccountSync {
     return this.running;
   }
 
+  async flushBounded(milliseconds = 2500): Promise<boolean> {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      await Promise.race([
+        this.flush(),
+        new Promise<void>((resolve) => {
+          timer = setTimeout(resolve, milliseconds);
+        }),
+      ]);
+    } finally {
+      clearTimeout(timer);
+    }
+    return (
+      !this.disposed &&
+      this.initialized &&
+      this.status().state === "idle" &&
+      this.pending.length === 0
+    );
+  }
+
+  retainForSignOut(): boolean {
+    const retained = this.persistLocal();
+    if (!retained) this.emit();
+    return retained;
+  }
+
   private async drain() {
     this.syncState = "syncing";
     this.emit();
-    while (!this.disposed && this.pending.length && !this.conflict) {
+    while (!this.disposed && !this.expiredSession && this.pending.length && !this.conflict) {
       const sent = this.pending[0];
       // An attempted write may already be committed remotely even if its reply is lost.
       // Keep that exact item durable until acknowledged; later edits cannot coalesce it.
@@ -278,18 +315,18 @@ export class AccountSync {
         ]);
       } catch {
         clearTimeout(timeoutId);
+        if (this.disposed || this.expiredSession) return;
         this.syncState = "offline";
         this.emit();
         return;
       }
-      if (this.disposed) {
+      if (this.disposed || this.expiredSession) {
         clearTimeout(timeoutId);
         return;
       }
       if (response.status === 401) {
         clearTimeout(timeoutId);
-        this.syncState = "signed-out";
-        this.emit();
+        this.sessionExpired();
         return;
       }
       if (response.status === 409) {
@@ -298,12 +335,13 @@ export class AccountSync {
           body = await Promise.race([response.json(), expired]);
         } catch {
           clearTimeout(timeoutId);
+          if (this.disposed || this.expiredSession) return;
           this.syncState = "error";
           this.emit();
           return;
         }
         clearTimeout(timeoutId);
-        if (this.disposed) return;
+        if (this.disposed || this.expiredSession) return;
         const current =
           body && typeof body === "object" && "current" in body
             ? parseRecordsEnvelope((body as { current: unknown }).current)
@@ -360,12 +398,13 @@ export class AccountSync {
         body = await Promise.race([response.json(), expired]);
       } catch {
         clearTimeout(timeoutId);
+        if (this.disposed || this.expiredSession) return;
         this.syncState = "error";
         this.emit();
         return;
       }
       clearTimeout(timeoutId);
-      if (this.disposed) return;
+      if (this.disposed || this.expiredSession) return;
       const accepted = parseRecordsEnvelope(body);
       if (
         !accepted ||
@@ -386,14 +425,14 @@ export class AccountSync {
         return;
       }
     }
-    if (!this.disposed) {
+    if (!this.disposed && !this.expiredSession) {
       this.syncState = this.storageBlocked ? "storage-error" : "idle";
       this.emit();
     }
   }
 
   useCloud() {
-    if (this.disposed) return;
+    if (this.disposed || this.expiredSession) return;
     const remote = this.conflict?.current;
     if (!remote?.snapshot) return null;
     this.baseVersion = remote.version;
@@ -408,7 +447,7 @@ export class AccountSync {
   }
 
   keepDevice() {
-    if (this.disposed) return;
+    if (this.disposed || this.expiredSession) return;
     const remote = this.conflict?.current;
     if (!remote || !this.snapshot) return;
     this.baseVersion = remote.version;
@@ -435,7 +474,7 @@ export class AccountSync {
 
   status(): AccountSyncStatus {
     return {
-      state: this.syncState,
+      state: this.expiredSession ? "signed-out" : this.syncState,
       pending: this.pending.length,
       conflict: this.conflict?.current ?? null,
       canCompactRetry:

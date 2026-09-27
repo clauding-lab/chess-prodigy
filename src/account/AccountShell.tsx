@@ -13,7 +13,16 @@ import { freshSession, reduceSession, markEngineInterruption } from "../game/sta
 import type { GameStorageAdapter } from "../game/useGame";
 import { Modal } from "../ui/Modal";
 import { AboutModal } from "../ui/AboutModal";
-import { ApiError, getAccountSession, getRecords, signOut } from "./api";
+import { subscribeSessionExpiry } from "./session-expiry";
+import {
+  SignOutRecoveryError,
+  recoverSignOutIntent,
+  ApiError,
+  getAccountSession,
+  getRecords,
+  retainSignOutIntent,
+  signOut,
+} from "./api";
 import { AccountModal, AuthModal, LeaderboardModal } from "./AccountModals";
 import { AccountRecoveryError, AccountSync, type AccountSyncStatus } from "./sync";
 import type { AccountUser, RecordsEnvelope } from "./types";
@@ -26,7 +35,7 @@ type Boot =
   | { kind: "guest"; storage: GameStorageAdapter; mountKey: string }
   | { kind: "blocked"; user: AccountUser | null; waiting?: boolean }
   | { kind: "guest-recovery"; message: string; exported: boolean }
-  | { kind: "auth-error"; message: string }
+  | { kind: "auth-error"; message: string; logoutRecovery?: boolean }
   | { kind: "records-error"; user: AccountUser; message: string }
   | {
       kind: "account";
@@ -72,6 +81,13 @@ export function AccountShell() {
   const syncRef = useRef<AccountSync | null>(null);
   const lockWait = useRef<AbortController | null>(null);
   const [boot, setBoot] = useState<Boot>({ kind: "loading" });
+  const exportedAccountRecovery = useRef<string | null>(null);
+  const [pendingSignOut, setPendingSignOut] = useState<{
+    durable: boolean;
+    exported: boolean;
+  } | null>(null);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
+  const [signOutBusy, setSignOutBusy] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [temporaryError, setTemporaryError] = useState<string | null>(null);
   const [accountOpen, setAccountOpen] = useState(false);
@@ -83,6 +99,14 @@ export function AccountShell() {
     boot.kind === "account" && syncStatus?.state !== "signed-out" ? boot.user.id : null;
   const { history: h2hHistory, refresh: refreshH2h } = useHeadToHead(h2hUserId, path);
   const hasH2h = !!h2hHistory?.opponents.length;
+
+  useEffect(
+    () =>
+      subscribeSessionExpiry((id) => {
+        if (writerUser.current?.id === id) syncRef.current?.sessionExpired();
+      }),
+    [],
+  );
 
   useEffect(() => {
     let active = true;
@@ -107,8 +131,22 @@ export function AccountShell() {
         }
         await bootActions.current!.openAccount(user);
       })
-      .catch(() => {
-        if (active) void bootActions.current!.openGuest();
+      .catch(async (error) => {
+        if (error instanceof SignOutRecoveryError) {
+          if (active) setBoot({ kind: "auth-error", message: error.message, logoutRecovery: true });
+          return;
+        }
+        try {
+          await reconcileDevicePush(null);
+          if (active) await bootActions.current!.openGuest();
+        } catch {
+          if (active)
+            setBoot({
+              kind: "auth-error",
+              message:
+                "Could not safely reconcile this device’s account alerts. Reconnect and sign in again.",
+            });
+        }
       });
     return () => {
       active = false;
@@ -194,7 +232,10 @@ export function AccountShell() {
     );
     setTemporaryError(null);
     try {
-      await reconcileDevicePush(null);
+      await reconcileDevicePush(
+        null,
+        boot.kind === "blocked" ? (boot.user?.id ?? null) : (writerUser.current?.id ?? null),
+      );
     } catch (error) {
       if (requestId === accountRequest.current)
         setTemporaryError(
@@ -226,6 +267,18 @@ export function AccountShell() {
   }, [boot]);
 
   async function openAccount(user: AccountUser, wait = false) {
+    const previousSync = syncRef.current;
+    if (
+      previousSync &&
+      !previousSync.retainForSignOut() &&
+      exportedAccountRecovery.current !== previousSync.exportRecovery()
+    ) {
+      setTemporaryError(
+        "Download a private recovery copy before reopening or changing accounts. Newer progress exists only in this tab.",
+      );
+      setAuthOpen(false);
+      return;
+    }
     const requestId = ++accountRequest.current;
     const lease = await own(user, requestId, wait);
     if (!lease) return;
@@ -316,6 +369,15 @@ export function AccountShell() {
     let hasChanged = false;
     return {
       scope: "account",
+      prepareUpdate: async () => {
+        const saved = await activeSync.flushBounded();
+        return (
+          saved &&
+          writer.current?.identity === `account:${accountId}` &&
+          writer.current.active() &&
+          syncRef.current === activeSync
+        );
+      },
       writable: () =>
         writer.current?.identity === `account:${accountId}` &&
         writer.current.active() &&
@@ -350,6 +412,75 @@ export function AccountShell() {
       },
     };
   }, [activeSync, accountInitial, accountId]);
+
+  function exportAccountRecovery(sync: AccountSync) {
+    const recovery = sync.exportRecovery();
+    downloadRecoveryBytes(recovery);
+    exportedAccountRecovery.current = recovery;
+    setPendingSignOut((previous) => (previous ? { ...previous, exported: true } : previous));
+  }
+
+  async function finishSignOut(account: Extract<Boot, { kind: "account" }>) {
+    setSignOutBusy(true);
+    setSignOutError(null);
+    try {
+      if (
+        !account.sync.retainForSignOut() &&
+        exportedAccountRecovery.current !== account.sync.exportRecovery()
+      ) {
+        setPendingSignOut({ durable: false, exported: false });
+        throw new Error("Download the latest private recovery copy before signing out.");
+      }
+      await detachDevicePush(account.user.id);
+      let intentRetained = false;
+      try {
+        retainSignOutIntent(account.user.id);
+        intentRetained = true;
+      } catch {
+        /* Online logout can still safely end the session. */
+      }
+      try {
+        await signOut(account.user.id);
+      } catch (error) {
+        // Cookies cannot be cleared offline. Retained intent gates the next authenticated boot/login.
+        if (!intentRetained || (error instanceof ApiError && error.status < 500)) throw error;
+      }
+      if (syncRef.current !== account.sync) return;
+      if (
+        !account.sync.retainForSignOut() &&
+        exportedAccountRecovery.current !== account.sync.exportRecovery()
+      ) {
+        setPendingSignOut({ durable: false, exported: false });
+        throw new Error(
+          "Progress changed while signing out. Download the latest private recovery copy before leaving this tab.",
+        );
+      }
+      invalidateAccountRequest(accountRequest);
+      account.sync.dispose();
+      setPendingSignOut(null);
+      setAccountOpen(false);
+      await openGuest();
+    } catch (error) {
+      setSignOutError(
+        error instanceof Error ? error.message : "Sign out failed. Your progress is preserved.",
+      );
+    } finally {
+      setSignOutBusy(false);
+    }
+  }
+
+  async function requestSignOut(account: Extract<Boot, { kind: "account" }>) {
+    setSignOutBusy(true);
+    const complete = await account.sync.flushBounded();
+    setSignOutBusy(false);
+    if (syncRef.current !== account.sync) return;
+    if (!complete) {
+      setAccountOpen(false);
+      setPendingSignOut({ durable: account.sync.retainForSignOut(), exported: false });
+      return;
+    }
+    await finishSignOut(account);
+  }
 
   if (boot.kind === "blocked")
     return (
@@ -446,9 +577,30 @@ export function AccountShell() {
       <div className="account-loading">
         <div className="account-auth-error" role="alert">
           <p>{boot.message}</p>
-          <button className="btn primary" onClick={() => setAuthOpen(true)}>
-            Sign in again
-          </button>
+          {boot.logoutRecovery ? (
+            <button
+              className="btn primary"
+              onClick={async () => {
+                try {
+                  await recoverSignOutIntent();
+                  setAuthOpen(true);
+                } catch (error) {
+                  setBoot({
+                    kind: "auth-error",
+                    message:
+                      error instanceof Error ? error.message : "Reconnect to recover sign-in.",
+                    logoutRecovery: true,
+                  });
+                }
+              }}
+            >
+              End server session and recover sign-in
+            </button>
+          ) : (
+            <button className="btn primary" onClick={() => setAuthOpen(true)}>
+              Sign in again
+            </button>
+          )}
         </div>
         {authOpen && <AuthModal onClose={() => setAuthOpen(false)} onAuthenticated={openAccount} />}
       </div>
@@ -513,6 +665,48 @@ export function AccountShell() {
   const conflict = account && syncStatus?.state === "conflict";
   return (
     <>
+      {account && syncStatus?.state === "signed-out" && (
+        <div className="notice" role="alert">
+          Your session ended. Your private pending changes are retained.{" "}
+          <button className="linkbtn" onClick={() => setAuthOpen(true)}>
+            Sign in again
+          </button>
+          <button className="linkbtn" onClick={() => void requestSignOut(account)}>
+            Sign out
+          </button>
+          <button className="linkbtn" onClick={() => exportAccountRecovery(account.sync)}>
+            Download private recovery copy
+          </button>
+        </div>
+      )}
+      {signOutError && <div role="alert">{signOutError}</div>}
+      {pendingSignOut && account && (
+        <Modal title="Keep pending account changes?" onClose={() => setPendingSignOut(null)}>
+          <p>
+            Some changes have not reached your account. Signing out keeps the private pending copy
+            for this account on this device. Sign back into this same account to recover it.
+          </p>
+          {!pendingSignOut.durable && (
+            <p role="alert">
+              Newer progress exists only in this tab. Download a private recovery copy before
+              signing out.
+            </p>
+          )}
+          <button className="btn" onClick={() => exportAccountRecovery(account.sync)}>
+            Download private recovery copy
+          </button>
+          <button className="btn" disabled={signOutBusy} onClick={() => setPendingSignOut(null)}>
+            Cancel
+          </button>
+          <button
+            className="btn"
+            disabled={signOutBusy || (!pendingSignOut.durable && !pendingSignOut.exported)}
+            onClick={() => void finishSignOut(account)}
+          >
+            Sign out and retain private pending copy
+          </button>
+        </Modal>
+      )}
       {temporaryError && (
         <div className="notice" role="alert">
           {temporaryError}
@@ -550,8 +744,9 @@ export function AccountShell() {
                 className="linkbtn"
                 type="button"
                 onClick={() => {
+                  exportedAccountRecovery.current = account.sync.exportRecovery();
                   const url = URL.createObjectURL(
-                    new Blob([account.sync.exportRecovery()], { type: "application/json" }),
+                    new Blob([exportedAccountRecovery.current], { type: "application/json" }),
                   );
                   const link = document.createElement("a");
                   link.href = url;
@@ -614,14 +809,7 @@ export function AccountShell() {
             )
           }
           onClose={() => setAccountOpen(false)}
-          onSignOut={async () => {
-            await detachDevicePush(account.user.id);
-            await signOut(account.user.id);
-            invalidateAccountRequest(accountRequest);
-            account.sync.dispose();
-            setAccountOpen(false);
-            await openGuest();
-          }}
+          onSignOut={() => requestSignOut(account)}
         />
       )}
       {leaderboardOpen && <LeaderboardModal onClose={() => setLeaderboardOpen(false)} />}

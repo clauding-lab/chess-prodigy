@@ -424,3 +424,36 @@ it("migrates the v4 pending queue into v6 and sends policy 4 with the same owner
   expect(storage.getItem(accountStorageKey("other"))).toBeNull();
   expect(sync.status()).toMatchObject({ state: "idle", pending: 0 });
 });
+
+it("does not let an in-flight save overwrite session expiry or acknowledge pending data", async () => {
+  let finish!: (response: Response) => void;
+  let sent: unknown;
+  const sync = new AccountSync("user", new MemoryStorage(), async (_url, init) => {
+    sent = JSON.parse(String(init?.body)).snapshot;
+    return new Promise((resolve) => {
+      finish = resolve;
+    });
+  });
+  sync.initialize(initial());
+  sync.save(freshSession(0, "pending"));
+  const running = sync.flush();
+  sync.sessionExpired();
+  finish(Response.json({ ...empty, version: 1, snapshot: sent }));
+  await running;
+  expect(sync.status()).toMatchObject({ state: "signed-out", pending: 1 });
+});
+
+it("bounds a stalled sign-out flush and retains every queued result", async () => {
+  vi.useFakeTimers();
+  const storage = new MemoryStorage();
+  const sync = new AccountSync("user", storage, () => new Promise(() => {}));
+  sync.initialize(initial());
+  sync.save(freshSession(0, "result"), { terminal: true });
+  const bounded = sync.flushBounded();
+  await vi.advanceTimersByTimeAsync(2500);
+  await expect(bounded).resolves.toBe(false);
+  expect(sync.retainForSignOut()).toBe(true);
+  expect(JSON.parse(storage.getItem(accountStorageKey("user"))!).pending).toHaveLength(1);
+  sync.dispose();
+  await vi.advanceTimersByTimeAsync(8000);
+});

@@ -343,3 +343,188 @@ it("settles a closed account computer turn as unrated before offering resume", a
   });
   expect(screen.queryByRole("button", { name: "Resume game", exact: true })).toBeNull();
 });
+
+it("shows global session recovery from a multiplayer authenticated 401 and ignores another account's expiry", async () => {
+  const { json } = await import("../../src/account/api");
+  const { reportSessionExpiry } = await import("../../src/account/session-expiry");
+  window.history.replaceState(null, "", "/games");
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url: string) => {
+      if (url === "/api/auth/get-session")
+        return Response.json({ user: { id: "user", name: "Player", email: "p@example.com" } });
+      if (url === "/api/records")
+        return Response.json({
+          version: 0,
+          snapshot: freshSession(Date.now(), "game"),
+          games: [],
+          updatedAt: null,
+        });
+      if (url === "/api/multiplayer/revoked/chat") return Response.json({}, { status: 401 });
+      return Response.json({ games: [], opponents: [], rating: { rating: 1200, games: 0 } });
+    }),
+  );
+  render(<AccountShell />);
+  await screen.findAllByText("Saved to account");
+  act(() => reportSessionExpiry("old-account"));
+  expect(screen.getAllByText("Saved to account").length).toBeGreaterThan(0);
+  await act(async () => {
+    await expect(
+      json("/api/multiplayer/revoked/chat", { headers: { "x-chess-account": "user" } }),
+    ).rejects.toThrow();
+  });
+  expect(screen.queryByText("Saved to account")).toBeNull();
+  expect(screen.getAllByRole("button", { name: "Sign in again" }).length).toBeGreaterThan(0);
+  expect(screen.getByText(/Your session ended. Your private pending/)).toBeTruthy();
+});
+
+it("discloses offline pending sign-out, allows cancel, and retains the private queue on explicit exit", async () => {
+  let offline = false;
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url: string, init?: RequestInit) => {
+      if (offline && (init?.method === "PUT" || url === "/api/auth/sign-out"))
+        throw new TypeError("offline");
+      if (url === "/api/auth/get-session")
+        return Response.json({ user: { id: "user", name: "Player", email: "p@example.com" } });
+      if (url === "/api/records")
+        return Response.json({
+          version: 0,
+          snapshot: freshSession(Date.now(), "game"),
+          games: [],
+          updatedAt: null,
+        });
+      return Response.json({ games: [], opponents: [], rating: { rating: 1200, games: 0 } });
+    }),
+  );
+  render(<AccountShell />);
+  await screen.findByRole("button", { name: "Player", exact: true });
+  offline = true;
+  fireEvent.click(screen.getByRole("button", { name: "New game", exact: true }));
+  fireEvent.click(await screen.findByRole("button", { name: "Start", exact: true }));
+  fireEvent.click(screen.getByRole("button", { name: "Player", exact: true }));
+  fireEvent.click(screen.getByRole("button", { name: "Sign out", exact: true }));
+  await screen.findByRole("dialog", { name: "Keep pending account changes?" });
+  fireEvent.click(screen.getByRole("button", { name: "Cancel", exact: true }));
+  expect(screen.getByRole("button", { name: "Player", exact: true })).toBeTruthy();
+  fireEvent.click(screen.getByRole("button", { name: "Player", exact: true }));
+  fireEvent.click(screen.getByRole("button", { name: "Sign out", exact: true }));
+  fireEvent.click(
+    await screen.findByRole("button", { name: "Sign out and retain private pending copy" }),
+  );
+  await screen.findByRole("button", { name: "Sign in", exact: true });
+  expect(
+    JSON.parse(localStorage.getItem(accountStorageKey("user"))!).pending.length,
+  ).toBeGreaterThan(0);
+  expect(localStorage.getItem("chess-account-sign-out-intent")).toContain('"userId":"user"');
+});
+
+it("keeps the mounted account when sign-out cannot cancel its browser push subscription", async () => {
+  const push = blockedAccountWithPush();
+  push.grant();
+  render(<AccountShell />);
+  fireEvent.click(await screen.findByRole("button", { name: "Push Player", exact: true }));
+  fireEvent.click(screen.getByRole("button", { name: "Sign out", exact: true }));
+  await waitFor(() => expect(push.unsubscribe).toHaveBeenCalledOnce());
+  await act(async () => push.finish(false));
+  expect(await screen.findByText(/Could not disable device alerts/)).toBeTruthy();
+  expect(screen.getByRole("dialog", { name: "Push Player" })).toBeTruthy();
+  expect(localStorage.getItem("chess-push-owner")).toBe("push-account");
+  expect(vi.mocked(fetch).mock.calls.some(([url]) => url === "/api/auth/sign-out")).toBe(false);
+});
+
+it("offers temporary play with a service worker but no alerts and no Web Locks", async () => {
+  Object.defineProperty(navigator, "locks", { configurable: true, value: undefined });
+  Object.defineProperty(navigator, "serviceWorker", {
+    configurable: true,
+    value: {
+      getRegistration: async () => ({ pushManager: { getSubscription: async () => null } }),
+    },
+  });
+  vi.stubGlobal("fetch", vi.fn().mockResolvedValue(Response.json(null)));
+  render(<AccountShell />);
+  fireEvent.click(await screen.findByRole("button", { name: "Play temporarily without saving" }));
+  expect(await screen.findByText(/Temporary unrated play/)).toBeTruthy();
+});
+
+it("recovers invalid logout-marker authentication explicitly without deleting original bytes", async () => {
+  localStorage.setItem("chess-account-sign-out-intent", "{");
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url: string) => {
+      if (url === "/api/auth/get-session")
+        return Response.json({ user: { id: "user", name: "Player", email: "p@example.com" } });
+      return Response.json({});
+    }),
+  );
+  render(<AccountShell />);
+  fireEvent.click(
+    await screen.findByRole("button", { name: "End server session and recover sign-in" }),
+  );
+  expect(await screen.findByRole("dialog", { name: "Sign in" })).toBeTruthy();
+  expect(localStorage.getItem("chess-account-sign-out-intent")).toBe("{");
+  expect(vi.mocked(fetch).mock.calls.some(([url]) => url === "/api/auth/sign-out")).toBe(true);
+});
+
+it("reaches private storage recovery and temporary play after signing in with unreadable storage and no alerts", async () => {
+  const { retainSignOutIntent } = await import("../../src/account/api");
+  retainSignOutIntent("reset-recovery-state");
+  let signedIn = true;
+  Object.defineProperty(navigator, "serviceWorker", {
+    configurable: true,
+    value: {
+      getRegistration: async () => ({ pushManager: { getSubscription: async () => null } }),
+    },
+  });
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url: string) => {
+      if (url === "/api/auth/sign-out") {
+        signedIn = false;
+        return Response.json({});
+      }
+      if (url === "/api/auth/sign-in/email") {
+        signedIn = true;
+        return Response.json({});
+      }
+      if (url === "/api/auth/get-session")
+        return Response.json(
+          signedIn ? { user: { id: "user", name: "Player", email: "p@example.com" } } : null,
+        );
+      if (url === "/api/records" && !signedIn) return Response.json({}, { status: 401 });
+      if (url === "/api/records")
+        return Response.json({
+          version: 0,
+          snapshot: freshSession(Date.now(), "game"),
+          games: [],
+          updatedAt: null,
+        });
+      return Response.json({ games: [], opponents: [], rating: { rating: 1200, games: 0 } });
+    }),
+  );
+  const denied = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+    throw new DOMException("denied", "SecurityError");
+  });
+  const deniedWrite = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+    throw new DOMException("denied", "SecurityError");
+  });
+  try {
+    render(<AccountShell />);
+    fireEvent.click(
+      await screen.findByRole("button", { name: "End server session and recover sign-in" }),
+    );
+    fireEvent.change(await screen.findByLabelText("Email"), { target: { value: "p@example.com" } });
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "strong-password" } });
+    fireEvent.click(screen.getByRole("button", { name: "Sign in", exact: true }));
+    expect(await screen.findByText(/This browser could not save all your changes/)).toBeTruthy();
+    expect(signedIn).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: "New game", exact: true }));
+    fireEvent.click(await screen.findByRole("button", { name: "Start", exact: true }));
+    fireEvent.click(await screen.findByRole("button", { name: "Play temporarily without saving" }));
+    expect(await screen.findByText(/Temporary unrated play/)).toBeTruthy();
+    expect(signedIn).toBe(false);
+  } finally {
+    denied.mockRestore();
+    deniedWrite.mockRestore();
+  }
+});
