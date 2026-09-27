@@ -1,7 +1,7 @@
 # Engine improvement design — proposed
 
 **Date:** 27 September 2026 BDT
-**Status:** Draft for owner review. This proposes new policies; no experiment, implementation, new rating or deployment has been approved by this document.
+**Status:** Owner approved execution with “execute all” on 27 September 2026 BDT. New policies still require the stated independent, strength, personality and measurement gates; no deployment is inferred.
 **Purpose:** Make Chess Prodigy's opponents reliably playable, recognizably different across a game and capable of better tactical calculation, without rewriting earlier games or claiming to reproduce historical minds.
 **Owner priority confirmed 27 September:** Stronger play and distinct personalities equally. Neither is optional and neither compensates for failure of the other.
 **Master plan:** [Repairs and engine programme](../plans/2026-09-27-repair-and-engine-master-plan.md).

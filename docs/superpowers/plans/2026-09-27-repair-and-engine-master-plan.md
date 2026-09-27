@@ -1,7 +1,7 @@
 # Chess Prodigy repairs and engine improvement plan
 
 **Date:** 27 September 2026 BDT
-**Status:** Complete proposed programme; policy decisions below are proposals, not approvals. No implementation or release is initiated by this document.
+**Status:** Owner approved local execution of the complete programme, including D1–D8, with “execute all” on 27 September 2026 BDT. Release is a separate gate. The decision wording below is retained as the design record.
 **Goal:** Protect progress, make games and coaching dependable, close every item in the 25 September review, and improve playing strength and recognizable opponent personalities as equal objectives.
 **Architecture:** Retain the existing React/TypeScript application and SQLite account service. Repair storage and lifecycle boundaries first. Develop new playing policies alongside frozen existing policies; upgrade the neutral reviewer independently of opponent personalities.
 **Inputs:** `AGENTS.md`, `VISION.md`, `.review-scratch/_report/chess-prodigy-review-2026-09-25.md`, `.review-scratch/engine-probe/_report/engine-sameness-report.md`, and the two 25 September vault session notes.
