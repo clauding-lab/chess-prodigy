@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "mode": "fixed-completed-policy",
+  "cohort": "offbook",
+  "harnessHashes": {
+    "core.ts": "4d66d9985a72ccfd313535d75dd286f91e9df2a222c2c998f6e435ac69ddb88b",
+    "fixtures.ts": "6575d144b8c486c5a298d2d9d4887f68571fc13fce7f12c98f121da2f8f49007",
+    "freeze.ts": "8b9a00958aaf055a3aa8fbb00a77dd81cd29f8b284ecaad0690018277ac9fea9",
+    "run.ts": "b3214a56233e3bd5c923986fbda6e61d99e635787808a34920fe7476167c9e9b",
+    "selection.ts": "c0f4621080d32ebec1d109423f9aec0fb8a35160f70354ce53cd82079eebd7d9"
+  },
+  "datasetManifestHash": "ad1ed1c0e9747d8cb14bbc744dfbfd5503e81703f30ad89604db83067c3b3f49",
+  "developmentHash": "04b1e860f1753be589517597974ec1f4260087cb1d130ac1a1a7d3101004ca40",
+  "samples": [
+    "001e73ed96057f65cfd224c43c0d332079b814490fbfe9f341a6547e9d2bcf47:24",
+    "001e73ed96057f65cfd224c43c0d332079b814490fbfe9f341a6547e9d2bcf47:36",
+    "001e73ed96057f65cfd224c43c0d332079b814490fbfe9f341a6547e9d2bcf47:48",
+    "001e73ed96057f65cfd224c43c0d332079b814490fbfe9f341a6547e9d2bcf47:60",
+    "002542f49fc4c59d6f5234d06443645fed4e031e2306c3b1adb9375d34449e94:24",
+    "002542f49fc4c59d6f5234d06443645fed4e031e2306c3b1adb9375d34449e94:36",
+    "0020d22d57b9acbd381336df2c4b23de1649c6cf13620be44b85f4821e261150:13",
+    "0020d22d57b9acbd381336df2c4b23de1649c6cf13620be44b85f4821e261150:25",
+    "0020d22d57b9acbd381336df2c4b23de1649c6cf13620be44b85f4821e261150:37",
+    "004a415892ea9c412d1682dde84ae216473d1acbaa7875b6d5a9fe723c0bf806:13",
+    "004a415892ea9c412d1682dde84ae216473d1acbaa7875b6d5a9fe723c0bf806:25",
+    "004a415892ea9c412d1682dde84ae216473d1acbaa7875b6d5a9fe723c0bf806:37"
+  ],
+  "seeds": [
+    317,
+    9029
+  ],
+  "node": "v22.23.0",
+  "cpu": "Apple M5 Pro",
+  "platform": "darwin",
+  "arch": "arm64",
+  "levels": {
+    "casual": {
+      "depth": 1,
+      "ms": 200,
+      "noise": 120,
+      "book": 0.5
+    },
+    "club": {
+      "depth": 2,
+      "ms": 600,
+      "noise": 15,
+      "book": 1
+    },
+    "strong": {
+      "depth": 4,
+      "ms": 2000,
+      "noise": 0,
+      "book": 1
+    }
+  },
+  "clockSemantics": "constant zero: complete configured policy search; no wall time limit, no node budget, NOT production timing",
+  "workerStartupMs": null,
+  "workerStartupNote": "Direct Node calls; browser worker startup not measured",
+  "telemetry": "No fabricated visited-node counts. Classic depth/timeout and roster timeout are unavailable through existing APIs."
+}

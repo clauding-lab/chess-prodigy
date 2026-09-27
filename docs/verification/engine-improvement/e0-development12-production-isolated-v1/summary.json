@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "mode": "production-elapsed",
+  "cohort": "offbook",
+  "complete": true,
+  "decisions": 432,
+  "strength": {
+    "status": "not-measured",
+    "note": "Position choices do not establish playing strength; no complete-game tournament run."
+  },
+  "tacticalReliability": {
+    "status": "shallow-proxy-only",
+    "neutralReviewDepth": 2,
+    "maximumLossCp": 460,
+    "note": "Same frozen neutral search; not deeper independent tactical adjudication."
+  },
+  "variety": {
+    "classic": {
+      "cells": 36,
+      "cellsWithSeedVariation": 10
+    },
+    "morphy": {
+      "cells": 36,
+      "cellsWithSeedVariation": 1
+    },
+    "chigorin": {
+      "cells": 36,
+      "cellsWithSeedVariation": 0
+    },
+    "spassky": {
+      "cells": 36,
+      "cellsWithSeedVariation": 0
+    },
+    "tal": {
+      "cells": 36,
+      "cellsWithSeedVariation": 0
+    },
+    "fischer": {
+      "cells": 36,
+      "cellsWithSeedVariation": 3
+    }
+  },
+  "personality": {
+    "full": {
+      "pairs": 1080,
+      "equal": 605,
+      "rate": 0.5601851851851852,
+      "choicePairs": 540,
+      "choiceEqual": 222,
+      "choiceRate": 0.4111111111111111
+    },
+    "byLevel": {
+      "casual": {
+        "pairs": 360,
+        "equal": 189,
+        "rate": 0.525,
+        "choicePairs": 180,
+        "choiceEqual": 78,
+        "choiceRate": 0.43333333333333335
+      },
+      "club": {
+        "pairs": 360,
+        "equal": 206,
+        "rate": 0.5722222222222222,
+        "choicePairs": 180,
+        "choiceEqual": 84,
+        "choiceRate": 0.4666666666666667
+      },
+      "strong": {
+        "pairs": 360,
+        "equal": 210,
+        "rate": 0.5833333333333334,
+        "choicePairs": 180,
+        "choiceEqual": 60,
+        "choiceRate": 0.3333333333333333
+      }
+    },
+    "ownerComparison": "pending-E3",
+    "multiMoveCoherence": "not-measured",
+    "note": "Descriptive agreement, not proof of recognizable style; small cells are correlated, no independent-sample confidence claim."
+  }
+}

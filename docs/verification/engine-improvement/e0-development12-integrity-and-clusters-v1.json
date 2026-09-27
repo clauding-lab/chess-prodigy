@@ -1,0 +1,456 @@
+{
+  "schema": 1,
+  "preregistrationHash": "ccd801b305969b446ad8ae03afa4071da5cd3ec3bf9b2b837cee439f8bb3f088",
+  "frozenPlayingFilesChecked": 36,
+  "changed": [],
+  "sourceGameClusters": {
+    "001e73ed96057f65cfd224c43c0d332079b814490fbfe9f341a6547e9d2bcf47": [
+      "001e73ed96057f65cfd224c43c0d332079b814490fbfe9f341a6547e9d2bcf47:24",
+      "001e73ed96057f65cfd224c43c0d332079b814490fbfe9f341a6547e9d2bcf47:36",
+      "001e73ed96057f65cfd224c43c0d332079b814490fbfe9f341a6547e9d2bcf47:48",
+      "001e73ed96057f65cfd224c43c0d332079b814490fbfe9f341a6547e9d2bcf47:60"
+    ],
+    "002542f49fc4c59d6f5234d06443645fed4e031e2306c3b1adb9375d34449e94": [
+      "002542f49fc4c59d6f5234d06443645fed4e031e2306c3b1adb9375d34449e94:24",
+      "002542f49fc4c59d6f5234d06443645fed4e031e2306c3b1adb9375d34449e94:36"
+    ],
+    "0020d22d57b9acbd381336df2c4b23de1649c6cf13620be44b85f4821e261150": [
+      "0020d22d57b9acbd381336df2c4b23de1649c6cf13620be44b85f4821e261150:13",
+      "0020d22d57b9acbd381336df2c4b23de1649c6cf13620be44b85f4821e261150:25",
+      "0020d22d57b9acbd381336df2c4b23de1649c6cf13620be44b85f4821e261150:37"
+    ],
+    "004a415892ea9c412d1682dde84ae216473d1acbaa7875b6d5a9fe723c0bf806": [
+      "004a415892ea9c412d1682dde84ae216473d1acbaa7875b6d5a9fe723c0bf806:13",
+      "004a415892ea9c412d1682dde84ae216473d1acbaa7875b6d5a9fe723c0bf806:25",
+      "004a415892ea9c412d1682dde84ae216473d1acbaa7875b6d5a9fe723c0bf806:37"
+    ]
+  },
+  "interpretation": "Descriptive development results only. 12 positions in four unequally sized source-game clusters; not independent comparisons, unseen validation, playing-strength or perceived-style evidence.",
+  "runs": {
+    "e0-development12-fixed-v1": {
+      "mode": "fixed-completed-policy",
+      "decisions": 432,
+      "summaryHash": "751c72229e48ccf7be0fffbc47fea28f735d54681948b8e688ebba0b4dc9e024",
+      "bySourceGame": {
+        "001e73ed96057f65cfd224c43c0d332079b814490fbfe9f341a6547e9d2bcf47": {
+          "positions": 4,
+          "decisions": 144,
+          "agreement": {
+            "pairs": 360,
+            "equal": 236,
+            "rate": 0.6555555555555556,
+            "choicePairs": 270,
+            "choiceEqual": 146,
+            "choiceRate": 0.5407407407407407
+          }
+        },
+        "002542f49fc4c59d6f5234d06443645fed4e031e2306c3b1adb9375d34449e94": {
+          "positions": 2,
+          "decisions": 72,
+          "agreement": {
+            "pairs": 180,
+            "equal": 69,
+            "rate": 0.38333333333333336,
+            "choicePairs": 90,
+            "choiceEqual": 12,
+            "choiceRate": 0.13333333333333333
+          }
+        },
+        "0020d22d57b9acbd381336df2c4b23de1649c6cf13620be44b85f4821e261150": {
+          "positions": 3,
+          "decisions": 108,
+          "agreement": {
+            "pairs": 270,
+            "equal": 128,
+            "rate": 0.4740740740740741,
+            "choicePairs": 180,
+            "choiceEqual": 100,
+            "choiceRate": 0.5555555555555556
+          }
+        },
+        "004a415892ea9c412d1682dde84ae216473d1acbaa7875b6d5a9fe723c0bf806": {
+          "positions": 3,
+          "decisions": 108,
+          "agreement": {
+            "pairs": 270,
+            "equal": 200,
+            "rate": 0.7407407407407407,
+            "choicePairs": 0,
+            "choiceEqual": 0,
+            "choiceRate": null
+          }
+        }
+      },
+      "telemetry": {
+        "classic": {
+          "decisions": 72,
+          "illegalMoves": 0,
+          "timeoutObserved": 0,
+          "timeoutKnown": 0,
+          "depthCounts": {
+            "null": 72
+          },
+          "incompleteComparisons": 0,
+          "incompleteStatusKnown": 0
+        },
+        "morphy": {
+          "decisions": 72,
+          "illegalMoves": 0,
+          "timeoutObserved": 0,
+          "timeoutKnown": 72,
+          "depthCounts": {
+            "1": 24,
+            "2": 24,
+            "4": 24
+          },
+          "incompleteComparisons": 0,
+          "incompleteStatusKnown": 72
+        },
+        "chigorin": {
+          "decisions": 72,
+          "illegalMoves": 0,
+          "timeoutObserved": 0,
+          "timeoutKnown": 72,
+          "depthCounts": {
+            "1": 24,
+            "2": 24,
+            "4": 24
+          },
+          "incompleteComparisons": 0,
+          "incompleteStatusKnown": 72
+        },
+        "spassky": {
+          "decisions": 72,
+          "illegalMoves": 0,
+          "timeoutObserved": 0,
+          "timeoutKnown": 0,
+          "depthCounts": {
+            "1": 24,
+            "2": 24,
+            "4": 24
+          },
+          "incompleteComparisons": 0,
+          "incompleteStatusKnown": 72
+        },
+        "tal": {
+          "decisions": 72,
+          "illegalMoves": 0,
+          "timeoutObserved": 0,
+          "timeoutKnown": 0,
+          "depthCounts": {
+            "1": 24,
+            "2": 24,
+            "4": 24
+          },
+          "incompleteComparisons": 0,
+          "incompleteStatusKnown": 72
+        },
+        "fischer": {
+          "decisions": 72,
+          "illegalMoves": 0,
+          "timeoutObserved": 0,
+          "timeoutKnown": 0,
+          "depthCounts": {
+            "1": 24,
+            "2": 24,
+            "4": 24
+          },
+          "incompleteComparisons": 0,
+          "incompleteStatusKnown": 72
+        }
+      },
+      "scorecards": {
+        "strength": {
+          "status": "not-measured",
+          "note": "Position choices do not establish playing strength; no complete-game tournament run."
+        },
+        "tacticalReliability": {
+          "status": "shallow-proxy-only",
+          "neutralReviewDepth": 2,
+          "maximumLossCp": 460,
+          "note": "Same frozen neutral search; not deeper independent tactical adjudication."
+        },
+        "variety": {
+          "classic": {
+            "cells": 36,
+            "cellsWithSeedVariation": 10
+          },
+          "morphy": {
+            "cells": 36,
+            "cellsWithSeedVariation": 1
+          },
+          "chigorin": {
+            "cells": 36,
+            "cellsWithSeedVariation": 0
+          },
+          "spassky": {
+            "cells": 36,
+            "cellsWithSeedVariation": 0
+          },
+          "tal": {
+            "cells": 36,
+            "cellsWithSeedVariation": 0
+          },
+          "fischer": {
+            "cells": 36,
+            "cellsWithSeedVariation": 2
+          }
+        },
+        "personality": {
+          "full": {
+            "pairs": 1080,
+            "equal": 633,
+            "rate": 0.5861111111111111,
+            "choicePairs": 540,
+            "choiceEqual": 258,
+            "choiceRate": 0.4777777777777778
+          },
+          "byLevel": {
+            "casual": {
+              "pairs": 360,
+              "equal": 189,
+              "rate": 0.525,
+              "choicePairs": 180,
+              "choiceEqual": 78,
+              "choiceRate": 0.43333333333333335
+            },
+            "club": {
+              "pairs": 360,
+              "equal": 206,
+              "rate": 0.5722222222222222,
+              "choicePairs": 180,
+              "choiceEqual": 84,
+              "choiceRate": 0.4666666666666667
+            },
+            "strong": {
+              "pairs": 360,
+              "equal": 238,
+              "rate": 0.6611111111111111,
+              "choicePairs": 180,
+              "choiceEqual": 96,
+              "choiceRate": 0.5333333333333333
+            }
+          },
+          "ownerComparison": "pending-E3",
+          "multiMoveCoherence": "not-measured",
+          "note": "Descriptive agreement, not proof of recognizable style; small cells are correlated, no independent-sample confidence claim."
+        }
+      }
+    },
+    "e0-development12-production-isolated-v1": {
+      "mode": "production-elapsed",
+      "decisions": 432,
+      "summaryHash": "b83a839f25a52c4971692b2e4c7160671f34457e44e853952c1b731889e9f35a",
+      "bySourceGame": {
+        "001e73ed96057f65cfd224c43c0d332079b814490fbfe9f341a6547e9d2bcf47": {
+          "positions": 4,
+          "decisions": 144,
+          "agreement": {
+            "pairs": 360,
+            "equal": 232,
+            "rate": 0.6444444444444445,
+            "choicePairs": 270,
+            "choiceEqual": 142,
+            "choiceRate": 0.5259259259259259
+          }
+        },
+        "002542f49fc4c59d6f5234d06443645fed4e031e2306c3b1adb9375d34449e94": {
+          "positions": 2,
+          "decisions": 72,
+          "agreement": {
+            "pairs": 180,
+            "equal": 65,
+            "rate": 0.3611111111111111,
+            "choicePairs": 90,
+            "choiceEqual": 8,
+            "choiceRate": 0.08888888888888889
+          }
+        },
+        "0020d22d57b9acbd381336df2c4b23de1649c6cf13620be44b85f4821e261150": {
+          "positions": 3,
+          "decisions": 108,
+          "agreement": {
+            "pairs": 270,
+            "equal": 108,
+            "rate": 0.4,
+            "choicePairs": 180,
+            "choiceEqual": 72,
+            "choiceRate": 0.4
+          }
+        },
+        "004a415892ea9c412d1682dde84ae216473d1acbaa7875b6d5a9fe723c0bf806": {
+          "positions": 3,
+          "decisions": 108,
+          "agreement": {
+            "pairs": 270,
+            "equal": 200,
+            "rate": 0.7407407407407407,
+            "choicePairs": 0,
+            "choiceEqual": 0,
+            "choiceRate": null
+          }
+        }
+      },
+      "telemetry": {
+        "classic": {
+          "decisions": 72,
+          "illegalMoves": 0,
+          "timeoutObserved": 0,
+          "timeoutKnown": 0,
+          "depthCounts": {
+            "null": 72
+          },
+          "incompleteComparisons": 0,
+          "incompleteStatusKnown": 0
+        },
+        "morphy": {
+          "decisions": 72,
+          "illegalMoves": 0,
+          "timeoutObserved": 14,
+          "timeoutKnown": 72,
+          "depthCounts": {
+            "1": 24,
+            "2": 24,
+            "3": 14,
+            "4": 10
+          },
+          "incompleteComparisons": 0,
+          "incompleteStatusKnown": 72
+        },
+        "chigorin": {
+          "decisions": 72,
+          "illegalMoves": 0,
+          "timeoutObserved": 14,
+          "timeoutKnown": 72,
+          "depthCounts": {
+            "1": 24,
+            "2": 24,
+            "3": 14,
+            "4": 10
+          },
+          "incompleteComparisons": 0,
+          "incompleteStatusKnown": 72
+        },
+        "spassky": {
+          "decisions": 72,
+          "illegalMoves": 0,
+          "timeoutObserved": 0,
+          "timeoutKnown": 0,
+          "depthCounts": {
+            "1": 24,
+            "2": 24,
+            "3": 14,
+            "4": 10
+          },
+          "incompleteComparisons": 0,
+          "incompleteStatusKnown": 72
+        },
+        "tal": {
+          "decisions": 72,
+          "illegalMoves": 0,
+          "timeoutObserved": 0,
+          "timeoutKnown": 0,
+          "depthCounts": {
+            "1": 24,
+            "2": 24,
+            "3": 14,
+            "4": 10
+          },
+          "incompleteComparisons": 0,
+          "incompleteStatusKnown": 72
+        },
+        "fischer": {
+          "decisions": 72,
+          "illegalMoves": 0,
+          "timeoutObserved": 0,
+          "timeoutKnown": 0,
+          "depthCounts": {
+            "1": 24,
+            "2": 24,
+            "3": 14,
+            "4": 10
+          },
+          "incompleteComparisons": 0,
+          "incompleteStatusKnown": 72
+        }
+      },
+      "scorecards": {
+        "strength": {
+          "status": "not-measured",
+          "note": "Position choices do not establish playing strength; no complete-game tournament run."
+        },
+        "tacticalReliability": {
+          "status": "shallow-proxy-only",
+          "neutralReviewDepth": 2,
+          "maximumLossCp": 460,
+          "note": "Same frozen neutral search; not deeper independent tactical adjudication."
+        },
+        "variety": {
+          "classic": {
+            "cells": 36,
+            "cellsWithSeedVariation": 10
+          },
+          "morphy": {
+            "cells": 36,
+            "cellsWithSeedVariation": 1
+          },
+          "chigorin": {
+            "cells": 36,
+            "cellsWithSeedVariation": 0
+          },
+          "spassky": {
+            "cells": 36,
+            "cellsWithSeedVariation": 0
+          },
+          "tal": {
+            "cells": 36,
+            "cellsWithSeedVariation": 0
+          },
+          "fischer": {
+            "cells": 36,
+            "cellsWithSeedVariation": 3
+          }
+        },
+        "personality": {
+          "full": {
+            "pairs": 1080,
+            "equal": 605,
+            "rate": 0.5601851851851852,
+            "choicePairs": 540,
+            "choiceEqual": 222,
+            "choiceRate": 0.4111111111111111
+          },
+          "byLevel": {
+            "casual": {
+              "pairs": 360,
+              "equal": 189,
+              "rate": 0.525,
+              "choicePairs": 180,
+              "choiceEqual": 78,
+              "choiceRate": 0.43333333333333335
+            },
+            "club": {
+              "pairs": 360,
+              "equal": 206,
+              "rate": 0.5722222222222222,
+              "choicePairs": 180,
+              "choiceEqual": 84,
+              "choiceRate": 0.4666666666666667
+            },
+            "strong": {
+              "pairs": 360,
+              "equal": 210,
+              "rate": 0.5833333333333334,
+              "choicePairs": 180,
+              "choiceEqual": 60,
+              "choiceRate": 0.3333333333333333
+            }
+          },
+          "ownerComparison": "pending-E3",
+          "multiMoveCoherence": "not-measured",
+          "note": "Descriptive agreement, not proof of recognizable style; small cells are correlated, no independent-sample confidence claim."
+        }
+      }
+    }
+  }
+}

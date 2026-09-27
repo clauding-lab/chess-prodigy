@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "mode": "production-elapsed",
+  "datasetManifestHash": "ad1ed1c0e9747d8cb14bbc744dfbfd5503e81703f30ad89604db83067c3b3f49",
+  "developmentHash": "04b1e860f1753be589517597974ec1f4260087cb1d130ac1a1a7d3101004ca40",
+  "samples": [
+    "001e73ed96057f65cfd224c43c0d332079b814490fbfe9f341a6547e9d2bcf47:12",
+    "001e73ed96057f65cfd224c43c0d332079b814490fbfe9f341a6547e9d2bcf47:13"
+  ],
+  "seeds": [
+    317,
+    9029
+  ],
+  "node": "v22.23.0",
+  "cpu": "Apple M5 Pro",
+  "platform": "darwin",
+  "arch": "arm64",
+  "levels": {
+    "casual": {
+      "depth": 1,
+      "ms": 200,
+      "noise": 120,
+      "book": 0.5
+    },
+    "club": {
+      "depth": 2,
+      "ms": 600,
+      "noise": 15,
+      "book": 1
+    },
+    "strong": {
+      "depth": 4,
+      "ms": 2000,
+      "noise": 0,
+      "book": 1
+    }
+  },
+  "clockSemantics": "performance.now(), untouched production budgets including ranking",
+  "workerStartupMs": null,
+  "workerStartupNote": "Direct Node calls; browser worker startup not measured",
+  "telemetry": "No fabricated visited-node counts. Classic depth/timeout and roster timeout are unavailable through existing APIs."
+}
