@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { createAuth } from "../../server/auth";
 import { createMultiplayerRouter, isMultiplayerEventCurrent } from "../../server/multiplayer";
 import { sqIndex } from "../../src/engine/board";
+import { initializeHumanRules } from "../../server/human-rules";
 
 const origin = "http://localhost:4317";
 const databases: Database.Database[] = [];
@@ -58,6 +59,56 @@ async function fixture() {
   return { db, app, a, b, c, game };
 }
 describe("authenticated human games", () => {
+  it("rejects every mutation of an unsupported future human rules version without side effects", async () => {
+    const { db, a, b, game } = await fixture();
+    const pending = await a.post("/invites", { color: "w" }).expect(201);
+    let active = await game();
+    active = (
+      await b
+        .post(`/${active.id}/draw`, { expectedRevision: active.revision, action: "offer" })
+        .expect(200)
+    ).body;
+    db.exec("UPDATE mp_games SET rules_version=3");
+    const snapshot = () =>
+      ["mp_games", "mp_ratings", "mp_pairs", "mp_events", "mp_summaries"].map((table) =>
+        db.prepare(`SELECT * FROM ${table}`).all(),
+      );
+    const before = snapshot();
+    await b.post("/join", { token: pending.body.token }).expect(409);
+    await a.post(`/${pending.body.id}/cancel`, { expectedRevision: 0 }).expect(409);
+    for (const [action, detail] of [
+      ["resign", {}],
+      ["draw", { action: "offer" }],
+      ["draw", { action: "accept" }],
+      ["move", { move: { from: sqIndex("e2"), to: sqIndex("e4") } }],
+    ] as const)
+      await a
+        .post(`/${active.id}/${action}`, { expectedRevision: active.revision, ...detail })
+        .expect(409);
+    expect(snapshot()).toEqual(before);
+  });
+  it("preserves original human-rule rows while new invitations use the new rule version", async () => {
+    const { db, a } = await fixture();
+    const invite = await a.post("/invites", { color: "w" }).expect(201);
+    expect(db.prepare("SELECT rules_version FROM mp_games WHERE id=?").get(invite.body.id)).toEqual(
+      { rules_version: 2 },
+    );
+    const old = new Database(":memory:");
+    try {
+      old.exec(
+        "CREATE TABLE mp_games(id TEXT PRIMARY KEY,state_json TEXT); INSERT INTO mp_games VALUES('old','original bytes')",
+      );
+      initializeHumanRules(old);
+      initializeHumanRules(old);
+      expect(old.prepare("SELECT * FROM mp_games").get()).toEqual({
+        id: "old",
+        state_json: "original bytes",
+        rules_version: 1,
+      });
+    } finally {
+      old.close();
+    }
+  });
   it("keeps chat participant-only, supports emoji and typing, and clears it when either player leaves", async () => {
     const { a, b, c, game } = await fixture();
     const g = await game();

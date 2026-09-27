@@ -7,6 +7,7 @@ import { ChatError, EphemeralChat } from "./chat.js";
 import { createMultiplayerSummaries } from "./multiplayer-summary.js";
 import { MultiplayerStateError, readMultiplayerState } from "./multiplayer-state.js";
 import { freshGame, reduceGame } from "../src/game/state.js";
+import { initializeHumanRules, applyHumanDeadPositionRule } from "./human-rules.js";
 import type { Game } from "../src/game/types.js";
 import type { Move } from "../src/engine/types.js";
 import type {
@@ -22,6 +23,7 @@ interface Row {
   black_id: string | null;
   status: MultiplayerGame["status"];
   revision: number;
+  rules_version: number;
   turn_revision: number;
   state_json: string;
   token_hash: string;
@@ -78,6 +80,7 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
  CREATE INDEX IF NOT EXISTS mp_events_due ON mp_events(due_at);
  CREATE TABLE IF NOT EXISTS mp_limits(user_id TEXT NOT NULL,bucket TEXT NOT NULL,window INTEGER NOT NULL,count INTEGER NOT NULL,PRIMARY KEY(user_id,bucket));
  `);
+  initializeHumanRules(db);
   const summaries = createMultiplayerSummaries(db);
   const router = Router();
   const chat = new EphemeralChat();
@@ -134,6 +137,10 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
     if (!row || (row.creator_id !== user && row.white_id !== user && row.black_id !== user))
       fail(404, "Game unavailable.");
     return row;
+  }
+  function supportedRules(row: Row): void {
+    if (row.rules_version !== 1 && row.rules_version !== 2)
+      fail(409, "This game requires a newer server rules version. Its progress is preserved.");
   }
   function event(row: Row, kind: "started" | "reminder", user: string, due: number) {
     db.prepare(
@@ -313,7 +320,7 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
         .get(user, now) as { n: number };
       if (open.n >= 30) fail(429, "Finish or cancel some invitations before creating more.");
       db.prepare(
-        "INSERT INTO mp_games(id,creator_id,white_id,black_id,status,revision,state_json,token_hash,created_at,expires_at) VALUES(?,?,?,?,?,?,?,?,?,?)",
+        "INSERT INTO mp_games(id,creator_id,white_id,black_id,status,revision,state_json,token_hash,created_at,expires_at,rules_version) VALUES(?,?,?,?,?,?,?,?,?,?,2)",
       ).run(
         id,
         user,
@@ -340,6 +347,7 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
         const row = db.prepare("SELECT * FROM mp_games WHERE token_hash=?").get(hash(token)) as
           Row | undefined;
         if (!row) fail(404, "Invitation unavailable.");
+        supportedRules(row);
         if (row.status === "active" || row.status === "completed") {
           if (row.white_id !== user && row.black_id !== user) fail(404, "Invitation unavailable.");
           return view(row, user);
@@ -383,6 +391,7 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
       const result = db
         .transaction(() => {
           const row = owned(req.params.id as string, user);
+          supportedRules(row);
           if (row.revision !== body!.expectedRevision)
             fail(409, "The game changed. Refresh and try again.");
           readMultiplayerState(row.state_json);
@@ -413,7 +422,7 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
               fail(400, "Invalid move.");
             const next = reduceGame(game, { type: "move", move, book: false, now: Date.now() });
             if (next === game) fail(400, "Illegal move.");
-            game = next;
+            game = applyHumanDeadPositionRule(next, row.rules_version);
             row.turn_started_at = Date.now();
             if (row.draw_offer_by !== user) row.draw_offer_by = null;
           } else if (action === "resign")
