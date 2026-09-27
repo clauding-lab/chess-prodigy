@@ -101,7 +101,7 @@ export default function App({
   const [hasChosenGame, setHasChosenGame] = useState(false);
   const [showSetup, setShowSetup] = useState(false);
   const [forfeitPending, setForfeitPending] = useState(false);
-  const gameApi = useGame(!suspended && showSetup, storage, suspended || home);
+  const gameApi = useGame(showSetup, storage, suspended || home);
   const { game, rating, preferences } = gameApi;
   const available = isSupportedOpponent(game.opponent);
   const betaEnabled = personalityBetaEnabled(import.meta.env.VITE_PERSONALITY_BETA);

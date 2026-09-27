@@ -13,6 +13,7 @@ interface Pending {
   resolve: (r: EngineResult) => void;
   reject: (e: Error) => void;
   retries: number;
+  onFailure?: () => void;
 }
 const abortError = () => new DOMException("Calculation cancelled", "AbortError");
 export class EngineClient {
@@ -22,7 +23,7 @@ export class EngineClient {
   private nextId = 0;
   private disposed = false;
   constructor(private factory: (request: EngineRequest) => WorkerPort = createEngineWorker) {}
-  request(input: RequestInput): Promise<EngineResult> {
+  request(input: RequestInput, onFailure?: () => void): Promise<EngineResult> {
     if (this.disposed) return Promise.reject(new Error("Engine client has been disposed"));
     this.cancel();
     return new Promise((resolve, reject) => {
@@ -31,6 +32,7 @@ export class EngineClient {
         resolve,
         reject,
         retries: 0,
+        onFailure,
       };
       this.send();
     });
@@ -116,6 +118,9 @@ export class EngineClient {
     const pending = this.pending;
     if (!pending) return;
     this.stopWorker();
+    pending.onFailure?.();
+    // The observer can cancel an expired or superseded turn.
+    if (this.pending !== pending) return;
     if (pending.retries === 0) {
       pending.retries++;
       this.send();

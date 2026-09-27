@@ -5,7 +5,7 @@ import { bookLookup } from "../book/book";
 import { EngineClient } from "../worker/client";
 import { loadSavedState } from "../storage/store";
 import { loadGuestHistory, saveGuestProgress, type HistoryResult } from "../storage/history";
-import { reduceSession, settlePriorGame } from "./state";
+import { markEngineInterruption, reduceSession, settlePriorGame } from "./state";
 import type { Preferences, SessionAction, Setup } from "./types";
 import { playSound } from "./sound";
 import type { LoadResult } from "../storage/store";
@@ -71,6 +71,7 @@ export function useGame(
     historyRequest.current++;
   }, []);
   const current = useRef(session);
+  const lastClockObservation = useRef(Date.now());
   const [storageStatus, setStorageStatus] = useState(initial.status);
   const storageState = useRef(initial.status);
   const [thinking, setThinking] = useState(false);
@@ -116,8 +117,18 @@ export function useGame(
     (action: SessionAction) => {
       if (storage.writable?.() === false) return false;
       const previous = current.current;
+      let observed = previous;
+      if ("now" in action) {
+        if (action.now - lastClockObservation.current > 1000) {
+          observed = {
+            ...previous,
+            game: markEngineInterruption(previous.game, "suspended", action.now),
+          };
+        }
+        lastClockObservation.current = action.now;
+      }
       if (action.type === "new") {
-        const prior = settlePriorGame(previous, action.now);
+        const prior = settlePriorGame(observed, action.now);
         if (prior.game.over && !persist(prior, { terminal: true })) {
           // Retain the settled result for retry/recovery instead of losing the
           // only terminal snapshot when archive/outbox persistence is blocked.
@@ -128,7 +139,7 @@ export function useGame(
           return false;
         }
       }
-      let next = reduceSession(previous, action);
+      let next = reduceSession(observed, action);
       if (storage.temporary && action.type === "new" && next !== previous)
         next = {
           ...next,
@@ -156,7 +167,12 @@ export function useGame(
         );
       else if (!previous.game.over && next.game.over && action.type !== "new")
         playSound("end", next.preferences.sound && !backgroundRef.current);
-      if (action.type !== "tick" || next.game.over !== previous.game.over) persist();
+      if (
+        action.type !== "tick" ||
+        next.game.over !== previous.game.over ||
+        next.game.engineInterruption !== previous.game.engineInterruption
+      )
+        persist();
       return true;
     },
     [invalidate, persist, storage],
@@ -167,6 +183,14 @@ export function useGame(
     persist();
     const tick = () => dispatch({ type: "tick", now: Date.now() });
     const save = () => {
+      const g = current.current.game;
+      dispatch({
+        type: "engineInterruption",
+        gameId: g.id,
+        ply: g.hist.length,
+        cause: "suspended",
+        now: Date.now(),
+      });
       tick();
       persist();
     };
@@ -217,18 +241,31 @@ export function useGame(
       if (mounted.current && request === historyRequest.current) setHistoryLoading(false);
     }
   }
-  const fail = useCallback((error: unknown, token: number) => {
-    if (
-      !mounted.current ||
-      generation.current !== token ||
-      (error instanceof Error && error.name === "AbortError")
-    )
-      return;
-    const message =
-      error instanceof Error ? error.message : "Engine calculation failed. Please try again.";
-    errorRef.current = message;
-    setEngineError(message);
-  }, []);
+  const fail = useCallback(
+    (error: unknown, token: number) => {
+      if (
+        !mounted.current ||
+        generation.current !== token ||
+        (error instanceof Error && error.name === "AbortError")
+      )
+        return;
+      if (busy.current === "ai") {
+        const g = current.current.game;
+        dispatch({
+          type: "engineInterruption",
+          gameId: g.id,
+          ply: g.hist.length,
+          cause: "worker-failure",
+          now: Date.now(),
+        });
+      }
+      const message =
+        error instanceof Error ? error.message : "Engine calculation failed. Please try again.";
+      errorRef.current = message;
+      setEngineError(message);
+    },
+    [dispatch],
+  );
   const analyse = useCallback(
     async (position: Position, ply: number, token: number, policy: ReviewPolicy) => {
       const g = current.current.game;
@@ -261,7 +298,7 @@ export function useGame(
   );
   const game = session.game;
   // Timed work keeps the same request/deadline when only the screen changes.
-  const workPaused = paused || (background && !game.clocks);
+  const workPaused = paused || (background && (!game.clocks || !game.started));
   const passiveCoach =
     (game.over !== null || game.st.turn === game.setup.playerColor) && session.preferences.coach;
   useEffect(() => {
@@ -282,17 +319,34 @@ export function useGame(
     setThinking(ai);
     const run = async () => {
       if (ai) {
-        const readyAt = Date.now() + 1000;
-        const result = await client.current!.request({
-          type: "ai",
-          gameId: g.id,
-          revision: g.revision,
-          position: g.st,
-          level: g.setup.level,
-          opponent: g.opponent,
-          ply: g.hist.length,
-          bookSans: bookLookup(g.hist.map((e) => e.san)).replies,
-        });
+        const requestedAt = Date.now();
+        const clockLeft =
+          g.clocks && g.started
+            ? Math.max(0, g.clocks[g.st.turn] - Math.max(0, requestedAt - g.clockAt))
+            : Infinity;
+        const readyAt = requestedAt + Math.min(1000, Math.max(0, clockLeft - 250));
+        const result = await client.current!.request(
+          {
+            type: "ai",
+            gameId: g.id,
+            revision: g.revision,
+            position: g.st,
+            level: g.setup.level,
+            opponent: g.opponent,
+            ply: g.hist.length,
+            bookSans: bookLookup(g.hist.map((e) => e.san)).replies,
+          },
+          () => {
+            if (!mounted.current || generation.current !== token) return;
+            dispatch({
+              type: "engineInterruption",
+              gameId: g.id,
+              ply: g.hist.length,
+              cause: "worker-failure",
+              now: Date.now(),
+            });
+          },
+        );
         if (!mounted.current || generation.current !== token) return;
         if (!result.move || !legalMoves(g.st).some((m) => sameMove(m, result.move!)))
           throw new Error("Engine returned no legal move. Please retry.");

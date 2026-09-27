@@ -11,6 +11,8 @@ export function unratedDescription(game: Game): string {
       return "Unrated game (hint used).";
     case "takeback":
       return "Unrated game (takeback used).";
+    case "engine-interrupted":
+      return "Unrated game — computer execution was interrupted before its clock expired.";
     case "temporary-session":
       return "Unrated temporary game — progress is lost when this tab closes.";
     case "rating-reset":

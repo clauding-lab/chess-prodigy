@@ -13,14 +13,15 @@ const fake = vi.hoisted(() => ({
     input: RequestInput;
     resolve: (r: EngineResult) => void;
     reject: (e: Error) => void;
+    onFailure?: () => void;
   }>,
   sound: vi.fn(),
 }));
 vi.mock("../../src/worker/client", () => ({
   EngineClient: class {
-    request(input: RequestInput) {
+    request(input: RequestInput, onFailure?: () => void) {
       return new Promise<EngineResult>((resolve, reject) =>
-        fake.jobs.push({ input, resolve, reject }),
+        fake.jobs.push({ input, resolve, reject, onFailure }),
       );
     }
     cancel() {}
@@ -506,4 +507,131 @@ it("temporary play can finish and start further games without saving or rating",
   }
   expect(localStorage.getItem("chess-prodigy-state-v8")).toBe("damaged-original");
   expect(localStorage.length).toBe(1);
+});
+
+function clockAdapter(remaining: number) {
+  const session = freshSession(Date.now(), "clock-boundary");
+  session.game.setup.time = "5+0";
+  session.game.clocks = { w: 300000, b: remaining };
+  session.preferences.coach = false;
+  return {
+    load: () => ({ session, status: "saved" as const }),
+    save: vi.fn((_session: ReturnType<typeof freshSession>) => true),
+  };
+}
+
+it.each([0, 1, 250, 1000])(
+  "caps a ready reply with %ims left and never moves after flag",
+  async (remaining) => {
+    vi.useFakeTimers();
+    const storage = clockAdapter(remaining);
+    const { result } = renderHook(() => useGame(false, storage));
+    act(() => result.current.move(legalMoves(result.current.game.st)[0]));
+    const job = fake.jobs.filter((j) => j.input.type === "ai").at(-1)!;
+    await act(async () =>
+      job.resolve({ move: legalMoves(job.input.position)[0], score: 0, book: false }),
+    );
+    if (remaining === 1000) {
+      await act(async () => vi.advanceTimersByTimeAsync(749));
+      expect(result.current.game.hist).toHaveLength(1);
+      await act(async () => vi.advanceTimersByTimeAsync(1));
+    }
+    expect(result.current.game.hist).toHaveLength(remaining === 0 ? 1 : 2);
+    expect(result.current.game.over?.reason).toBe(remaining === 0 ? "Time out" : undefined);
+  },
+);
+it("records first retry failure, preserves it through retry, clears it on successful reply", async () => {
+  vi.useFakeTimers();
+  const storage = clockAdapter(5000);
+  const { result } = renderHook(() => useGame(false, storage));
+  act(() => result.current.move(legalMoves(result.current.game.st)[0]));
+  const job = fake.jobs.filter((j) => j.input.type === "ai").at(-1)!;
+  act(() => job.onFailure?.());
+  expect(result.current.game.engineInterruption?.cause).toBe("worker-failure");
+  expect(storage.save.mock.calls.at(-1)?.[0].game.engineInterruption?.cause).toBe("worker-failure");
+  await act(async () =>
+    job.resolve({ move: legalMoves(job.input.position)[0], score: 0, book: false }),
+  );
+  await act(async () => vi.advanceTimersByTimeAsync(1000));
+  expect(result.current.game.engineInterruption).toBeUndefined();
+  expect(result.current.game.rated).toBe(true);
+  act(() => job.onFailure?.());
+  expect(result.current.game.engineInterruption).toBeUndefined();
+});
+it("classifies a suspended event loop before a ready reply can settle timeout", async () => {
+  vi.useFakeTimers();
+  const storage = clockAdapter(2000);
+  const { result } = renderHook(() => useGame(false, storage));
+  act(() => result.current.move(legalMoves(result.current.game.st)[0]));
+  const job = fake.jobs.filter((j) => j.input.type === "ai").at(-1)!;
+  vi.setSystemTime(Date.now() + 3000);
+  await act(async () =>
+    job.resolve({ move: legalMoves(job.input.position)[0], score: 0, book: false }),
+  );
+  expect(result.current.game.over?.reason).toBe("Time out");
+  expect(result.current.game.unratedReason).toBe("engine-interrupted");
+  expect(result.current.rating.games).toBe(0);
+});
+it("visibility suspension preserves provenance until a later timeout", async () => {
+  vi.useFakeTimers();
+  const storage = clockAdapter(1000);
+  const { result } = renderHook(() => useGame(false, storage));
+  act(() => result.current.move(legalMoves(result.current.game.st)[0]));
+  act(() => document.dispatchEvent(new Event("visibilitychange")));
+  expect(result.current.game.engineInterruption?.cause).toBe("suspended");
+  await act(async () => vi.advanceTimersByTimeAsync(1000));
+  expect(result.current.game.unratedReason).toBe("engine-interrupted");
+  expect(result.current.game.ratingApplied).toBeNull();
+});
+
+it("retains failure provenance across explicit retry until timeout", async () => {
+  vi.useFakeTimers();
+  const storage = clockAdapter(1000);
+  const { result } = renderHook(() => useGame(false, storage));
+  act(() => result.current.move(legalMoves(result.current.game.st)[0]));
+  const job = fake.jobs.filter((j) => j.input.type === "ai").at(-1)!;
+  act(() => job.onFailure?.());
+  const first = result.current.game.engineInterruption;
+  await act(async () => job.reject(new Error("failed after retry")));
+  expect(result.current.engineError).toContain("failed");
+  act(() => result.current.retryEngine());
+  expect(result.current.game.engineInterruption).toEqual(first);
+  await act(async () => vi.advanceTimersByTimeAsync(1000));
+  expect(result.current.game.over?.reason).toBe("Time out");
+  expect(result.current.game.unratedReason).toBe("engine-interrupted");
+  expect(result.current.rating.games).toBe(0);
+});
+it("settles a ready but held reply after suspension without awarding a win", async () => {
+  vi.useFakeTimers();
+  const storage = clockAdapter(2000);
+  const { result } = renderHook(() => useGame(false, storage));
+  act(() => result.current.move(legalMoves(result.current.game.st)[0]));
+  const job = fake.jobs.filter((j) => j.input.type === "ai").at(-1)!;
+  await act(async () =>
+    job.resolve({ move: legalMoves(job.input.position)[0], score: 0, book: false }),
+  );
+  expect(result.current.game.hist).toHaveLength(1);
+  vi.setSystemTime(Date.now() + 3000);
+  await act(async () => vi.advanceTimersByTimeAsync(1000));
+  expect(result.current.game.hist).toHaveLength(1);
+  expect(result.current.game.unratedReason).toBe("engine-interrupted");
+  expect(result.current.game.ratingApplied).toBeNull();
+});
+it("keeps human timeout rated when visibility changes during the human turn", async () => {
+  vi.useFakeTimers();
+  const storage = clockAdapter(5000);
+  const { result } = renderHook(() => useGame(false, storage));
+  act(() => result.current.move(legalMoves(result.current.game.st)[0]));
+  const job = fake.jobs.filter((j) => j.input.type === "ai").at(-1)!;
+  await act(async () =>
+    job.resolve({ move: legalMoves(job.input.position)[0], score: 0, book: false }),
+  );
+  await act(async () => vi.advanceTimersByTimeAsync(1000));
+  act(() => document.dispatchEvent(new Event("visibilitychange")));
+  vi.setSystemTime(Date.now() + 300001);
+  act(() => result.current.refreshClock());
+  expect(result.current.game.over?.result).toBe("0-1");
+  expect(result.current.game.engineInterruption).toBeUndefined();
+  expect(result.current.game.ratingApplied).not.toBeNull();
+  expect(result.current.rating.games).toBe(1);
 });

@@ -114,3 +114,22 @@ it("rejects an opponent result masquerading as a neutral worker reply", async ()
   await rejection;
   client.dispose();
 });
+
+it("signals the first failed attempt and ignores a stale worker error", async () => {
+  const workers: FakeWorker[] = [];
+  const client = new EngineClient(() => {
+    const w = new FakeWorker();
+    workers.push(w);
+    return w;
+  });
+  const failure = vi.fn();
+  const promise = client.request(input, failure);
+  workers[0].onerror?.({ preventDefault() {} } as ErrorEvent);
+  expect(failure).toHaveBeenCalledTimes(1);
+  workers[0].onerror?.({ preventDefault() {} } as ErrorEvent);
+  expect(failure).toHaveBeenCalledTimes(1);
+  const request = workers[1].posted[0];
+  workers[1].reply({ ...request, ok: true, result: { move: null, score: 0, depth: 1 } });
+  await promise;
+  client.dispose();
+});

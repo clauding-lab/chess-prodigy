@@ -20,9 +20,15 @@ import { opponentPracticeRating, opponentRatingLabel } from "../rating/opponents
 export const isUnratedReason = (value: unknown): value is Game["unratedReason"] =>
   value === null ||
   (typeof value === "string" &&
-    ["beta", "hint", "takeback", "rating-reset", "legacy-unrated", "temporary-session"].includes(
-      value,
-    ));
+    [
+      "beta",
+      "hint",
+      "takeback",
+      "rating-reset",
+      "legacy-unrated",
+      "temporary-session",
+      "engine-interrupted",
+    ].includes(value));
 
 const object = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
@@ -196,7 +202,15 @@ export function validGameShape(value: unknown): value is Game {
     !bool(value.rated) ||
     !bool(value.hintUsed) ||
     !(value.ratingApplied === null || validReceipt(value.ratingApplied)) ||
-    !object(value.evals)
+    !object(value.evals) ||
+    (value.engineInterruption !== undefined &&
+      !(
+        object(value.engineInterruption) &&
+        integer(value.engineInterruption.ply) &&
+        oneOf(value.engineInterruption.turn, ["w", "b"] as const) &&
+        isGameTimestamp(value.engineInterruption.at) &&
+        oneOf(value.engineInterruption.cause, ["closed", "suspended", "worker-failure"] as const)
+      ))
   )
     return false;
   if (!(
@@ -334,7 +348,10 @@ export function parseSavedState(
   // preserved as unreadable rather than discarding a supplied opponent identity.
   if (
     legacy &&
-    ("opponent" in gameValue || "unratedReason" in gameValue || "takebackUsed" in gameValue)
+    ("opponent" in gameValue ||
+      "unratedReason" in gameValue ||
+      "takebackUsed" in gameValue ||
+      "engineInterruption" in gameValue)
   )
     return null;
   const session = (legacy
@@ -365,6 +382,24 @@ export function parseSavedState(
     (metadata.opponent.id === "attack-development" &&
       !isRatedOpponent(metadata.opponent) &&
       metadata.unratedReason !== "beta")
+  )
+    return null;
+  const interruption = metadata.engineInterruption;
+  if (
+    interruption &&
+    (!metadata.clocks ||
+      !metadata.started ||
+      interruption.ply !== metadata.hist.length ||
+      interruption.turn !== metadata.st.turn ||
+      interruption.turn === metadata.setup.playerColor)
+  )
+    return null;
+  if (
+    metadata.unratedReason === "engine-interrupted" &&
+    (!interruption ||
+      metadata.over?.reason !== "Time out" ||
+      metadata.rated ||
+      metadata.ratingApplied !== null)
   )
     return null;
   if (session.game.hintUsed && session.game.rated) return null;

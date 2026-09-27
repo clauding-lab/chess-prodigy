@@ -11,6 +11,8 @@ import {
 import { detectMotifs } from "../coach/motifs";
 import { annotateAll } from "../coach/annotate";
 import { isNeutralEvaluation, reviewHistory } from "../engine/reviewer";
+import { isGameTimestamp } from "./timestamps";
+import type { EngineInterruption } from "./types";
 import { defaultRating, ratingUpdate } from "../rating/fide";
 import type { Action, Game, GameResult, Setup, Session, SessionAction, TimeControl } from "./types";
 import { CLASSIC, isRatedOpponent, isSupportedOpponent } from "../engine/opponents";
@@ -58,11 +60,28 @@ export function freshSession(now: number, id: string): Session {
     preferences: { theme: "dark", sound: true, coach: true, flipped: false },
   };
 }
+export function markEngineInterruption(
+  g: Game,
+  cause: EngineInterruption["cause"],
+  now: number,
+): Game {
+  if (
+    !isSupportedOpponent(g.opponent) ||
+    !g.clocks ||
+    !g.started ||
+    g.over ||
+    g.st.turn === g.setup.playerColor ||
+    g.engineInterruption ||
+    !isGameTimestamp(now)
+  )
+    return g;
+  return { ...g, engineInterruption: { ply: g.hist.length, turn: g.st.turn, at: now, cause } };
+}
 export function settleClock(g: Game, now: number): Game {
   if (!isSupportedOpponent(g.opponent)) return g;
   if (!g.clocks || g.over || !g.started) return g;
   const elapsed = Math.max(0, now - g.clockAt);
-  if (!elapsed) return g;
+  if (!elapsed && g.clocks[g.st.turn] > 0) return g;
   const side = g.st.turn,
     left = Math.max(0, g.clocks[side] - elapsed);
   const opponent = side === "w" ? "b" : "w";
@@ -73,6 +92,12 @@ export function settleClock(g: Game, now: number): Game {
   return {
     ...g,
     clockAt: now,
+    ...(left === 0 &&
+    g.engineInterruption?.ply === g.hist.length &&
+    g.engineInterruption.turn === side &&
+    side !== g.setup.playerColor
+      ? { rated: false, unratedReason: g.unratedReason ?? ("engine-interrupted" as const) }
+      : {}),
     clocks: { ...g.clocks, [side]: left },
     revision: left === 0 ? g.revision + 1 : g.revision,
     over:
@@ -91,6 +116,10 @@ export function canUndoGame(g: Game): boolean {
 }
 export function reduceGame(g: Game, action: Action): Game {
   if (!isSupportedOpponent(g.opponent)) return g;
+  if (action.type === "engineInterruption")
+    return action.gameId === g.id && action.ply === g.hist.length
+      ? markEngineInterruption(g, action.cause, action.now)
+      : g;
   if (action.type === "tick") return settleClock(g, action.now);
   if (action.type === "hint")
     return g.over
@@ -142,6 +171,7 @@ export function reduceGame(g: Game, action: Action): Game {
       takebackUsed: true,
       unratedReason: g.unratedReason ?? "takeback",
       ratingApplied: null,
+      engineInterruption: undefined,
     };
   }
   if (g.over) return g;
@@ -197,6 +227,7 @@ export function reduceGame(g: Game, action: Action): Game {
     clockAt: action.now,
     revision: g.revision + 1,
     started: true,
+    engineInterruption: undefined,
   };
 }
 export function settleRating(s: Session, now: number): Session {

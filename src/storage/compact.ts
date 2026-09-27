@@ -34,6 +34,7 @@ export function encodeCompactSession(session: Session): CompactSession {
     version: 3,
     game: {
       id: g.id,
+      ...(g.engineInterruption ? { engineInterruption: g.engineInterruption } : {}),
       revision: g.revision,
       over: g.over,
       setup: g.setup,

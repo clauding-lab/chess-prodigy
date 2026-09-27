@@ -60,6 +60,7 @@ const assistance = (record: GameRecord) =>
   record.assisted === null ? "Unknown assistance" : record.assisted ? "Assisted" : "Unassisted";
 const unratedReasons = {
   "temporary-session": "Temporary game",
+  "engine-interrupted": "Computer execution interrupted",
   beta: "Unrated beta",
   hint: "Unrated — hint used",
   takeback: "Unrated — takeback used",

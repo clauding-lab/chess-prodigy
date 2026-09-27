@@ -9,7 +9,7 @@ import {
 } from "../storage/play-storage";
 import { loadSavedState, saveState } from "../storage/store";
 import { loadGuestHistory, GUEST_HISTORY_KEY } from "../storage/history";
-import { freshSession } from "../game/state";
+import { freshSession, reduceSession, markEngineInterruption } from "../game/state";
 import type { GameStorageAdapter } from "../game/useGame";
 import { Modal } from "../ui/Modal";
 import { AboutModal } from "../ui/AboutModal";
@@ -327,11 +327,17 @@ export function AccountShell() {
         const remote = await getRecords(accountId);
         if (lease?.active() && syncRef.current === activeSync) activeSync.acceptHistory(remote);
       },
-      load: () => ({
-        session: accountInitial,
-        status: "saved",
-        hasSavedGame: accountInitial.game.started && !accountInitial.game.over,
-      }),
+      load: (now) => {
+        const session = reduceSession(
+          { ...accountInitial, game: markEngineInterruption(accountInitial.game, "closed", now) },
+          { type: "tick", now },
+        );
+        return {
+          session,
+          status: "saved",
+          hasSavedGame: session.game.started && !session.game.over,
+        };
+      },
       save: (session, options) => {
         if (!writer.current?.active() || syncRef.current !== activeSync) return false;
         if (!hasChanged && JSON.stringify(session) === JSON.stringify(accountInitial)) return true;

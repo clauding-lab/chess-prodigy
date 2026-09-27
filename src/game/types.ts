@@ -30,7 +30,14 @@ export interface HistoryEntry extends AnnotatableEntry {
   clocksBefore: Clocks | null;
 }
 export type Clocks = Record<Color, number>;
+export interface EngineInterruption {
+  ply: number;
+  turn: Color;
+  at: number;
+  cause: "closed" | "suspended" | "worker-failure";
+}
 export interface Game {
+  engineInterruption?: EngineInterruption;
   id: string;
   revision: number;
   st: Position;
@@ -56,12 +63,26 @@ export interface Session {
   preferences: Preferences;
 }
 export type UnratedReason =
-  null | "beta" | "hint" | "takeback" | "rating-reset" | "legacy-unrated" | "temporary-session";
+  | null
+  | "beta"
+  | "hint"
+  | "takeback"
+  | "rating-reset"
+  | "legacy-unrated"
+  | "temporary-session"
+  | "engine-interrupted";
 export type LegacySession = Omit<Session, "version" | "game"> & {
   version: 1;
   game: Omit<Game, "opponent" | "unratedReason" | "takebackUsed">;
 };
 export type Action =
+  | {
+      type: "engineInterruption";
+      gameId: string;
+      ply: number;
+      cause: EngineInterruption["cause"];
+      now: number;
+    }
   | { type: "move"; move: Move; book: boolean; now: number }
   | { type: "tick"; now: number }
   | { type: "undo"; now: number }

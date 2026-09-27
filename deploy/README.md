@@ -178,3 +178,21 @@ Daily backups use `chess-daily-YYYY-MM-DD.sqlite`, with dates in BDT. Repeated r
 Every run writes `last-backup-status.json` with `ok` or `failed` and a BDT timestamp. Failed runs exit nonzero, so `systemctl --failed` and `systemctl status chess-prodigy-backup` expose failure; inspect `journalctl -u chess-prodigy-backup` for the error. No external alert destination has been configured or tested. A destination must be explicitly selected before adding outbound alerts. This is visible local failure reporting, not a claim that someone receives a notification.
 
 The isolated automated restore exercise copies a WAL-inclusive backup to a disposable database, opens it, checks SQLite integrity, and verifies synthetic rows. It does not inspect or restore live player data.
+
+### Public leaderboard bounds
+
+Practice rankings use a validated, indexed rating summary updated in the same transaction as the
+private save. Startup backfills missing versions in batches of 16; invalid records are listed by
+account/version in `record_projection_errors` with a constant reason, leaving original bytes intact.
+Public requests return at most 100 names, ratings and rated-game counts, cached for two seconds.
+
+Both public boards share a 60-request-per-minute visitor allowance and a 6,000-request application
+ceiling. Rejected requests do not consume another visitor's allowance. Visitors sharing one public
+IP share a quota; this is a bounded abuse control, not proof of a person's identity.
+
+For the existing **loopback-only Cloudflare Tunnel** origin, set
+`TRUST_LOCAL_CLOUDFLARE_TUNNEL=true` when deploying this candidate. This accepts the tunnel's
+`CF-Connecting-IP` only from a loopback socket and only when it contains one valid IP. Leave it
+unset for direct access or another proxy configuration; forwarded headers are otherwise ignored.
+Do not expose a trusted origin directly to untrusted local proxy processes. This setting has not
+been changed on production by the local repair work.

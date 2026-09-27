@@ -21,6 +21,7 @@ const application = await createApplication({
   secret,
   staticDir: "dist",
   notifications: true,
+  trustedLocalTunnel: process.env.TRUST_LOCAL_CLOUDFLARE_TUNNEL === "true",
 });
 const server = createServer(application.app);
 

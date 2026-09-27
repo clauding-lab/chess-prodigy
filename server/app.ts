@@ -9,6 +9,7 @@ import { createRecordsRouter, readLeaderboard } from "./records.js";
 import { createMultiplayerRouter } from "./multiplayer.js";
 import { createNotificationDelivery } from "./notification-delivery.js";
 import { createNotificationsRouter, createNotificationWorker } from "./notifications.js";
+import { createPublicReadLimit } from "./public-limit.js";
 
 export interface ApplicationOptions {
   databasePath: string;
@@ -16,6 +17,7 @@ export interface ApplicationOptions {
   secret: string;
   staticDir?: string;
   notifications?: boolean;
+  trustedLocalTunnel?: boolean;
 }
 
 export interface Application {
@@ -103,6 +105,10 @@ export async function createApplication(options: ApplicationOptions): Promise<Ap
     app.use("/api/records", express.json({ limit: 2 * 1024 * 1024 + 16 * 1024, strict: true }));
     app.use(express.json({ limit: "300kb", strict: true }));
     app.get("/api/health", (_request, response) => response.json({ status: "ok" }));
+    const publicReadLimit = createPublicReadLimit({
+      trustedLocalTunnel: options.trustedLocalTunnel,
+    });
+    app.get(["/api/leaderboard", "/api/multiplayer/leaderboard"], publicReadLimit);
     app.get("/api/leaderboard", (_request, response) => response.json(readLeaderboard(database)));
     app.use("/api/records", createRecordsRouter(database, auth, options.baseURL));
     const multiplayer = createMultiplayerRouter(database, auth, options.baseURL);

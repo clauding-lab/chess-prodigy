@@ -1,3 +1,8 @@
+import {
+  initializeLeaderboardProjection,
+  writeRatingProjection,
+  readProjectedLeaderboard,
+} from "./leaderboard.js";
 import { isGameTimestamp } from "../src/game/timestamps";
 import type Database from "better-sqlite3";
 import { Router, type RequestHandler } from "express";
@@ -189,6 +194,7 @@ function readEnvelope(database: Database.Database, userId: string): RecordsEnvel
 
 export function createRecordsRouter(database: Database.Database, auth: ChessAuth, baseURL: string) {
   initialize(database);
+  initializeLeaderboardProjection(database);
   const router = Router();
   const authenticate: RequestHandler = async (request, response, next) => {
     const session = await auth.api.getSession({ headers: fromNodeHeaders(request.headers) });
@@ -259,6 +265,9 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
       )
         return "upgrade";
       const compact = body.snapshot!.version === 3;
+      const repairMetadata =
+        !!snapshot.game.engineInterruption ||
+        ["temporary-session", "engine-interrupted"].includes(snapshot.game.unratedReason ?? "");
       const measured =
         snapshot.game.opponent.id === "attack-development" &&
         isRatedOpponent(snapshot.game.opponent);
@@ -270,7 +279,7 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
         .get(userId) as { minimum_policy: number } | undefined;
       const requiredPolicy = Math.max(
         policyRow?.minimum_policy ?? 0,
-        compact || snapshot.game.unratedReason === "temporary-session" ? 6 : 0,
+        compact || repairMetadata ? 6 : 0,
         roster
           ? 5
           : chigorin
@@ -300,13 +309,7 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
       // Incompatible clients must update even when their record version is stale.
       // Do not expose a conflict action that they cannot safely resolve.
       if (version !== body.expectedVersion) return "conflict";
-      if (
-        compact ||
-        snapshot.game.unratedReason === "temporary-session" ||
-        measured ||
-        chigorin ||
-        roster
-      )
+      if (compact || repairMetadata || measured || chigorin || roster)
         database
           .prepare(
             `INSERT INTO record_client_policy(user_id, minimum_policy) VALUES (?, ?)
@@ -353,6 +356,7 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
         )
         // Preserve the validated original wire for old clients' exact acknowledgement.
         .run(userId, version + 1, JSON.stringify(body.snapshot), updatedAt);
+      writeRatingProjection(database, userId, version + 1, snapshot.rating);
       if (archive) {
         database
           .prepare(
@@ -398,19 +402,5 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
 }
 
 export function readLeaderboard(database: Database.Database): LeaderboardEnvelope {
-  const rows = database
-    .prepare(
-      `
-    SELECT u.name AS name,
-           json_extract(r.snapshot, '$.rating.rating') AS rating,
-           json_extract(r.snapshot, '$.rating.games') AS games
-      FROM player_records r
-      JOIN user u ON u.id = r.user_id
-     WHERE json_extract(r.snapshot, '$.rating.games') >= 1
-     ORDER BY rating DESC, games DESC, r.user_id ASC
-     LIMIT 100
-  `,
-    )
-    .all() as Array<{ name: string; rating: number; games: number }>;
-  return { players: rows.map((player, index) => ({ rank: index + 1, ...player })) };
+  return readProjectedLeaderboard(database);
 }

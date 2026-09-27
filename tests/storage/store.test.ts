@@ -119,23 +119,31 @@ it("does not use legacy data to conceal a corrupt current save", () => {
   expect(loaded.status).toBe("corrupt");
   expect(loaded.session.rating.rating).toBe(1400);
 });
-it("charges elapsed closed time and settles timeout once on load", () => {
-  const storage = new MemoryStorage();
-  let s = freshSession(0, "one");
-  s = reduceSession(s, {
-    type: "new",
-    setup: { playerColor: "w", level: "club", time: "5+0" },
-    now: 0,
-    id: "two",
-  });
-  s = reduceSession(s, { type: "move", move: legalMoves(s.game.st)[0], book: false, now: 1 });
-  saveState(storage, s);
-  const loaded = loadSavedState(storage, 400000, "fallback");
-  expect(loaded.session.game.over?.reason).toBe("Time out");
-  expect(loaded.session.rating.games).toBe(1);
-  saveState(storage, loaded.session);
-  expect(loadSavedState(storage, 500000, "fallback").session.rating.games).toBe(1);
-});
+it.each(["computer", "human"])(
+  "charges elapsed closed time and settles %s timeout once on load",
+  (turn) => {
+    const storage = new MemoryStorage();
+    let s = freshSession(0, "one");
+    s = reduceSession(s, {
+      type: "new",
+      setup: { playerColor: "w", level: "club", time: "5+0" },
+      now: 0,
+      id: "two",
+    });
+    s = reduceSession(s, { type: "move", move: legalMoves(s.game.st)[0], book: false, now: 1 });
+    if (turn === "human")
+      s = reduceSession(s, { type: "move", move: legalMoves(s.game.st)[0], book: false, now: 2 });
+    saveState(storage, s);
+    const loaded = loadSavedState(storage, 400000, "fallback");
+    expect(loaded.session.game.over?.reason).toBe("Time out");
+    expect(loaded.session.rating.games).toBe(turn === "human" ? 1 : 0);
+    expect(loaded.session.game.unratedReason).toBe(turn === "human" ? null : "engine-interrupted");
+    saveState(storage, loaded.session);
+    expect(loadSavedState(storage, 500000, "fallback").session.rating.games).toBe(
+      turn === "human" ? 1 : 0,
+    );
+  },
+);
 
 it("rejects corrupt coaching keys, annotation values and illegal evaluation moves", () => {
   const storage = new MemoryStorage();

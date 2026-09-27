@@ -1,5 +1,5 @@
 import { readStorageRevision, type WriteRevision } from "./revision";
-import { freshSession, reduceSession } from "../game/state";
+import { freshSession, reduceSession, markEngineInterruption } from "../game/state";
 import type { Session } from "../game/types";
 import { parseSessionInput } from "./input";
 import { encodeCompactSession } from "./compact";
@@ -56,7 +56,10 @@ export function loadSavedState(
     try {
       const session = parseSessionInput(JSON.parse(raw));
       if (!session) return { session: fallback, status: "corrupt", hasSavedGame: false };
-      const settled = reduceSession(session, { type: "tick", now });
+      const settled = reduceSession(
+        { ...session, game: markEngineInterruption(session.game, "closed", now) },
+        { type: "tick", now },
+      );
       return {
         session: settled,
         storageRevision,

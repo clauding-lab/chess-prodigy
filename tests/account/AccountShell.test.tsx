@@ -296,3 +296,50 @@ it("keeps a mounted account and its pending copy when temporary push cancellatio
     failing.mockRestore();
   }
 });
+
+it("settles a closed account computer turn as unrated before offering resume", async () => {
+  let snapshot = reduceSession(freshSession(Date.now() - 10000, "seed"), {
+    type: "new",
+    id: "closed-account",
+    now: Date.now() - 10000,
+    setup: { playerColor: "w", level: "club", time: "5+0" },
+  });
+  snapshot = reduceSession(snapshot, {
+    type: "move",
+    move: legalMoves(snapshot.game.st)[0],
+    book: false,
+    now: Date.now() - 9000,
+  });
+  snapshot.game.clocks = { w: 300000, b: 100 };
+  snapshot.preferences.coach = false;
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url: string, init?: RequestInit) => {
+      if (url === "/api/auth/get-session")
+        return Response.json({
+          user: { id: "user", name: "Player", email: "private@example.test" },
+        });
+      if (url === "/api/records") {
+        const body = init?.method === "PUT" ? JSON.parse(String(init.body)) : null;
+        return Response.json({
+          version: body ? body.expectedVersion + 1 : 7,
+          snapshot: body?.snapshot ?? snapshot,
+          games: [],
+          updatedAt: null,
+        });
+      }
+      return Response.json({ games: [], opponents: [], rating: { rating: 1200, games: 0 } });
+    }),
+  );
+  render(<AccountShell />);
+  await waitFor(() => {
+    const raw = localStorage.getItem(accountStorageKey("user"));
+    expect(raw).not.toBeNull();
+    const loaded = parseSessionInput(JSON.parse(raw!).snapshot)!;
+    expect(loaded.game.over?.reason).toBe("Time out");
+    expect(loaded.game.unratedReason).toBe("engine-interrupted");
+    expect(loaded.game.ratingApplied).toBeNull();
+    expect(loaded.rating).toEqual(snapshot.rating);
+  });
+  expect(screen.queryByRole("button", { name: "Resume game", exact: true })).toBeNull();
+});
