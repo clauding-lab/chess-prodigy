@@ -229,7 +229,6 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
         .prepare("SELECT version, snapshot FROM player_records WHERE user_id = ?")
         .get(userId) as { version: number; snapshot: string } | undefined;
       const version = current?.version ?? 0;
-      if (version !== body.expectedVersion) return "conflict";
       // Compare schema and write in the same transaction. A stale client with the
       // latest record counter still cannot erase fields it cannot understand.
       if (
@@ -274,6 +273,9 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
         )
       )
         return "upgrade";
+      // Incompatible clients must update even when their record version is stale.
+      // Do not expose a conflict action that they cannot safely resolve.
+      if (version !== body.expectedVersion) return "conflict";
       if (measured || chigorin || roster)
         database
           .prepare(

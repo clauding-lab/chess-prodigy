@@ -126,6 +126,42 @@ it("holds a ready engine reply for a second while the engine clock keeps running
   expect(result.current.game.hist).toHaveLength(2);
 });
 
+it("keeps the original timed reply and deadline when Coach is toggled", async () => {
+  vi.useFakeTimers();
+  const { result } = renderHook(() => useGame(false));
+  act(() => result.current.startGame({ playerColor: "w", level: "club", time: "5+0" }));
+  act(() => result.current.move(legalMoves(result.current.game.st)[0]));
+  const job = fake.jobs.filter((entry) => entry.input.type === "ai").at(-1)!;
+  const count = fake.jobs.filter((entry) => entry.input.type === "ai").length;
+  await act(async () =>
+    job.resolve({ move: legalMoves(job.input.position)[0], score: 0, book: true }),
+  );
+  await act(async () => vi.advanceTimersByTimeAsync(700));
+  act(() => result.current.setPreferences({ coach: false }));
+  expect(fake.jobs.filter((entry) => entry.input.type === "ai")).toHaveLength(count);
+  await act(async () => vi.advanceTimersByTimeAsync(300));
+  expect(result.current.game.hist).toHaveLength(2);
+});
+
+it("a passive effect cleanup does not cancel a hint started after it", async () => {
+  const { reviewPosition } = await import("../../src/engine/reviewer");
+  const { result } = renderHook(() => useGame(false));
+  act(() => result.current.askHint());
+  const hintJob = fake.jobs.at(-1)!;
+  act(() => result.current.setPreferences({ coach: false }));
+  if (hintJob.input.type !== "analyse") throw new Error("Expected hint analysis");
+  const reply = reviewPosition(
+    hintJob.input.position,
+    hintJob.input.history,
+    hintJob.input.policy,
+    () => 0,
+  );
+  await act(async () => hintJob.resolve(reply));
+  expect(result.current.hint?.move).toEqual(reply.move);
+  expect(result.current.thinking).toBe(false);
+  expect(result.current.game.hintUsed).toBe(true);
+});
+
 it.each(["undo", "resign", "new"])("cancels a ready but delayed reply on %s", async (action) => {
   vi.useFakeTimers();
   const { result } = renderHook(() => useGame(false));

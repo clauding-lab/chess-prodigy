@@ -1038,6 +1038,8 @@ for (const rosterId of ["spassky", "tal", "fischer"] as const)
       const reset = reduceSession(freshSession(1, "classic-reset"), { type: "resetRating" });
       await put(1, reset, "5").expect(200);
       await put(2, reset, "3").expect(426);
+      const staleOldClient = await put(0, reset, "3").expect(426);
+      expect(staleOldClient.body.current).toBeUndefined();
       const inspect = new Database(database.path);
       expect(inspect.prepare("SELECT minimum_policy FROM record_client_policy").all()).toEqual([
         { minimum_policy: 5 },

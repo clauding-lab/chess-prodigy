@@ -236,6 +236,8 @@ export function useGame(
   const game = session.game;
   // Timed work keeps the same request/deadline when only the screen changes.
   const workPaused = paused || (background && !game.clocks);
+  const passiveCoach =
+    (game.over !== null || game.st.turn === game.setup.playerColor) && session.preferences.coach;
   useEffect(() => {
     if (
       workPaused ||
@@ -246,6 +248,7 @@ export function useGame(
       busy.current === "review"
     )
       return;
+    const operationGeneration = generation;
     const g = current.current.game,
       token = ++generation.current;
     const ai = !g.over && g.st.turn !== g.setup.playerColor;
@@ -315,13 +318,20 @@ export function useGame(
         }
       });
     return () => {
-      invalidateWork();
-      setThinking(false);
+      // A hint/review may have superseded the work this effect started.
+      // Only cancel the operation owned by this effect's generation.
+      if (
+        operationGeneration.current === token &&
+        (busy.current === "ai" || busy.current === "passive")
+      ) {
+        invalidateWork();
+        setThinking(false);
+      }
     };
   }, [
     game.id,
     game.revision,
-    session.preferences.coach,
+    passiveCoach,
     workPaused,
     retry,
     analyse,

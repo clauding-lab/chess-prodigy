@@ -6,7 +6,7 @@ import { Modal } from "../ui/Modal";
 import { AboutModal } from "../ui/AboutModal";
 import { ApiError, getAccountSession, getRecords, signOut } from "./api";
 import { AccountModal, AuthModal, LeaderboardModal } from "./AccountModals";
-import { AccountSync, type AccountSyncStatus } from "./sync";
+import { AccountRecoveryError, AccountSync, type AccountSyncStatus } from "./sync";
 import type { AccountUser, RecordsEnvelope } from "./types";
 import { Multiplayer } from "../multiplayer/Multiplayer";
 import { HeadToHeadModal, useHeadToHead } from "../multiplayer/HeadToHead";
@@ -16,6 +16,7 @@ type Boot =
   | { kind: "loading" }
   | { kind: "guest" }
   | { kind: "auth-error"; message: string }
+  | { kind: "records-error"; user: AccountUser; message: string }
   | {
       kind: "account";
       user: AccountUser;
@@ -38,8 +39,9 @@ function invalidateAccountRequest(request: { current: number }) {
 
 export function AccountShell() {
   const [path, setPath] = useState(window.location.pathname);
-  const navigate = useCallback((next: string) => {
-    window.history.pushState(null, "", next);
+  const navigate = useCallback((next: string, options?: { replace?: boolean }) => {
+    if (options?.replace) window.history.replaceState(null, "", next);
+    else window.history.pushState(null, "", next);
     setPath(next);
   }, []);
   useEffect(() => {
@@ -130,7 +132,22 @@ export function AccountShell() {
     if (!remote.snapshot)
       remote = { ...remote, snapshot: freshSession(Date.now(), crypto.randomUUID()) };
     const sync = new AccountSync(user.id, localStorageSafe());
-    const initial = sync.initialize(remote, !offline);
+    let initial: ReturnType<typeof freshSession>;
+    try {
+      initial = sync.initialize(remote, !offline);
+    } catch (error) {
+      sync.dispose();
+      if (requestId === accountRequest.current)
+        setBoot({
+          kind: "records-error",
+          user,
+          message:
+            error instanceof AccountRecoveryError
+              ? error.message
+              : "Could not safely open your account records. Your saved copies are preserved.",
+        });
+      return;
+    }
     if (offline) sync.markOffline();
     setBoot((previous) => {
       if (previous.kind === "account") previous.sync.dispose();
@@ -157,31 +174,33 @@ export function AccountShell() {
     };
   }, [activeSync]);
 
+  const accountInitial = boot.kind === "account" ? boot.initial : null;
+  const accountId = boot.kind === "account" ? boot.user.id : null;
   const adapter = useMemo<GameStorageAdapter | undefined>(() => {
-    if (boot.kind !== "account") return undefined;
+    if (!activeSync || !accountInitial || !accountId) return undefined;
     let timer: number | undefined;
     let hasChanged = false;
     return {
       scope: "account",
-      history: () => boot.sync.history(),
-      subscribeHistory: (listener) => boot.sync.subscribe(listener),
-      refreshHistory: async () => boot.sync.acceptHistory(await getRecords(boot.user.id)),
+      history: () => activeSync.history(),
+      subscribeHistory: (listener) => activeSync.subscribe(listener),
+      refreshHistory: async () => activeSync.acceptHistory(await getRecords(accountId)),
       load: () => ({
-        session: boot.initial,
+        session: accountInitial,
         status: "saved",
-        hasSavedGame: boot.initial.game.started && !boot.initial.game.over,
+        hasSavedGame: accountInitial.game.started && !accountInitial.game.over,
       }),
       save: (session, options) => {
-        if (!hasChanged && JSON.stringify(session) === JSON.stringify(boot.initial)) return true;
+        if (!hasChanged && JSON.stringify(session) === JSON.stringify(accountInitial)) return true;
         hasChanged = true;
-        const saved = boot.sync.save(session, options);
+        const saved = activeSync.save(session, options);
         window.clearTimeout(timer);
-        if (options?.terminal) void boot.sync.flush();
-        else timer = window.setTimeout(() => void boot.sync.flush(), 1000);
+        if (options?.terminal) void activeSync.flush();
+        else timer = window.setTimeout(() => void activeSync.flush(), 1000);
         return saved;
       },
     };
-  }, [boot]);
+  }, [activeSync, accountInitial, accountId]);
 
   if (boot.kind === "loading")
     return (
@@ -199,6 +218,17 @@ export function AccountShell() {
           </button>
         </div>
         {authOpen && <AuthModal onClose={() => setAuthOpen(false)} onAuthenticated={openAccount} />}
+      </div>
+    );
+  if (boot.kind === "records-error")
+    return (
+      <div className="account-loading">
+        <div className="account-auth-error" role="alert">
+          <p>{boot.message}</p>
+          <button className="btn primary" onClick={() => void openAccount(boot.user)}>
+            Retry account download
+          </button>
+        </div>
       </div>
     );
   const account = boot.kind === "account" ? boot : null;

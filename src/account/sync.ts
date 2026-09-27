@@ -18,6 +18,7 @@ type SyncState =
 interface PendingItem {
   snapshot: Session;
   terminal: boolean;
+  attempted?: boolean;
 }
 interface PersistedSync {
   baseVersion: number;
@@ -62,8 +63,17 @@ function validPersisted(value: unknown): PersistedSync | null {
     if (!item || typeof item !== "object") return null;
     const entry = item as Partial<PendingItem>;
     const snapshot = parseSavedState(entry.snapshot);
-    if (!snapshot || typeof entry.terminal !== "boolean") return null;
-    pending.push({ snapshot, terminal: entry.terminal });
+    if (
+      !snapshot ||
+      typeof entry.terminal !== "boolean" ||
+      (entry.attempted !== undefined && typeof entry.attempted !== "boolean")
+    )
+      return null;
+    pending.push({
+      snapshot,
+      terminal: entry.terminal,
+      ...(entry.attempted ? { attempted: true } : {}),
+    });
   }
   return {
     baseVersion: Number(candidate.baseVersion),
@@ -73,7 +83,10 @@ function validPersisted(value: unknown): PersistedSync | null {
   };
 }
 
+export class AccountRecoveryError extends Error {}
+
 export class AccountSync {
+  private initialized = false;
   private baseVersion = 0;
   private pending: PendingItem[] = [];
   private snapshot: Session | null = null;
@@ -101,7 +114,16 @@ export class AccountSync {
   }
 
   initialize(remote: RecordsEnvelope, remoteAvailable = true): Session {
+    this.initialized = false;
     const local = this.readLocal();
+    if (!remoteAvailable && !local)
+      throw new AccountRecoveryError(
+        "Account records are unavailable. Retry the download before playing.",
+      );
+    if (remoteAvailable && local && !local.pending.length && remote.version < local.baseVersion)
+      throw new AccountRecoveryError(
+        "The server returned an older account version. Your device copy is preserved.",
+      );
     const cached = parseHistory(local?.history);
     if (local?.history !== undefined && !cached) this.corruptHistory = local.history;
     this.remoteGames = remoteAvailable ? remote.games : (cached ?? []);
@@ -127,17 +149,24 @@ export class AccountSync {
       if (this.snapshot) this.persistLocal();
     }
     if (!this.snapshot) throw new Error("Account sync requires an initial session.");
+    this.initialized = true;
     return this.snapshot;
   }
 
   save(snapshot: Session, options: { terminal?: boolean } = {}) {
     const normalized = parseSavedState(snapshot);
-    if (this.disposed || !normalized) return false;
+    if (this.disposed || !this.initialized || !normalized) return false;
     snapshot = normalized;
     const terminal = options.terminal === true;
     this.snapshot = snapshot;
     const last = this.pending.at(-1);
-    if (!terminal && last && !last.terminal && last.snapshot.game.id === snapshot.game.id)
+    if (
+      !terminal &&
+      last &&
+      !last.terminal &&
+      !last.attempted &&
+      last.snapshot.game.id === snapshot.game.id
+    )
       this.pending[this.pending.length - 1] = { snapshot, terminal: false };
     else this.pending.push({ snapshot, terminal });
     const stored = this.persistLocal();
@@ -147,7 +176,8 @@ export class AccountSync {
 
   flush(): Promise<void> {
     if (this.running) return this.running;
-    if (this.disposed || !this.pending.length || this.conflict) return Promise.resolve();
+    if (this.disposed || !this.initialized || !this.pending.length || this.conflict)
+      return Promise.resolve();
     // Never send migrated or changed outboxes until the new key is durable.
     if (!this.persistLocal()) {
       this.emit();
@@ -164,6 +194,13 @@ export class AccountSync {
     this.emit();
     while (!this.disposed && this.pending.length && !this.conflict) {
       const sent = this.pending[0];
+      // An attempted write may already be committed remotely even if its reply is lost.
+      // Keep that exact item durable until acknowledged; later edits cannot coalesce it.
+      sent.attempted = true;
+      if (!this.persistLocal()) {
+        this.emit();
+        return;
+      }
       let response: Response;
       const timeout = new AbortController();
       let timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -220,6 +257,25 @@ export class AccountSync {
           this.syncState = "error";
           this.emit();
           return;
+        }
+        if (current.version < this.baseVersion) {
+          this.syncState = "error";
+          this.emit();
+          return;
+        }
+        const rawCurrent = (body as { current: { snapshot: unknown } }).current;
+        if (
+          current.version === this.baseVersion + 1 &&
+          JSON.stringify(rawCurrent.snapshot) === JSON.stringify(sent.snapshot)
+        ) {
+          if (this.pending[0] === sent) this.pending.shift();
+          this.baseVersion = current.version;
+          this.adoptHistory(current);
+          if (!this.persistLocal()) {
+            this.emit();
+            return;
+          }
+          continue;
         }
         this.conflict = { current };
         this.syncState = "conflict";
