@@ -313,3 +313,134 @@ it("opens a creator's own invitation as waiting without consuming it", async () 
   expect(waiting.black).toBeNull();
   await b.post("/join", { token: invite.token }).expect(200);
 });
+
+// Captured by executing freshGame/reduceGame from the retained v1.2.0 tag.
+import legacyActive from "../fixtures/multiplayer/v1.2-active.json";
+
+it("continues a retained v1.2 game, preserves ownership and normalizes only on a successful write", async () => {
+  const { db, a, b, c, game } = await fixture();
+  const g = await game();
+  const legacy = { ...legacyActive, id: g.id, revision: g.revision };
+  const raw = JSON.stringify(legacy);
+  db.prepare("UPDATE mp_games SET state_json=? WHERE id=?").run(raw, g.id);
+  await c.get(`/${g.id}`).expect(404);
+  await a.get(`/${g.id}`).expect(200);
+  expect(db.prepare("SELECT state_json FROM mp_games WHERE id=?").get(g.id)).toEqual({
+    state_json: raw,
+  });
+  const moved = (
+    await b
+      .post(`/${g.id}/move`, { expectedRevision: g.revision, move: { from: 12, to: 28 } })
+      .expect(200)
+  ).body;
+  expect(moved.moves.map((m: { san: string }) => m.san)).toEqual(["e4", "e5"]);
+  expect(moved.white.id).toBe(a.id);
+  expect(moved.black.id).toBe(b.id);
+});
+
+it.each(["json", "illegal", "unknown"])(
+  "preserves unreadable %s multiplayer data with recovery diagnostics",
+  async (kind) => {
+    const { db, a, game } = await fixture();
+    const g = await game();
+    const legacy = { ...legacyActive, id: g.id, revision: g.revision };
+    const raw =
+      kind === "json"
+        ? "{"
+        : JSON.stringify(
+            kind === "illegal"
+              ? { ...legacy, hist: [{ ...legacy.hist[0], mv: { from: 0, to: 63 } }] }
+              : { ...legacy, opponent: { id: "future", version: 999 } },
+          );
+    db.prepare("UPDATE mp_games SET state_json=? WHERE id=?").run(raw, g.id);
+    const response = await a.post(`/${g.id}/resign`, { expectedRevision: g.revision }).expect(409);
+    expect(response.body.error).toMatch(/preserved.*recovery/i);
+    expect(db.prepare("SELECT state_json FROM mp_games WHERE id=?").get(g.id)).toEqual({
+      state_json: raw,
+    });
+    expect(db.prepare("SELECT * FROM mp_ratings").all()).toEqual([]);
+  },
+);
+
+it.each([
+  [
+    "second-rating",
+    "CREATE TRIGGER fault BEFORE INSERT ON mp_ratings WHEN (SELECT count(*) FROM mp_ratings)=1 BEGIN SELECT RAISE(ABORT,'fault'); END",
+  ],
+  ["h2h", "CREATE TRIGGER fault BEFORE INSERT ON mp_pairs BEGIN SELECT RAISE(ABORT,'fault'); END"],
+  [
+    "game-save",
+    "CREATE TRIGGER fault BEFORE UPDATE ON mp_games WHEN NEW.status='completed' BEGIN SELECT RAISE(ABORT,'fault'); END",
+  ],
+])("rolls back completion at %s and applies a retry exactly once", async (_name, sql) => {
+  const { db, a, b, game } = await fixture();
+  const g = await game();
+  const before = db.prepare("SELECT * FROM mp_games WHERE id=?").get(g.id);
+  const events = db.prepare("SELECT * FROM mp_events").all();
+  db.exec(sql);
+  await b.post(`/${g.id}/resign`, { expectedRevision: g.revision }).expect(500);
+  expect(db.prepare("SELECT * FROM mp_games WHERE id=?").get(g.id)).toEqual(before);
+  expect(db.prepare("SELECT * FROM mp_events").all()).toEqual(events);
+  expect(db.prepare("SELECT * FROM mp_ratings").all()).toEqual([]);
+  expect(db.prepare("SELECT * FROM mp_pairs").all()).toEqual([]);
+  db.exec("DROP TRIGGER fault");
+  await b.post(`/${g.id}/resign`, { expectedRevision: g.revision }).expect(200);
+  await b.post(`/${g.id}/resign`, { expectedRevision: g.revision }).expect(409);
+  expect((await a.get("")).body.rating).toEqual({ rating: 1216, games: 1 });
+  expect((await a.get("")).body.opponents[0].wins).toBe(1);
+});
+
+it("rolls back a join after its first event and retries without consuming the invitation", async () => {
+  const { db, a, b } = await fixture();
+  const invite = (await a.post("/invites", { color: "w" }).expect(201)).body;
+  const before = db.prepare("SELECT * FROM mp_games WHERE id=?").get(invite.id);
+  db.exec(
+    "CREATE TRIGGER fault BEFORE INSERT ON mp_events WHEN NEW.kind='reminder' BEGIN SELECT RAISE(ABORT,'fault'); END",
+  );
+  await b.post("/join", { token: invite.token }).expect(500);
+  expect(db.prepare("SELECT * FROM mp_games WHERE id=?").get(invite.id)).toEqual(before);
+  expect(db.prepare("SELECT * FROM mp_events").all()).toEqual([]);
+  db.exec("DROP TRIGGER fault");
+  await b.post("/join", { token: invite.token }).expect(200);
+  await b.post("/join", { token: invite.token }).expect(200);
+  expect(db.prepare("SELECT kind FROM mp_events ORDER BY kind").all()).toEqual([
+    { kind: "reminder" },
+    { kind: "started" },
+  ]);
+});
+
+it("joins a retained v1.2 waiting game and preserves its completed result on read", async () => {
+  const { db, a, b } = await fixture();
+  const invite = (await a.post("/invites", { color: "w" }).expect(201)).body;
+  const row = db.prepare("SELECT state_json FROM mp_games WHERE id=?").get(invite.id) as {
+    state_json: string;
+  };
+  const legacy = JSON.parse(row.state_json);
+  delete legacy.opponent;
+  delete legacy.unratedReason;
+  delete legacy.takebackUsed;
+  db.prepare("UPDATE mp_games SET state_json=? WHERE id=?").run(JSON.stringify(legacy), invite.id);
+  const joined = (await b.post("/join", { token: invite.token }).expect(200)).body;
+  const completed = (
+    await b.post(`/${invite.id}/resign`, { expectedRevision: joined.revision }).expect(200)
+  ).body;
+  const saved = JSON.parse(
+    (
+      db.prepare("SELECT state_json FROM mp_games WHERE id=?").get(invite.id) as {
+        state_json: string;
+      }
+    ).state_json,
+  );
+  delete saved.opponent;
+  delete saved.unratedReason;
+  delete saved.takebackUsed;
+  const raw = JSON.stringify(saved);
+  db.prepare("UPDATE mp_games SET state_json=? WHERE id=?").run(raw, invite.id);
+  const reread = (await b.get(`/${invite.id}`).expect(200)).body;
+  expect(reread.result).toEqual(completed.result);
+  expect(reread.ratingChanges).toEqual(completed.ratingChanges);
+  expect(reread.review.opponent.id).toBe("classic");
+  expect(db.prepare("SELECT state_json FROM mp_games WHERE id=?").get(invite.id)).toEqual({
+    state_json: raw,
+  });
+});

@@ -4,6 +4,7 @@ import { Router } from "express";
 import { fromNodeHeaders } from "better-auth/node";
 import type { ChessAuth } from "./auth.js";
 import { ChatError, EphemeralChat } from "./chat.js";
+import { MultiplayerStateError, readMultiplayerState } from "./multiplayer-state.js";
 import { freshGame, reduceGame } from "../src/game/state.js";
 import type { Game } from "../src/game/types.js";
 import type { Move } from "../src/engine/types.js";
@@ -103,7 +104,7 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
     };
   }
   function view(row: Row, user: string): MultiplayerGame {
-    const game = JSON.parse(row.state_json) as Game;
+    const game = readMultiplayerState(row.state_json);
     const opponent = row.white_id === user ? row.black_id : row.white_id;
     return {
       id: row.id,
@@ -319,7 +320,7 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
         row.revision++;
         row.turn_revision = row.revision;
         row.turn_started_at = Date.now();
-        const game = JSON.parse(row.state_json) as Game;
+        const game = readMultiplayerState(row.state_json);
         game.revision = row.revision;
         row.state_json = JSON.stringify(game);
         save(row);
@@ -351,6 +352,7 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
           const row = owned(req.params.id as string, user);
           if (row.revision !== body!.expectedRevision)
             fail(409, "The game changed. Refresh and try again.");
+          readMultiplayerState(row.state_json);
           if (action === "cancel") {
             if (row.status !== "waiting" || row.creator_id !== user || row.expires_at <= Date.now())
               fail(409, "This invitation cannot be cancelled.");
@@ -360,7 +362,7 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
             return view(row, user);
           }
           if (row.status !== "active") fail(409, "This game is not active.");
-          let game = JSON.parse(row.state_json) as Game;
+          let game = readMultiplayerState(row.state_json);
           if (action === "move") {
             if ((game.st.turn === "w" ? row.white_id : row.black_id) !== user)
               fail(409, "Wait for your turn.");
@@ -418,7 +420,11 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
       res: import("express").Response,
       next: import("express").NextFunction,
     ) => {
-      if (error instanceof RequestError || error instanceof ChatError)
+      if (
+        error instanceof RequestError ||
+        error instanceof ChatError ||
+        error instanceof MultiplayerStateError
+      )
         res.status(error.status).json({ error: error.message });
       else next(error);
     },
