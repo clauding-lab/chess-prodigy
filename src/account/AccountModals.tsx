@@ -9,7 +9,7 @@ import {
   signIn,
   signUp,
 } from "./api";
-import { listGames } from "../multiplayer/api";
+import { getMultiplayerRating } from "../multiplayer/api";
 import type { AccountUser, GameRecord, LeaderboardPlayer } from "./types";
 import { opponentName } from "../engine/opponents";
 
@@ -131,11 +131,11 @@ export function AccountModal({
       .then(async (value) => {
         setGames(value.games);
         try {
-          const multiplayer = await listGames(user.id);
+          const multiplayer = await getMultiplayerRating(user.id);
           setRatings({
             practice: value.snapshot?.rating.rating ?? 1400,
-            human: multiplayer.rating.rating,
-            games: multiplayer.rating.games,
+            human: multiplayer.rating,
+            games: multiplayer.games,
           });
         } catch {
           /* Private game records remain available if multiplayer is offline. */

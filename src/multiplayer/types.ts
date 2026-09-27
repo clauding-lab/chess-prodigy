@@ -34,8 +34,22 @@ export interface MultiplayerGame {
   /** Available only after completion, for the existing coaching/review interface. */
   review: Game | null;
 }
+export type MultiplayerSummary = Pick<
+  MultiplayerGame,
+  | "id"
+  | "creatorId"
+  | "status"
+  | "revision"
+  | "white"
+  | "black"
+  | "yourColor"
+  | "result"
+  | "createdAt"
+  | "expiresAt"
+> & { turn: Color };
 export interface MultiplayerList {
-  games: MultiplayerGame[];
+  games: MultiplayerSummary[];
+  nextOpponents?: string | null;
   rating: MultiplayerRating;
   opponents: HeadToHead[];
 }

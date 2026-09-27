@@ -303,6 +303,10 @@ it("does not let old expired invitations crowd a recent completed match out of t
   }
   const list = (await a.get("").expect(200)).body;
   expect(list.games.some((entry: { id: string }) => entry.id === g.id)).toBe(true);
+  const { createMultiplayerSummaries } = await import("../../server/multiplayer-summary");
+  createMultiplayerSummaries(db);
+  const summaries = (await a.get("/summaries").expect(200)).body;
+  expect(summaries.games[0].id).toBe(g.id);
 });
 
 it("opens a creator's own invitation as waiting without consuming it", async () => {
@@ -480,7 +484,7 @@ it("settles a real automatic threefold draw exactly once for both players and H2
     [
       { user_id: a.id, rating: 1200, games: 1 },
       { user_id: b.id, rating: 1200, games: 1 },
-    ].sort((x, y) => x.user_id.localeCompare(y.user_id)),
+    ].sort((x, y) => (x.user_id < y.user_id ? -1 : x.user_id > y.user_id ? 1 : 0)),
   );
   await b
     .post(`/${current.id}/move`, {
@@ -492,4 +496,116 @@ it("settles a real automatic threefold draw exactly once for both players and H2
   expect(ratings()).toEqual(before);
   expect((await a.get(`/${current.id}`).expect(200)).body.headToHead.draws).toBe(1);
   expect((await b.get(`/${current.id}`).expect(200)).body.headToHead.draws).toBe(1);
+});
+
+it("serves private compact summaries while retaining complete legacy and detail responses", async () => {
+  const { a, b, c, game, db } = await fixture();
+  const g = await game();
+  await a.post(`/${g.id}/resign`, { expectedRevision: g.revision }).expect(200);
+  const summary = (await a.get("/summaries").expect(200)).body;
+  expect(summary.games).toHaveLength(1);
+  expect(summary.games[0].result.result).toBe("0-1");
+  for (const key of ["review", "moves", "position"])
+    expect(summary.games[0]).not.toHaveProperty(key);
+  expect(summary.opponents[0].losses).toBe(1);
+  expect((await a.get("/rating").expect(200)).body).toEqual({ rating: 1184, games: 1 });
+  expect((await b.get("/summaries")).body.games).toHaveLength(1);
+  expect((await c.get("/summaries")).body.games).toEqual([]);
+  expect((await a.get(`/${g.id}`)).body.review).not.toBeNull();
+  expect((await a.get("/")).body.games[0].review).not.toBeNull();
+  await c.get(`/${g.id}`).expect(404);
+  db.prepare("UPDATE mp_games SET state_json=? WHERE id=?").run("not json", g.id);
+  expect((await a.get("/summaries").expect(200)).body.games[0].result.result).toBe("0-1");
+});
+
+it("backfills large disposable data in bounded batches, quarantines corruption, and polls without raw reads", async () => {
+  const { db, a, game } = await fixture();
+  const g = await game();
+  const original = db.prepare("SELECT state_json FROM mp_games WHERE id=?").get(g.id) as {
+    state_json: string;
+  };
+  db.transaction(() => {
+    const insert =
+      db.prepare(`INSERT INTO mp_games(id,creator_id,white_id,black_id,status,revision,state_json,token_hash,created_at,expires_at)
+      SELECT ?,creator_id,white_id,black_id,status,revision,state_json,?,created_at+?,expires_at FROM mp_games WHERE id=?`);
+    for (let i = 0; i < 1200; i++) insert.run(`synthetic-${i}`, `token-${i}`, i, g.id);
+    insert.run("corrupt", "corrupt-token", 0, g.id);
+    db.prepare("UPDATE mp_games SET state_json='invalid-private-data' WHERE id='corrupt'").run();
+  })();
+  const { createMultiplayerSummaries } = await import("../../server/multiplayer-summary");
+  createMultiplayerSummaries(db);
+  expect(db.prepare("SELECT count(*) AS n FROM mp_summaries").get()).toEqual({ n: 1201 });
+  expect(db.prepare("SELECT * FROM mp_summary_quarantine").all()).toEqual([
+    { game_id: "corrupt", reason: expect.not.stringContaining("invalid-private-data") },
+  ]);
+  expect(db.prepare("SELECT state_json FROM mp_games WHERE id=?").get(g.id)).toEqual(original);
+  const plan = db
+    .prepare(
+      `EXPLAIN QUERY PLAN SELECT s.summary_json FROM mp_summary_members m JOIN mp_summaries s ON s.game_id=m.game_id
+    WHERE m.user_id=? ORDER BY m.priority,m.created_at DESC,m.game_id LIMIT 200`,
+    )
+    .all(a.id) as { detail: string }[];
+  expect(plan.map((p) => p.detail).join(" ")).toContain("mp_summary_order");
+  expect(plan.map((p) => p.detail).join(" ")).not.toContain("TEMP B-TREE");
+  // Removing the source table makes any request-time raw state lookup fail loudly.
+  db.pragma("foreign_keys = OFF");
+  db.exec("ALTER TABLE mp_games RENAME TO private_raw_games");
+  const response = await a.get("/summaries").expect(200);
+  expect(response.body.games).toHaveLength(200);
+  expect(JSON.stringify(response.body).length).toBeLessThan(200_000);
+  expect(JSON.stringify(response.body)).not.toMatch(/state_json|review|"moves"|"position"/);
+});
+
+it("pages lifetime H2H counts without exposing unrelated pairs", async () => {
+  const { db, a, c } = await fixture();
+  const template = db.prepare("SELECT * FROM user WHERE id=?").get(a.id) as Record<string, unknown>;
+  const keys = Object.keys(template);
+  const insert = db.prepare(
+    `INSERT INTO user(${keys.map((k) => `"${k}"`).join(",")}) VALUES(${keys.map(() => "?").join(",")})`,
+  );
+  db.transaction(() => {
+    for (let i = 0; i < 123; i++) {
+      const id = `opponent-${String(i).padStart(3, "0")}`;
+      insert.run(
+        ...keys.map((k) =>
+          k === "id" ? id : k === "email" ? `${id}@example.com` : k === "name" ? id : template[k],
+        ),
+      );
+      const [low, high] = [a.id, id].sort();
+      db.prepare("INSERT INTO mp_pairs VALUES(?,?,?,?,?)").run(low, high, 700, 300, 100);
+    }
+  })();
+  const first = (await a.get("/summaries").expect(200)).body;
+  const second = (await a.get(`/summaries?after=${first.nextOpponents}`).expect(200)).body;
+  const third = (await a.get(`/summaries?after=${second.nextOpponents}`).expect(200)).body;
+  expect([first.opponents.length, second.opponents.length, third.opponents.length]).toEqual([
+    50, 50, 23,
+  ]);
+  expect(
+    new Set([...first.opponents, ...second.opponents, ...third.opponents].map((p) => p.opponent.id))
+      .size,
+  ).toBe(123);
+  expect(third.nextOpponents).toBeNull();
+  expect(first.opponents[0].wins + first.opponents[0].losses + first.opponents[0].draws).toBe(1100);
+  expect((await c.get("/summaries")).body.opponents).toEqual([]);
+  await a.get("/summaries?after=one&after=two").expect(400);
+});
+
+it("rolls back game, rating and H2H when the summary projection write fails", async () => {
+  const { db, a, game } = await fixture();
+  const g = await game();
+  db.exec(
+    "CREATE TRIGGER fail_summary BEFORE INSERT ON mp_summaries BEGIN SELECT RAISE(ABORT,'synthetic projection failure'); END",
+  );
+  await a.post(`/${g.id}/resign`, { expectedRevision: g.revision }).expect(500);
+  expect((await a.get(`/${g.id}`)).body.status).toBe("active");
+  expect((await a.get("/summaries")).body.games[0].status).toBe("active");
+  expect(db.prepare("SELECT * FROM mp_ratings").all()).toEqual([]);
+  expect(db.prepare("SELECT * FROM mp_pairs").all()).toEqual([]);
+  db.exec("DROP TRIGGER fail_summary");
+  await a.post(`/${g.id}/resign`, { expectedRevision: g.revision }).expect(200);
+  const list = (await a.get("/summaries")).body;
+  expect(list.games[0].status).toBe("completed");
+  expect(list.rating.games).toBe(1);
+  expect(list.opponents[0].losses).toBe(1);
 });

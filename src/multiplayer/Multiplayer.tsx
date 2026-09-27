@@ -105,7 +105,20 @@ export function Multiplayer({
         } else {
           const next = await listGames(userId);
           if (version !== generation.current || actionPending.current) return;
-          setList(next);
+          setList((previous) =>
+            previous && previous.opponents.length > next.opponents.length
+              ? {
+                  ...next,
+                  opponents: [
+                    ...next.opponents,
+                    ...previous.opponents.filter(
+                      (p) => !next.opponents.some((first) => first.opponent.id === p.opponent.id),
+                    ),
+                  ],
+                  nextOpponents: previous.nextOpponents,
+                }
+              : next,
+          );
         }
         setError("");
         setConnected(true);
@@ -314,7 +327,7 @@ export function Multiplayer({
                         <span>
                           {match.result?.result ??
                             (match.status === "active"
-                              ? match.position.turn === match.yourColor
+                              ? match.turn === match.yourColor
                                 ? "Your turn"
                                 : "Their turn"
                               : match.status)}
@@ -329,6 +342,38 @@ export function Multiplayer({
                     {list.opponents.map((score) => (
                       <p key={score.opponent.id}>{h2h(user.name, score)}</p>
                     ))}
+                    {list.nextOpponents && (
+                      <button
+                        className="btn"
+                        disabled={busy}
+                        onClick={() => {
+                          const capturedScope = scope;
+                          void run(async () => {
+                            const page = await listGames(user.id, list.nextOpponents!);
+                            if (currentScope.current !== capturedScope) return;
+                            setList((previous) =>
+                              previous
+                                ? {
+                                    ...previous,
+                                    nextOpponents: page.nextOpponents,
+                                    opponents: [
+                                      ...previous.opponents,
+                                      ...page.opponents.filter(
+                                        (p) =>
+                                          !previous.opponents.some(
+                                            (old) => old.opponent.id === p.opponent.id,
+                                          ),
+                                      ),
+                                    ],
+                                  }
+                                : previous,
+                            );
+                          });
+                        }}
+                      >
+                        Load more opponents
+                      </button>
+                    )}
                   </>
                 )}
               </section>

@@ -4,6 +4,7 @@ import { Router } from "express";
 import { fromNodeHeaders } from "better-auth/node";
 import type { ChessAuth } from "./auth.js";
 import { ChatError, EphemeralChat } from "./chat.js";
+import { createMultiplayerSummaries } from "./multiplayer-summary.js";
 import { MultiplayerStateError, readMultiplayerState } from "./multiplayer-state.js";
 import { freshGame, reduceGame } from "../src/game/state.js";
 import type { Game } from "../src/game/types.js";
@@ -77,6 +78,7 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
  CREATE INDEX IF NOT EXISTS mp_events_due ON mp_events(due_at);
  CREATE TABLE IF NOT EXISTS mp_limits(user_id TEXT NOT NULL,bucket TEXT NOT NULL,window INTEGER NOT NULL,count INTEGER NOT NULL,PRIMARY KEY(user_id,bucket));
  `);
+  const summaries = createMultiplayerSummaries(db);
   const router = Router();
   const chat = new EphemeralChat();
   const origin = new URL(baseURL).origin;
@@ -163,6 +165,7 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
       row.black_delta,
       row.id,
     );
+    summaries.update(row);
   }
   function complete(row: Row, game: Game) {
     if (!game.over) return;
@@ -247,6 +250,35 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
     }
     next();
   });
+  router.get("/rating", (_req, res) => res.json(rating(res.locals.userId as string)));
+  router.get("/summaries", (req, res) => {
+    const user = res.locals.userId as string;
+    const cursor = req.query.after;
+    if (cursor !== undefined && (typeof cursor !== "string" || cursor.length > 128))
+      fail(400, "Invalid opponent page.");
+    const pairs = db
+      .prepare(
+        `SELECT high_id AS opponent FROM mp_pairs WHERE low_id=? AND high_id>?
+      UNION ALL SELECT low_id AS opponent FROM mp_pairs WHERE high_id=? AND low_id>?
+      ORDER BY opponent LIMIT 51`,
+      )
+      .all(user, cursor ?? "", user, cursor ?? "") as { opponent: string }[];
+    res.json({
+      games: summaries.list(user).map(({ whiteId, blackId, ...summary }) => ({
+        ...summary,
+        status:
+          summary.status === "waiting" && summary.expiresAt <= Date.now()
+            ? "expired"
+            : summary.status,
+        white: player(whiteId),
+        black: player(blackId),
+        yourColor: whiteId === user ? "w" : blackId === user ? "b" : null,
+      })),
+      rating: rating(user),
+      opponents: pairs.slice(0, 50).map((p) => pair(user, p.opponent)),
+      nextOpponents: pairs.length > 50 ? pairs[49].opponent : null,
+    });
+  });
   router.get("/", (_req, res) => {
     const user = res.locals.userId as string;
     const games = db
@@ -294,6 +326,7 @@ export function createMultiplayerRouter(db: Database.Database, auth: ChessAuth, 
         now,
         now + 7 * 86400_000,
       );
+      summaries.update(owned(id, user));
     }).immediate();
     res.status(201).json({ id, token });
   });

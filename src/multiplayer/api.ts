@@ -1,5 +1,11 @@
 import { json } from "../account/api";
-import type { MultiplayerGame, MultiplayerList, InviteColor, DrawAction } from "./types";
+import type {
+  MultiplayerGame,
+  MultiplayerList,
+  MultiplayerRating,
+  InviteColor,
+  DrawAction,
+} from "./types";
 import type { Move } from "../engine/types";
 export function multiplayerRequest<T>(userId: string, path: string, body?: unknown): Promise<T> {
   return json<T>(`/api/multiplayer${path}`, {
@@ -9,7 +15,13 @@ export function multiplayerRequest<T>(userId: string, path: string, body?: unkno
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
 }
-export const listGames = (userId: string) => multiplayerRequest<MultiplayerList>(userId, "");
+export const listGames = (userId: string, after?: string) =>
+  multiplayerRequest<MultiplayerList>(
+    userId,
+    `/summaries${after ? `?after=${encodeURIComponent(after)}` : ""}`,
+  );
+export const getMultiplayerRating = (userId: string) =>
+  multiplayerRequest<MultiplayerRating>(userId, "/rating");
 export const readGame = (userId: string, id: string) =>
   multiplayerRequest<MultiplayerGame>(userId, `/${encodeURIComponent(id)}`);
 export const createInvite = (userId: string, color: InviteColor) =>

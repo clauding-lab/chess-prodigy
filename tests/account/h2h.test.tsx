@@ -66,3 +66,60 @@ it("reports a failed refresh, recovers on retry, and discards history after sess
   act(() => result.current.refresh());
   await waitFor(() => expect(result.current.history?.opponents).toEqual([]));
 });
+
+it("loads bounded opponent pages and ignores a delayed page after switching accounts", async () => {
+  let finishPage!: (value: Response) => void;
+  const fetcher = vi
+    .fn()
+    .mockResolvedValueOnce(new Response(JSON.stringify({ ...results, nextOpponents: "opponent" })))
+    .mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          finishPage = resolve;
+        }),
+    )
+    .mockResolvedValueOnce(new Response(JSON.stringify({ ...results, opponents: [] })));
+  vi.stubGlobal("fetch", fetcher);
+  const { result, rerender } = renderHook(({ userId }) => useHeadToHead(userId, "/"), {
+    initialProps: { userId: "first" },
+  });
+  await waitFor(() => expect(result.current.history?.nextOpponents).toBe("opponent"));
+  act(() => result.current.history?.loadMore?.());
+  expect(fetcher.mock.calls[1][0]).toBe("/api/multiplayer/summaries?after=opponent");
+  rerender({ userId: "second" });
+  await waitFor(() => expect(result.current.history?.loading).toBe(false));
+  await act(async () => finishPage(new Response(JSON.stringify(results))));
+  expect(result.current.history?.opponents).toEqual([]);
+});
+
+it("appends another opponent page without changing lifetime totals", async () => {
+  vi.stubGlobal(
+    "fetch",
+    vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ ...results, nextOpponents: "opponent" })),
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            ...results,
+            opponents: [
+              {
+                ...results.opponents[0],
+                opponent: { ...results.opponents[0].opponent, id: "second" },
+                wins: 800,
+              },
+            ],
+            nextOpponents: null,
+          }),
+        ),
+      ),
+  );
+  const { result } = renderHook(() => useHeadToHead("first", "/"));
+  await waitFor(() => expect(result.current.history?.loading).toBe(false));
+  act(() => result.current.history?.loadMore?.());
+  await waitFor(() => expect(result.current.history?.opponents).toHaveLength(2));
+  expect(result.current.history?.opponents.map((p) => p.wins)).toEqual([1, 800]);
+  expect(result.current.history?.nextOpponents).toBeNull();
+});
