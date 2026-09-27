@@ -1,0 +1,63 @@
+{
+  "purpose": "cold-module-startup-only-no-search",
+  "platform": "darwin",
+  "architecture": "arm64",
+  "cpu": "Apple M5 Pro",
+  "browser": "154.0.8037.57",
+  "context": "fresh browser context per sample; service workers disabled; loopback network; filesystem/OS caches not cleared",
+  "actualPhone": false,
+  "results": [
+    {
+      "file": "engine.worker-CXdR5LKv.js",
+      "sha256": "6dbe79c6c3916a39083bb47baf2ea9c6c167d16968a9057a335d8228184f9f51",
+      "samplesMs": [
+        86.29999995231628,
+        72,
+        72.29999995231628,
+        72.69999980926514,
+        85.69999980926514
+      ],
+      "medianMs": 72.69999980926514,
+      "maximumMs": 86.29999995231628
+    },
+    {
+      "file": "fischer.worker-zZNSM36C.js",
+      "sha256": "8daaee05f813e0ee33b2728efbbad55e92de4815818181a42499aecc9d71bce7",
+      "samplesMs": [
+        54.89999985694885,
+        51.19999980926514,
+        50.10000014305115,
+        62,
+        51.30000019073486
+      ],
+      "medianMs": 51.30000019073486,
+      "maximumMs": 62
+    },
+    {
+      "file": "spassky.worker-DL8CjyrC.js",
+      "sha256": "d4462b310d9f959396240fa9c2645b8f6ab8348038eb55f548c50703f5f9d270",
+      "samplesMs": [
+        103.80000019073486,
+        106.20000004768372,
+        105.5,
+        105.60000014305115,
+        105
+      ],
+      "medianMs": 105.5,
+      "maximumMs": 106.20000004768372
+    },
+    {
+      "file": "tal.worker-D95GCTnn.js",
+      "sha256": "241ea9d5d1add4c4339ba613d1682efcc4f3ba7151bea6bd1fba86899047027d",
+      "samplesMs": [
+        133.70000004768372,
+        126,
+        129.20000004768372,
+        128.79999995231628,
+        172.10000014305115
+      ],
+      "medianMs": 129.20000004768372,
+      "maximumMs": 172.10000014305115
+    }
+  ]
+}
