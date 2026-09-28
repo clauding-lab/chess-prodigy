@@ -24,13 +24,16 @@ vi.mock("../../../src/engine/next/search", () => ({
     };
   },
 }));
+vi.mock("../../../src/engine/next/ordered-search", () => ({
+  searchNextOrdered: () => ({ kind: "incomplete", move: null, policy: "next-neutral-ordered-v1" }),
+}));
 const originalArgv = process.argv;
 afterEach(() => {
   process.argv = originalArgv;
   vi.restoreAllMocks();
 });
 
-async function run(ids: unknown[], mismatch?: "development" | "manifest") {
+async function run(ids: unknown[], mismatch?: "development" | "manifest", variant?: string) {
   vi.resetModules();
   state.time = 0;
   state.output = "";
@@ -63,6 +66,7 @@ async function run(ids: unknown[], mismatch?: "development" | "manifest") {
     return "source";
   });
   process.argv = ["node", "profile-next.ts", "unused.json"];
+  if (variant) process.argv.push(variant);
   vi.spyOn(console, "log").mockImplementation(() => {});
   await import("../../../scripts/engine-bench/profile-next");
   return JSON.stringify({ ...cohort, read: 1 });
@@ -82,6 +86,16 @@ it.each([ids.slice(1), [...ids.slice(1), "p1"], [...ids.slice(1), 4]])(
     expect(state.output).toBe("");
   },
 );
+it("uses the explicitly requested experimental policy and rejects unknown variants", async () => {
+  await run(ids, undefined, "ordered");
+  expect(
+    JSON.parse(state.output).rows.every(
+      (row: { result: { policy: string } }) => row.result.policy === "next-neutral-ordered-v1",
+    ),
+  ).toBe(true);
+  await expect(run(ids, undefined, "unknown")).rejects.toThrow("Unknown profile variant");
+  expect(state.output).toBe("");
+});
 it.each(["development", "manifest"] as const)(
   "rejects internally consistent input that no longer matches the frozen cohort %s hash",
   async (mismatch) => {

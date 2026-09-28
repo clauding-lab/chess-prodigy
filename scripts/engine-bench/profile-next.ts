@@ -3,14 +3,17 @@ import { cpus, platform, arch } from "node:os";
 import { performance } from "node:perf_hooks";
 import { START, applyMove, legalMoves, sanFor, toFEN } from "../../src/engine/board";
 import { searchNext } from "../../src/engine/next/search";
+import { searchNextOrdered } from "../../src/engine/next/ordered-search";
 import { digest, type Sample } from "./core";
 
 // Reuses only the already declared E0 development cohort. No validation input or tuning option.
 const dataset = "docs/verification/engine-improvement/e0-dataset-v1";
 const cohort =
   "docs/verification/engine-improvement/e0-development12-production-isolated-v1/run-manifest.json";
-const [output] = process.argv.slice(2);
-if (!output) throw new Error("Usage: profile-next.ts NEW_OUTPUT_JSON");
+const [output, variant = "reference"] = process.argv.slice(2);
+if (!output) throw new Error("Usage: profile-next.ts NEW_OUTPUT_JSON [reference|ordered]");
+if (variant !== "reference" && variant !== "ordered") throw new Error("Unknown profile variant");
+const search = variant === "ordered" ? searchNextOrdered : searchNext;
 const raw = readFileSync(`${dataset}/development.json`, "utf8");
 const manifestRaw = readFileSync(`${dataset}/manifest.json`, "utf8");
 const manifest = JSON.parse(manifestRaw);
@@ -34,6 +37,7 @@ if (
 const samples = JSON.parse(raw) as Sample[];
 const sourceFiles = [
   "src/engine/next/search.ts",
+  "src/engine/next/ordered-search.ts",
   "src/engine/board.ts",
   "src/engine/eval.ts",
   "src/engine/rules-v2.ts",
@@ -65,7 +69,7 @@ for (const id of selected) {
     ["strong", 2000],
   ] as const) {
     const started = performance.now();
-    const result = searchNext(position, prior, { maxDepth: 8, ms });
+    const result = search(position, prior, { maxDepth: 8, ms });
     const wallMs = performance.now() - started;
     if (
       result.move &&
@@ -81,6 +85,7 @@ writeFileSync(
     {
       schema: 1,
       purpose: "development-profile-only",
+      variant,
       source,
       datasetHash: digest(raw),
       cohortHash: digest(cohortRaw),

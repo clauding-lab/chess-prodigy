@@ -1,0 +1,118 @@
+import { readFileSync, writeFileSync } from "node:fs";
+import { START, applyMove, legalMoves, sanFor, toFEN } from "../../src/engine/board";
+import { searchNext } from "../../src/engine/next/search";
+import { searchNextOrdered } from "../../src/engine/next/ordered-search";
+import { digest, type Sample } from "./core";
+
+const [output] = process.argv.slice(2);
+if (!output) throw new Error("Usage: compare-ordering.ts NEW_OUTPUT_JSON");
+const dataset = "docs/verification/engine-improvement/e0-dataset-v1";
+const raw = readFileSync(`${dataset}/development.json`, "utf8");
+const manifest = JSON.parse(readFileSync(`${dataset}/manifest.json`, "utf8"));
+const cohortRaw = readFileSync(
+  "docs/verification/engine-improvement/e0-development12-production-isolated-v1/run-manifest.json",
+  "utf8",
+);
+const cohort = JSON.parse(cohortRaw);
+if (
+  digest(raw) !== manifest.partitions.development ||
+  digest(raw) !== cohort.developmentHash ||
+  digest(JSON.stringify(manifest)) !== cohort.datasetManifestHash ||
+  !Array.isArray(cohort.samples) ||
+  cohort.samples.length !== 12 ||
+  !cohort.samples.every((id: unknown) => typeof id === "string") ||
+  new Set(cohort.samples).size !== 12
+)
+  throw new Error("Frozen development cohort changed");
+const samples = JSON.parse(raw) as Sample[];
+const rows = [];
+for (const id of cohort.samples as string[]) {
+  const sample = samples.find((sample) => sample.id === id && sample.split === "development");
+  if (!sample) throw new Error("Missing development sample");
+  let position = START();
+  const prior: string[] = [];
+  for (const san of sample.history) {
+    prior.push(toFEN(position));
+    const move = legalMoves(position).find(
+      (move) => sanFor(position, move, applyMove(position, move)) === san,
+    );
+    if (!move) throw new Error("Illegal source history");
+    position = applyMove(position, move);
+  }
+  if (toFEN(position) !== sample.fen) throw new Error("Source position mismatch");
+  const options = { maxDepth: 3, ms: 1, now: () => 0, maxNodes: 5_000_000 };
+  const reference = searchNext(position, prior, options);
+  const candidate = searchNextOrdered(position, prior, options);
+  const complete = (result: typeof reference | typeof candidate) =>
+    result.kind === "completed" &&
+    result.phase === "forcing" &&
+    result.depth === 3 &&
+    result.interruption === null;
+  const scores = (result: typeof reference | typeof candidate) =>
+    result.candidates
+      .map(({ move, score }) => ({ key: JSON.stringify(move), score }))
+      .sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
+  const comparable = complete(reference) && complete(candidate);
+  const equal = comparable
+    ? JSON.stringify(scores(reference)) === JSON.stringify(scores(candidate))
+    : null;
+  rows.push({
+    id,
+    comparable,
+    equal,
+    reference: {
+      nodes: reference.nodes,
+      depth: reference.depth,
+      phase: reference.phase,
+      interruption: reference.interruption,
+      move: reference.move,
+      scores: scores(reference),
+    },
+    candidate: {
+      nodes: candidate.nodes,
+      depth: candidate.depth,
+      phase: candidate.phase,
+      interruption: candidate.interruption,
+      move: candidate.move,
+      scores: scores(candidate),
+    },
+  });
+}
+const source = Object.fromEntries(
+  [
+    "src/engine/next/search.ts",
+    "src/engine/next/ordered-search.ts",
+    "src/engine/board.ts",
+    "src/engine/eval.ts",
+    "src/engine/rules-v2.ts",
+    "scripts/engine-bench/compare-ordering.ts",
+  ].map((file) => [file, digest(readFileSync(file, "utf8"))]),
+);
+writeFileSync(
+  output,
+  JSON.stringify(
+    {
+      schema: 1,
+      purpose: "fixed-depth-development-comparison",
+      cohortHash: digest(cohortRaw),
+      developmentHash: digest(raw),
+      source,
+      node: process.version,
+      settings: {
+        maxDepth: 3,
+        maxNodes: 5_000_000,
+        clock: "constant-zero; not timing evidence",
+        forcingSafetyPlies: 12,
+      },
+      rows,
+    },
+    null,
+    2,
+  ) + "\n",
+  { flag: "wx" },
+);
+const mismatches = rows.filter((row) => row.equal === false).length;
+console.log(
+  JSON.stringify({ output, comparable: rows.filter((row) => row.comparable).length, mismatches }),
+);
+if (mismatches) process.exitCode = 1;
