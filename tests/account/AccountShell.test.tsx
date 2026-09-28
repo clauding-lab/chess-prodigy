@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { AccountShell } from "../../src/account/AccountShell";
 import { parseSessionInput } from "../../src/storage/input";
-import { accountStorageKey } from "../../src/account/sync";
+import { AccountSync, accountStorageKey } from "../../src/account/sync";
 import { freshSession, reduceSession } from "../../src/game/state";
 import { legalMoves } from "../../src/engine/board";
 import type { RequestInput, EngineResult } from "../../src/worker/protocol";
@@ -285,9 +285,10 @@ it("keeps a mounted account and its pending copy when temporary push cancellatio
     fireEvent.click(screen.getByRole("button", { name: "New game", exact: true }));
     fireEvent.click(screen.getByRole("button", { name: "Start", exact: true }));
     fireEvent.click(await screen.findByRole("button", { name: "Play temporarily without saving" }));
-    await waitFor(() => expect(push.unsubscribe).toHaveBeenCalledOnce());
-    await act(async () => push.finish(false));
-    expect(await screen.findByText(/Could not disable the previous account/)).toBeTruthy();
+    expect(
+      await screen.findByText(/Download the latest private recovery copy before temporary play/),
+    ).toBeTruthy();
+    expect(push.unsubscribe).not.toHaveBeenCalled();
     expect(screen.getByRole("button", { name: "Push Player", exact: true })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Download recovery copy" })).toBeTruthy();
     expect(screen.queryByText(/Temporary unrated play/)).toBeNull();
@@ -518,13 +519,77 @@ it("reaches private storage recovery and temporary play after signing in with un
     fireEvent.click(screen.getByRole("button", { name: "Sign in", exact: true }));
     expect(await screen.findByText(/This browser could not save all your changes/)).toBeTruthy();
     expect(signedIn).toBe(true);
-    fireEvent.click(screen.getByRole("button", { name: "New game", exact: true }));
-    fireEvent.click(await screen.findByRole("button", { name: "Start", exact: true }));
     fireEvent.click(await screen.findByRole("button", { name: "Play temporarily without saving" }));
     expect(await screen.findByText(/Temporary unrated play/)).toBeTruthy();
     expect(signedIn).toBe(false);
   } finally {
     denied.mockRestore();
     deniedWrite.mockRestore();
+  }
+});
+
+it("requires recovery before temporary play can discard memory-only pending account progress", async () => {
+  const push = blockedAccountWithPush();
+  push.grant();
+  render(<AccountShell />);
+  await screen.findByRole("button", { name: "Push Player", exact: true });
+  const failing = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+    throw Error("quota");
+  });
+  try {
+    fireEvent.click(screen.getByRole("button", { name: "New game", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Start", exact: true }));
+    fireEvent.click(await screen.findByRole("button", { name: "Play temporarily without saving" }));
+    await screen.findByText(/Download the latest private recovery copy before temporary play/);
+    expect(push.unsubscribe).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "Push Player", exact: true })).toBeTruthy();
+    expect(screen.queryByText(/Temporary unrated play/)).toBeNull();
+  } finally {
+    failing.mockRestore();
+  }
+});
+
+it("rechecks memory-only pending progress after asynchronous temporary push reconciliation", async () => {
+  const push = blockedAccountWithPush();
+  push.grant();
+  let sync: AccountSync | undefined;
+  const original = AccountSync.prototype.save;
+  const capture = vi.spyOn(AccountSync.prototype, "save").mockImplementation(function (
+    this: AccountSync,
+    ...args
+  ) {
+    sync = this;
+    return original.apply(this, args);
+  });
+  render(<AccountShell />);
+  await screen.findByRole("button", { name: "Push Player", exact: true });
+  let failing = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+    throw Error("quota");
+  });
+  try {
+    fireEvent.click(screen.getByRole("button", { name: "New game", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Start", exact: true }));
+    const temporary = await screen.findByRole("button", {
+      name: "Play temporarily without saving",
+    });
+    failing.mockRestore();
+    fireEvent.click(temporary);
+    await waitFor(() => expect(push.unsubscribe).toHaveBeenCalledOnce());
+    failing = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw Error("quota");
+    });
+    const newer = JSON.parse(sync!.exportRecovery()).snapshot;
+    newer.preferences.theme = "wood";
+    await act(async () => {
+      sync!.save(newer);
+      push.finish(true);
+    });
+    expect(await screen.findByText(/Progress changed while disabling alerts/)).toBeTruthy();
+    expect(screen.queryByText(/Temporary unrated play/)).toBeNull();
+    expect(JSON.parse(sync!.exportRecovery()).snapshot.preferences.theme).toBe("wood");
+    expect(sync!.status().pending).toBeGreaterThan(0);
+  } finally {
+    failing.mockRestore();
+    capture.mockRestore();
   }
 });

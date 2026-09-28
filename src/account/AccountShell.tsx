@@ -225,6 +225,18 @@ export function AccountShell() {
   }
 
   async function playTemporary() {
+    const previousSync = syncRef.current;
+    const recoveryRequired = () =>
+      previousSync !== null &&
+      previousSync.status().pending > 0 &&
+      !previousSync.retainForSignOut() &&
+      exportedAccountRecovery.current !== previousSync.exportRecovery();
+    if (recoveryRequired()) {
+      setTemporaryError(
+        "Download the latest private recovery copy before temporary play. Newer progress exists only in this tab.",
+      );
+      return;
+    }
     const requestId = ++accountRequest.current;
     lockWait.current?.abort();
     setBoot((previous) =>
@@ -245,8 +257,14 @@ export function AccountShell() {
         );
       return;
     }
-    if (requestId !== accountRequest.current) return;
-    syncRef.current?.dispose();
+    if (requestId !== accountRequest.current || syncRef.current !== previousSync) return;
+    if (recoveryRequired()) {
+      setTemporaryError(
+        "Progress changed while disabling alerts. Download the latest private recovery copy before temporary play.",
+      );
+      return;
+    }
+    previousSync?.dispose();
     syncRef.current = null;
     writer.current?.release();
     writer.current = null;
@@ -757,6 +775,13 @@ export function AccountShell() {
               >
                 Download recovery copy
               </button>
+              {syncStatus.state === "storage-error" &&
+                !account.initial.game.started &&
+                syncStatus.pending === 0 && (
+                  <button className="linkbtn" onClick={playTemporary}>
+                    Play temporarily without saving
+                  </button>
+                )}
               {syncStatus.canCompactRetry && (
                 <button
                   className="linkbtn"

@@ -148,3 +148,57 @@ it("transactionally restores a displaced archive after a rated mate is undone", 
     await f.close();
   }
 });
+
+it("retains exact compact acknowledgement and permanent policy6 through reset and server restart", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "chess-policy-restart-"));
+  const options = {
+    databasePath: join(directory, "db.sqlite"),
+    baseURL: origin,
+    secret: "restart-record-test-secret-at-least-32-characters",
+  };
+  let application = await createTestApplication(options);
+  try {
+    const signup = await request(application.app)
+      .post("/api/auth/sign-up/email")
+      .set("Origin", origin)
+      .send({ name: "Restart", email: "restart@example.test", password: "synthetic password only" })
+      .expect(200);
+    const cookie = (signup.headers["set-cookie"] as unknown as string[])
+      .map((value) => value.split(";")[0])
+      .join("; ");
+    const agent = () =>
+      request
+        .agent(application.app)
+        .set("Cookie", cookie)
+        .set("X-Chess-Account", signup.body.user.id);
+    const snapshot = encodeCompactSession(
+      reduceSession(freshSession(0, "retained"), { type: "resetRating" }),
+    );
+    const written = await agent()
+      .put("/api/records")
+      .set("Origin", origin)
+      .set("X-Chess-Rating-Policy", "6")
+      .send({ expectedVersion: 0, snapshot })
+      .expect(200);
+    await application.close();
+    application = await createTestApplication(options);
+    expect((await agent().get("/api/records").expect(200)).body).toEqual(written.body);
+    await agent()
+      .put("/api/records")
+      .set("Origin", origin)
+      .set("X-Chess-Rating-Policy", "5")
+      .send({ expectedVersion: 1, snapshot: freshSession(0, "incompatible") })
+      .expect(426);
+    const retry = await agent()
+      .put("/api/records")
+      .set("Origin", origin)
+      .set("X-Chess-Rating-Policy", "6")
+      .send({ expectedVersion: 0, snapshot })
+      .expect(409);
+    expect(retry.body.current).toEqual(written.body);
+    expect((await agent().get("/api/records").expect(200)).body).toEqual(written.body);
+  } finally {
+    await application.close();
+    await rm(directory, { recursive: true, force: true });
+  }
+});

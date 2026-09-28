@@ -1,6 +1,5 @@
+import { savedSession } from "./saved-session";
 import { expect, test } from "@playwright/test";
-import { SAVE_KEY } from "../../src/storage/store";
-import type { Session } from "../../src/game/types";
 
 const opponents = [
   {
@@ -45,8 +44,7 @@ for (const opponent of opponents)
           process.env.VITE_PERSONALITY_BETA !== "true",
           "Historical setup is intentionally default-off.",
         );
-        const saved = (): Promise<Session> =>
-          page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), SAVE_KEY);
+        const saved = () => savedSession(page);
         await page.goto("/");
         await page.getByRole("button", { name: `Play ${opponent.name}`, exact: true }).click();
         const setup = page.getByRole("dialog", { name: "New game", exact: true });

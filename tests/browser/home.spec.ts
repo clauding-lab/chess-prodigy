@@ -1,3 +1,4 @@
+import { savedSession } from "./saved-session";
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { freshSession, reduceSession } from "../../src/game/state";
@@ -63,7 +64,7 @@ test("a closed timed game expires on Home once before any resumed move", async (
   await page.goto("/");
   await expect(page.getByRole("button", { name: "View result", exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Resume game", exact: true })).toHaveCount(0);
-  const read = () => page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), SAVE_KEY);
+  const read = () => savedSession(page);
   expect((await read()).game.over.reason).toBe("Time out");
   expect((await read()).rating.games).toBe(1);
   await page.reload();
@@ -72,4 +73,41 @@ test("a closed timed game expires on Home once before any resumed move", async (
   await page.getByRole("button", { name: "View result", exact: true }).click();
   await expect(page.getByRole("dialog", { name: "Time out", exact: true })).toBeVisible();
   void context;
+});
+
+test("a closed computer turn expires as interrupted and never creates a rated win", async ({
+  page,
+}) => {
+  const now = Date.now() - 10000;
+  let session = reduceSession(freshSession(now, "interrupted-seed"), {
+    type: "new",
+    id: "closed-computer",
+    now,
+    setup: { playerColor: "w", level: "club", time: "5+0" },
+  });
+  session = reduceSession(session, {
+    type: "move",
+    move: legalMoves(session.game.st)[0],
+    book: false,
+    now: now + 1,
+  });
+  session.game.clocks = { w: 300000, b: 100 };
+  const rating = session.rating;
+  await page.addInitScript(
+    ({ value, key }) => {
+      if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(value));
+    },
+    { value: session, key: SAVE_KEY },
+  );
+  await page.goto("/");
+  await expect(page.getByRole("button", { name: "View result", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Resume game", exact: true })).toHaveCount(0);
+  const ended = await savedSession(page);
+  expect(ended.game.over?.reason).toBe("Time out");
+  expect(ended.game.ratingApplied).toBeNull();
+  expect(ended.rating).toEqual(rating);
+  expect(ended.game.unratedReason).toBe("engine-interrupted");
+  await page.reload();
+  await expect(page.getByRole("button", { name: "View result", exact: true })).toBeVisible();
+  expect((await savedSession(page)).rating).toEqual(rating);
 });

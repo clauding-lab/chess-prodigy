@@ -1,5 +1,6 @@
+import { savedSession, installReviewProbe, workerReviews } from "./saved-session";
 import { enterPlay } from "./enter-play";
-import { expect, test, type BrowserContext, type Page } from "@playwright/test";
+import { expect, test, type BrowserContext } from "@playwright/test";
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
@@ -12,7 +13,6 @@ import {
   plannedMorphyConfig,
 } from "../../src/engine/opponents";
 import { applyMove, legalMoves, sanFor, sqName } from "../../src/engine/board";
-import type { Session } from "../../src/game/types";
 
 async function startOrigin() {
   const root = resolve("dist");
@@ -66,8 +66,7 @@ async function startOrigin() {
   };
 }
 
-const saved = (page: Page): Promise<Session> =>
-  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v7")!));
+const saved = savedSession;
 
 function seedSession(
   profile: "Classic" | "Morphy" | "Measured Morphy" | "Historical Morphy" | "Planned Morphy",
@@ -187,8 +186,12 @@ for (const profile of [
           timeout: 20000,
         });
         const reviewed = await saved(reopened);
-        expect(Object.keys(reviewed.game.evals)).toHaveLength(reviewed.game.hist.length + 1);
-        for (const value of Object.values(reviewed.game.evals))
+        expect(
+          new Set(
+            (await workerReviews(reopened, reviewed.game.id)).map((value) => value.review.position),
+          ).size,
+        ).toBe(reviewed.game.hist.length + 1);
+        for (const value of await workerReviews(reopened, reviewed.game.id))
           expect(value.review?.purpose).toBe("neutral-review");
         expect(reviewed.rating).toEqual(before.rating);
         expect(reviewed.game.opponent).toEqual(before.game.opponent);
@@ -251,3 +254,6 @@ test("without a service worker, the stopped origin cannot reopen from HTTP cache
     }
   }
 });
+
+// Observe real review output; compact authority intentionally omits its derived cache.
+test.beforeEach(async ({ context }) => installReviewProbe(context));

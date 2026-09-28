@@ -1,8 +1,8 @@
+import { savedSession } from "./saved-session";
 import { enterPlay } from "./enter-play";
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-const saved = (page) =>
-  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v7")));
+const saved = savedSession;
 async function start(page, { strong = false, timed = false } = {}) {
   await page.goto("/");
   await enterPlay(page);
@@ -148,18 +148,23 @@ test("cached app reopens offline and calculates an out-of-book reply", async ({
   await expect(reopened.getByRole("dialog")).toContainText("Game review");
   await expect(reopened.getByRole("dialog")).not.toContainText("analysing…", { timeout: 15000 });
 });
-test("corrupt saves remain untouched during play until recovery is confirmed", async ({ page }) => {
+test("corrupt prior saves remain untouched until export and explicit recovery", async ({
+  page,
+}) => {
   await page.addInitScript(() => localStorage.setItem("chess-prodigy-state-v7", "broken"));
   await page.goto("/");
-  await enterPlay(page);
-  await page.getByRole("button", { name: "Start", exact: true }).click();
+  await expect(
+    page.getByText(/Saved game or recorded history could not be opened safely/),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Reset after downloading originals" }),
+  ).toBeDisabled();
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Download original saved data" }).click();
+  await download;
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "Reset after downloading originals" }).click();
+  await expect(page.getByRole("main", { name: "Chess Prodigy home" })).toBeVisible();
   expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v7"))).toBe("broken");
-  await expect(page.getByText(/damaged|corrupt|could not be read/i)).toBeVisible();
-  await page.getByRole("button", { name: "Enable saving", exact: true }).click();
-  await page
-    .getByRole("dialog")
-    .getByRole("button", { name: "Enable saving", exact: true })
-    .click();
-  expect((await saved(page)).version).toBe(2);
-  await expect(page.locator(".notice")).toHaveCount(0);
+  expect((await saved(page)).game.started).toBe(false);
 });

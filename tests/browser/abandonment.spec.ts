@@ -1,3 +1,4 @@
+import { savedSession } from "./saved-session";
 import { enterPlay } from "./enter-play";
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
@@ -38,8 +39,7 @@ test("new-game warning previews the loss and offers a safe return", async ({ pag
   await page.screenshot({ path: info.outputPath("abandonment-warning.png"), fullPage: true });
   await dialog.getByRole("button", { name: "Resume game", exact: true }).click();
   await expect(dialog).toHaveCount(0);
-  const read = () =>
-    page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v7")!));
+  const read = () => savedSession(page);
   expect((await read()).rating.rating).toBe(1500);
   expect((await read()).game.id).toBe("warning-preview");
   await page.getByRole("button", { name: "New game", exact: true }).click();

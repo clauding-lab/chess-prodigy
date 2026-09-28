@@ -37,7 +37,7 @@ test("opening and earlier move stories stay readable through play and a saved-ga
   await expect
     .poll(() =>
       page.evaluate(
-        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v7")!).game.hist.length,
+        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v8")!).game.moves.length,
       ),
     )
     .toBe(6);
@@ -52,7 +52,7 @@ test("opening and earlier move stories stay readable through play and a saved-ga
   expect(await reading.evaluate((element) => getComputedStyle(element).overflowY)).toBe(
     info.project.name === "mobile" ? "visible" : "auto",
   );
-  await reading.screenshot({ path: `docs/verification/${info.project.name}-coaching.png` });
+  await reading.screenshot({ path: info.outputPath("coaching.png") });
   await page.getByRole("button", { name: "New game", exact: true }).click();
   await page.getByRole("button", { name: "Forfeit and continue", exact: true }).click();
   await page.getByRole("button", { name: "Start", exact: true }).click();
@@ -78,7 +78,7 @@ test("a legal move slides before the engine replies, with reduced-motion support
     return {
       duration: animation?.effect?.getTiming().duration,
       transform: getComputedStyle(piece).transform,
-      moves: JSON.parse(localStorage.getItem("chess-prodigy-state-v7")!).game.hist.length,
+      moves: JSON.parse(localStorage.getItem("chess-prodigy-state-v8")!).game.moves.length,
     };
   });
   expect(motion.duration).toBe(350);
@@ -87,7 +87,7 @@ test("a legal move slides before the engine replies, with reduced-motion support
   await expect
     .poll(() =>
       page.evaluate(
-        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v7")!).game.hist.length,
+        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v8")!).game.moves.length,
       ),
     )
     .toBe(2);

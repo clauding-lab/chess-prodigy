@@ -85,15 +85,17 @@ test("name, both themes, layout and legal play", async ({ page }, info) => {
   await expect
     .poll(() =>
       page.evaluate(
-        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v7")).game.hist.length,
+        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v8")).game.moves.length,
       ),
     )
     .toBe(2);
   // Some legal book replies (e.g. 1...g6) are unnamed until a later move.
-  await expect(page.locator(".opening")).toContainText(/Still in book|In book, no named line yet/);
+  await expect(page.locator(".opening")).toContainText(
+    /Still in the coaching opening|In the coaching opening, no named line yet/,
+  );
   await expect(page.locator(".app")).toHaveAttribute("data-theme", "dark");
   await page.screenshot({
-    path: "docs/verification/" + info.project.name + "-dark.png",
+    path: info.outputPath("dark.png"),
     fullPage: true,
     animations: "disabled",
   });
@@ -101,7 +103,7 @@ test("name, both themes, layout and legal play", async ({ page }, info) => {
   await expect(page.locator(".app")).toHaveAttribute("data-theme", "wood");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({
-    path: "docs/verification/" + info.project.name + "-wood.png",
+    path: info.outputPath("wood.png"),
     fullPage: true,
     animations: "disabled",
   });
@@ -176,7 +178,7 @@ test("clock catches up after delayed callbacks and preserves timeout", async ({ 
   await expect
     .poll(() =>
       page.evaluate(
-        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v7")).game.hist.length,
+        () => JSON.parse(localStorage.getItem("chess-prodigy-state-v8")).game.moves.length,
       ),
     )
     .toBe(2);

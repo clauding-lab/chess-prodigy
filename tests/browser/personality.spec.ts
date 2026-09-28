@@ -1,3 +1,4 @@
+import { savedSession, installReviewProbe, workerReviews } from "./saved-session";
 import { enterPlay } from "./enter-play";
 import { expect, test, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
@@ -7,8 +8,7 @@ import { morphyConfig } from "../../src/engine/opponents";
 import { legalMoves, sqName } from "../../src/engine/board";
 import type { Session } from "../../src/game/types";
 
-const saved = (page: Page): Promise<Session> =>
-  page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v7")!));
+const saved = savedSession;
 function beta(color: "w" | "b" = "w") {
   const now = Date.now();
   const s = reduceSession(freshSession(now, "initial"), {
@@ -110,9 +110,11 @@ for (const color of ["w", "b"] as const)
     await page.getByRole("button", { name: "Review game", exact: true }).click();
     await expect(page.getByRole("dialog")).not.toContainText("analysing…", { timeout: 20000 });
     const reviewed = await saved(page);
-    expect(Object.values(reviewed.game.evals).length).toBeGreaterThan(0);
+    expect((await workerReviews(page, reviewed.game.id)).length).toBeGreaterThan(0);
     expect(
-      Object.values(reviewed.game.evals).every((e) => e.review?.purpose === "neutral-review"),
+      (await workerReviews(page, reviewed.game.id)).every(
+        (e) => e.review?.purpose === "neutral-review",
+      ),
     ).toBe(true);
     expect(reviewed.rating).toEqual(before.rating);
     expect(reviewed.game).toMatchObject({
@@ -197,9 +199,12 @@ test("account Morphy resume and terminal archive retain identity without rating 
     assisted: false,
   });
   expect(records.snapshot.rating).toEqual(s.rating);
-  expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v7"))).toBeNull();
+  expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v8"))).toBeNull();
   await page.reload();
   await enterPlay(page);
   await expect(page.getByRole("dialog")).toContainText("Unrated beta");
   expect((await get()).games).toHaveLength(1);
 });
+
+// Observe real review output; compact authority intentionally omits its derived cache.
+test.beforeEach(async ({ context }) => installReviewProbe(context));

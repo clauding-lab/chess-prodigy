@@ -12,6 +12,10 @@ import type { RequestInput } from "../../src/worker/protocol";
 import { executeEngineRequest } from "../../src/worker/execute";
 const jobs = vi.hoisted(() => [] as RequestInput[]);
 const pwa = vi.hoisted(() => ({ need: false, update: vi.fn() }));
+vi.mock("../../src/ui/update-gate", async (original) => ({
+  ...(await original<typeof import("../../src/ui/update-gate")>()),
+  soleAppClient: vi.fn(async () => true),
+}));
 vi.mock("virtual:pwa-register/react", () => ({
   useRegisterSW: () => ({
     needRefresh: [pwa.need, vi.fn()],
@@ -149,7 +153,7 @@ it("resumes a saved beta before its first move even with the flag disabled", () 
   expect(saved().game.id).toBe("unstarted-beta");
 });
 
-it("allows an explicit compatible-app update for a read-only game only after recovery export", () => {
+it("allows an explicit compatible-app update for a read-only game only after recovery export", async () => {
   const s = freshSession(Date.now(), "unavailable-update");
   s.game.opponent.version = 99;
   const raw = JSON.stringify(s);
@@ -166,11 +170,12 @@ it("allows an explicit compatible-app update for a read-only game only after rec
   const click = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
   render(<App />);
   fireEvent.click(screen.getByRole("button", { name: "Update now", exact: true }));
+  await screen.findByText("Could not save your game. The update has been postponed.");
   expect(pwa.update).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole("button", { name: "Download recovery save" }));
   expect(create).toHaveBeenCalledOnce();
   expect(click).toHaveBeenCalledOnce();
   fireEvent.click(screen.getByRole("button", { name: "Update now", exact: true }));
-  expect(pwa.update).toHaveBeenCalledWith(true);
+  await waitFor(() => expect(pwa.update).toHaveBeenCalledWith(true));
   expect(localStorage.getItem(SAVE_KEY)).toBe(raw);
 });

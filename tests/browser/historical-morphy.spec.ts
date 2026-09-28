@@ -1,13 +1,12 @@
+import { savedSession } from "./saved-session";
 import { expect, test, type Page } from "@playwright/test";
 import { freshSession, reduceSession } from "../../src/game/state";
 import { historicalMorphyConfig } from "../../src/engine/opponents";
 import { applyMove, legalMoves, sanFor } from "../../src/engine/board";
-import { SAVE_KEY, HISTORICAL_SAVE_KEY } from "../../src/storage/store";
-import type { Session } from "../../src/game/types";
+import { HISTORICAL_SAVE_KEY } from "../../src/storage/store";
 import { enterPlay } from "./enter-play";
 
-const saved = (page: Page): Promise<Session> =>
-  page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), SAVE_KEY);
+const saved = savedSession;
 async function move(page: Page, from: string, to: string) {
   await page.getByRole("button", { name: new RegExp(`^${from},`) }).click();
   await page.getByRole("button", { name: new RegExp(`^${to},`) }).click();

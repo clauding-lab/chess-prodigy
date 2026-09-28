@@ -1,3 +1,4 @@
+import { savedSession } from "./saved-session";
 import { enterPlay } from "./enter-play";
 import { expect, test } from "@playwright/test";
 import { createHash } from "node:crypto";
@@ -78,9 +79,9 @@ test("account records restore on another session while guest play stays isolated
   await enterPlay(second);
   await expect(second.getByRole("dialog", { name: "New game" })).toBeVisible();
   await expect
-    .poll(() => second.evaluate(() => localStorage.getItem("chess-prodigy-state-v7")))
+    .poll(() => second.evaluate(() => localStorage.getItem("chess-prodigy-state-v8")))
     .not.toBeNull();
-  const guestBefore = await second.evaluate(() => localStorage.getItem("chess-prodigy-state-v7"));
+  const guestBefore = await savedSession(second);
   await second
     .getByRole("dialog", { name: "New game" })
     .getByRole("button", { name: "Sign in" })
@@ -99,9 +100,7 @@ test("account records restore on another session while guest play stays isolated
   await expect(second.getByRole("dialog", { name })).toContainText("Resignation");
   await second.getByRole("button", { name: "Sign out" }).click();
   await expect(second.getByRole("button", { name: "Sign in" }).first()).toBeVisible();
-  expect(await second.evaluate(() => localStorage.getItem("chess-prodigy-state-v7"))).toBe(
-    guestBefore,
-  );
+  expect(await savedSession(second)).toEqual(guestBefore);
   await other.close();
 
   await page.getByRole("button", { name: "View board" }).click();
@@ -141,6 +140,8 @@ test("a tab mounted for one account cannot sync after the shared browser session
 
   const replacement = await context.newPage();
   await replacement.goto("/");
+  await replacement.getByRole("button", { name: "Take over in this tab" }).click();
+  await expect(page.getByRole("button", { name: "Take over in this tab" })).toBeVisible();
   await enterPlay(replacement);
   await replacement
     .getByRole("dialog", { name: "New game" })
@@ -151,12 +152,8 @@ test("a tab mounted for one account cannot sync after the shared browser session
   await createAccount(replacement, `New ${suffix}`, `new-${suffix}@example.com`);
   await replacement.waitForTimeout(1200);
 
-  await page.getByRole("button", { name: "Start", exact: true }).click();
-  await page.getByRole("button", { name: "e2, white pawn" }).click();
-  await page.getByRole("button", { name: "e4, empty" }).click();
-  await expect(page.getByRole("button", { name: "Sign in again" }).first()).toBeVisible({
-    timeout: 5000,
-  });
+  await expect(page.getByRole("button", { name: "Take over in this tab" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Start", exact: true })).toHaveCount(0);
 
   const replacementSession = await replacement.evaluate(async () =>
     fetch("/api/auth/get-session").then((response) => response.json()),
@@ -182,6 +179,7 @@ test("a cloud conflict stays actionable above an open setup dialog", async ({
   await enterPlay(page);
   await createAccount(page, `Conflict ${suffix}`, email);
   await page.getByRole("button", { name: "Start", exact: true }).click();
+  await page.getByRole("button", { name: "Live", exact: true }).click();
   await page.getByRole("button", { name: "e2, white pawn" }).click();
   await page.getByRole("button", { name: "e4, empty" }).click();
   await expect(page.locator(".status")).toContainText("Your move");
@@ -195,7 +193,7 @@ test("a cloud conflict stays actionable above an open setup dialog", async ({
 
   await page.getByRole("button", { name: "Wooden board" }).click();
   await page.waitForTimeout(1200);
-  await other.getByRole("button", { name: "Wooden board" }).click();
+  await other.getByRole("button", { name: "Flip", exact: true }).click();
   await other.getByRole("button", { name: "New game", exact: true }).click();
   const conflict = other.getByRole("dialog", { name: "Progress changed on another device" });
   await expect(conflict).toBeVisible({ timeout: 5000 });

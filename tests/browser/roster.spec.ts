@@ -1,3 +1,4 @@
+import { savedSession, installReviewProbe, workerReviews } from "./saved-session";
 import { createHash } from "node:crypto";
 import { expect, test, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
@@ -5,10 +6,8 @@ import { ROSTER_IDS, ROSTER_NAMES, rosterConfig } from "../../src/engine/opponen
 import { SAVE_KEY } from "../../src/storage/store";
 import { legalMoves, sqName } from "../../src/engine/board";
 import { freshSession, reduceSession } from "../../src/game/state";
-import type { Session } from "../../src/game/types";
 import { enterPlay } from "./enter-play";
-const saved = (page: Page): Promise<Session> =>
-  page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), SAVE_KEY);
+const saved = savedSession;
 async function move(page: Page, from: string, to: string) {
   await page.getByRole("button", { name: new RegExp(`^${from},`) }).click();
   await page.getByRole("button", { name: new RegExp(`^${to},`) }).click();
@@ -128,9 +127,11 @@ for (const id of ROSTER_IDS)
         await page.getByRole("button", { name: "Review game", exact: true }).click();
         await expect(page.getByRole("dialog")).not.toContainText("analysing…", { timeout: 20000 });
         const reviewed = await saved(page);
-        expect(Object.values(reviewed.game.evals).length).toBeGreaterThan(0);
+        expect((await workerReviews(page, reviewed.game.id)).length).toBeGreaterThan(0);
         expect(
-          Object.values(reviewed.game.evals).every((e) => e.review?.purpose === "neutral-review"),
+          (await workerReviews(page, reviewed.game.id)).every(
+            (e) => e.review?.purpose === "neutral-review",
+          ),
         ).toBe(true);
         expect(reviewed.rating).toEqual(before.rating);
         const offline = await timings();
@@ -171,7 +172,7 @@ for (const id of ROSTER_IDS)
       });
 
 for (const id of ROSTER_IDS)
-  test(`account ${id} preserves an assisted unrated archive and policy5 after reset`, async ({
+  test(`account ${id} preserves an assisted unrated archive and upgraded policy6 after reset`, async ({
     page,
     context,
   }, info) => {
@@ -256,7 +257,7 @@ for (const id of ROSTER_IDS)
     expect(
       (
         await page.request.put(`${origin}/api/records`, {
-          headers,
+          headers: { ...headers, "X-Chess-Rating-Policy": "6" },
           data: { expectedVersion: current.version, snapshot: reset },
         })
       ).status(),
@@ -264,7 +265,7 @@ for (const id of ROSTER_IDS)
     expect(
       (
         await page.request.put(`${origin}/api/records`, {
-          headers: { ...headers, "X-Chess-Rating-Policy": "4" },
+          headers: { ...headers, "X-Chess-Rating-Policy": "5" },
           data: { expectedVersion: current.version + 1, snapshot: reset },
         })
       ).status(),
@@ -272,3 +273,6 @@ for (const id of ROSTER_IDS)
     await context.clearCookies();
     expect((await page.request.get(`${origin}/api/records`, { headers })).status()).toBe(401);
   });
+
+// Observe real review output; compact authority intentionally omits its derived cache.
+test.beforeEach(async ({ context }) => installReviewProbe(context));

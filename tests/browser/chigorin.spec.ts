@@ -1,3 +1,4 @@
+import { savedSession, installReviewProbe, workerReviews } from "./saved-session";
 import { createHash } from "node:crypto";
 import { expect, test, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
@@ -8,17 +9,17 @@ import { SAVE_KEY } from "../../src/storage/store";
 import { GUEST_HISTORY_KEY } from "../../src/storage/history";
 import { applyMove, legalMoves, sanFor, sqName } from "../../src/engine/board";
 import { freshSession, reduceSession } from "../../src/game/state";
-import type { Session } from "../../src/game/types";
 import { enterPlay } from "./enter-play";
 
-const saved = (page: Page): Promise<Session> =>
-  page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), SAVE_KEY);
+const saved = savedSession;
 async function move(page: Page, from: string, to: string) {
   await page.getByRole("button", { name: new RegExp(`^${from},`) }).click();
   await page.getByRole("button", { name: new RegExp(`^${to},`) }).click();
 }
 
-test("Chigorin follows the build flag and exposes its accepted measured setup", async ({ page }) => {
+test("Chigorin follows the build flag and exposes its accepted measured setup", async ({
+  page,
+}) => {
   await page.goto("/");
   const play = page.getByRole("button", { name: "Play Mikhail Chigorin", exact: true });
   if (process.env.VITE_PERSONALITY_BETA !== "true") {
@@ -286,9 +287,9 @@ for (const color of ["w", "b"] as const)
     await page.getByRole("button", { name: "Review game", exact: true }).click();
     await expect(page.getByRole("dialog")).not.toContainText("analysing…", { timeout: 20000 });
     const reviewed = await saved(page);
-    expect(Object.values(reviewed.game.evals).length).toBeGreaterThan(0);
+    expect((await workerReviews(page, reviewed.game.id)).length).toBeGreaterThan(0);
     expect(
-      Object.values(reviewed.game.evals).every(
+      (await workerReviews(page, reviewed.game.id)).every(
         (evaluation) => evaluation.review?.purpose === "neutral-review",
       ),
     ).toBe(true);
@@ -301,3 +302,6 @@ for (const color of ["w", "b"] as const)
     });
     await context.setOffline(false);
   });
+
+// Observe real review output; compact authority intentionally omits its derived cache.
+test.beforeEach(async ({ context }) => installReviewProbe(context));

@@ -1,3 +1,4 @@
+import { savedSession } from "./saved-session";
 import { enterPlay } from "./enter-play";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
@@ -12,8 +13,7 @@ import type { Session, Setup } from "../../src/game/types";
 
 const STATE_KEY = "chess-prodigy-state-v7";
 const accountBase = "http://127.0.0.1:4318";
-const saved = (page: Page): Promise<Session> =>
-  page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), STATE_KEY);
+const saved = savedSession;
 
 function fixture(id: string, setup: Partial<Setup> = {}, completed = false): Session {
   const now = Date.now();

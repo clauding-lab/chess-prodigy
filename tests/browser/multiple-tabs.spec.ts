@@ -90,7 +90,20 @@ test("corrupt history blocks mutation and exports original bytes before reset", 
   await expect(page.getByRole("main", { name: "Chess Prodigy home" })).toBeVisible();
 });
 
-test("blocked browser storage offers isolated temporary play", async ({ page }) => {
+test("blocked browser storage offers isolated temporary play after explicit identity recovery", async ({
+  page,
+}) => {
+  const origin = "http://127.0.0.1:4318";
+  const email = `storage-${Date.now()}@example.com`;
+  const password = "correct horse battery staple";
+  expect(
+    (
+      await page.request.post(`${origin}/api/auth/sign-up/email`, {
+        headers: { Origin: origin },
+        data: { name: "Storage", email, password },
+      })
+    ).ok(),
+  ).toBe(true);
   await page.addInitScript(() => {
     Storage.prototype.getItem = () => {
       throw new DOMException("blocked", "SecurityError");
@@ -99,8 +112,15 @@ test("blocked browser storage offers isolated temporary play", async ({ page }) 
       throw new DOMException("blocked", "SecurityError");
     };
   });
-  await page.goto("/");
-  await expect(page.getByText(/recorded history could not be opened safely/)).toBeVisible();
+  await page.goto(origin);
+  await page.getByRole("button", { name: "End server session and recover sign-in" }).click();
+  await page.getByLabel("Email").fill(email);
+  await page.getByLabel("Password").fill(password);
+  await page
+    .getByRole("dialog", { name: "Sign in", exact: true })
+    .getByRole("button", { name: "Sign in", exact: true })
+    .click();
+  await expect(page.getByText(/This browser could not save all your changes/)).toBeVisible();
   await page.getByRole("button", { name: "Play temporarily without saving" }).click();
   await expect(page.getByRole("main", { name: "Chess Prodigy home" })).toBeVisible();
   await expect(page.getByText(/Temporary unrated play/)).toBeVisible();
@@ -142,7 +162,9 @@ test.describe("account ownership", () => {
     await expect(second.getByRole("button", { name: "Second", exact: true })).toBeVisible();
     // This stale tab still targets First; server ownership must reject loading Second's data.
     await page.getByRole("button", { name: "Take over in this tab" }).click();
-    await expect(page.getByText(/account session changed/)).toBeVisible();
+    await expect(
+      page.getByText(/Could not clear this device’s previous account alerts/),
+    ).toBeVisible();
     const record = await context.request.get("http://127.0.0.1:4318/api/records", {
       headers: { "X-Chess-Account": nextId },
     });
