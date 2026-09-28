@@ -758,7 +758,7 @@ it("migrates legacy policy rows additively and raises policy atomically for assi
       now: 1,
     });
     historical = reduceSession(historical, { type: "resign", now: 2 });
-    for (const policy of [undefined, "1", "7", "02"]) await put(2, historical, policy).expect(426);
+    for (const policy of [undefined, "1", "8", "02"]) await put(2, historical, policy).expect(426);
     await put(1, historical, "2").expect(409);
     // A conflicting or rejected attempt must not raise protection or archive anything.
     await put(2, freshSession(0, "still-legacy-policy"), "1").expect(200);
@@ -778,7 +778,7 @@ it("migrates legacy policy rows additively and raises policy atomically for assi
       { type: "resetRating" },
     );
     await put(4, reset, "2").expect(200);
-    for (const policy of [undefined, "1", "7"])
+    for (const policy of [undefined, "1", "8"])
       await put(5, freshSession(4, "old-device"), policy).expect(426);
     expect((await agent.get("/api/records")).body).toMatchObject({ version: 5, snapshot: reset });
     const inspect = new Database(database.path);
@@ -854,7 +854,7 @@ it("permanently requires policy 3 after accepting an assisted planned Morphy sav
       if (policy !== undefined) call.set("X-Chess-Rating-Policy", policy);
       return call.send({ expectedVersion, snapshot });
     };
-    for (const policy of [undefined, "1", "2", "7", "02"])
+    for (const policy of [undefined, "1", "2", "8", "02"])
       await put(0, planned, policy).expect(426);
     await put(1, planned, "3").expect(409);
     await put(0, freshSession(1, "pre-floor"), "2").expect(200);
@@ -871,7 +871,7 @@ it("permanently requires policy 3 after accepting an assisted planned Morphy sav
       { type: "resetRating" },
     );
     await put(2, reset, "3").expect(200);
-    for (const policy of [undefined, "1", "2", "7", "02"])
+    for (const policy of [undefined, "1", "2", "8", "02"])
       await put(3, freshSession(3, "older-client"), policy).expect(426);
     expect((await agent.get("/api/records")).body).toMatchObject({ version: 3, snapshot: reset });
     const inspect = new Database(database.path);
@@ -968,7 +968,7 @@ it("permanently requires policy4 after assisted Chigorin including reset and ser
         .set("Origin", BASE_URL)
         .set("X-Chess-Rating-Policy", policy)
         .send({ expectedVersion: version, snapshot });
-    for (const policy of ["1", "2", "3", "04", "7"]) await put(0, assisted, policy).expect(426);
+    for (const policy of ["1", "2", "3", "04", "8"]) await put(0, assisted, policy).expect(426);
     const accepted = await put(0, assisted, "4").expect(200);
     expect(JSON.stringify(accepted.body.snapshot)).toBe(JSON.stringify(assisted));
     const reset = reduceSession(freshSession(1, "classic-reset"), { type: "resetRating" });
@@ -1047,7 +1047,7 @@ for (const rosterId of ["spassky", "tal", "fischer"] as const)
           .set("Origin", BASE_URL)
           .set("X-Chess-Rating-Policy", policy)
           .send({ expectedVersion: version, snapshot });
-      for (const policy of ["1", "2", "3", "4", "05", "7"])
+      for (const policy of ["1", "2", "3", "4", "05", "8"])
         await put(0, assisted, policy).expect(426);
       const accepted = await put(0, assisted, "5").expect(200);
       expect(JSON.stringify(accepted.body.snapshot)).toBe(JSON.stringify(assisted));

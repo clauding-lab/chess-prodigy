@@ -79,7 +79,7 @@ test("account records restore on another session while guest play stays isolated
   await enterPlay(second);
   await expect(second.getByRole("dialog", { name: "New game" })).toBeVisible();
   await expect
-    .poll(() => second.evaluate(() => localStorage.getItem("chess-prodigy-state-v8")))
+    .poll(() => second.evaluate(() => localStorage.getItem("chess-prodigy-state-v9")))
     .not.toBeNull();
   const guestBefore = await savedSession(second);
   await second

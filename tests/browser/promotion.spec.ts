@@ -59,7 +59,7 @@ test("promotion picker closes on timeout and never commits a late promotion", as
   await expect(page.getByRole("button", { name: "Promote to queen" })).toHaveCount(0);
   expect(
     await page.evaluate(
-      () => JSON.parse(localStorage.getItem("chess-prodigy-state-v8")!).game.moves.length,
+      () => JSON.parse(localStorage.getItem("chess-prodigy-state-v9")!).game.moves.length,
     ),
   ).toBe(8);
 });

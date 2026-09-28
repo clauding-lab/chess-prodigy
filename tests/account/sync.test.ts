@@ -408,7 +408,7 @@ it("migrates the v4 pending queue into v6 and sends policy 4 with the same owner
   const sent: number[] = [];
   const sync = new AccountSync("user", storage, async (_url, init) => {
     const headers = new Headers(init?.headers);
-    expect(headers.get("X-Chess-Rating-Policy")).toBe("6");
+    expect(headers.get("X-Chess-Rating-Policy")).toBe("7");
     expect(headers.get("X-Chess-Account")).toBe("user");
     const body = JSON.parse(String(init?.body));
     sent.push(body.expectedVersion);

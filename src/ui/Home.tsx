@@ -1,7 +1,13 @@
 import type { Game, Preferences } from "../game/types";
 import type { Rating } from "../rating/fide";
 import { LEVEL_LABEL } from "../rating/fide";
-import { opponentName, isSupportedOpponent, ROSTER_IDS, ROSTER_NAMES } from "../engine/opponents";
+import {
+  opponentName,
+  isSupportedOpponent,
+  isExperimentalOpponent,
+  ROSTER_IDS,
+  ROSTER_NAMES,
+} from "../engine/opponents";
 import { GLYPH } from "./Board";
 import { ROSTER_RATINGS, CHIGORIN_RATINGS, PLANNED_MORPHY_RATINGS } from "../rating/opponents";
 import type { SetupDraft } from "./Modals";
@@ -33,6 +39,7 @@ export function Home({
   rating,
   preferences,
   betaEnabled,
+  experimentEnabled = false,
   canResume,
   onPlay,
   onResume,
@@ -44,6 +51,7 @@ export function Home({
   rating: Rating;
   preferences: Preferences;
   betaEnabled: boolean;
+  experimentEnabled?: boolean;
   canResume: boolean;
   onPlay(opponent?: SetupDraft["opponentId"]): void;
   onResume(): void;
@@ -77,6 +85,9 @@ export function Home({
                       openings and designed plans.
                     </p>
                   )}
+                {isExperimentalOpponent(game.opponent) && (
+                  <p className="home-caption">Experimental opponent · Unrated</p>
+                )}
                 {game.clocks ? (
                   <>
                     <div className="home-clocks" aria-label="Game clocks">
@@ -278,6 +289,9 @@ export function Home({
                     <span className="sr-only">(opens in a new tab)</span>
                   </a>
                 </p>
+                {experimentEnabled && (id === "tal" || id === "fischer") && (
+                  <p className="home-caption">Experimental opponent · Unrated</p>
+                )}
                 {!ROSTER_RATINGS[id] && (
                   <p className="home-caption">
                     Strength measurement is pending. New games are not available yet.

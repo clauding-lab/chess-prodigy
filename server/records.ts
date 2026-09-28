@@ -17,7 +17,12 @@ import { archiveGame } from "../src/game/archive.js";
 import { parseGameRecord, parseArchiveEviction } from "../src/account/records.js";
 import type { ChessAuth } from "./auth.js";
 
-import { isRatedOpponent, isRosterOpponent, isSupportedOpponent } from "../src/engine/opponents.js";
+import {
+  isExperimentalOpponent,
+  isRatedOpponent,
+  isRosterOpponent,
+  isSupportedOpponent,
+} from "../src/engine/opponents.js";
 
 const MAX_SNAPSHOT_BYTES = 256 * 1024;
 const MAX_HISTORY = 500;
@@ -279,6 +284,7 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
         .get(userId) as { minimum_policy: number } | undefined;
       const requiredPolicy = Math.max(
         policyRow?.minimum_policy ?? 0,
+        isExperimentalOpponent(snapshot.game.opponent) ? 7 : 0,
         compact || repairMetadata ? 6 : 0,
         roster
           ? 5
@@ -301,7 +307,8 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
             capability === "3" ||
             capability === "4" ||
             capability === "5" ||
-            capability === "6") &&
+            capability === "6" ||
+            capability === "7") &&
           Number(capability) >= requiredPolicy
         )
       )
@@ -309,7 +316,14 @@ export function createRecordsRouter(database: Database.Database, auth: ChessAuth
       // Incompatible clients must update even when their record version is stale.
       // Do not expose a conflict action that they cannot safely resolve.
       if (version !== body.expectedVersion) return "conflict";
-      if (compact || repairMetadata || measured || chigorin || roster)
+      if (
+        compact ||
+        repairMetadata ||
+        measured ||
+        chigorin ||
+        roster ||
+        isExperimentalOpponent(snapshot.game.opponent)
+      )
         database
           .prepare(
             `INSERT INTO record_client_policy(user_id, minimum_policy) VALUES (?, ?)

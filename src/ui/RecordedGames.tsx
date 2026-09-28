@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { GameRecord } from "../account/types";
-import { isRosterId, isSupportedOpponent, opponentName } from "../engine/opponents";
+import {
+  isRosterId,
+  isSupportedOpponent,
+  isExperimentalOpponent,
+  opponentName,
+} from "../engine/opponents";
 import {
   ARCHIVE_LIMIT,
   replayRecord,
@@ -22,6 +27,7 @@ export interface RecordedGamesModalProps {
   target: Rival;
   scope: "guest" | "account";
   betaEnabled: boolean;
+  experimentEnabled?: boolean;
   onRematch(record: GameRecord): void;
   onClose(): void;
   onRetry(): void;
@@ -29,9 +35,14 @@ export interface RecordedGamesModalProps {
   error: string | null;
 }
 
-export function canRematch(record: Pick<GameRecord, "opponent">, betaEnabled: boolean): boolean {
+export function canRematch(
+  record: Pick<GameRecord, "opponent">,
+  betaEnabled: boolean,
+  experimentEnabled = false,
+): boolean {
   return (
     isSupportedOpponent(record.opponent) &&
+    (!isExperimentalOpponent(record.opponent) || experimentEnabled) &&
     (record.opponent.id === "classic" || betaEnabled) &&
     (record.opponent.id !== "chigorin" || CHIGORIN_RATINGS !== null) &&
     (!isRosterId(record.opponent.id) || ROSTER_RATINGS[record.opponent.id] !== null)
@@ -234,6 +245,7 @@ export function RecordedGamesModal({
   target,
   scope,
   betaEnabled,
+  experimentEnabled = false,
   onRematch,
   onClose,
   onRetry,
@@ -392,15 +404,15 @@ export function RecordedGamesModal({
                 className="btn"
                 type="button"
                 aria-label={`Rematch recorded game ${index + 1}`}
-                disabled={!canRematch(record, betaEnabled)}
+                disabled={!canRematch(record, betaEnabled, experimentEnabled)}
                 onClick={() => {
-                  if (canRematch(record, betaEnabled)) onRematch(record);
+                  if (canRematch(record, betaEnabled, experimentEnabled)) onRematch(record);
                 }}
               >
                 Rematch
               </button>
             </div>
-            {!canRematch(record, betaEnabled) && (
+            {!canRematch(record, betaEnabled, experimentEnabled) && (
               <p className="recorded-caption">
                 {isSupportedOpponent(record.opponent)
                   ? isRosterId(record.opponent.id) && !ROSTER_RATINGS[record.opponent.id]

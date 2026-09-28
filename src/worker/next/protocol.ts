@@ -27,6 +27,24 @@ export function nextHistoryIdentity(history: readonly string[]): string {
 const moveKey = (move: Move) =>
   JSON.stringify([move.from, move.to, move.promo, move.capture, move.ep, move.double, move.castle]);
 const natural = (value: number) => Number.isSafeInteger(value) && value >= 0;
+export function nextRootTerminal(
+  position: Position,
+  history: readonly string[],
+  moves = legalMoves(position),
+) {
+  const key = posKey(position);
+  return !moves.length
+    ? inCheck(position, position.turn)
+      ? "checkmate"
+      : "stalemate"
+    : position.halfmove >= 100
+      ? "fifty-move-rule"
+      : history.filter((fen) => posKey(fromFEN(fen)) === key).length >= 2
+        ? "threefold-repetition"
+        : isDeadPositionV2(position.board)
+          ? "dead-position"
+          : null;
+}
 /** Fail closed on unknown worker data; this validates provenance/shape, not chess optimality. */
 export function isNextResult(value: unknown, request: NextRequest): value is NextResult {
   try {
@@ -53,18 +71,7 @@ export function isNextResult(value: unknown, request: NextRequest): value is Nex
     )
       return false;
     const moves = legalMoves(request.position),
-      key = posKey(request.position);
-    const terminal = !moves.length
-      ? inCheck(request.position, request.position.turn)
-        ? "checkmate"
-        : "stalemate"
-      : request.position.halfmove >= 100
-        ? "fifty-move-rule"
-        : request.history.filter((fen) => posKey(fromFEN(fen)) === key).length >= 2
-          ? "threefold-repetition"
-          : isDeadPositionV2(request.position.board)
-            ? "dead-position"
-            : null;
+      terminal = nextRootTerminal(request.position, request.history, moves);
     if (r.terminal !== terminal) return false;
     if (r.kind === "terminal")
       return (

@@ -216,3 +216,26 @@ or perceived-style proof. Fixed-depth tests must finish the requested phase/dept
 Profiler inputs are restricted to the frozen E0development12 cohort; never tune on validation data.
 Run elapsed profiles sequentially with other test/benchmark work stopped; retain source hashes and
 all outcomes. New measurement protocols must be separately versioned before use; old receipts stay.
+
+## Local Tal/Fischer experiment — 29 September 2026 BDT
+
+The owner explicitly continued actual-app integration with “do it”. See
+`docs/superpowers/specs/2026-09-28-tal-fischer-integration.md` and the strength protocol dated
+29 September. Exact Tal/version2/tal-coherent-v1 and Fischer/version2/fischer-coherent-v1 use the
+separate experimental worker. New setup requires both VITE_PERSONALITY_BETA and
+VITE_ENGINE_EXPERIMENT; the new flag defaults off. Saved experimental games remain resumable with
+flags off. Both are always unrated. Old version1 rematches, books, playing policies and ratings stay.
+
+Local authority advances to guest state-v9/account-v9/history-v8, keeping every predecessor.
+Wire remains compact3; accepting either experimental identity permanently raises account policy7,
+including assisted games and raw wire2 acceptance. Reset must never lower that floor. Preserve exact
+legacy acknowledgements and pending envelopes. Untimed Home navigation cancels work; started timed
+games preserve their original request and reply deadline. Incomplete calculations preserve the board
+and expose Retry without producing a move or rating receipt.
+
+Complete-game development uses `scripts/engine-bench/strength-run.ts` with frozen source, settings,
+machine, bundles and schedules. It is exploratory, stops on any unresolved game, and never replaces
+failed attempts. The tactical and one-submission protocol is independently reviewed; validation
+execution remains unavailable pending development feasibility and a reviewed complete-schedule runner.
+No strength, perceived-style or real-phone
+acceptance is implied by automated checks. No push, merge, release, deployment or live data.

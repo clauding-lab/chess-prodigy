@@ -1,12 +1,6 @@
-import {
-  START,
-  applyMove,
-  insufficientMaterial,
-  legalMoves,
-  posKey,
-  sanFor,
-} from "../engine/board";
+import { START, applyMove, legalMoves, posKey, sanFor } from "../engine/board";
 import { detectMotifs } from "../coach/motifs";
+import { isComputerDeadPosition } from "../engine/rules-v2";
 import type { Game, HistoryEntry, Session } from "../game/types";
 import type { Move } from "../engine/types";
 import { isRating, isUnratedReason, parseSavedState, validGameShape } from "./schema";
@@ -120,7 +114,8 @@ export function decodeCompactSession(value: unknown): Session | null {
   const hist: HistoryEntry[] = [];
   const keys: Record<string, number> = { [posKey(st)]: 1 };
   for (const [index, tuple] of moves.entries()) {
-    if (st.halfmove >= 100 || keys[posKey(st)] >= 3 || insufficientMaterial(st.board)) return null;
+    if (st.halfmove >= 100 || keys[posKey(st)] >= 3 || isComputerDeadPosition(st.board, g.opponent))
+      return null;
     const [from, to, promo, w, b, book] = tuple;
     const mv = legalMoves(st).find(
       (move) => move.from === from && move.to === to && (move.promo ?? null) === promo,

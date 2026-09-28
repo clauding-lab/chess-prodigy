@@ -51,6 +51,8 @@ export interface AccountSyncStatus {
 }
 
 export const accountStorageKey = (userId: string) =>
+  `chess-prodigy-account-v9:${encodeURIComponent(userId)}`;
+export const repairAccountStorageKey = (userId: string) =>
   `chess-prodigy-account-v8:${encodeURIComponent(userId)}`;
 export const rosterAccountStorageKey = (userId: string) =>
   `chess-prodigy-account-v7:${encodeURIComponent(userId)}`;
@@ -303,7 +305,7 @@ export class AccountSync {
             headers: {
               "Content-Type": "application/json",
               "X-Chess-Account": this.userId,
-              "X-Chess-Rating-Policy": "6",
+              "X-Chess-Rating-Policy": "7",
             },
             signal: AbortSignal.any([this.abort.signal, timeout.signal]),
             body: JSON.stringify({
@@ -553,6 +555,7 @@ export class AccountSync {
       this.storageRevision = revision;
       const raw =
         this.storage.getItem(accountStorageKey(this.userId)) ??
+        this.storage.getItem(repairAccountStorageKey(this.userId)) ??
         this.storage.getItem(rosterAccountStorageKey(this.userId)) ??
         this.storage.getItem(chigorinAccountStorageKey(this.userId)) ??
         this.storage.getItem(plannedAccountStorageKey(this.userId)) ??

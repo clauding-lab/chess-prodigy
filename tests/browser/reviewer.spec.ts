@@ -77,7 +77,7 @@ for (const opponent of ["Classic", "Morphy"] as const)
     }
     // Seed after the old document closes, so pagehide cannot overwrite the fixture.
     await page.addInitScript((value) => {
-      localStorage.removeItem("chess-prodigy-state-v8");
+      localStorage.removeItem("chess-prodigy-state-v9");
       localStorage.setItem("chess-prodigy-state-v7", JSON.stringify(value));
     }, legacy);
     await page.reload();

@@ -1,5 +1,13 @@
 import { colOf, insufficientMaterial, rowOf } from "./board";
 import type { Position } from "./types";
+import { isExperimentalOpponent, type OpponentConfig } from "./opponents";
+
+export function isComputerDeadPosition(
+  board: Position["board"],
+  opponent: OpponentConfig,
+): boolean {
+  return isExperimentalOpponent(opponent) ? isDeadPositionV2(board) : insufficientMaterial(board);
+}
 
 /** Conservative dead-position recognition. Legacy rated engines retain board.ts exactly. */
 export function isDeadPositionV2(board: Position["board"]): boolean {

@@ -153,3 +153,15 @@ existing playing policy/book/rating unchanged. Tal/Fischer actual-app candidates
 tactical, strength and owner blind-personality gates before expanding to the other masters. Automated
 browser views are not actual-phone or screen-reader evidence. No Stockfish, paid service or Steinitz
 addition is included. Rated activation and release retain the master plan's separate gates.
+
+## Local experimental integration — 29 September 2026 BDT
+
+The owner's “do it” continues the actual-app Tal/Fischer experiment under the existing local scope.
+The new version2 coherent identities are always unrated and selected only with the additional
+default-off VITE_ENGINE_EXPERIMENT flag. Existing rated identities and earlier games stay exact.
+Local authority is now v9/v9/history-v8 with permanent account policy7 and compact wire3. Preserve
+every recovery generation, exact old acknowledgements and flag-off recovery of experimental games.
+Strength development can collect frozen complete-game evidence but cannot qualify a release;
+validation remains unavailable pending feasibility checks and implementation of the reviewed tactical
+and one-submission contract.
+Real-device and blind owner comparisons remain separate evidence. This is not shipping authority.

@@ -2,7 +2,7 @@ import { expect, test } from "vitest";
 import { AccountSync, accountStorageKey } from "../../src/account/sync";
 import { freshSession } from "../../src/game/state";
 
-test("v8 account authority preserves v5 ordered pending writes and advertises policy6", async () => {
+test("v9 account authority preserves v5 ordered pending writes and advertises policy7", async () => {
   const values = new Map<string, string>();
   const storage = {
     getItem: (key: string) => values.get(key) ?? null,
@@ -25,7 +25,7 @@ test("v8 account authority preserves v5 ordered pending writes and advertises po
   const sent: string[] = [];
   const sync = new AccountSync("owner", storage, async (_url, init) => {
     const headers = new Headers(init?.headers);
-    expect(headers.get("X-Chess-Rating-Policy")).toBe("6");
+    expect(headers.get("X-Chess-Rating-Policy")).toBe("7");
     const body = JSON.parse(String(init?.body));
     expect(body.expectedVersion).toBe(7 + sent.length);
     expect(JSON.parse(storage.getItem(accountStorageKey("owner"))!).pending[0].snapshot).toEqual(
@@ -41,7 +41,7 @@ test("v8 account authority preserves v5 ordered pending writes and advertises po
       }),
     );
   });
-  expect(accountStorageKey("owner")).toBe("chess-prodigy-account-v8:owner");
+  expect(accountStorageKey("owner")).toBe("chess-prodigy-account-v9:owner");
   expect(
     sync.initialize({
       version: 99,

@@ -73,12 +73,12 @@ test("a real waiting service worker defers active play and preserves saves when 
     await expect
       .poll(() =>
         page.evaluate(
-          () => JSON.parse(localStorage.getItem("chess-prodigy-state-v8")).game.moves.length,
+          () => JSON.parse(localStorage.getItem("chess-prodigy-state-v9")).game.moves.length,
         ),
       )
       .toBe(2);
     const oldId = await page.evaluate(
-      () => JSON.parse(localStorage.getItem("chess-prodigy-state-v8")).game.id,
+      () => JSON.parse(localStorage.getItem("chess-prodigy-state-v9")).game.id,
     );
     version = 2;
     await page.evaluate(async () => {
@@ -93,13 +93,13 @@ test("a real waiting service worker defers active play and preserves saves when 
     await expect(page.getByLabel("App update")).toContainText("wait until your game finishes");
     await expect(page.getByRole("button", { name: "Update now", exact: true })).toHaveCount(0);
     expect(
-      await page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v8")).game.id),
+      await page.evaluate(() => JSON.parse(localStorage.getItem("chess-prodigy-state-v9")).game.id),
     ).toBe(oldId);
     await page.getByRole("button", { name: "Resign", exact: true }).click();
     await page.getByRole("dialog").getByRole("button", { name: "Resign", exact: true }).click();
     await page.getByRole("button", { name: "View board", exact: true }).click();
     const before = await page.evaluate(() =>
-      JSON.parse(localStorage.getItem("chess-prodigy-state-v8")),
+      JSON.parse(localStorage.getItem("chess-prodigy-state-v9")),
     );
     await expect(page.getByRole("button", { name: "Update now", exact: true })).toBeVisible();
     const other = await context.newPage();
@@ -114,7 +114,7 @@ test("a real waiting service worker defers active play and preserves saves when 
       page.getByRole("button", { name: "Update now", exact: true }).click(),
     ]);
     const after = await page.evaluate(() =>
-      JSON.parse(localStorage.getItem("chess-prodigy-state-v8")),
+      JSON.parse(localStorage.getItem("chess-prodigy-state-v9")),
     );
     expect(after.game).toEqual(before.game);
     expect(after.rating).toEqual(before.rating);

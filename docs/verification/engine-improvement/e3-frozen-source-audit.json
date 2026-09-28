@@ -1,0 +1,26 @@
+{
+  "baseline": "4e3a112",
+  "integrationBase": "744eacf",
+  "total": 36,
+  "unchangedSinceIntegration": true,
+  "changes": [
+    {
+      "file": "src/engine/reviewer.ts",
+      "expected": "324d62f607e7d945f31604921e446fbd3e13221c9fa374734c35de6b8cb9570a",
+      "actual": "741c7e63abfaeb24eea7cf140bbeaa3e3d14a0e7a80c1d1a05c2db3afc402582",
+      "changedDuringExperimentalIntegration": false
+    },
+    {
+      "file": "src/worker/client.ts",
+      "expected": "bcc6391e66a8b330994257404fb1ee9f9e9f1d4c028e811c0b9c51b25eba82c5",
+      "actual": "76f25a3bd065caad7267721635b736a110aef8ae647fa4ed471c78ef54b1217e",
+      "changedDuringExperimentalIntegration": false
+    },
+    {
+      "file": "src/worker/execute.ts",
+      "expected": "419ac01708bb4fb93d86600933550b0baf306f92b1f7790d8fd9f2ca4f4d152c",
+      "actual": "4643aabb4d76a2cdba807339cbb57d97e3e0b445c1b2b46a26dde2106efff65d",
+      "changedDuringExperimentalIntegration": false
+    }
+  ]
+}

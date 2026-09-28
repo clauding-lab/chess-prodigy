@@ -75,7 +75,7 @@ for (const opponent of opponents)
           const body = JSON.parse(String(init?.body));
           expect(body.expectedVersion).toBe(8);
           expect(body.snapshot).toEqual(JSON.parse(raw));
-          expect(new Headers(init?.headers).get("X-Chess-Rating-Policy")).toBe("6");
+          expect(new Headers(init?.headers).get("X-Chess-Rating-Policy")).toBe("7");
           sent = true;
           return Response.json({ version: 9, snapshot: body.snapshot, games: [], updatedAt: null });
         });

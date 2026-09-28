@@ -26,6 +26,7 @@ import { activateSound, playSound, silenceSound } from "./game/sound";
 import "./ui/theme.css";
 import {
   isRosterId,
+  isExperimentalOpponent,
   isSupportedOpponent,
   opponentName,
   personalityBetaEnabled,
@@ -105,6 +106,7 @@ export default function App({
   const { game, rating, preferences } = gameApi;
   const available = isSupportedOpponent(game.opponent);
   const betaEnabled = personalityBetaEnabled(import.meta.env.VITE_PERSONALITY_BETA);
+  const experimentEnabled = personalityBetaEnabled(import.meta.env.VITE_ENGINE_EXPERIMENT);
   const draftOpponent =
     betaEnabled &&
     (game.opponent.id === "attack-development" ||
@@ -202,7 +204,7 @@ export default function App({
     requestSetup();
   }
   function start() {
-    if (!gameApi.startGame(setupFromDraft(draft, betaEnabled))) {
+    if (!gameApi.startGame(setupFromDraft(draft, betaEnabled, experimentEnabled))) {
       setStartError(
         "The previous game could not be saved. Download a recovery save, then cancel and check Games or retry saving before starting another game.",
       );
@@ -217,7 +219,7 @@ export default function App({
     setShowReview(false);
   }
   function rematch(record: Pick<GameRecord, "opponent" | "level" | "playerColor" | "time">) {
-    if (!canRematch(record, betaEnabled)) return;
+    if (!canRematch(record, betaEnabled, experimentEnabled)) return;
     setDraft({
       color: record.playerColor,
       level: record.level,
@@ -374,6 +376,7 @@ export default function App({
           canResume={gameApi.hasSavedGame || hasChosenGame || game.started}
           preferences={preferences}
           betaEnabled={betaEnabled}
+          experimentEnabled={experimentEnabled}
           onPlay={openSetup}
           onResume={resume}
           onResult={() => {
@@ -564,7 +567,9 @@ export default function App({
         )}
         {gameApi.engineError && (
           <div className="notice" role="alert">
-            The chess engine stopped responding.{" "}
+            {isExperimentalOpponent(game.opponent)
+              ? "The calculation could not finish. Your position is preserved."
+              : "The chess engine stopped responding."}{" "}
             <button className="linkbtn" onClick={gameApi.retryEngine} type="button">
               Try the engine again
             </button>
@@ -626,7 +631,7 @@ export default function App({
           <ResultModal
             game={game}
             history={gameApi.history}
-            rematchAvailable={canRematch(game, betaEnabled)}
+            rematchAvailable={canRematch(game, betaEnabled, experimentEnabled)}
             onRematch={() =>
               rematch({
                 opponent: game.opponent,
@@ -650,6 +655,7 @@ export default function App({
           target={{ opponent: game.opponent, level: game.setup.level }}
           scope={gameApi.historyScope}
           betaEnabled={betaEnabled}
+          experimentEnabled={experimentEnabled}
           onRematch={rematch}
           onClose={() => setShowGames(false)}
           onRetry={() => {
@@ -666,6 +672,7 @@ export default function App({
           onRecovery={downloadRecovery}
           accountControls={accountControls}
           betaEnabled={betaEnabled}
+          experimentEnabled={experimentEnabled}
           draft={draft}
           game={game}
           rating={rating}

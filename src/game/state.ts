@@ -1,14 +1,6 @@
-import {
-  START,
-  applyMove,
-  legalMoves,
-  sameMove,
-  sanFor,
-  posKey,
-  inCheck,
-  insufficientMaterial,
-} from "../engine/board";
+import { START, applyMove, legalMoves, sameMove, sanFor, posKey, inCheck } from "../engine/board";
 import { detectMotifs } from "../coach/motifs";
+import { isComputerDeadPosition } from "../engine/rules-v2";
 import { annotateAll } from "../coach/annotate";
 import { isNeutralEvaluation, reviewHistory } from "../engine/reviewer";
 import { isGameTimestamp } from "./timestamps";
@@ -201,7 +193,7 @@ export function reduceGame(g: Game, action: Action): Game {
       : { result: "½-½", reason: "Stalemate" };
   else if (st.halfmove >= 100) over = { result: "½-½", reason: "Fifty-move rule" };
   else if (keys[key] >= 3) over = { result: "½-½", reason: "Threefold repetition" };
-  else if (insufficientMaterial(st.board))
+  else if (isComputerDeadPosition(st.board, g.opponent))
     over = { result: "½-½", reason: "Insufficient material" };
   const clocks = g.clocks
     ? { ...g.clocks, [before.turn]: g.clocks[before.turn] + TIME_CONTROLS[g.setup.time].inc }

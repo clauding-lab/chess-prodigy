@@ -17,6 +17,7 @@ import {
   plannedMorphyConfig,
   chigorinConfig,
   rosterConfig,
+  experimentalRosterConfig,
   isRosterId,
   ROSTER_IDS,
   ROSTER_NAMES,
@@ -52,6 +53,7 @@ export function SetupModal({
   onCancel,
   accountControls,
   betaEnabled = false,
+  experimentEnabled = false,
   startError,
   rematchNote,
   onRecovery,
@@ -64,6 +66,7 @@ export function SetupModal({
   onCancel?: () => void;
   accountControls?: ReactNode;
   betaEnabled?: boolean;
+  experimentEnabled?: boolean;
   startError?: string | null;
   rematchNote?: string | null;
   onRecovery?(): void;
@@ -85,11 +88,15 @@ export function SetupModal({
   const morphy = betaEnabled && draft.opponentId === "attack-development";
   const chigorin = betaEnabled && draft.opponentId === "chigorin";
   const roster = isRosterId(draft.opponentId) ? draft.opponentId : null;
+  const experimental =
+    experimentEnabled && (roster === "tal" || roster === "fischer") && draft.opponentVersion !== 1;
   const rosterUnavailable =
     roster !== null &&
     (!betaEnabled ||
       !ROSTER_RATINGS[roster] ||
-      (draft.opponentVersion !== undefined && draft.opponentVersion !== 1));
+      (draft.opponentVersion !== undefined &&
+        draft.opponentVersion !== 1 &&
+        !(experimental && draft.opponentVersion === 2)));
   const legacyMorphy = morphy && draft.opponentVersion === 1;
   const selectedOpponent = morphy
     ? legacyMorphy
@@ -102,7 +109,9 @@ export function SetupModal({
     : chigorin
       ? chigorinConfig(0)
       : roster
-        ? rosterConfig(roster, 0)
+        ? experimental && (roster === "tal" || roster === "fischer")
+          ? experimentalRosterConfig(roster, 0)
+          : rosterConfig(roster, 0)
         : CLASSIC;
   return (
     <Modal closeOnBackdrop={false} closeOnEscape={!!onCancel} onClose={onCancel} title="New game">
@@ -194,7 +203,9 @@ export function SetupModal({
           <p>{ROSTER_COPY[roster].copy}</p>
           {rosterUnavailable
             ? "Strength measurement is pending. New games are not available yet."
-            : "Rated practice — strength measured against Classic within this app. Hints and takebacks make the game unrated."}
+            : experimental
+              ? "Experimental opponent — unrated. Playing strength and personality are still being tested."
+              : "Rated practice — strength measured against Classic within this app. Hints and takebacks make the game unrated."}
         </div>
       )}
       {morphy && (
@@ -503,7 +514,15 @@ export function ConfirmModal({ value, onCancel }: { value: Confirmation; onCance
   );
 }
 
-export function setupFromDraft(draft: SetupDraft, betaEnabled = false): Setup {
+export function setupFromDraft(
+  draft: SetupDraft,
+  betaEnabled = false,
+  experimentEnabled = false,
+): Setup {
+  const experimental =
+    experimentEnabled &&
+    (draft.opponentId === "tal" || draft.opponentId === "fischer") &&
+    draft.opponentVersion !== 1;
   if (draft.opponentId && draft.opponentId !== "classic" && !betaEnabled)
     throw new Error("New personality games are disabled in this build.");
   if (
@@ -518,7 +537,11 @@ export function setupFromDraft(draft: SetupDraft, betaEnabled = false): Setup {
     if (!CHIGORIN_RATINGS) throw new Error("Chigorin strength measurement is not yet accepted.");
   }
   if (isRosterId(draft.opponentId)) {
-    if (draft.opponentVersion !== undefined && draft.opponentVersion !== 1)
+    if (
+      draft.opponentVersion !== undefined &&
+      draft.opponentVersion !== 1 &&
+      !(experimental && draft.opponentVersion === 2)
+    )
       throw new Error("Opponent version is unavailable.");
     if (!ROSTER_RATINGS[draft.opponentId])
       throw new Error(
@@ -543,10 +566,13 @@ export function setupFromDraft(draft: SetupDraft, betaEnabled = false): Setup {
         ? { opponent: chigorinConfig(crypto.getRandomValues(new Uint32Array(1))[0]) }
         : isRosterId(draft.opponentId)
           ? {
-              opponent: rosterConfig(
-                draft.opponentId,
-                crypto.getRandomValues(new Uint32Array(1))[0],
-              ),
+              opponent:
+                experimental && (draft.opponentId === "tal" || draft.opponentId === "fischer")
+                  ? experimentalRosterConfig(
+                      draft.opponentId,
+                      crypto.getRandomValues(new Uint32Array(1))[0],
+                    )
+                  : rosterConfig(draft.opponentId, crypto.getRandomValues(new Uint32Array(1))[0]),
             }
           : {}),
   };

@@ -146,6 +146,17 @@ Open `http://127.0.0.1:5173`, choose **New game**, then **Paul Morphy**. For a p
 
 Offline installation needs HTTPS or localhost. Account requests are excluded from the offline cache.
 
+This repair branch also contains **local, unrated Tal/Fischer experiments**. Enable their new-game
+selection with `VITE_PERSONALITY_BETA=true VITE_ENGINE_EXPERIMENT=true npm run dev -- --port 5173`.
+Both flags are build-time settings. Existing experimental saves can still resume with the flags off;
+older rated games and rematches keep their original opponents. The new versions have not passed
+strength, blind personality or physical-phone acceptance and are not a released upgrade.
+
+The development-only complete-game runner is documented in
+[the prospective strength protocol](docs/superpowers/specs/2026-09-29-strength-protocol.md).
+It freezes each 40-game schedule before execution, keeps failed attempts and cannot declare rated
+or validation acceptance. Run timed measurements with other tests and benchmarks stopped.
+
 ## Checks
 
 ```sh

@@ -202,3 +202,58 @@ it("retains exact compact acknowledgement and permanent policy6 through reset an
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+it.each([true, false])(
+  "permanently protects assisted unrated experiments with policy7 across reset: compact=%s",
+  async (compact) => {
+    const { experimentalRosterConfig } = await import("../../src/engine/opponents");
+    const f = await fixture();
+    try {
+      let session = reduceSession(freshSession(0, "before"), {
+        type: "new",
+        id: "experiment",
+        now: 0,
+        setup: {
+          playerColor: "w",
+          level: "club",
+          time: "none",
+          opponent: experimentalRosterConfig("tal", 9),
+        },
+      });
+      session = playLine(session, ["e4"]);
+      session = reduceSession(session, { type: "hint" });
+      const snapshot = compact ? encodeCompactSession(session) : session;
+      await f.agent
+        .put("/api/records")
+        .set("Origin", origin)
+        .set("X-Chess-Rating-Policy", "6")
+        .send({ expectedVersion: 0, snapshot })
+        .expect(426);
+      const ack = await f.agent
+        .put("/api/records")
+        .set("Origin", origin)
+        .set("X-Chess-Rating-Policy", "7")
+        .send({ expectedVersion: 0, snapshot })
+        .expect(200);
+      expect(ack.body.snapshot).toEqual(snapshot);
+      expect(session.game.ratingApplied).toBeNull();
+      const reset = encodeCompactSession(
+        reduceSession(freshSession(0, "fresh"), { type: "resetRating" }),
+      );
+      await f.agent
+        .put("/api/records")
+        .set("Origin", origin)
+        .set("X-Chess-Rating-Policy", "7")
+        .send({ expectedVersion: 1, snapshot: reset })
+        .expect(200);
+      await f.agent
+        .put("/api/records")
+        .set("Origin", origin)
+        .set("X-Chess-Rating-Policy", "6")
+        .send({ expectedVersion: 2, snapshot: reset })
+        .expect(426);
+    } finally {
+      await f.close();
+    }
+  },
+);

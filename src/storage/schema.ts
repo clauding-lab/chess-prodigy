@@ -1,4 +1,5 @@
 import { isGameTimestamp } from "../game/timestamps";
+import { isComputerDeadPosition } from "../engine/rules-v2";
 import { START, applyMove, legalMoves, posKey, sameMove, sanFor } from "../engine/board";
 import type { Move, Piece, Position } from "../engine/types";
 import { MOTIF_KEYS } from "../coach/types";
@@ -13,6 +14,7 @@ import {
   isOpponentConfig,
   isRatedOpponent,
   isSupportedOpponent,
+  isExperimentalOpponent,
 } from "../engine/opponents";
 
 import { opponentPracticeRating, opponentRatingLabel } from "../rating/opponents";
@@ -235,6 +237,13 @@ function replayMatches(game: Game): boolean {
   const positions: Position[] = [position];
   const keys: Record<string, number> = { [posKey(position)]: 1 };
   for (const entry of game.hist) {
+    if (
+      isExperimentalOpponent(game.opponent) &&
+      (position.halfmove >= 100 ||
+        keys[posKey(position)] >= 3 ||
+        isComputerDeadPosition(position.board, game.opponent))
+    )
+      return false;
     if (!equal(entry.before, position)) return false;
     const move = legalMoves(position).find((candidate) => sameMove(candidate, entry.mv));
     if (!move || !equalMove(entry.mv, move)) return false;

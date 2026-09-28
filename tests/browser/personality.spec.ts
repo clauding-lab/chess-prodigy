@@ -199,7 +199,7 @@ test("account Morphy resume and terminal archive retain identity without rating 
     assisted: false,
   });
   expect(records.snapshot.rating).toEqual(s.rating);
-  expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v8"))).toBeNull();
+  expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-state-v9"))).toBeNull();
   await page.reload();
   await enterPlay(page);
   await expect(page.getByRole("dialog")).toContainText("Unrated beta");

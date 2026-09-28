@@ -5,22 +5,22 @@ import { AccountSync, accountStorageKey } from "../../src/account/sync";
 import { parseSessionInput } from "../../src/storage/input";
 import { GUEST_HISTORY_KEY, loadGuestHistory, saveGuestProgress } from "../../src/storage/history";
 
-it("writes compact guest v8 and history v7 while preserving all seven prior state generations", () => {
+it("writes compact guest v9 and history v8 while preserving all eight prior state generations", () => {
   localStorage.clear();
   const session = freshSession(0, "retained");
-  for (let generation = 1; generation <= 7; generation++)
+  for (let generation = 1; generation <= 8; generation++)
     localStorage.setItem(`chess-prodigy-state-v${generation}`, JSON.stringify(session));
   localStorage.setItem("chess-prodigy-guest-history-v6", JSON.stringify({ version: 1, games: [] }));
   const originals = Object.fromEntries(
-    Array.from({ length: 7 }, (_, i) => [
+    Array.from({ length: 8 }, (_, i) => [
       `chess-prodigy-state-v${i + 1}`,
       localStorage.getItem(`chess-prodigy-state-v${i + 1}`),
     ]),
   );
   expect(loadSavedState(localStorage, 1, "fallback").session.game.id).toBe("retained");
   expect(saveGuestProgress(localStorage, session)).toBe(true);
-  expect(SAVE_KEY).toBe("chess-prodigy-state-v8");
-  expect(GUEST_HISTORY_KEY).toBe("chess-prodigy-guest-history-v7");
+  expect(SAVE_KEY).toBe("chess-prodigy-state-v9");
+  expect(GUEST_HISTORY_KEY).toBe("chess-prodigy-guest-history-v8");
   const raw = JSON.parse(localStorage.getItem(SAVE_KEY)!);
   expect(raw.version).toBe(3);
   expect(raw.game).not.toHaveProperty("hist");
@@ -31,7 +31,7 @@ it("writes compact guest v8 and history v7 while preserving all seven prior stat
   localStorage.setItem(SAVE_KEY, "broken-new-authority");
   expect(loadSavedState(localStorage, 2, "fallback").status).toBe("corrupt");
 });
-it("writes compact account v8 with policy6 while preserving v7 pending raw acknowledgements", async () => {
+it("writes compact account v9 with policy7 while preserving v7 pending raw acknowledgements", async () => {
   localStorage.clear();
   const session = freshSession(0, "old");
   const prior = JSON.stringify({
@@ -42,7 +42,7 @@ it("writes compact account v8 with policy6 while preserving v7 pending raw ackno
   localStorage.setItem("chess-prodigy-account-v7:alice", prior);
   const wires: unknown[] = [];
   const sync = new AccountSync("alice", localStorage, async (_url, init) => {
-    expect(new Headers(init?.headers).get("X-Chess-Rating-Policy")).toBe("6");
+    expect(new Headers(init?.headers).get("X-Chess-Rating-Policy")).toBe("7");
     const body = JSON.parse(String(init?.body));
     wires.push(body.snapshot);
     return new Response(
@@ -60,7 +60,7 @@ it("writes compact account v8 with policy6 while preserving v7 pending raw ackno
   expect(sync.status()).toMatchObject({ state: "idle", pending: 0 });
   expect(wires[0]).toEqual(session);
   expect(wires[1]).toMatchObject({ version: 3, game: { id: "next" } });
-  expect(accountStorageKey("alice")).toBe("chess-prodigy-account-v8:alice");
+  expect(accountStorageKey("alice")).toBe("chess-prodigy-account-v9:alice");
   expect(JSON.parse(localStorage.getItem(accountStorageKey("alice"))!).snapshot.version).toBe(3);
   expect(localStorage.getItem("chess-prodigy-account-v7:alice")).toBe(prior);
 });

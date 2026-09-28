@@ -45,6 +45,7 @@ export function isOpponentConfig(value: unknown): value is OpponentConfig {
 
 export function isSupportedOpponent(c: OpponentConfig): boolean {
   return (
+    isExperimentalOpponent(c) ||
     isRosterOpponent(c) ||
     (c.version === 1 &&
       c.id === "classic" &&
@@ -74,7 +75,7 @@ export function isSupportedOpponent(c: OpponentConfig): boolean {
 export function isRatedOpponent(c: OpponentConfig): boolean {
   return (
     isSupportedOpponent(c) &&
-    ((isRosterId(c.id) && ROSTER_RATINGS[c.id] !== null) ||
+    ((isRosterOpponent(c) && isRosterId(c.id) && ROSTER_RATINGS[c.id] !== null) ||
       c.id === "classic" ||
       c.id === "chigorin" ||
       (c.id === "attack-development" && (c.version === 2 || c.version === 3 || c.version === 4)))
@@ -142,4 +143,28 @@ export function rosterConfig(id: RosterId, seed: number): OpponentConfig {
   if (!isRosterId(id) || !Number.isInteger(seed) || seed < 0 || seed > 0xffffffff)
     throw new Error("Invalid roster opponent or seed.");
   return { id, version: 1, engine: `${id}-plans-v1`, randomPolicy: "seeded-per-ply-v1", seed };
+}
+
+/** Unmeasured local experiments never inherit version-1 rating eligibility. */
+export function isExperimentalOpponent(c: OpponentConfig): boolean {
+  return (
+    (c.id === "tal" || c.id === "fischer") &&
+    c.version === 2 &&
+    c.engine === `${c.id}-coherent-v1` &&
+    c.randomPolicy === "seeded-per-ply-v1" &&
+    c.seed !== null &&
+    Number.isInteger(c.seed) &&
+    c.seed >= 0 &&
+    c.seed <= 0xffffffff
+  );
+}
+export function experimentalRosterConfig(id: "tal" | "fischer", seed: number): OpponentConfig {
+  if (
+    (id !== "tal" && id !== "fischer") ||
+    !Number.isInteger(seed) ||
+    seed < 0 ||
+    seed > 0xffffffff
+  )
+    throw new Error("Invalid experimental opponent or seed.");
+  return { id, version: 2, engine: `${id}-coherent-v1`, randomPolicy: "seeded-per-ply-v1", seed };
 }

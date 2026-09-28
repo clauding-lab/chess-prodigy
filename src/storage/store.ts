@@ -5,7 +5,8 @@ import { parseSessionInput } from "./input";
 import { encodeCompactSession } from "./compact";
 import { isRating, parseSavedState } from "./schema";
 
-export const SAVE_KEY = "chess-prodigy-state-v8";
+export const SAVE_KEY = "chess-prodigy-state-v9";
+export const REPAIR_SAVE_KEY = "chess-prodigy-state-v8";
 export const ROSTER_SAVE_KEY = "chess-prodigy-state-v7";
 export const CHIGORIN_SAVE_KEY = "chess-prodigy-state-v6";
 export const PLANNED_SAVE_KEY = "chess-prodigy-state-v5";
@@ -42,6 +43,7 @@ export function loadSavedState(
     const revision = readStorageRevision(raw);
     if (revision === null) return { session: fallback, status: "corrupt", hasSavedGame: false };
     storageRevision = revision;
+    if (raw === null) raw = storage.getItem(REPAIR_SAVE_KEY);
     if (raw === null) raw = storage.getItem(ROSTER_SAVE_KEY);
     if (raw === null) raw = storage.getItem(CHIGORIN_SAVE_KEY);
     if (raw === null) raw = storage.getItem(PLANNED_SAVE_KEY);

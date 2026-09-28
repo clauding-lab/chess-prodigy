@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { applyMove, legalMoves, sameMove, sanFor } from "../engine/board";
 import type { Move, Position } from "../engine/types";
 import { bookLookup } from "../book/book";
+import { ExperimentClient } from "../worker/next/experiment-client";
 import { EngineClient } from "../worker/client";
 import { loadSavedState } from "../storage/store";
 import { loadGuestHistory, saveGuestProgress, type HistoryResult } from "../storage/history";
@@ -9,7 +10,11 @@ import { markEngineInterruption, reduceSession, settlePriorGame } from "./state"
 import type { Preferences, SessionAction, Setup } from "./types";
 import { playSound } from "./sound";
 import type { LoadResult } from "../storage/store";
-import { isSupportedOpponent, personalityBetaEnabled } from "../engine/opponents";
+import {
+  isExperimentalOpponent,
+  isSupportedOpponent,
+  personalityBetaEnabled,
+} from "../engine/opponents";
 import {
   REVIEWER,
   isNeutralEvaluation,
@@ -82,6 +87,7 @@ export function useGame(
   const errorRef = useRef<string | null>(null);
   const [retry, setRetry] = useState(0);
   const client = useRef<EngineClient | null>(null);
+  const experimental = useRef<ExperimentClient | null>(null);
   const generation = useRef(0);
   const cancelDelay = useRef<(() => void) | null>(null);
   const busy = useRef<"ai" | "hint" | "review" | "passive" | null>(null);
@@ -107,6 +113,7 @@ export function useGame(
     cancelDelay.current?.();
     cancelDelay.current = null;
     client.current?.cancel();
+    experimental.current?.cancel();
     busy.current = null;
   }, []);
   const invalidate = useCallback(() => {
@@ -181,6 +188,17 @@ export function useGame(
   useEffect(() => {
     mounted.current = true;
     client.current = new EngineClient();
+    experimental.current = new ExperimentClient(() => {
+      const g = current.current.game;
+      if (mounted.current && isExperimentalOpponent(g.opponent))
+        dispatch({
+          type: "engineInterruption",
+          gameId: g.id,
+          ply: g.hist.length,
+          cause: "worker-failure",
+          now: Date.now(),
+        });
+    });
     persist();
     const tick = () => dispatch({ type: "tick", now: Date.now() });
     const save = () => {
@@ -203,6 +221,8 @@ export function useGame(
     return () => {
       mounted.current = false;
       invalidateWork();
+      experimental.current?.dispose();
+      experimental.current = null;
       client.current?.dispose();
       client.current = null;
       clearInterval(timer);
@@ -326,29 +346,43 @@ export function useGame(
             ? Math.max(0, g.clocks[g.st.turn] - Math.max(0, requestedAt - g.clockAt))
             : Infinity;
         const readyAt = requestedAt + Math.min(1000, Math.max(0, clockLeft - 250));
-        const result = await client.current!.request(
-          {
-            type: "ai",
-            gameId: g.id,
-            revision: g.revision,
-            position: g.st,
-            level: g.setup.level,
-            opponent: g.opponent,
-            ply: g.hist.length,
-            bookSans: bookLookup(g.hist.map((e) => e.san)).replies,
-          },
-          () => {
-            if (!mounted.current || generation.current !== token) return;
-            dispatch({
-              type: "engineInterruption",
+        const result = isExperimentalOpponent(g.opponent)
+          ? await experimental.current!.request({
               gameId: g.id,
-              ply: g.hist.length,
-              cause: "worker-failure",
-              now: Date.now(),
-            });
-          },
-        );
+              revision: g.revision,
+              position: g.st,
+              history: reviewHistory(g, g.hist.length),
+              opponent: g.opponent,
+              level: g.setup.level,
+              turnDeadline: Number.isFinite(clockLeft) ? requestedAt + clockLeft : null,
+            })
+          : await client.current!.request(
+              {
+                type: "ai",
+                gameId: g.id,
+                revision: g.revision,
+                position: g.st,
+                level: g.setup.level,
+                opponent: g.opponent,
+                ply: g.hist.length,
+                bookSans: bookLookup(g.hist.map((e) => e.san)).replies,
+              },
+              () => {
+                if (!mounted.current || generation.current !== token) return;
+                dispatch({
+                  type: "engineInterruption",
+                  gameId: g.id,
+                  ply: g.hist.length,
+                  cause: "worker-failure",
+                  now: Date.now(),
+                });
+              },
+            );
         if (!mounted.current || generation.current !== token) return;
+        if ("kind" in result && result.kind === "incomplete")
+          throw new Error(
+            "The calculation could not finish. Your position is preserved. Please retry.",
+          );
         if (!result.move || !legalMoves(g.st).some((m) => sameMove(m, result.move!)))
           throw new Error("Engine returned no legal move. Please retry.");
         const remaining = readyAt - Date.now();
@@ -503,6 +537,8 @@ export function useGame(
       if (
         setup.opponent &&
         (!isSupportedOpponent(setup.opponent) ||
+          (isExperimentalOpponent(setup.opponent) &&
+            !personalityBetaEnabled(import.meta.env.VITE_ENGINE_EXPERIMENT)) ||
           (setup.opponent.id !== "classic" &&
             !personalityBetaEnabled(import.meta.env.VITE_PERSONALITY_BETA)))
       )

@@ -16,7 +16,7 @@ for (let version = 1; version <= 7; version++)
     const result = loadSavedState(storage, 1, "fallback");
     expect(result.session.game.id).toBe(old);
     expect(saveState(storage, result.session)).toBe(true);
-    expect(SAVE_KEY).toBe("chess-prodigy-state-v8");
+    expect(SAVE_KEY).toBe("chess-prodigy-state-v9");
     expect(values.get(old)).toBe(raw);
     values.set(SAVE_KEY, "broken");
     expect(loadSavedState(storage, 2, "fallback").status).toBe("corrupt");
@@ -34,7 +34,7 @@ for (let version = 1; version <= 6; version++)
         },
       };
     expect(saveGuestProgress(storage, freshSession(0, "x"))).toBe(true);
-    expect(GUEST_HISTORY_KEY).toBe("chess-prodigy-guest-history-v7");
+    expect(GUEST_HISTORY_KEY).toBe("chess-prodigy-guest-history-v8");
     expect(values.get(old)).toBe(raw);
     values.set(GUEST_HISTORY_KEY, "bad");
     expect(loadGuestHistory(storage)).toMatchObject({ status: "corrupt", raw: "bad" });

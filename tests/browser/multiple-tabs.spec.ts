@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { enterPlay } from "./enter-play";
-const stateKey = "chess-prodigy-state-v8";
+const stateKey = "chess-prodigy-state-v9";
 
 test("guest takeover reloads the last move and revokes the previous writer", async ({
   page,
@@ -38,7 +38,7 @@ test("unavailable locks offer repeatable temporary unrated play without touching
 }) => {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "locks", { value: undefined });
-    localStorage.setItem("chess-prodigy-state-v8", "damaged-original");
+    localStorage.setItem("chess-prodigy-state-v9", "damaged-original");
   });
   await page.goto("/");
   await expect(page.getByText(/cannot safely coordinate/)).toBeVisible();
@@ -69,7 +69,7 @@ test("corrupt history blocks mutation and exports original bytes before reset", 
   page,
 }) => {
   await page.addInitScript(() =>
-    localStorage.setItem("chess-prodigy-guest-history-v7", "raw-broken-history"),
+    localStorage.setItem("chess-prodigy-guest-history-v8", "raw-broken-history"),
   );
   await page.goto("/");
   await expect(page.getByText(/recorded history could not be opened safely/)).toBeVisible();
@@ -81,8 +81,8 @@ test("corrupt history blocks mutation and exports original bytes before reset", 
   const stream = await (await download).createReadStream();
   let text = "";
   for await (const chunk of stream!) text += chunk.toString();
-  expect(JSON.parse(text).originals["chess-prodigy-guest-history-v7"]).toBe("raw-broken-history");
-  expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-guest-history-v7"))).toBe(
+  expect(JSON.parse(text).originals["chess-prodigy-guest-history-v8"]).toBe("raw-broken-history");
+  expect(await page.evaluate(() => localStorage.getItem("chess-prodigy-guest-history-v8"))).toBe(
     "raw-broken-history",
   );
   page.on("dialog", (dialog) => dialog.accept());
@@ -172,13 +172,13 @@ test.describe("account ownership", () => {
     expect(
       await second.evaluate(
         (id) =>
-          JSON.parse(localStorage.getItem(`chess-prodigy-account-v8:${id}`)!).snapshot.game.id,
+          JSON.parse(localStorage.getItem(`chess-prodigy-account-v9:${id}`)!).snapshot.game.id,
         nextId,
       ),
     ).not.toBe(
       await second.evaluate(
         (id) =>
-          JSON.parse(localStorage.getItem(`chess-prodigy-account-v8:${id}`)!).snapshot.game.id,
+          JSON.parse(localStorage.getItem(`chess-prodigy-account-v9:${id}`)!).snapshot.game.id,
         firstId,
       ),
     );

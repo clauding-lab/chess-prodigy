@@ -2,6 +2,7 @@ import type { RosterId } from "../engine/roster/types";
 import type { Level } from "../engine/types";
 import {
   isRosterId,
+  isExperimentalOpponent,
   isSupportedOpponent,
   opponentName,
   type OpponentConfig,
@@ -39,7 +40,7 @@ export const ROSTER_RATINGS: Readonly<Record<RosterId, Readonly<Record<Level, nu
     fischer: Object.freeze({ casual: 1250, club: 1350, strong: 1675 }),
   });
 export function opponentPracticeRating(opponent: OpponentConfig, level: Level): number | null {
-  if (!isSupportedOpponent(opponent)) return null;
+  if (!isSupportedOpponent(opponent) || isExperimentalOpponent(opponent)) return null;
   if (isRosterId(opponent.id)) return ROSTER_RATINGS[opponent.id]?.[level] ?? null;
   if (opponent.id === "classic") return ENGINE_ELO[level];
   if (opponent.id === "chigorin") return CHIGORIN_RATINGS[level];
