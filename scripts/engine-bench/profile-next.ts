@@ -4,6 +4,8 @@ import { performance } from "node:perf_hooks";
 import { START, applyMove, legalMoves, sanFor, toFEN } from "../../src/engine/board";
 import { searchNext } from "../../src/engine/next/search";
 import { searchNextOrdered } from "../../src/engine/next/ordered-search";
+import { searchNextShortlistReuse } from "../../src/engine/next/shortlist-reuse-search";
+import { searchNextShortlist } from "../../src/engine/next/shortlist-search";
 import { searchNextCached } from "../../src/engine/next/cached-search";
 import { digest, type Sample } from "./core";
 
@@ -12,11 +14,28 @@ const dataset = "docs/verification/engine-improvement/e0-dataset-v1";
 const cohort =
   "docs/verification/engine-improvement/e0-development12-production-isolated-v1/run-manifest.json";
 const [output, variant = "reference"] = process.argv.slice(2);
-if (!output) throw new Error("Usage: profile-next.ts NEW_OUTPUT_JSON [reference|ordered|cached]");
-if (variant !== "reference" && variant !== "ordered" && variant !== "cached")
+if (!output)
+  throw new Error(
+    "Usage: profile-next.ts NEW_OUTPUT_JSON [reference|ordered|cached|shortlist|shortlist-reuse]",
+  );
+if (
+  variant !== "reference" &&
+  variant !== "ordered" &&
+  variant !== "cached" &&
+  variant !== "shortlist" &&
+  variant !== "shortlist-reuse"
+)
   throw new Error("Unknown profile variant");
 const search =
-  variant === "cached" ? searchNextCached : variant === "ordered" ? searchNextOrdered : searchNext;
+  variant === "shortlist-reuse"
+    ? searchNextShortlistReuse
+    : variant === "shortlist"
+      ? searchNextShortlist
+      : variant === "cached"
+        ? searchNextCached
+        : variant === "ordered"
+          ? searchNextOrdered
+          : searchNext;
 const raw = readFileSync(`${dataset}/development.json`, "utf8");
 const manifestRaw = readFileSync(`${dataset}/manifest.json`, "utf8");
 const manifest = JSON.parse(manifestRaw);
@@ -42,6 +61,8 @@ const sourceFiles = [
   "src/engine/next/search.ts",
   "src/engine/next/ordered-search.ts",
   "src/engine/next/cached-search.ts",
+  "src/engine/next/shortlist-search.ts",
+  "src/engine/next/shortlist-reuse-search.ts",
   "src/engine/board.ts",
   "src/engine/eval.ts",
   "src/engine/rules-v2.ts",

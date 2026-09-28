@@ -1,3 +1,5 @@
+import { searchNextShortlist } from "../../src/engine/next/shortlist-search";
+import { searchNextShortlistReuse } from "../../src/engine/next/shortlist-reuse-search";
 import { searchNextCached } from "../../src/engine/next/cached-search";
 import { describe, expect, it } from "vitest";
 import {
@@ -53,6 +55,8 @@ function oracle(
 describe.each([
   ["reference", referenceSearch],
   ["cached", searchNextCached],
+  ["shortlist", searchNextShortlist],
+  ["shortlist-reuse", searchNextShortlistReuse],
 ] as const)("%s search", (_name, searchNext) => {
   const poison = fromFEN("4k3/8/2p5/3p4/4Q3/8/8/4K3 w - - 0 1");
   const fixed = { maxDepth: 2, ms: 1000, now: () => 0, baselineOnly: true } as const;
@@ -259,7 +263,10 @@ describe.each([
           const score =
             -oracle(applyMove(p, candidate.move), depth - 1, [posKey(p)], 1) *
             (p.turn === "w" ? 1 : -1);
-          expect(candidate.score).toBe(score === 0 ? 0 : score);
+          if (candidate.kind === "exact") expect(candidate.score).toBe(score === 0 ? 0 : score);
+          else if (candidate.kind === "upper-bound")
+            expect(score).toBeLessThanOrEqual(candidate.score);
+          else expect(score).toBeGreaterThanOrEqual(candidate.score);
         }
       }
   });
@@ -296,7 +303,9 @@ describe.each([
         [...history.map((fen) => posKey(fromFEN(fen))), posKey(p)],
         1,
       );
-      expect(candidate.score).toBe(score === 0 ? 0 : score);
+      if (candidate.kind === "exact") expect(candidate.score).toBe(score === 0 ? 0 : score);
+      else if (candidate.kind === "upper-bound") expect(score).toBeLessThanOrEqual(candidate.score);
+      else expect(score).toBeGreaterThanOrEqual(candidate.score);
     }
   });
 });

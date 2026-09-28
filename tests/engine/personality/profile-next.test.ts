@@ -34,6 +34,20 @@ vi.mock("../../../src/engine/next/cached-search", () => ({
     policy: "next-neutral-legal-cache-v1",
   }),
 }));
+vi.mock("../../../src/engine/next/shortlist-search", () => ({
+  searchNextShortlist: () => ({
+    kind: "incomplete",
+    move: null,
+    policy: "next-neutral-shortlist-v1",
+  }),
+}));
+vi.mock("../../../src/engine/next/shortlist-reuse-search", () => ({
+  searchNextShortlistReuse: () => ({
+    kind: "incomplete",
+    move: null,
+    policy: "next-neutral-shortlist-reuse-v1",
+  }),
+}));
 const originalArgv = process.argv;
 afterEach(() => {
   process.argv = originalArgv;
@@ -96,6 +110,8 @@ it.each([ids.slice(1), [...ids.slice(1), "p1"], [...ids.slice(1), 4]])(
 it.each([
   ["ordered", "next-neutral-ordered-v1"],
   ["cached", "next-neutral-legal-cache-v1"],
+  ["shortlist", "next-neutral-shortlist-v1"],
+  ["shortlist-reuse", "next-neutral-shortlist-reuse-v1"],
 ])("uses %s explicitly and rejects unknown variants", async (variant, policy) => {
   await run(ids, undefined, variant);
   expect(
