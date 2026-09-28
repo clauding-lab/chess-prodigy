@@ -189,3 +189,30 @@ Activation changes eligibility and values only: preserve the frozen playing sour
 receipts, policy5, guest state-v7/account-v7/history-v6 and every older recovery generation. Normal
 new games settle exactly one receipt; hints/takebacks remain unrated and undo reverses only its own
 receipt. Local candidate verification is authorized; no push, deployment, tag or live player data.
+
+## Repair programme — approved 27 September, resumed 28 September 2026 BDT
+
+The owner approved the complete repair/engine programme and D1–D8 with “execute all”, then resumed
+with “start implementation”. Read `docs/superpowers/plans/2026-09-27-repair-and-engine-master-plan.md`
+and its ignored `.superpowers/sdd/2026-09-27-repair-and-engine-master-plan/progress.md` ledger.
+Work in `fix/repair-engine-20260927`; this task authorizes local reviewed checkpoints, not pushing,
+merging, deployment or live-player data. Preserve the ledger and all retained failed experiments.
+
+Local authority is now guest state-v8/account-v8/history-v7. New writes use compact wire3 with
+legal replay; account minimum policy6 never decreases. Keep every earlier recovery generation and
+exact original legacy wire1/2 pending envelopes/acknowledgements, including rejected exports.
+Preserve exclusive browser writer ownership, active-first archive recovery and explicit export of
+memory-only pending progress before temporary play or sign-out. Guest data never imports to users.
+Interrupted computer timeouts retain results but are unrated; existing receipts remain exact.
+Neutral coaching uses review-v2 same-root, common-depth comparisons and canonical legal moves.
+Human rule version2 adds bishop-only same-color dead positions; existing human/computer rules remain
+versioned. All old playing policies, books, measured values and rematches remain frozen.
+
+`src/engine/next/search.ts` is the inactive E1 reference; `ordered-search.ts` is the separate inactive
+E2 capture-ordering experiment. Neither may enter existing opponent or worker dispatch. Future
+playing versions require independent tactical/strength/personality evidence, actual-app integration,
+fresh rating measurement and compatibility protections. Node-count/depth gains are not strength
+or perceived-style proof. Fixed-depth tests must finish the requested phase/depth without interruption.
+Profiler inputs are restricted to the frozen E0development12 cohort; never tune on validation data.
+Run elapsed profiles sequentially with other test/benchmark work stopped; retain source hashes and
+all outcomes. New measurement protocols must be separately versioned before use; old receipts stay.

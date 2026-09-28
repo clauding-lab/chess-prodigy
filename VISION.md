@@ -136,3 +136,20 @@ The owner subsequently requested the missing latest GitHub release. Publish v2.6
 and mark it latest, covering the deployed roster and intervening updates since v2.0.0.
 This supersedes the previous no-new-tag boundary for this release only. Keep the existing
 live runtime and database unchanged; release preparation changes documentation only.
+
+## Repair and stronger-opponent programme — 27–28 September 2026 BDT
+
+The owner approved the complete repair plan and D1–D8 on27September, paused overnight, then requested
+implementation resume on28September. Strength and distinct personality have equal priority. Current
+scope is local reviewed implementation and verification in the repair worktree. Earlier v2.6 shipping
+permissions do not authorize publishing or deploying this new programme.
+
+Saving/account/coaching/clock/update repairs use the approved versioned contracts; preserve original
+progress, private ownership, every recovery generation, exact legacy acknowledgements and old ratings.
+Compact wire3/policy6 and local v8/v8/history-v7 protect the new candidate from older clients.
+
+New search experiments remain inactive. Preserve E1 as the comparison reference and keep every
+existing playing policy/book/rating unchanged. Tal/Fischer actual-app candidates must separately pass
+tactical, strength and owner blind-personality gates before expanding to the other masters. Automated
+browser views are not actual-phone or screen-reader evidence. No Stockfish, paid service or Steinitz
+addition is included. Rated activation and release retain the master plan's separate gates.

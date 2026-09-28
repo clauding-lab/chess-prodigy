@@ -48,3 +48,17 @@ behavior; later strength/personality/migration/measurement gates remain mandator
 Fresh full unit/integration verification:101files/927tests passed. Canonical frontend/server
 TypeScript, full source lint and formatting passed. Final harness TypeScript review found no new
 issue. These are local implementation checks, not timed-strength acceptance.
+
+## Elapsed-time results and decision
+
+All test/browser work was stopped for sequential profiles. Reference→ordered produced36/36 completed
+comparisons in each run: the candidate reached deeper in8, matched28 and was shallower in0.
+A declared reverse-order repetition (ordered→reference) then produced1 deeper,32 matching and3
+shallower decisions. All144 results, exact policies/settings and source fingerprints are retained
+in the four `e2-*-timed-*.json` files. No result was discarded or averaged into a guaranteed gain.
+
+**Decision: consistent elapsed-time improvement is not demonstrated.** Keep this as an inactive
+experiment; do not promote it or use depth as a strength claim. The4.7% fixed-depth node reduction
+is reproducible for this development cohort but is insufficient evidence of a faster user experience.
+Proceed to a separately isolated cache hypothesis against unchanged E1, after instrumenting where
+its CPU time goes. No further repetitions are used to chase a favorable ordering result.

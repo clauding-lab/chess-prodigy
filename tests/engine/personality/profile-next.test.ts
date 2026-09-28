@@ -27,6 +27,13 @@ vi.mock("../../../src/engine/next/search", () => ({
 vi.mock("../../../src/engine/next/ordered-search", () => ({
   searchNextOrdered: () => ({ kind: "incomplete", move: null, policy: "next-neutral-ordered-v1" }),
 }));
+vi.mock("../../../src/engine/next/cached-search", () => ({
+  searchNextCached: () => ({
+    kind: "incomplete",
+    move: null,
+    policy: "next-neutral-legal-cache-v1",
+  }),
+}));
 const originalArgv = process.argv;
 afterEach(() => {
   process.argv = originalArgv;
@@ -86,11 +93,14 @@ it.each([ids.slice(1), [...ids.slice(1), "p1"], [...ids.slice(1), 4]])(
     expect(state.output).toBe("");
   },
 );
-it("uses the explicitly requested experimental policy and rejects unknown variants", async () => {
-  await run(ids, undefined, "ordered");
+it.each([
+  ["ordered", "next-neutral-ordered-v1"],
+  ["cached", "next-neutral-legal-cache-v1"],
+])("uses %s explicitly and rejects unknown variants", async (variant, policy) => {
+  await run(ids, undefined, variant);
   expect(
     JSON.parse(state.output).rows.every(
-      (row: { result: { policy: string } }) => row.result.policy === "next-neutral-ordered-v1",
+      (row: { result: { policy: string } }) => row.result.policy === policy,
     ),
   ).toBe(true);
   await expect(run(ids, undefined, "unknown")).rejects.toThrow("Unknown profile variant");

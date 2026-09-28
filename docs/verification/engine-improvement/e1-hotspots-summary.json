@@ -1,0 +1,62 @@
+[
+  {
+    "name": "isAttacked",
+    "hits": 8333
+  },
+  {
+    "name": "",
+    "hits": 6431
+  },
+  {
+    "name": "applyMove",
+    "hits": 2620
+  },
+  {
+    "name": "posKey",
+    "hits": 2026
+  },
+  {
+    "name": "genPseudo",
+    "hits": 1046
+  },
+  {
+    "name": "(garbage collector)",
+    "hits": 659
+  },
+  {
+    "name": "forcing",
+    "hits": 611
+  },
+  {
+    "name": "ordered",
+    "hits": 170
+  },
+  {
+    "name": "now",
+    "hits": 159
+  },
+  {
+    "name": "negamax",
+    "hits": 120
+  },
+  {
+    "name": "set TextDecoder",
+    "hits": 58
+  },
+  {
+    "name": "inCheck",
+    "hits": 54
+  },
+  {
+    "name": "clock",
+    "hits": 52
+  },
+  {
+    "name": "__name",
+    "hits": 50
+  },
+  {
+    "name": "isDeadPositionV2",
+    "hits": 32
+  }
+]

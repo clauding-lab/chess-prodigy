@@ -80,3 +80,16 @@ reviewer difference. Logs for this resume are retained under the plan's ignored 
 `resume-enabled-browser.log`, `resume-reviewer-browser.log`, `resume-unit-final.log` and the
 corresponding source-check logs. Final clean builds/default-off matrix and actual-device gates remain
 separate; no publication, deployment or strength claim is made.
+
+The fresh default-off build and offline audit also passed, followed by its full desktop/mobile
+browser matrix: **187 passed, 73 intentional skips** (11.2 minutes). The extra skips are the
+explicit enabled-only setup journeys; saved historical versions still ran through their retained
+compatibility paths. Both flag-state matrices are now complete. Later inactive E2 additions passed
+an expanded full suite of101files/927tests; they have no application import path. Fresh enabled
+build/accessibility confirmation remains to be recorded below; physical-device/manual gates remain.
+
+Final enabled rebuild succeeded, with all four workers confirmed in the offline precache.
+`npm run test:accessibility` against that fresh build scored **97 in Wooden and97 in Dark**,
+above the required90. Both reports flagged the missing main-content landmark; this is a retained
+minor accessibility issue, not a physical screen-reader pass. Raw Lighthouse reports remain in the
+usual ignored verification output; command results are retained in `resume-accessibility.log`.
