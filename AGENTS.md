@@ -205,6 +205,9 @@ Preserve exclusive browser writer ownership, active-first archive recovery and e
 memory-only pending progress before temporary play or sign-out. Guest data never imports to users.
 Interrupted computer timeouts retain results but are unrated; existing receipts remain exact.
 Neutral coaching uses review-v2 same-root, common-depth comparisons and canonical legal moves.
+The custom-neutral-v3 reviewer uses isolated review-search.ts with the expanded bishop-only dead
+rule at root and descendants; old playing search.ts remains exact. Keep review/hint budgets and
+whole-iteration alternatives. Older derived reviews are invalidated, never reinterpreted as v3.
 Human rule version2 adds bishop-only same-color dead positions; existing human/computer rules remain
 versioned. All old playing policies, books, measured values and rematches remain frozen.
 

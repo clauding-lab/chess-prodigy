@@ -1,11 +1,12 @@
-import { insufficientMaterial, legalMoves, sameMove, toFEN } from "./board";
-import { searchRootCandidates } from "./search";
+import { inCheck, legalMoves, sameMove, toFEN } from "./board";
+import { searchReviewCandidates } from "./review-search";
+import { isDeadPositionV2 } from "./rules-v2";
 import type { Move, Position, SearchResult } from "./types";
 import type { PositionEval } from "../coach/types";
 
 // Replace this adapter/version when the reviewer changes. Opponent configuration
 // is deliberately absent: neutrality is separation, not a strength claim.
-export const REVIEWER = "custom-neutral-v2";
+export const REVIEWER = "custom-neutral-v3";
 export const REVIEW_POLICIES = {
   "review-v2": { depth: 3, ms: 180 },
   "hint-v1": { depth: 4, ms: 900 },
@@ -60,10 +61,11 @@ export function reviewPosition(
 ): ReviewResult {
   if (!Object.hasOwn(REVIEW_POLICIES, policy)) throw new Error("Review policy is unavailable.");
   const config = REVIEW_POLICIES[policy];
-  const root = searchRootCandidates(position, config.depth, config.ms, now);
+  const root = searchReviewCandidates(position, config.depth, config.ms, now);
   const result = root.fallback;
   return {
     ...result,
+    score: result.score === 0 ? 0 : result.score,
     review: {
       purpose: "neutral-review",
       reviewer: REVIEWER,
@@ -75,7 +77,7 @@ export function reviewPosition(
       completion: root.depth > 0 || result.move === null ? "complete" : "incomplete",
       alternatives: root.candidates.map(({ move, score }) => ({
         move,
-        score: score * (position.turn === "w" ? 1 : -1),
+        score: score === 0 ? 0 : score * (position.turn === "w" ? 1 : -1),
       })),
     },
   };
@@ -124,6 +126,19 @@ export function isNeutralEvaluation(
   )
     return false;
   const moves = legalMoves(position);
+  if (!moves.length || position.halfmove >= 100 || isDeadPositionV2(position.board)) {
+    const score =
+      !moves.length && inCheck(position, position.turn)
+        ? -100_000 * (position.turn === "w" ? 1 : -1)
+        : 0;
+    return (
+      value.best === null &&
+      value.score === score &&
+      r.depth === 0 &&
+      r.completion === "complete" &&
+      r.alternatives.length === 0
+    );
+  }
   if (r.alternatives.some((a) => !a || !a.move || !Number.isFinite(a.score))) return false;
   if (
     r.depth > 0 &&
@@ -133,9 +148,7 @@ export function isNeutralEvaluation(
   )
     return false;
   if (r.depth === 0 && r.alternatives.length) return false;
-  return value.best === null
-    ? !moves.length || position.halfmove >= 100 || insufficientMaterial(position.board)
-    : moves.some((move) => sameReviewMove(value.best, move));
+  return moves.some((move) => sameReviewMove(value.best, move));
 }
 
 export function reviewComplete(value: PositionEval): boolean {

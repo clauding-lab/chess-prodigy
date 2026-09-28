@@ -1,0 +1,44 @@
+[
+  {
+    "run": "tal-casual",
+    "commit": "521fef2b283449ee6fa3d090a3f68380b0b91d57",
+    "sourceFiles": 129,
+    "mismatches": [],
+    "bundleMismatches": []
+  },
+  {
+    "run": "tal-club",
+    "commit": "521fef2b283449ee6fa3d090a3f68380b0b91d57",
+    "sourceFiles": 129,
+    "mismatches": [],
+    "bundleMismatches": []
+  },
+  {
+    "run": "tal-strong",
+    "commit": "521fef2b283449ee6fa3d090a3f68380b0b91d57",
+    "sourceFiles": 129,
+    "mismatches": [],
+    "bundleMismatches": []
+  },
+  {
+    "run": "fischer-casual",
+    "commit": "521fef2b283449ee6fa3d090a3f68380b0b91d57",
+    "sourceFiles": 129,
+    "mismatches": [],
+    "bundleMismatches": []
+  },
+  {
+    "run": "fischer-club",
+    "commit": "521fef2b283449ee6fa3d090a3f68380b0b91d57",
+    "sourceFiles": 129,
+    "mismatches": [],
+    "bundleMismatches": []
+  },
+  {
+    "run": "fischer-strong",
+    "commit": "521fef2b283449ee6fa3d090a3f68380b0b91d57",
+    "sourceFiles": 129,
+    "mismatches": [],
+    "bundleMismatches": []
+  }
+]
