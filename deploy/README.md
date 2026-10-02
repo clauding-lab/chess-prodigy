@@ -39,7 +39,7 @@ Preserve all existing hostname routes. Validate the tunnel configuration, create
 
 Check `/api/health`, an actual guest game, registration/login/logout, account restore and `/api/leaderboard` over HTTPS. API responses must have `Cache-Control: no-store`; private paths must not be service-worker-cached. Check `systemctl status chess-prodigy` and recent journal errors without printing user records or secrets.
 
-Build and test each release before switching `current`. Back up the database first, install the new directory, switch the symlink, restart only `chess-prodigy`, then verify HTTPS. Keep the previous release for rollback — the retention timer below only ever removes releases beyond the newest few, never the active one. Better Auth's schema migrations run during startup. Do not roll back across an incompatible schema migration without a reviewed database recovery plan.
+Build and test each release before switching `current`. Back up the database first, install the new directory, switch the symlink, restart only `chess-prodigy`, then verify HTTPS. Keep prior releases and recovery assets, but use a prior executable only when its save/schema compatibility has been established. In particular, v2.6.0 is not a safe backend rollback after the repair candidate accepts compact saves. The retention timer below never removes the active release. Better Auth's schema migrations run during startup. Do not roll back across an incompatible schema migration without a reviewed database recovery plan.
 
 ## Release retention
 
@@ -218,3 +218,50 @@ return 404, never the new HTML shell. Local synthetic tests cover old-worker HTT
 frontend switch, immutable caching, private dotfile rejection and collision refusal. Browser
 release-switch and physical-device evidence are separate gates. No production archive or
 environment has been changed in this local pass.
+
+
+## Repair-only 2.6.1 candidate
+
+This candidate preserves existing computer playing policies, historical books and measured ratings.
+Build with `npm run build:repair`, which pins the literal flags
+`VITE_PERSONALITY_BETA=true VITE_ENGINE_EXPERIMENT=false`. Setting flags only when starting an already
+built server does not change that artifact. Verify normal Tal/Fischer setup uses version1; do not
+build or deploy with the experimental selection flag enabled. Flag-off still permits recovery of
+previously saved experimental version2 games, always unrated, and blocks their new setup/rematches.
+
+Current local authority is guest state-v9/account-v9/history-v8. Preserve every older recovery key.
+New account writes use compact wire3, and normal compact acceptance permanently raises the account
+minimum policy to6. Only accepting an experimental identity requires7; sending client capability7
+alone does not raise the floor. Reset never lowers either floor. Original wire1/2 pending bodies and
+acknowledgements must remain byte-exact across migration. New human games use the versioned corrected
+draw rule; existing human games keep their stored rule version. Computer opponents keep their old rules.
+
+**After compact writes begin, do not switch the backend to v2.6.0, remove policy floors or restore an
+old database to reverse the code upgrade.** Use a reviewed compatible forward repair. Retaining an
+old release directory protects assets/evidence; it does not establish executable rollback safety.
+
+Preparation and cutover, only after authorization to ship the concrete candidate:
+
+1. Verify the source/artifact and the hosted flag-pair browser checks described in the release report.
+   Install dependencies on Linux using the lockfile; never copy macOS `node_modules`.
+2. Take a private, integrity-checked manual pre-upgrade database backup. Preserve the existing database,
+   secrets and service ownership. Do not expose or inspect player records for smoke tests.
+3. Configure `ASSET_ARCHIVE_PATH=/var/lib/chess-prodigy/public-assets`; archive the currently served
+   release's `dist` and then the candidate's `dist` with `deploy/retain-assets.mjs` before changing
+   `current`. Refuse any same-name/different-byte collision. Keep this public-file-only archive outside
+   pruning, with at least30days retention after each release's last inclusion.
+4. For the existing loopback-only Cloudflare Tunnel origin, configure
+   `TRUST_LOCAL_CLOUDFLARE_TUNNEL=true`. Preserve all other settings; do not expose port4317 publicly.
+5. Switch only this application's release/service. Startup adds projection tables and backfills rating
+   summaries without replacing original snapshots; allow startup/backfill to finish before declaring
+   health. Inspect status/errors without printing private records.
+6. Verify health, guest play, old released opponent identity, saved reload, historical selection and
+   public endpoints over HTTPS. Do not create or modify real player accounts for verification. Installed
+   clients update explicitly after saving; never force an active game's reload.
+7. If activation fails, preserve the database and diagnose the compatibility-safe forward action.
+   Do not automatically revert the executable to v2.6.0.
+
+Phone and blind-playing checks were waived by the owner on2October2026BDT, not passed. Actual screen-reader
+behavior remains unverified; the mounted announcement region and automated accessibility scores are
+not a claim of screen-reader closure. The stopped experimental programme does not qualify an engine
+upgrade and requires no new calibration for this unchanged-opponent repair candidate.

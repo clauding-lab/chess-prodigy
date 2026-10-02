@@ -1,0 +1,83 @@
+{
+  "version": "2.6.1",
+  "node": "22.23.0",
+  "build": "npm run build:repair",
+  "flags": {
+    "VITE_PERSONALITY_BETA": true,
+    "VITE_ENGINE_EXPERIMENT": false
+  },
+  "archive": {
+    "path": ".superpowers/sdd/2026-09-27-repair-and-engine-master-plan/repair-only-package/chess-prodigy-2.6.1-dist.tar.gz",
+    "sha256": "49e726e6d349c6f318d39d755d4d043e9bc583260cbbb7031e19824a1c353870"
+  },
+  "files": [
+    {
+      "path": "dist/assets/engine.worker-e7WtQnTk.js",
+      "sha256": "262569b7eafc087f87c497a524c4b079eb249bdb04dab83530942f1c1d01355a"
+    },
+    {
+      "path": "dist/assets/experiment.worker-DUepGzN9.js",
+      "sha256": "4685428facc51196a858f3cbef6da715e77dbecac34cd21316511e4750f1f7f6"
+    },
+    {
+      "path": "dist/assets/fischer.worker-zZNSM36C.js",
+      "sha256": "8daaee05f813e0ee33b2728efbbad55e92de4815818181a42499aecc9d71bce7"
+    },
+    {
+      "path": "dist/assets/index-CgF6bhHK.css",
+      "sha256": "11f9cb3da136a0e5b753e2539a2ab2e08415b67e5ea4dbc4f8d3311285bada20"
+    },
+    {
+      "path": "dist/assets/index-DhVay7Mg.js",
+      "sha256": "dce73f391b5dc7ca5d19b14b54a2e0f3bcfb8be60366e480708e19063ef3392e"
+    },
+    {
+      "path": "dist/assets/spassky.worker-DL8CjyrC.js",
+      "sha256": "d4462b310d9f959396240fa9c2645b8f6ab8348038eb55f548c50703f5f9d270"
+    },
+    {
+      "path": "dist/assets/tal.worker-D95GCTnn.js",
+      "sha256": "241ea9d5d1add4c4339ba613d1682efcc4f3ba7151bea6bd1fba86899047027d"
+    },
+    {
+      "path": "dist/assets/workbox-window.prod.es5-BBnX5xw4.js",
+      "sha256": "cadd21be4a88598a4dec91a26a025df0a5790ff6baec54a884e401c3f5c95557"
+    },
+    {
+      "path": "dist/icons/knight-192.png",
+      "sha256": "c0d541c4f5ad279c0a3287305d1ed5386165308417406f710397372a8ead4ab3"
+    },
+    {
+      "path": "dist/icons/knight-512.png",
+      "sha256": "979d33e30d9dcfd145380884c107b14285b07c077f16d0d17855f8ea12cb38a1"
+    },
+    {
+      "path": "dist/icons/knight-apple-touch.png",
+      "sha256": "4929d2b08f179cac633e62af9adfaa7deb6f51bdfc3751183bb281334cfd6bf7"
+    },
+    {
+      "path": "dist/icons/knight-maskable-512.png",
+      "sha256": "979d33e30d9dcfd145380884c107b14285b07c077f16d0d17855f8ea12cb38a1"
+    },
+    {
+      "path": "dist/index.html",
+      "sha256": "8520df672c394ff6e7430cc5987766fd3835c967c55cddbbd3c92f71597e968d"
+    },
+    {
+      "path": "dist/manifest.webmanifest",
+      "sha256": "78f2ec29a9ee6ff7b343d6f0ee34ec21795dcde180f1a8f6bf978b156ff91aa8"
+    },
+    {
+      "path": "dist/push-handler.js",
+      "sha256": "6acdc8d43d6f1addbfdcd1a8d632308f85407fea83caaf012bd2f4439d086166"
+    },
+    {
+      "path": "dist/sw.js",
+      "sha256": "cd7e4d51997f6a3e01da1d362e813454fa5b99c03660930ba73a82adc0630d5b"
+    },
+    {
+      "path": "dist/workbox-2fbc6a65.js",
+      "sha256": "39c2e6ae44c3f29666f6a328b6523bf13a053a1d95c74af8ddea82b1045b0b6e"
+    }
+  ]
+}

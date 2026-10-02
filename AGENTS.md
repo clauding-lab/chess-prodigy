@@ -260,3 +260,12 @@ was interrupted. Preserve all evidence, the consumed canonical final claim and u
 do not resume/retry or represent the partial match schedule as qualified. See
 `docs/verification/engine-improvement/2026-10-02-final-stopped.md`. Phone/blind waivers remain,
 but technical acceptance did not pass. No new playing-policy change or release follows this stop.
+
+## Repair-only candidate preparation — 2 October 2026 BDT
+
+The owner approved preparing a local 2.6.1 repair-only candidate after stopping the failed engine
+programme. Use `npm run build:repair`: historical opponents enabled, experimental selection disabled.
+Preserve saved experimental recovery (always unrated), all older opponents/receipts, v9 authority,
+compact wire3 and permanent policy6/7 protections. No new strength or perceived-style claim.
+See `docs/verification/repair-20260927/repair-only-release.md`. This authorizes preparation and
+local commits; shipping the concrete candidate still requires the master plan’s release confirmation.

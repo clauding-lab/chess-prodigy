@@ -8,6 +8,25 @@ A chess coach you can play in your browser. Practise against three engine streng
 
 [![Chess Prodigy — dark board, three engine strengths, 185 opening lines, 27 coaching cards, hints and game review, accounts and saved progress, practice leaderboard, and offline guest play](docs/verification/hero-banner.png)](https://chess.clauding-lab.com)
 
+
+## Repair-only 2.6.1 candidate
+
+The local 2.6.1 candidate improves saved-game protection, account recovery, clock interruptions,
+neutral coaching, cross-tab ownership and safe offline updates. It also bounds public queries and
+notification work and improves backup verification. **It is not deployed yet.** Existing computer
+opponents, opening books and fixed Practice Ratings are preserved; this is not a stronger-engine release.
+
+Build the reviewed configuration with `npm run build:repair`. It explicitly sets
+`VITE_PERSONALITY_BETA=true` and `VITE_ENGINE_EXPERIMENT=false`: the historical opponents remain
+available, while new experimental Tal/Fischer games and rematches are disabled. Previously saved
+experimental games remain recoverable and always unrated. Their failed validation is retained and
+provides no release or rating claim.
+
+The save upgrade retains older recovery copies but requires a compatible forward repair after new
+compact account writes; do not revert the backend to v2.6.0. See the
+[repair release report](docs/verification/repair-20260927/repair-only-release.md) and
+[deployment instructions](deploy/README.md#repair-only-261-candidate).
+
 ## Historical roster — live in 2.6
 
 **Boris Spassky, Mikhail Tal and Bobby Fischer are now rated practice opponents** when the personality build setting is enabled. Their independently audited fixed Practice Ratings are Spassky: Casual **1150**, Club **1325**, Strong **1700**; Tal: **1200**, **1325**, **1700**; Fischer: **1250**, **1350**, **1675**. These values come from 1,100 complete frozen-source games across the roster, and measure performance against this app’s Classic anchors rather than human or FIDE strength. See the separate [Spassky](docs/verification/roster/spassky/independent-calibration-review.md), [Tal](docs/verification/roster/tal/independent-calibration-review.md), and [Fischer](docs/verification/roster/fischer/independent-calibration-review.md) audit records.
@@ -149,8 +168,9 @@ Offline installation needs HTTPS or localhost. Account requests are excluded fro
 This repair branch also contains **local, unrated Tal/Fischer experiments**. Enable their new-game
 selection with `VITE_PERSONALITY_BETA=true VITE_ENGINE_EXPERIMENT=true npm run dev -- --port 5173`.
 Both flags are build-time settings. Existing experimental saves can still resume with the flags off;
-older rated games and rematches keep their original opponents. The new versions have not passed
-strength, blind personality or physical-phone acceptance and are not a released upgrade.
+older rated games and rematches keep their original opponents. The experimental programme failed its
+Club tactical gates and was stopped by the owner. Phone and blind comparisons were separately waived,
+not passed. These experiments are not a released upgrade; do not rerun the consumed final attempt.
 
 The development-only complete-game runner is documented in
 [the prospective strength protocol](docs/superpowers/specs/2026-09-29-strength-protocol.md).

@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### 2.6.1 repair-only candidate — not yet deployed
+
+- Protect pending progress across account download errors, sign-out, temporary play, storage limits and competing browser tabs. Retain old recovery copies and exact acknowledgements for pending older saves.
+- Use compact, legally replayed saves and recovery-aware game history; preserve existing opponent versions and fixed rating receipts.
+- Distinguish interrupted computer clocks from normal timeouts, preserve engine-reply deadlines, and improve cancellation/retry and neutral coaching evidence.
+- Make offline updates wait for saved state and other app windows; retain public worker assets across releases.
+- Bound leaderboard/multiplayer queries, chat capacity and notification quotas; verify private backups and expose backup failures.
+- Keep all released opponents and ratings. The repair build enables historical opponents and disables new experimental Tal/Fischer selection/rematches. Saved experiments remain recoverable and unrated.
+- Advance current authority to guest/account v9 and history v8 with compact wire3. Normal compact writes permanently require policy6; accepting an experimental identity requires policy7. Compatible forward repairs are required after upgrade; v2.6.0 is not a safe backend rollback.
+
 ## [2.6.0] — 2026-09-19 (BDT)
 
 - Activate independently accepted, fixed Practice Ratings for the historical roster: Boris Spassky 1150 / 1325 / 1700, Mikhail Tal 1200 / 1325 / 1700, and Bobby Fischer 1250 / 1350 / 1675 for Casual / Club / Strong. Normal new games and rematches now settle their own receipts; existing beta saves remain unrated and retain their recorded identity.
