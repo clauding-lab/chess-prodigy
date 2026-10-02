@@ -242,3 +242,12 @@ failed attempts. The tactical and one-submission protocol is independently revie
 execution remains unavailable pending development feasibility and a reviewed complete-schedule runner.
 No strength, perceived-style or real-phone
 acceptance is implied by automated checks. No push, merge, release, deployment or live data.
+
+## Owner waiver — 2 October 2026 BDT
+
+The owner explicitly waived the physical-phone check and blind playing comparison for the current
+repair/Tal2/Fischer2 programme. These are waived gates, not passed tests or evidence of perceived
+historical style. Preserve the running frozen validation source/protocol and append this waiver
+separately; do not restart or alter the one-shot submission. Tactical/complete-game acceptance,
+independent evidence review, disposition of retained failures and fresh rated calibration remain.
+This waiver alone is not a command to deploy or alter ratings.

@@ -165,3 +165,10 @@ Strength development can collect frozen complete-game evidence but cannot qualif
 validation remains unavailable pending feasibility checks and implementation of the reviewed tactical
 and one-submission contract.
 Real-device and blind owner comparisons remain separate evidence. This is not shipping authority.
+
+## Owner waiver — 2 October 2026 BDT
+
+The owner waived the current programme's physical-phone and blind playing-comparison gates.
+Record both as waived, never verified. All automated safety, tactical/strength, independent-review
+and rated-calibration requirements remain. Do not modify the active frozen validation attempt or
+infer a passing technical result from this waiver.
