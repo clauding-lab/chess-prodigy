@@ -251,3 +251,12 @@ historical style. Preserve the running frozen validation source/protocol and app
 separately; do not restart or alter the one-shot submission. Tactical/complete-game acceptance,
 independent evidence review, disposition of retained failures and fresh rated calibration remain.
 This waiver alone is not a command to deploy or alter ratings.
+
+## Final programme disposition — 2 October 2026 BDT
+
+The owner stopped the final programme after both Club tactical improvement criteria failed.
+All320references/2560decisions completed;67/1600completegames finished and tal-strong-tal-33-b
+was interrupted. Preserve all evidence, the consumed canonical final claim and unresolved marker;
+do not resume/retry or represent the partial match schedule as qualified. See
+`docs/verification/engine-improvement/2026-10-02-final-stopped.md`. Phone/blind waivers remain,
+but technical acceptance did not pass. No new playing-policy change or release follows this stop.

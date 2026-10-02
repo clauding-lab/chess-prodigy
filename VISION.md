@@ -172,3 +172,10 @@ The owner waived the current programme's physical-phone and blind playing-compar
 Record both as waived, never verified. All automated safety, tactical/strength, independent-review
 and rated-calibration requirements remain. Do not modify the active frozen validation attempt or
 infer a passing technical result from this waiver.
+
+## Owner-directed stop — 2 October 2026 BDT
+
+The owner stopped the final complete-game programme after the Club tactical gates failed.
+Preserve the consumed attempt and partial results; no qualification, rerun, rating activation or
+release is authorized from them. The independent two-phase audit confirmed the tactical report.
+See `docs/verification/engine-improvement/2026-10-02-final-stopped.md`.
