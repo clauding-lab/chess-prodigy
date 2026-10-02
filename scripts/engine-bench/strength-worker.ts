@@ -3,13 +3,13 @@ import { serialize } from "node:v8";
 import { legalMoves, sameMove } from "../../src/engine/board";
 import type { Move } from "../../src/engine/types";
 import { buildSync } from "esbuild";
-import { experimentalRosterConfig, rosterConfig } from "../../src/engine/opponents";
+import { experimentalRosterConfig } from "../../src/engine/opponents";
 import {
   isExperimentResult,
   type ExperimentRequest,
 } from "../../src/worker/next/experiment-protocol";
 import type { AiResult } from "../../src/engine/types";
-import type { StrengthRow } from "./strength-core";
+import { strengthBaselineConfig, type StrengthRow } from "./strength-core";
 import type { StrengthChooser } from "./strength-match";
 import { StrengthWorkerFailure, type StrengthFailureEvidence } from "./strength-failure";
 
@@ -33,14 +33,17 @@ export function buildStrengthWorkers() {
 }
 export function workerChooser(
   row: StrengthRow,
-  bundles: ReturnType<typeof buildStrengthWorkers>,
+  bundles: ReturnType<typeof buildStrengthWorkers> &
+    Partial<Record<"spassky" | "chigorin", string>>,
 ): StrengthChooser {
   return async (position, history, moves, candidate) => {
+    const bundle = bundles[candidate ? "experiment" : row.baseline];
+    if (typeof bundle !== "string") throw new Error("Missing frozen baseline bundle");
     const started = performance.now();
     const worker = new Worker(
       `const {parentPort}=require('node:worker_threads');
       globalThis.self={postMessage(value){parentPort.postMessage({reply:value})}};
-      ${bundles[candidate ? "experiment" : row.baseline]}
+      ${bundle}
       parentPort.on('message',data=>self.onmessage({data}));
       parentPort.postMessage({ready:true});`,
       { eval: true },
@@ -62,7 +65,7 @@ export function workerChooser(
       : {
           ...common,
           type: "ai",
-          opponent: rosterConfig(row.baseline, row.baselineSeed),
+          opponent: strengthBaselineConfig(row.baseline, row.baselineSeed),
           bookSans: [],
           ply: moves.length,
         };

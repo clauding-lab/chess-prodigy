@@ -1,11 +1,16 @@
+import { chigorinConfig, rosterConfig } from "../../src/engine/opponents";
 import type { Level } from "../../src/engine/types";
 import type { ExperimentId } from "../../src/engine/next/plans";
 import type { Score } from "../calibration/core";
 
+export type StrengthBaseline = ExperimentId | "spassky" | "chigorin";
+export const strengthBaselineConfig = (id: StrengthBaseline, seed: number) =>
+  id === "chigorin" ? chigorinConfig(seed) : rosterConfig(id, seed);
+
 export interface StrengthRow {
   key: string;
   candidate: ExperimentId;
-  baseline: ExperimentId;
+  baseline: StrengthBaseline;
   level: Level;
   pair: number;
   color: "w" | "b";
@@ -24,7 +29,7 @@ export function strengthSchedule(
   split: "development",
   candidate: ExperimentId,
   level: Level,
-  baseline: ExperimentId,
+  baseline: StrengthBaseline,
 ): StrengthRow[] {
   if (
     split !== "development" ||

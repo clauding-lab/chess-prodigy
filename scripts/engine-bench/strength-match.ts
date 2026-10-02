@@ -10,9 +10,9 @@ import {
 import type { Move, Position } from "../../src/engine/types";
 import { terminalResult, type Score } from "../calibration/core";
 import { isDeadPositionV2 } from "../../src/engine/rules-v2";
-import type { StrengthRow } from "./strength-core";
+import { strengthBaselineConfig, type StrengthRow } from "./strength-core";
 import { StrengthWorkerFailure, type StrengthFailureEvidence } from "./strength-failure";
-import { experimentalRosterConfig, rosterConfig } from "../../src/engine/opponents";
+import { experimentalRosterConfig } from "../../src/engine/opponents";
 
 export const STRENGTH_MAX_PLIES = 1000;
 // Both candidates use the new game rule; baseline move selection remains frozen v1.
@@ -166,7 +166,7 @@ export function verifyStrengthGame(
     const candidate = position.turn === row.color;
     const opponent = candidate
       ? experimentalRosterConfig(row.candidate, row.seed)
-      : rosterConfig(row.baseline, row.baselineSeed);
+      : strengthBaselineConfig(row.baseline, row.baselineSeed);
     const timing = (value: unknown) =>
       typeof value === "number" && Number.isFinite(value) && value >= 0;
     if (

@@ -18,7 +18,7 @@ import {
 } from "./tactical-manifest";
 import { assembleTacticalReport, validateTacticalEvidence } from "./tactical-evidence";
 const SLOT = "coherent-v1-final";
-function exclusive(path: string, value: string) {
+export function exclusive(path: string, value: string) {
   const fd = openSync(path, "wx", 0o600);
   try {
     writeFileSync(fd, value);
@@ -34,7 +34,7 @@ function exclusive(path: string, value: string) {
   }
 }
 const json = (value: unknown) => JSON.stringify(value, null, 2);
-function retained(value: unknown) {
+export function retained(value: unknown) {
   let readable: unknown = null,
     binary: string | null = null,
     serializationError: string | null = null;
