@@ -11,6 +11,8 @@ import type { Move, Position } from "../../src/engine/types";
 import { terminalResult, type Score } from "../calibration/core";
 import { isDeadPositionV2 } from "../../src/engine/rules-v2";
 import type { StrengthRow } from "./strength-core";
+import { StrengthWorkerFailure, type StrengthFailureEvidence } from "./strength-failure";
+import { experimentalRosterConfig, rosterConfig } from "../../src/engine/opponents";
 
 export const STRENGTH_MAX_PLIES = 1000;
 // Both candidates use the new game rule; baseline move selection remains frozen v1.
@@ -38,6 +40,7 @@ export interface StrengthGame {
   score: Score | null;
   reason: string;
   failure: string | null;
+  failureEvidence?: StrengthFailureEvidence;
   decisions: Omit<Decision, "move">[];
   elapsedMs: number;
 }
@@ -51,6 +54,7 @@ export async function playStrengthGame(
     decisions: StrengthGame["decisions"] = [];
   let position = START();
   const keys = new Map([[posKey(position), 1]]);
+  let failureEvidence: StrengthFailureEvidence | undefined;
   const finish = (
     score: Score | null,
     reason: string,
@@ -62,6 +66,7 @@ export async function playStrengthGame(
     score,
     reason,
     failure,
+    ...(failureEvidence ? { failureEvidence } : {}),
     decisions,
     elapsedMs: performance.now() - started,
   });
@@ -99,6 +104,7 @@ export async function playStrengthGame(
       if (![decision.startupMs, decision.calculationMs].every((n) => Number.isFinite(n) && n >= 0))
         throw new Error("Invalid decision timing");
     } catch (error) {
+      if (error instanceof StrengthWorkerFailure) failureEvidence = error.evidence;
       return finish(
         null,
         "decision-failure",
@@ -136,6 +142,7 @@ export function verifyStrengthGame(
     throw new Error("Invalid game identity or shape");
   let position = START();
   const keys = new Map([[posKey(position), 1]]);
+  const priorHistory: string[] = [];
   for (let ply = 0; ply < game.moves.length; ply++) {
     if (terminalForExperiment(position, keys)) throw new Error("Move after terminal position");
     const move = legalMoves(position).find(
@@ -148,11 +155,50 @@ export function verifyStrengthGame(
       ![decision.startupMs, decision.calculationMs].every((n) => Number.isFinite(n) && n >= 0)
     )
       throw new Error("Invalid timing record");
+    priorHistory.push(toFEN(position));
     position = applyMove(position, move);
     const key = posKey(position);
     keys.set(key, (keys.get(key) ?? 0) + 1);
   }
   if (game.fen !== toFEN(position)) throw new Error("Position mismatch");
+  const evidence = game.failureEvidence;
+  if (evidence !== undefined) {
+    const candidate = position.turn === row.color;
+    const opponent = candidate
+      ? experimentalRosterConfig(row.candidate, row.seed)
+      : rosterConfig(row.baseline, row.baselineSeed);
+    const timing = (value: unknown) =>
+      typeof value === "number" && Number.isFinite(value) && value >= 0;
+    if (
+      !evidence ||
+      evidence.version !== 1 ||
+      game.reason !== "decision-failure" ||
+      game.score !== null ||
+      !["startup", "calculation", "reply-validation", "decision"].includes(evidence.stage) ||
+      evidence.request?.gameId !== row.key ||
+      evidence.request.revision !== game.moves.length ||
+      evidence.request.requestId !== game.moves.length + 1 ||
+      evidence.request.level !== row.level ||
+      !evidence.request.opponent ||
+      !Object.entries(opponent).every(
+        ([key, value]) => evidence.request.opponent[key as keyof typeof opponent] === value,
+      ) ||
+      (candidate &&
+        (JSON.stringify(evidence.request.history) !== JSON.stringify(priorHistory) ||
+          evidence.request.turnDeadline !== null)) ||
+      !evidence.request.position ||
+      toFEN(evidence.request.position) !== game.fen ||
+      !timing(evidence.elapsedMs) ||
+      evidence.capacityMs !== 15000 ||
+      (evidence.stage === "startup"
+        ? evidence.startupMs !== null || evidence.calculationMs !== null
+        : !timing(evidence.startupMs) || !timing(evidence.calculationMs)) ||
+      (evidence.exitCode !== null && !Number.isInteger(evidence.exitCode)) ||
+      (evidence.replyV8Base64 !== undefined &&
+        (typeof evidence.replyV8Base64 !== "string" || !evidence.replyV8Base64.length))
+    )
+      throw new Error("Invalid failure evidence");
+  }
   const terminal = terminalForExperiment(position, keys);
   if (terminal) {
     if (

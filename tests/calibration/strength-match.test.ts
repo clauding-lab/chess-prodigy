@@ -55,3 +55,22 @@ it("rejects missing pawn-double metadata instead of corrupting en passant state"
   expect(game.failure).toMatch(/metadata/i);
   expect(() => verifyStrengthGame(game, row)).not.toThrow();
 });
+
+it("rejects forged failure diagnostics rather than accepting evidence for another turn", async () => {
+  const game = await playStrengthGame(row, async () => {
+    throw new Error("fixture");
+  });
+  expect(() =>
+    verifyStrengthGame(
+      {
+        ...game,
+        failureEvidence: {
+          version: 1,
+          stage: "decision",
+          request: { gameId: "other", revision: 0, requestId: 1 },
+        },
+      },
+      row,
+    ),
+  ).toThrow(/failure evidence/i);
+});

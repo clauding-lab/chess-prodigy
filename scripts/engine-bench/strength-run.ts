@@ -44,6 +44,7 @@ const machine = () => ({
 const write = (path: string, value: unknown) =>
   writeFileSync(path, JSON.stringify(value, null, 2) + "\n", { flag: "wx" });
 const settings = () => ({
+  failureEvidenceVersion: 1,
   budgets: EXPERIMENT_BUDGETS,
   loss: EXPERIMENT_LOSS,
   maxDepth: 8,
