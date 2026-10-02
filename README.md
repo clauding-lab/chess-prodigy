@@ -9,11 +9,11 @@ A chess coach you can play in your browser. Practise against three engine streng
 [![Chess Prodigy — dark board, three engine strengths, 185 opening lines, 27 coaching cards, hints and game review, accounts and saved progress, practice leaderboard, and offline guest play](docs/verification/hero-banner.png)](https://chess.clauding-lab.com)
 
 
-## Repair-only 2.6.1 candidate
+## Repair-only 2.6.1 — live
 
-The local 2.6.1 candidate improves saved-game protection, account recovery, clock interruptions,
+Version 2.6.1 improves saved-game protection, account recovery, clock interruptions,
 neutral coaching, cross-tab ownership and safe offline updates. It also bounds public queries and
-notification work and improves backup verification. **It is not deployed yet.** Existing computer
+notification work and improves backup verification. **Live since 2 October 2026 BDT.** Existing computer
 opponents, opening books and fixed Practice Ratings are preserved; this is not a stronger-engine release.
 
 Build the reviewed configuration with `npm run build:repair`. It explicitly sets

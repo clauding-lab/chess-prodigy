@@ -188,3 +188,11 @@ Preserve saved experimental recovery (always unrated), all older opponents/recei
 compact wire3 and permanent policy6/7 protections. No new strength or perceived-style claim.
 See `docs/verification/repair-20260927/repair-only-release.md`. This authorizes preparation and
 local commits; shipping the concrete candidate still requires the master plan’s release confirmation.
+
+## Repair release shipped — 2 October 2026 BDT
+
+The owner explicitly authorized publishing and deploying the reviewed 2.6.1 candidate. Source
+`6b8a009d36b6a84830f021143206ce018d77ac1d` is on main and tagged v2.6.1. It is live at the existing
+hostname with historical selection on and experimental selection off. Preserve compact wire3,
+policy6/7, older recovery keys and retained public assets. No incompatible v2.6.0 rollback.
+See `docs/verification/repair-20260927/2026-10-02-live-release.md` for the backup and live guest checks.

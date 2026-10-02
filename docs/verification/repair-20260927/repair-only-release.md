@@ -1,8 +1,9 @@
 # Repair-only 2.6.1 candidate — 2 October 2026 BDT
 
-Status: locally verified repair-only candidate; not pushed, published or deployed. The owner approved separating
+Preparation record: locally verified repair-only candidate. Subsequently published and deployed
+with explicit owner authorization; see [live evidence](2026-10-02-live-release.md). The owner approved separating
 completed application repairs from the stopped engine experiment. Shipping authorization for this
-concrete candidate remains required by the master plan. No production player data was accessed.
+concrete candidate was subsequently given by the owner. No production player data was accessed.
 
 ## Scope and separation
 

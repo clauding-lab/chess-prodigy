@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-### 2.6.1 repair-only candidate — not yet deployed
+## [2.6.1] — 2026-10-02 (BDT)
 
 - Protect pending progress across account download errors, sign-out, temporary play, storage limits and competing browser tabs. Retain old recovery copies and exact acknowledgements for pending older saves.
 - Use compact, legally replayed saves and recovery-aware game history; preserve existing opponent versions and fixed rating receipts.
